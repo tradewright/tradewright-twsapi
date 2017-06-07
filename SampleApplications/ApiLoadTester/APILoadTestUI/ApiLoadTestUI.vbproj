@@ -169,6 +169,9 @@
     <EmbeddedResource Include="UI.resX">
       <DependentUpon>UI.vb</DependentUpon>
     </EmbeddedResource>
+    <None Include="..\..\..\..\tradewright-common.net\TWUtilities.licenseheader">
+      <Link>TWUtilities.licenseheader</Link>
+    </None>
     <None Include="app.config" />
     <None Include="My Project\app.manifest" />
   </ItemGroup>
