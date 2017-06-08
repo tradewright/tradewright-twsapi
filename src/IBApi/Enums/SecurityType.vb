@@ -28,6 +28,7 @@ Public Enum SecurityType
     None
     Stock
     Future
+    ContinuousFuture
     [Option]
     FuturesOption
     Cash
