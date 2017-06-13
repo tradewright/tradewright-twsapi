@@ -125,7 +125,7 @@ Friend NotInheritable Class InputStringReader
         End While
 
         Dim value As Integer = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(mBuffer, mCurrIndex))
-        If (value > mMaxMessageSize) Then Throw New ApiException(1, "Input message exceeds maximum size")
+        If (value > mMaxMessageSize) Then Throw New ApiException(ErrorCodes.MessageTooLong, "Input message exceeds maximum size")
 
         mCurrIndex += SizeOfInt
         Return value
@@ -160,6 +160,6 @@ Friend NotInheritable Class InputStringReader
     End Function
 
     Private Sub ThrowDataStreamEnded()
-        Throw New ApiException(2, "")
+        Throw New ApiException(ErrorCodes.DataStreamEnded, "")
     End Sub
 End Class

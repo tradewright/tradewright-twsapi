@@ -28,4 +28,5 @@ Public Enum ErrorCodes
     None
     MessageTooLong
     DataStreamEnded
+    TwsOutOfDate
 End Enum

@@ -178,7 +178,7 @@ Friend Class ApiConnectionManager
             mReader.EndMessage()
 
             If Not isValidServerVersion() Then
-                Dim e = New ApplicationException("TWS is out of date and needs to be upgraded")
+                Dim e = New ApiException(ErrorCodes.TwsOutOfDate, "TWS is out of date and needs to be upgraded")
                 EventLogger.Log("An exception occurred:" & vbCrLf & e.ToString(), ModuleName, ProcName, ILogger.LogLevel.Severe)
                 mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
                 Return False
