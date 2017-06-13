@@ -30,6 +30,10 @@ Imports System.Reflection
 Imports System.Threading
 Imports System.Threading.Tasks
 
+''' <summary>
+''' This class provides the Application Programming Interface to Interactive Brokers' 
+''' Trader Workstation and Gateway products.
+''' </summary>
 Public Class IBAPI
 
     ''
@@ -98,6 +102,43 @@ Public Class IBAPI
     ' Class Event Handlers
     '@================================================================================
 
+    ''' <summary>
+    ''' Creates a new IBAPI instance.
+    ''' </summary>
+    ''' 
+    ''' <param name="server">The name or IP address of the computer in which TWS or Gateway is running. For the 
+    ''' local computer, supply an empty string or use "127.0.0.1".
+    ''' </param>
+    ''' 
+    ''' <param name="port">
+    ''' The TCP port on which TWS or Gateway listens for API connections.
+    ''' </param>
+    ''' 
+    ''' <param name="clientId">
+    ''' A non-negative number that distinguishes this API connection from other 
+    ''' connections to the same TWS or Gateway instance.
+    ''' </param>
+    ''' 
+    ''' <param name="disableEventSource">
+    ''' If <c>False</c> an <c>EventSource</c> object is automatically created to
+    ''' receive API callbacks and raise corresponding events, and can be accessed via the <c>EventSource</c> 
+    ''' property. If <c>True</c>, the application must register its own object(s) to receive API callbacks.
+    ''' </param>
+    ''' 
+    ''' <param name="syncContext">
+    ''' Specifies the <c>SynchronizationContext</c> to which API callbacks are posted.
+    ''' By default, the synchronization context for the current thread is used.
+    ''' </param>
+    ''' 
+    ''' <param name="useSSL">
+    ''' If <c>True</c>, the API connection is protected using SSL.
+    ''' </param>
+    ''' 
+    ''' <param name="useLegacyProtocol">
+    ''' If <c>True</c>, use the old API protocol to TWS. There is no practical 
+    ''' benefit in doing this.
+    ''' </param>
+    ''' 
     Public Sub New(server As String,
                    port As Integer,
                    clientId As Integer,
