@@ -98,20 +98,26 @@ Public Class IBAPI
     ' Class Event Handlers
     '@================================================================================
 
-    Public Sub New(pServer As String, pPort As Integer, pClientId As Integer, Optional disableEventSorce As Boolean = False, Optional syncContext As SynchronizationContext = Nothing, Optional useSSL As Boolean = False, Optional useLegacyProtocol As Boolean = False)
+    Public Sub New(server As String,
+                   port As Integer,
+                   clientId As Integer,
+                   Optional disableEventSource As Boolean = False,
+                   Optional syncContext As SynchronizationContext = Nothing,
+                   Optional useSSL As Boolean = False,
+                   Optional useLegacyProtocol As Boolean = False)
         Logger = New NullLogger
         PerformanceLogger = New NullLogger
         SocketLogger = New NullLogger
 
-        If Not (pPort > 0) Then Throw New ArgumentException("Port must be > 0")
-        If Not (pClientId >= 0) Then Throw New ArgumentException("ClientID must be >= 0")
+        If Not (port > 0) Then Throw New ArgumentException("Port must be > 0")
+        If Not (clientId >= 0) Then Throw New ArgumentException("ClientID must be >= 0")
+        If String.IsNullOrEmpty(server) Then server = "127.0.0.1"
 
-        If pServer = "" Then pServer = "127.0.0.1"
-        mServer = pServer
-        mPort = pPort
-        mClientID = pClientId
+        mServer = server
+        mPort = port
+        mClientID = clientId
 
-        If Not disableEventSorce Then mEventSource = useEventSource()
+        If Not disableEventSource Then mEventSource = useEventSource(New EventSource())
         Me.SyncContext = syncContext
         mUseSSL = useSSL
         mUseV100Plus = Not useLegacyProtocol
@@ -165,14 +171,16 @@ Public Class IBAPI
         End Get
         Set(Value As IConnectionStatusConsumer)
             mEventConsumers.ConnectionStatusConsumer = Value
-            mEventConsumers.ConnectionStatusConsumer = Value
         End Set
     End Property
 
-    Public ReadOnly Property EventSource As EventSource
+    Public Property EventSource As EventSource
         Get
             Return mEventSource
         End Get
+        Set
+            mEventSource = useEventSource(Value)
+        End Set
     End Property
 
     Public Property FundamentalDataConsumer() As IFundamentalDataConsumer
@@ -720,22 +728,20 @@ Public Class IBAPI
         mInMessageHandler.Start(Scheduler, mCancellationSource, Sub() mConnectionManager.Disconnect("Message processing completed"))
     End Sub
 
-    Private Function useEventSource() As EventSource
-        Dim ev = New EventSource()
-        Me.AccountDataConsumer = ev
-        Me.ConnectionStatusConsumer = ev
-        Me.ContractDetailsConsumer = ev
-        Me.ErrorAndNotificationConsumer = ev
-        Me.FundamentalDataConsumer = ev
-        Me.HistDataConsumer = ev
-        Me.MarketDataConsumer = ev
-        Me.MarketDepthConsumer = ev
-        Me.NewsConsumer = ev
-        Me.OrderInfoConsumer = ev
-        Me.PerformanceDataConsumer = ev
-        Me.ScannerDataConsumer = ev
-
-        Return ev
+    Private Function useEventSource(eventSource As EventSource) As EventSource
+        Me.AccountDataConsumer = eventSource
+        Me.ConnectionStatusConsumer = eventSource
+        Me.ContractDetailsConsumer = eventSource
+        Me.ErrorAndNotificationConsumer = eventSource
+        Me.FundamentalDataConsumer = eventSource
+        Me.HistDataConsumer = eventSource
+        Me.MarketDataConsumer = eventSource
+        Me.MarketDepthConsumer = eventSource
+        Me.NewsConsumer = eventSource
+        Me.OrderInfoConsumer = eventSource
+        Me.PerformanceDataConsumer = eventSource
+        Me.ScannerDataConsumer = eventSource
+        Return eventSource
     End Function
 
 End Class
