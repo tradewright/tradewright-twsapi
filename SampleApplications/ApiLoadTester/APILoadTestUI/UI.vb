@@ -248,7 +248,7 @@ Public Class UI
     End Sub
 
     Public Sub LogMessage(message As String)
-        s.Send(Sub() LogText.AppendText(message & vbCrLf), Nothing)
+        s.Post(Sub() LogText.AppendText(message & vbCrLf), Nothing)
     End Sub
 
     Public Sub NotifyConnectionStateChange(state As ConnectionState)
