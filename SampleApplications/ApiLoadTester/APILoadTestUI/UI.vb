@@ -170,7 +170,7 @@ Public Class UI
     End Sub
 
     Private Sub PerformanceTimer_Elapsed(sender As Object, e As ElapsedEventArgs)
-        mSecondsSinceStart = mSecondsSinceStart + 1
+        mSecondsSinceStart += 1
         SecondsElapsedText.Text = CStr(mSecondsSinceStart)
         TotalEventsText.Text = CStr(mTotalTicks)
         AvgEventsPerSecondText.Text = CStr(Math.Round(mTotalTicks / mSecondsSinceStart, 0))
@@ -186,17 +186,17 @@ Public Class UI
             TotalProcessTimeText.Text = String.Format("{0:F4}", (cpuTime - mInitialCPUTime) / TimeSpan.TicksPerMillisecond)
             AvgCpuUtilisationPercentText.Text = String.Format("{0:F4}", 100 * (cpuTime - mInitialCPUTime) / TimeSpan.TicksPerSecond / mSecondsSinceStart)
             MicrosecsPerTickText.Text = String.Format("{0:F4}", 1000 * (cpuTime - mInitialCPUTime) / TimeSpan.TicksPerMillisecond / mTotalTicks)
-        End If
 
-        Dim cpuPercentThisSecond = 100 * (cpuTime - mPrevCPUTime) / TimeSpan.TicksPerSecond
+            Dim cpuPercentThisSecond = 100 * (cpuTime - mPrevCPUTime) / TimeSpan.TicksPerSecond
+            If cpuPercentThisSecond > mMaxCpuPercentPerSecond Then
+                mMaxCpuPercentPerSecond = cpuPercentThisSecond
+                MaxCpuPercentPerSecText.Text = String.Format("{0:F4}", mMaxCpuPercentPerSecond)
+            End If
 
-        If cpuPercentThisSecond > mMaxCpuPercentPerSecond Then
-            mMaxCpuPercentPerSecond = cpuPercentThisSecond
-            MaxCpuPercentPerSecText.Text = String.Format("{0:F4}", mMaxCpuPercentPerSecond)
+            mPrevCPUTime = cpuTime
         End If
 
         mTicksThisSecond = 0
-        mPrevCPUTime = getCpuTime()
     End Sub
 
 #End Region
