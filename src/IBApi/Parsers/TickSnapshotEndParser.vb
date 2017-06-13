@@ -32,12 +32,16 @@ Friend NotInheritable Class TickSnapshotEndParser
 
     Private Const ModuleName As String = NameOf(TickSnapshotEndParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = Await _Reader.GetIntAsync("reqID")
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.MarketDataConsumer?.EndTickSnapshot(New RequestEndEventArgs(timestamp, IdManager.GetCallerId(lReqId, IdType.MarketData)))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("EndTickSnapshot", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

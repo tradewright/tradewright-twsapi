@@ -33,7 +33,7 @@ Friend NotInheritable Class SecurityDefinitionOptionParameterParser
 
     Private Const ModuleName As String = NameOf(SecurityDefinitionOptionParameterParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request id")
         Dim exchange = Await _Reader.GetStringAsync("Exchange")
         Dim underlyingConId = Await _Reader.GetIntAsync("Und con id")
@@ -56,8 +56,12 @@ Friend NotInheritable Class SecurityDefinitionOptionParameterParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.ContractDetailsConsumer?.NotifySecurityDefinitionOptionParameter(New SecurityDefinitionOptionParameterEventArgs(timestamp, requestId, exchange, underlyingConId, tradingClass, multiplier, expirations, strikes))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifySecurityDefinitionOptionParameter", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

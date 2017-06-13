@@ -32,7 +32,7 @@ Friend NotInheritable Class DailyPnLSingleParser
 
     Private Const ModuleName As String = NameOf(DailyPnLSingleParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim position = Await _Reader.GetIntAsync("Position")
         Dim dailyPnL = Await _Reader.GetDoubleAsync("Daily PnL")
@@ -40,8 +40,12 @@ Friend NotInheritable Class DailyPnLSingleParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.AccountDataConsumer?.NotifyDailyPnLSingle(New DailyPnLSingleEventArgs(timestamp, requestId, position, dailyPnL, value))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyDailyPnLSingle", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

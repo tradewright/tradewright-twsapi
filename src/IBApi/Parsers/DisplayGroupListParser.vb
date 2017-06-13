@@ -32,14 +32,18 @@ Friend NotInheritable Class DisplayGroupListParser
 
     Private Const ModuleName As String = NameOf(DisplayGroupListParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request id")
         Dim groups = Await _Reader.GetStringAsync("Groups")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.DisplayGroupConsumer?.NotifyDisplayGroupList(New DisplayGroupListEventArgs(timestamp, requestId, groups))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyDisplayGroupList", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

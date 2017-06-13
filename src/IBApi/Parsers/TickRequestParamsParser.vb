@@ -32,7 +32,7 @@ Friend NotInheritable Class TickRequestParamsParser
 
     Private Const ModuleName As String = NameOf(TickRequestParamsParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim tickerId = Await _Reader.GetIntAsync("Ticker Id")
         Dim minTick = Await _Reader.GetDoubleAsync("Min tick")
         Dim bboExchange = Await _Reader.GetStringAsync("BBO Exchange")
@@ -40,8 +40,12 @@ Friend NotInheritable Class TickRequestParamsParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.MarketDataConsumer?.NotifyTickRequestParams(New TickRequestParamsEventArgs(timestamp, tickerId, minTick, bboExchange, snapshotPermissions))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyTickRequestParams", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

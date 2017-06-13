@@ -33,14 +33,18 @@ Friend NotInheritable Class HeadTimestampParser
 
     Private Const ModuleName As String = NameOf(HeadTimestampParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim headTimestamp = Date.ParseExact(Await _Reader.GetStringAsync("Headtimestamp"), "yyyyMMdd HH:mm:ss", CultureInfo.InvariantCulture)
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.HistDataConsumer?.NotifyHeadTimestamp(New HeadTimestampEventArgs(timestamp, requestId, headTimestamp))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyHeadTimestamp", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

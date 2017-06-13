@@ -33,7 +33,7 @@ Friend NotInheritable Class MarketDepthExchangesParser
 
     Private Const ModuleName As String = NameOf(MarketDepthExchangesParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim descriptions = New List(Of DepthMktDataDescription)
         Dim descriptionsCount = Await _Reader.GetIntAsync("Descriptions Count")
 
@@ -54,8 +54,12 @@ Friend NotInheritable Class MarketDepthExchangesParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.MarketDepthConsumer?.NotifyMarketDepthExchanges(New MarketDepthExchangesEventArgs(timestamp, descriptions))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyMarketDepthExchanges", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

@@ -32,7 +32,7 @@ Friend NotInheritable Class OrderStatusParser
 
     Private Const ModuleName As String = NameOf(OrderStatusParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lorderId = Await _Reader.GetIntAsync("id")
         Dim lStatus = Await _Reader.GetStringAsync("Status")
         Dim lFilled = Await _Reader.GetDoubleAsync("Filled")
@@ -56,8 +56,12 @@ Friend NotInheritable Class OrderStatusParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.OrderInfoConsumer?.NotifyOrderStatus(New OrderStatusEventArgs(timestamp, lorderId, lStatus, lFilled, lRemaining, lAvgFillPrice, lPermId, lParentId, lLastFillPrice, lClientID, lWhyHeld))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyOrderStatus", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

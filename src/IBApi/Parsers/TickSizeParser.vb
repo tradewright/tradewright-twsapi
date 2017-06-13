@@ -32,15 +32,19 @@ Friend NotInheritable Class TickSizeParser
 
     Private Const ModuleName As String = NameOf(TickSizeParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lTickerId = Await _Reader.GetIntAsync("Ticker id")
         Dim lTickType = DirectCast(Await _Reader.GetIntAsync("Tick type"), TickType)
         Dim lSize = Await _Reader.GetIntAsync("Size")
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.MarketDataConsumer?.NotifyTickSize(New TickSizeEventArgs(timestamp, IdManager.GetCallerId(lTickerId, IdType.MarketData), lTickType, lSize))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyTickSize", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

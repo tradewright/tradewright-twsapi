@@ -32,7 +32,7 @@ Friend NotInheritable Class MarketDepthL2Parser
 
     Private Const ModuleName As String = NameOf(MarketDepthL2Parser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim id = Await _Reader.GetIntAsync("Id")
         Dim lPosition = Await _Reader.GetIntAsync("POSITION")
         Dim lMarketMaker = Await _Reader.GetStringAsync("Marketmaker")
@@ -43,8 +43,12 @@ Friend NotInheritable Class MarketDepthL2Parser
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.MarketDepthConsumer?.NotifyMarketDepth(New MarketDepthUpdateEventArgs(timestamp, IdManager.GetCallerId(id, IdType.MarketDepth), lPosition, lOperation, lSide, lPrice, lSize, lMarketMaker))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyMarketDepth", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

@@ -32,7 +32,7 @@ Friend NotInheritable Class PositionParser
 
     Private Const ModuleName As String = NameOf(PositionParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lAccount = Await _Reader.GetStringAsync("Account")
         Dim lContract As New Contract With {
             .ConId = Await _Reader.GetIntAsync("Contract id"),
@@ -56,8 +56,12 @@ Friend NotInheritable Class PositionParser
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.AccountDataConsumer?.NotifyPosition(New PositionEventArgs(timestamp, lAccount, lContract, lPosition, lAverageCost))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyPosition", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

@@ -32,7 +32,7 @@ Friend NotInheritable Class AccountSummaryParser
 
     Private Const ModuleName As String = NameOf(AccountSummaryParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lRequestId = Await _Reader.GetIntAsync("Request Id")
         Dim lAccount = Await _Reader.GetStringAsync("Account")
         Dim lTag = Await _Reader.GetStringAsync("Tag")
@@ -41,8 +41,12 @@ Friend NotInheritable Class AccountSummaryParser
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.AccountDataConsumer?.NotifyAccountSummary(New AccountSummaryEventArgs(timestamp, lRequestId, lAccount, lTag, lValue, lCurrency))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyAccountSummary", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

@@ -33,7 +33,7 @@ Friend NotInheritable Class HistogramDataParser
 
     Private Const ModuleName As String = NameOf(HistogramDataParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("RequestId")
         Dim entryCount = Await _Reader.GetIntAsync("Entry Count")
         Dim histData = New List(Of HistogramEntry)
@@ -45,8 +45,12 @@ Friend NotInheritable Class HistogramDataParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.HistDataConsumer?.NotifyHistogramData(New HistogramDataEventArgs(timestamp, requestId, histData))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyHistogramData", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

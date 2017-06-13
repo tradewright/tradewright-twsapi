@@ -32,7 +32,7 @@ Friend NotInheritable Class ExecutionDataParser
 
     Private Const ModuleName As String = NameOf(ExecutionDataParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = -1
         If (pVersion >= 7) Then lReqId = IdManager.GetCallerId(Await _Reader.GetIntAsync("lReqId"), IdType.Execution)
 
@@ -76,8 +76,12 @@ Friend NotInheritable Class ExecutionDataParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.OrderInfoConsumer?.NotifyExecution(New ExecutionDetailsEventArgs(timestamp, lReqId, lContract, lExecution))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyExecution", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

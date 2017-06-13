@@ -32,7 +32,7 @@ Friend NotInheritable Class ScannerDataParser
 
     Private Const ModuleName As String = NameOf(ScannerDataParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim numberOfElements = Await _Reader.GetIntAsync("Number of elements")
 
@@ -66,8 +66,12 @@ Friend NotInheritable Class ScannerDataParser
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.ScannerDataConsumer?.EndScannerData(New RequestEndEventArgs(timestamp, requestId))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("EndScannerData", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

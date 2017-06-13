@@ -33,7 +33,7 @@ Friend NotInheritable Class NewsProvidersParser
 
     Private Const ModuleName As String = NameOf(NewsProvidersParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim providers = New List(Of NewsProvider)()
         Dim providersCount = Await _Reader.GetIntAsync("Providers Count")
 
@@ -44,8 +44,12 @@ Friend NotInheritable Class NewsProvidersParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.NewsConsumer?.NotifyNewsProviders(New NewsProvidersEventArgs(timestamp, providers))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyNewsProviders", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

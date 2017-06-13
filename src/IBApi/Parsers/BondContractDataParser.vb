@@ -33,7 +33,7 @@ Friend NotInheritable Class BondContractDataParser
 
     Private Const ModuleName As String = NameOf(BondContractDataParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lContract As New Contract
         Dim lContractDetails As New ContractDetails With {
             .Summary = lContract
@@ -103,8 +103,12 @@ Friend NotInheritable Class BondContractDataParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.ContractDetailsConsumer?.NotifyContract(New ContractDetailsEventArgs(timestamp, lRequestId, lContractDetails))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyContract", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

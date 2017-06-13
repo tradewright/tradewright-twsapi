@@ -24,32 +24,10 @@
 
 #End Region
 
-Imports System.Threading.Tasks
+Public Class ApiApplicationException
+    Inherits Exception
 
-Friend NotInheritable Class AccountDownloadEndParser
-    Inherits ParserBase
-    Implements IParser
-
-    Private Const ModuleName As String = NameOf(AccountDownloadEndParser)
-
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim accountName As String
-        accountName = Await _Reader.GetStringAsync("Account name")
-
-        LogSocketInputMessage(ModuleName, "ParseAsync")
-
-        Try
-            _EventConsumers.AccountDataConsumer?.EndAccountValue(New AccountDownloadEndEventArgs(timestamp, accountName))
-            Return True
-        Catch e As Exception
-            Throw New ApiApplicationException("EndAccountValue", e)
-        End Try
-    End Function
-
-    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
-        Get
-            Return ApiSocketInMsgType.AccountDownloadEnd
-        End Get
-    End Property
-
+    Public Sub New(message As String, Optional innerException As Exception = Nothing)
+        MyBase.New(message, innerException)
+    End Sub
 End Class

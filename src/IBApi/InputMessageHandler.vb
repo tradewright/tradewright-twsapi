@@ -183,15 +183,17 @@ Friend Class InputMessageHandler
     End Function
 
     Private Async Function handleMessageAsync(pMessageId As ApiSocketInMsgType, pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+        Const Procname As String = "handleMessageAsync"
         Try
             Await If(mRegistry.GetParser(pMessageId)?.ParseAsync(pVersion, timestamp), Task.CompletedTask)
+            Return True
         Catch e As ApiException When e.ErrorCode = ErrorCodes.DataStreamEnded
             Return False
-        Catch e As Exception
+        Catch e As ApiApplicationException
+            EventLogger.Log($"An exception occurred in the API user's application code while it was processing a callback: {ApiSocketInMsgTypes.ToExternalString(pMessageId)}{vbCrLf}{e.ToString()}", NameOf(InputMessageHandler), Procname, ILogger.LogLevel.Severe)
             mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
             Return False
         End Try
-        Return True
     End Function
 
     Private Async Function processNextMessageAsync() As Task(Of Boolean)

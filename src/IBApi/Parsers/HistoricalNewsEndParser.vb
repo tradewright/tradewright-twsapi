@@ -32,14 +32,18 @@ Friend NotInheritable Class HistoricalNewsEndParser
 
     Private Const ModuleName As String = NameOf(HistoricalNewsEndParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request ID")
         Dim hasMore = Await _Reader.GetBoolFromIntAsync("Has More")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.NewsConsumer?.EndHistoricalNews(New HistoricalNewsEndEventArgs(timestamp, requestId, hasMore))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("EndHistoricalNews", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

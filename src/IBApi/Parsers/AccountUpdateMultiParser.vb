@@ -42,8 +42,12 @@ Friend NotInheritable Class AccountUpdateMultiParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
-        _EventConsumers.AccountDataConsumer?.NotifyAccountUpdateMulti(New AccountUpdateMultiEventArgs(timestamp, requestId, account, modelCode, key, value, currency))
-        Return True
+        Try
+            _EventConsumers.AccountDataConsumer?.NotifyAccountUpdateMulti(New AccountUpdateMultiEventArgs(timestamp, requestId, account, modelCode, key, value, currency))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyAccountUpdateMulti", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

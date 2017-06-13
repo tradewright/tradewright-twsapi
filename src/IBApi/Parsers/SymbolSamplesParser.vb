@@ -33,7 +33,7 @@ Friend NotInheritable Class SymbolSamplesParser
 
     Private Const ModuleName As String = NameOf(SymbolSamplesParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim contractDescriptions = New List(Of ContractDescription)
         Dim nContractDescriptions = Await _Reader.GetIntAsync("Contract Descriptions Count")
@@ -60,8 +60,12 @@ Friend NotInheritable Class SymbolSamplesParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.ContractDetailsConsumer?.NotifySymbolSamples(New SymbolSamplesEventArgs(timestamp, requestId, contractDescriptions))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifySymbolSamples", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

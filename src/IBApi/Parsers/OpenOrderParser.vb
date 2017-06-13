@@ -293,8 +293,12 @@ Friend NotInheritable Class OpenOrderParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
-        _EventConsumers.OrderInfoConsumer?.NotifyOpenOrder(New OpenOrderEventArgs(timestamp, lOrder.OrderId, lContract, lOrder, lOrderState))
-        Return True
+        Try
+            _EventConsumers.OrderInfoConsumer?.NotifyOpenOrder(New OpenOrderEventArgs(timestamp, lOrder.OrderId, lContract, lOrder, lOrderState))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyOpenOrder", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

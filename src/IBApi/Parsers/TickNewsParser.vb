@@ -32,7 +32,7 @@ Friend NotInheritable Class TickNewsParser
 
     Private Const ModuleName As String = NameOf(TickNewsParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim tickerId = Await _Reader.GetIntAsync("Ticker Id")
         Dim dateline = IBAPI.UnixTimestampToDateTime(Await _Reader.GetLongAsync("Timestamp"))
         Dim providerCode = Await _Reader.GetStringAsync("Provider Code")
@@ -42,8 +42,12 @@ Friend NotInheritable Class TickNewsParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.NewsConsumer?.NotifyTickNews(New TickNewsEventArgs(timestamp, tickerId, dateline, providerCode, articleId, headline, extraData))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyTickNews", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

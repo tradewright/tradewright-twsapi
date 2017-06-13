@@ -33,7 +33,7 @@ Friend NotInheritable Class FamilyCodesParser
 
     Private Const ModuleName As String = NameOf(FamilyCodesParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim familyCodes = New List(Of FamilyCode)
         Dim familyCodesCount = Await _Reader.GetIntAsync("Family Codes Count")
 
@@ -43,8 +43,12 @@ Friend NotInheritable Class FamilyCodesParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.AccountDataConsumer?.NotifyFamilyCodes(New FamilyCodesEventArgs(timestamp, familyCodes))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyFamilyCodes", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

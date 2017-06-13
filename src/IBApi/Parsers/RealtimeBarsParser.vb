@@ -32,7 +32,7 @@ Friend NotInheritable Class RealtimeBarsParser
 
     Private Const ModuleName As String = NameOf(RealtimeBarsParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = Await _Reader.GetIntAsync("ReqId")
 
         Dim bar = New Bar With {
@@ -48,8 +48,12 @@ Friend NotInheritable Class RealtimeBarsParser
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.MarketDataConsumer?.NotifyRealtimeBar(New RealtimeBarEventArgs(timestamp, lReqId, bar))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyRealtimeBar", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

@@ -32,14 +32,18 @@ Friend NotInheritable Class MarketDataTypeParser
 
     Private Const ModuleName As String = NameOf(MarketDataTypeParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = Await _Reader.GetIntAsync("ReqID")
         Dim lMarketDataType = Await _Reader.GetIntAsync("MarketDataType")
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.MarketDataConsumer?.NotifyMarketDataType(New MarketDataTypeEventArgs(timestamp, lReqId, CType(lMarketDataType, MarketDataType)))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyMarketDataType", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

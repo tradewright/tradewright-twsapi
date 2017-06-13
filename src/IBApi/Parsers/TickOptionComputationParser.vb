@@ -32,7 +32,7 @@ Friend NotInheritable Class TickOptionComputationParser
 
     Private Const ModuleName As String = NameOf(TickOptionComputationParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lTickerId = Await _Reader.GetIntAsync("tickerId")
         Dim lTickType = DirectCast(Await _Reader.GetIntAsync("tickType"), TickType)
 
@@ -86,8 +86,12 @@ Friend NotInheritable Class TickOptionComputationParser
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.MarketDataConsumer?.NotifyTickOptionComputation(New TickOptionComputationEventArgs(timestamp, IdManager.GetCallerId(lTickerId, IdType.MarketData), lTickType, lImpliedVol, lDelta, lOptPrice, lPvDividend, lGamma, lVega, lTheta, lUndPrice))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyTickOptionComputation", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

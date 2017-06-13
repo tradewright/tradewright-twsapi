@@ -98,6 +98,7 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiApplicationException.vb" />
     <Compile Include="ApiConnectionManager.vb" />
     <Compile Include="ApiEventConsumers.vb" />
     <Compile Include="ApiTypes\Bar.vb" />
@@ -403,6 +404,7 @@
     <Compile Include="ProtocolEngine\SocketEventArgs.vb" />
     <Compile Include="ProtocolEngine\SocketManager.vb" />
     <Compile Include="ProtocolEngine\SocketManagerSSL.vb" />
+    <Compile Include="QueueingEventSource.vb" />
     <Compile Include="SocketHandler.vb">
       <SubType>Code</SubType>
     </Compile>

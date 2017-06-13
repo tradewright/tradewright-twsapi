@@ -32,13 +32,17 @@ Friend NotInheritable Class AccountTimeParser
 
     Private Const ModuleName As String = NameOf(AccountTimeParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim accountTime = Await _Reader.GetStringAsync("Account Time")
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.AccountDataConsumer?.NotifyAccountTime(New UpdateAccountTimeEventArgs(timestamp, accountTime))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyAccountTime", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

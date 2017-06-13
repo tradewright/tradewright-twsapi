@@ -33,7 +33,7 @@ Friend NotInheritable Class MarketRuleParser
 
     Private Const ModuleName As String = NameOf(MarketRuleParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim marketRuleId = Await _Reader.GetIntAsync("Market Rule Id")
         Dim priceIncrements = New List(Of PriceIncrement)
         Dim incrementsCount = Await _Reader.GetIntAsync("Increments Count")
@@ -45,8 +45,12 @@ Friend NotInheritable Class MarketRuleParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.ContractDetailsConsumer?.NotifyMarketRule(New MarketRuleEventArgs(timestamp, marketRuleId, priceIncrements))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyMarketRule", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

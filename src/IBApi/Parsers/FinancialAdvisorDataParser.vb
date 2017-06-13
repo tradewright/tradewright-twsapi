@@ -32,14 +32,18 @@ Friend NotInheritable Class FinancialAdvisorDataParser
 
     Private Const ModuleName As String = NameOf(FinancialAdvisorDataParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim dataType = DirectCast(Await _Reader.GetIntAsync("Data type"), FinancialAdvisorDataType)
         Dim xmlData = Await _Reader.GetStringAsync("XML data")
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.AccountDataConsumer?.NotifyAdvisorData(New AdvisorDataEventArgs(timestamp, dataType, xmlData))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyAdvisorData", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

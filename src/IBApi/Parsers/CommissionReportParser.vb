@@ -32,7 +32,7 @@ Friend NotInheritable Class CommissionReportParser
 
     Private Const ModuleName As String = NameOf(CommissionReportParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lCommissionReport As New CommissionReport With {
             .ExecId = Await _Reader.GetStringAsync("ExecId"),
             .Commission = Await _Reader.GetDoubleAsync("Commission"),
@@ -44,8 +44,12 @@ Friend NotInheritable Class CommissionReportParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.OrderInfoConsumer?.NotifyCommissionReport(New CommissionReportEventArgs(timestamp, lCommissionReport))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyCommissionReport", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

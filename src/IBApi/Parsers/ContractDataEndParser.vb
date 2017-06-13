@@ -32,13 +32,17 @@ Friend NotInheritable Class ContractDataEndParser
 
     Private Const ModuleName As String = NameOf(ContractDataEndParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim reqId = IdManager.GetCallerId(Await _Reader.GetIntAsync("Req Id"), IdType.ContractData)
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.ContractDetailsConsumer?.EndContractDetails(New RequestEndEventArgs(timestamp, reqId))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("EndContractDetails", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

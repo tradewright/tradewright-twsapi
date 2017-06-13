@@ -32,17 +32,17 @@ Friend NotInheritable Class TickPriceParser
 
     Private Const ModuleName As String = NameOf(TickPriceParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(version As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lTickerId = Await _Reader.GetIntAsync("Ticker id")
         Dim lTickType = DirectCast(Await _Reader.GetIntAsync("Tick type"), TickType)
         Dim lPrice = Await _Reader.GetDoubleAsync("Price")
 
         Dim lSize As Integer
-        If pVersion >= 2 Then lSize = Await _Reader.GetIntAsync("Size")
+        If version >= 2 Then lSize = Await _Reader.GetIntAsync("Size")
 
         Dim lAttributes = New TickAttributes
 
-        If pVersion >= 3 Then
+        If version >= 3 Then
             Dim attrMask = Await _Reader.GetIntAsync("Attr Mask")
 
             lAttributes.CanAutoExecute = (attrMask = 1)
@@ -58,8 +58,12 @@ Friend NotInheritable Class TickPriceParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
-        _EventConsumers.MarketDataConsumer?.NotifyTickPrice(New TickPriceEventArgs(timestamp, IdManager.GetCallerId(lTickerId, IdType.MarketData), lTickType, lPrice, lSize, lAttributes))
-        Return True
+        Try
+            _EventConsumers.MarketDataConsumer?.NotifyTickPrice(New TickPriceEventArgs(timestamp, IdManager.GetCallerId(lTickerId, IdType.MarketData), lTickType, lPrice, lSize, lAttributes))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyTickPrice", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

@@ -32,15 +32,19 @@ Friend NotInheritable Class NewsArticleParser
 
     Private Const ModuleName As String = NameOf(NewsArticleParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request id")
         Dim type = Await _Reader.GetIntAsync("Article Type")
         Dim text = Await _Reader.GetStringAsync("Text")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.NewsConsumer?.NotifyNewsArticle(New NewsArticleEventArgs(timestamp, requestId, type, text))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyNewsArticle", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

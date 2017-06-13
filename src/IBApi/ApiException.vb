@@ -28,8 +28,9 @@ Public Class ApiException
     Inherits Exception
     Public Property ErrorCode As Integer
 
-    Public Sub New(errorCode As Integer, message As String)
-        MyBase.New(message)
+    Public Sub New(errorCode As Integer, message As String, Optional innerException As Exception = Nothing)
+        MyBase.New(message, innerException)
         Me.ErrorCode = errorCode
     End Sub
+
 End Class

@@ -33,7 +33,7 @@ Friend NotInheritable Class SmartComponentsParser
 
     Private Const ModuleName As String = NameOf(SmartComponentsParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim entryCount = Await _Reader.GetIntAsync("Entry Count")
         Dim dict = New Dictionary(Of Integer, KeyValuePair(Of String, Char))()
@@ -48,8 +48,12 @@ Friend NotInheritable Class SmartComponentsParser
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
+        Try
         _EventConsumers.ContractDetailsConsumer?.NotifySmartComponents(New SmartComponentsEventArgs(timestamp, requestId, dict))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifySmartComponents", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

@@ -32,14 +32,18 @@ Friend NotInheritable Class FundamentalDataParser
 
     Private Const ModuleName As String = NameOf(FundamentalDataParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = Await _Reader.GetIntAsync("ReqID")
         Dim lData = Await _Reader.GetStringAsync("Data")
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
+        Try
         _EventConsumers.FundamentalDataConsumer?.NotifyFundamentalData(New FundamentalDataEventArgs(timestamp, lReqId, lData))
         Return True
+            Catch e As Exception
+                Throw New ApiApplicationException("NotifyFundamentalData", e)
+            End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
