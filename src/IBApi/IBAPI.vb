@@ -355,29 +355,6 @@ Public Class IBAPI
         Return contractExpiryToDate(pContract) < Now
     End Function
 
-    Public Shared Function TwsDateStringToDate(pDateString As String) As (theDate As Date, timezoneName As String)
-        ' format is yyyymmdd [hh:mm:ss [timezone]]
-        If String.IsNullOrEmpty(pDateString) Then Return (Date.MaxValue, String.Empty)
-
-        Dim d As Date
-        If Len(pDateString) = 8 Then
-            d = CDate($"{Left(pDateString, 4)}/{Mid(pDateString, 5, 2)}/{Mid(pDateString, 7, 2)}")
-        ElseIf Len(pDateString) >= 17 Then
-            d = CDate($"{Left(pDateString, 4)}/{Mid(pDateString, 5, 2)}/{Mid(pDateString, 7, 2)} {Mid(pDateString, 11, 8)}")
-        Else
-            Throw New ArgumentException("Invalid date string format")
-        End If
-
-        Dim lTimezoneName As String
-        If Len(pDateString) > 17 Then
-            lTimezoneName = Trim(Right(pDateString, Len(pDateString) - 17))
-        Else
-            lTimezoneName = ""
-        End If
-
-        Return (d, lTimezoneName)
-    End Function
-
     Friend Shared Function UnixTimestampToDateTime(unixTimestamp As Long) As DateTime
         Dim unixBaseTime = New DateTime(1970, 1, 1, 0, 0, 0, 0)
         Return unixBaseTime.AddSeconds(unixTimestamp)

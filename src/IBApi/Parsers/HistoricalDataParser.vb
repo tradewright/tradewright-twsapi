@@ -50,7 +50,7 @@ Friend NotInheritable Class HistoricalDataParser
 
         For i = 0 To barCount - 1
             Dim bar As New Bar With {
-                .TimeStamp = IBAPI.TwsDateStringToDate(Await _Reader.GetStringAsync("Bar date")).theDate,
+                .TimeStamp = TwsDateStringToDate(Await _Reader.GetStringAsync("Bar date")).theDate,
                 .OpenValue = Await _Reader.GetDoubleAsync("Open"),
                 .HighValue = Await _Reader.GetDoubleAsync("High"),
                 .LowValue = Await _Reader.GetDoubleAsync("Low"),
