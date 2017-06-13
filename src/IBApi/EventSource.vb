@@ -132,12 +132,12 @@ Public Class EventSource
     End Sub
 
     Private Sub EndPosition() Implements IAccountDataConsumer.EndPosition
-        OnPositionEnd()
+        OnPositionEnd(EventArgs.Empty)
     End Sub
 
     Public Event PositionEnd(sender As Object, e As EventArgs)
-    Protected Overridable Sub OnPositionEnd()
-        RaiseEvent PositionEnd(Me, EventArgs.Empty)
+    Protected Overridable Sub OnPositionEnd(e As EventArgs)
+        RaiseEvent PositionEnd(Me, e)
     End Sub
 
     Private Sub NotifyAccountSummary(e As AccountSummaryEventArgs) Implements IAccountDataConsumer.NotifyAccountSummary
@@ -225,7 +225,7 @@ Public Class EventSource
         RaiseEvent CurrentTime(Me, e)
     End Sub
 
-    Public Sub NotifyIBServerConnectionStateChange(e As IBServerConnectionStateChangeEventArgs) Implements IConnectionStatusConsumer.NotifyIBServerConnectionStateChange
+    Private Sub NotifyIBServerConnectionStateChange(e As IBServerConnectionStateChangeEventArgs) Implements IConnectionStatusConsumer.NotifyIBServerConnectionStateChange
         OnIBServerConnectionClosed(e)
     End Sub
 
@@ -672,12 +672,12 @@ Public Class EventSource
     End Sub
 
     Private Sub EndOpenOrders() Implements IOrderInfoConsumer.EndOpenOrders
-        OnOpenOrderEnd()
+        OnOpenOrderEnd(EventArgs.Empty)
     End Sub
 
     Public Event OpenOrderEnd(sender As Object, e As EventArgs)
-    Protected Overridable Sub OnOpenOrderEnd()
-        RaiseEvent OpenOrderEnd(Me, EventArgs.Empty)
+    Protected Overridable Sub OnOpenOrderEnd(e As EventArgs)
+        RaiseEvent OpenOrderEnd(Me, e)
     End Sub
 
     Private Sub NotifyCommissionReport(e As CommissionReportEventArgs) Implements IOrderInfoConsumer.NotifyCommissionReport
