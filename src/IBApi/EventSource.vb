@@ -122,7 +122,7 @@ Public Class EventSource
         RaiseEvent AccountSummaryEnd(Me, e)
     End Sub
 
-    Private Sub EndAcccountValue(e As AccountDownloadEndEventArgs) Implements IAccountDataConsumer.EndAcccountValue
+    Private Sub EndAccountValue(e As AccountDownloadEndEventArgs) Implements IAccountDataConsumer.EndAccountValue
         OnAccountDownloadEnd(e)
     End Sub
 

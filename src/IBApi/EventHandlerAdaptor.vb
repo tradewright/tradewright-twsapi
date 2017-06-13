@@ -48,7 +48,7 @@ Public Class EventHandlerAdaptor
         ' no action
     End Sub
 
-    Public Overridable Sub EndAcccountValue(e As AccountDownloadEndEventArgs) Implements IAccountDataConsumer.EndAcccountValue
+    Public Overridable Sub EndAccountValue(e As AccountDownloadEndEventArgs) Implements IAccountDataConsumer.EndAccountValue
         ' no action
     End Sub
 
