@@ -35,7 +35,7 @@ Friend NotInheritable Class OpenOrderEndParser
     Friend Overrides Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
-        _EventConsumers.OrderInfoConsumer?.EndOpenOrders()
+        _EventConsumers.OrderInfoConsumer?.EndOpenOrders(EventArgs.Empty)
         Return Task.FromResult(Of Boolean)(True)
     End Function
 

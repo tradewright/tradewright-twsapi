@@ -135,6 +135,7 @@
     <Compile Include="ApiTypes\UnderComp.vb" />
     <Compile Include="ApiTypes\VolumeCondition.vb" />
     <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="CallbackHandler.vb" />
     <Compile Include="Enums\ApiConnectionState.vb" />
     <Compile Include="Enums\ApiLogLevel.vb" />
     <Compile Include="Enums\AuctionStrategy.vb" />
@@ -224,7 +225,6 @@
     <Compile Include="EventArgs\UpdateAccountTimeEventArgs.vb" />
     <Compile Include="EventArgs\UpdateAccountValueEventArgs.vb" />
     <Compile Include="EventArgs\UpdatePortfolioEventArgs.vb" />
-    <Compile Include="EventHandlerAdaptor.vb" />
     <Compile Include="EventSource.vb" />
     <Compile Include="ExtendedEnum.vb" />
     <Compile Include="ExtensionMethods.vb" />
@@ -404,7 +404,7 @@
     <Compile Include="ProtocolEngine\SocketEventArgs.vb" />
     <Compile Include="ProtocolEngine\SocketManager.vb" />
     <Compile Include="ProtocolEngine\SocketManagerSSL.vb" />
-    <Compile Include="QueueingEventSource.vb" />
+    <Compile Include="QueueingCallbackHandler.vb" />
     <Compile Include="SocketHandler.vb">
       <SubType>Code</SubType>
     </Compile>

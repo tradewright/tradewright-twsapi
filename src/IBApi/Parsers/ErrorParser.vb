@@ -73,9 +73,9 @@ Friend NotInheritable Class ErrorParser
 
         Select Case lErrorCode
             Case 316
-                _EventConsumers.MarketDepthConsumer?.ResetMarketDepth(New MarketDepthRestEventArgs(timestamp, reEstablish:=True))
+                _EventConsumers.MarketDepthConsumer?.NotifyMarketDepthReset(New MarketDepthRestEventArgs(timestamp, reEstablish:=True))
             Case 317
-                _EventConsumers.MarketDepthConsumer?.ResetMarketDepth(New MarketDepthRestEventArgs(timestamp, reEstablish:=False))
+                _EventConsumers.MarketDepthConsumer?.NotifyMarketDepthReset(New MarketDepthRestEventArgs(timestamp, reEstablish:=False))
             Case 321 ' invalid Request
                 EventLogger.Log($"Error ({lErrorCode}; id={id}) from Tws: {lErrorMsg}", ModuleName, ProcName)
                 _EventConsumers.ErrorAndNotificationConsumer?.NotifyApiError(New ApiErrorEventArgs(timestamp, lErrorCode, lErrorMsg))
@@ -95,7 +95,7 @@ Friend NotInheritable Class ErrorParser
 
                 mLostConnectionToIb = False
 
-                _EventConsumers.MarketDepthConsumer?.ResetMarketDepth(New MarketDepthRestEventArgs(timestamp, True))
+                _EventConsumers.MarketDepthConsumer?.NotifyMarketDepthReset(New MarketDepthRestEventArgs(timestamp, True))
 
                 _EventConsumers.ConnectionStatusConsumer?.NotifyIBServerConnectionStateChange(New IBServerConnectionStateChangeEventArgs(timestamp, IBServerConnectionState.Connected, True, lErrorMsg))
 

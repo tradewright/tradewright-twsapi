@@ -83,7 +83,7 @@ Public Interface IMarketDepthConsumer
 
     Sub NotifyRerouteData(e As RerouteDataEventArgs)
 
-    Sub ResetMarketDepth(e As MarketDepthRestEventArgs)
+    Sub NotifyMarketDepthReset(e As MarketDepthRestEventArgs)
 
     '@================================================================================
     ' Helper Functions

@@ -77,7 +77,7 @@ Public Interface IOrderInfoConsumer
 
     Sub EndExecutions(e As RequestEndEventArgs)
 
-    Sub EndOpenOrders()
+    Sub EndOpenOrders(e As EventArgs)
 
     Sub NotifyCommissionReport(e As CommissionReportEventArgs)
 

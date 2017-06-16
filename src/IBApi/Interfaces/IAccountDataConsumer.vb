@@ -79,7 +79,7 @@ Public Interface IAccountDataConsumer
     Sub EndAccountSummary(e As RequestEndEventArgs)
     Sub EndAccountUpdateMulti(e As RequestEndEventArgs)
     Sub EndAccountValue(e As AccountDownloadEndEventArgs)
-    Sub EndPosition()
+    Sub EndPosition(e As EventArgs)
     Sub EndPositionMulti(e As RequestEndEventArgs)
     Sub NotifyAccountSummary(e As AccountSummaryEventArgs)
     Sub NotifyAccountTime(e As UpdateAccountTimeEventArgs)

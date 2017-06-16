@@ -35,7 +35,7 @@ Friend NotInheritable Class PositionEndParser
     Friend Overrides Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
-        _EventConsumers.AccountDataConsumer?.EndPosition()
+        _EventConsumers.AccountDataConsumer?.EndPosition(EventArgs.Empty)
         Return Task.FromResult(Of Boolean)(True)
     End Function
 

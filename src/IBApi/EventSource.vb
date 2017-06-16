@@ -25,6 +25,7 @@
 #End Region
 
 Public Class EventSource
+    Inherits CallbackHandler
     Implements IAccountDataConsumer,
         IConnectionStatusConsumer,
         IContractDetailsConsumer,
@@ -41,7 +42,7 @@ Public Class EventSource
 
 #Region "IAccountDataConsumer"
 
-    Private Sub EndAccountUpdateMulti(e As RequestEndEventArgs) Implements IAccountDataConsumer.EndAccountUpdateMulti
+    Public Overrides Sub EndAccountUpdateMulti(e As RequestEndEventArgs) Implements IAccountDataConsumer.EndAccountUpdateMulti
         OnAccountUpdateMultiEnd(e)
     End Sub
 
@@ -50,7 +51,7 @@ Public Class EventSource
         RaiseEvent AccountUpdateMultiEnd(Me, e)
     End Sub
 
-    Private Sub EndPositionMulti(e As RequestEndEventArgs) Implements IAccountDataConsumer.EndPositionMulti
+    Public Overrides Sub EndPositionMulti(e As RequestEndEventArgs) Implements IAccountDataConsumer.EndPositionMulti
         OnPositionMultiEnd(e)
     End Sub
 
@@ -59,7 +60,7 @@ Public Class EventSource
         RaiseEvent PositionMultiEnd(Me, e)
     End Sub
 
-    Private Sub NotifyAccountUpdateMulti(e As AccountUpdateMultiEventArgs) Implements IAccountDataConsumer.NotifyAccountUpdateMulti
+    Public Overrides Sub NotifyAccountUpdateMulti(e As AccountUpdateMultiEventArgs) Implements IAccountDataConsumer.NotifyAccountUpdateMulti
         OnAccountUpdateMulti(e)
     End Sub
 
@@ -68,7 +69,7 @@ Public Class EventSource
         RaiseEvent AccountUpdateMulti(Me, e)
     End Sub
 
-    Private Sub NotifyDailyPnL(e As DailyPnLEventArgs) Implements IAccountDataConsumer.NotifyDailyPnL
+    Public Overrides Sub NotifyDailyPnL(e As DailyPnLEventArgs) Implements IAccountDataConsumer.NotifyDailyPnL
         OnDailyPnL(e)
     End Sub
 
@@ -77,7 +78,7 @@ Public Class EventSource
         RaiseEvent DailyPnL(Me, e)
     End Sub
 
-    Private Sub NotifyDailyPnLSingle(e As DailyPnLSingleEventArgs) Implements IAccountDataConsumer.NotifyDailyPnLSingle
+    Public Overrides Sub NotifyDailyPnLSingle(e As DailyPnLSingleEventArgs) Implements IAccountDataConsumer.NotifyDailyPnLSingle
         OnDailyPnLSingle(e)
     End Sub
 
@@ -86,7 +87,7 @@ Public Class EventSource
         RaiseEvent DailyPnLSingle(Me, e)
     End Sub
 
-    Private Sub NotifyFamilyCodes(e As FamilyCodesEventArgs) Implements IAccountDataConsumer.NotifyFamilyCodes
+    Public Overrides Sub NotifyFamilyCodes(e As FamilyCodesEventArgs) Implements IAccountDataConsumer.NotifyFamilyCodes
         OnFamilyCodes(e)
     End Sub
 
@@ -95,7 +96,7 @@ Public Class EventSource
         RaiseEvent FamilyCodes(Me, e)
     End Sub
 
-    Private Sub NotifyPositionMulti(e As PositionMultiEventArgs) Implements IAccountDataConsumer.NotifyPositionMulti
+    Public Overrides Sub NotifyPositionMulti(e As PositionMultiEventArgs) Implements IAccountDataConsumer.NotifyPositionMulti
         OnPositionMulti(e)
     End Sub
 
@@ -104,7 +105,7 @@ Public Class EventSource
         RaiseEvent PositionMulti(Me, e)
     End Sub
 
-    Private Sub NotifySoftDollarTiers(e As SoftDollarTiersEventArgs) Implements IAccountDataConsumer.NotifySoftDollarTiers
+    Public Overrides Sub NotifySoftDollarTiers(e As SoftDollarTiersEventArgs) Implements IAccountDataConsumer.NotifySoftDollarTiers
         OnSoftDollarTiers(e)
     End Sub
 
@@ -113,7 +114,7 @@ Public Class EventSource
         RaiseEvent SoftDollarTiers(Me, e)
     End Sub
 
-    Private Sub EndAccountSummary(e As RequestEndEventArgs) Implements IAccountDataConsumer.EndAccountSummary
+    Public Overrides Sub EndAccountSummary(e As RequestEndEventArgs) Implements IAccountDataConsumer.EndAccountSummary
         OnAccountSummaryEnd(e)
     End Sub
 
@@ -122,7 +123,7 @@ Public Class EventSource
         RaiseEvent AccountSummaryEnd(Me, e)
     End Sub
 
-    Private Sub EndAccountValue(e As AccountDownloadEndEventArgs) Implements IAccountDataConsumer.EndAccountValue
+    Public Overrides Sub EndAccountValue(e As AccountDownloadEndEventArgs) Implements IAccountDataConsumer.EndAccountValue
         OnAccountDownloadEnd(e)
     End Sub
 
@@ -131,7 +132,7 @@ Public Class EventSource
         RaiseEvent AccountDownloadEnd(Me, e)
     End Sub
 
-    Private Sub EndPosition() Implements IAccountDataConsumer.EndPosition
+    Public Overrides Sub EndPosition(e As EventArgs) Implements IAccountDataConsumer.EndPosition
         OnPositionEnd(EventArgs.Empty)
     End Sub
 
@@ -140,7 +141,7 @@ Public Class EventSource
         RaiseEvent PositionEnd(Me, e)
     End Sub
 
-    Private Sub NotifyAccountSummary(e As AccountSummaryEventArgs) Implements IAccountDataConsumer.NotifyAccountSummary
+    Public Overrides Sub NotifyAccountSummary(e As AccountSummaryEventArgs) Implements IAccountDataConsumer.NotifyAccountSummary
         OnAccountSummary(e)
     End Sub
 
@@ -149,7 +150,7 @@ Public Class EventSource
         RaiseEvent AccountSummary(Me, e)
     End Sub
 
-    Private Sub NotifyAccountValue(e As UpdateAccountValueEventArgs) Implements IAccountDataConsumer.NotifyAccountValue
+    Public Overrides Sub NotifyAccountValue(e As UpdateAccountValueEventArgs) Implements IAccountDataConsumer.NotifyAccountValue
         OnUpdateAccountValue(e)
     End Sub
 
@@ -158,7 +159,7 @@ Public Class EventSource
         RaiseEvent UpdateAccountValue(Me, e)
     End Sub
 
-    Private Sub NotifyAccountTime(e As UpdateAccountTimeEventArgs) Implements IAccountDataConsumer.NotifyAccountTime
+    Public Overrides Sub NotifyAccountTime(e As UpdateAccountTimeEventArgs) Implements IAccountDataConsumer.NotifyAccountTime
         OnUpdateAccountTime(e)
     End Sub
 
@@ -167,7 +168,7 @@ Public Class EventSource
         RaiseEvent UpdateAccountTime(Me, e)
     End Sub
 
-    Private Sub NotifyAdvisorData(e As AdvisorDataEventArgs) Implements IAccountDataConsumer.NotifyAdvisorData
+    Public Overrides Sub NotifyAdvisorData(e As AdvisorDataEventArgs) Implements IAccountDataConsumer.NotifyAdvisorData
         OnAdvisorData(e)
     End Sub
 
@@ -176,7 +177,7 @@ Public Class EventSource
         RaiseEvent AdvisorData(Me, e)
     End Sub
 
-    Private Sub NotifyManagedAccounts(e As ManagedAccountsEventArgs) Implements IAccountDataConsumer.NotifyManagedAccounts
+    Public Overrides Sub NotifyManagedAccounts(e As ManagedAccountsEventArgs) Implements IAccountDataConsumer.NotifyManagedAccounts
         OnManagedAccounts(e)
     End Sub
 
@@ -185,7 +186,7 @@ Public Class EventSource
         RaiseEvent ManagedAccounts(Me, e)
     End Sub
 
-    Private Sub NotifyPosition(e As PositionEventArgs) Implements IAccountDataConsumer.NotifyPosition
+    Public Overrides Sub NotifyPosition(e As PositionEventArgs) Implements IAccountDataConsumer.NotifyPosition
         OnPosition(e)
     End Sub
 
@@ -194,7 +195,7 @@ Public Class EventSource
         RaiseEvent Position(Me, e)
     End Sub
 
-    Private Sub NotifyPortfolioUpdate(e As UpdatePortfolioEventArgs) Implements IAccountDataConsumer.NotifyPortfolioUpdate
+    Public Overrides Sub NotifyPortfolioUpdate(e As UpdatePortfolioEventArgs) Implements IAccountDataConsumer.NotifyPortfolioUpdate
         OnUpdatePortfolio(e)
     End Sub
 
@@ -207,7 +208,7 @@ Public Class EventSource
 
 #Region "IConnectionStatusConsumer"
 
-    Private Sub NotifyAPIConnectionStateChange(e As ApiConnectionStateChangeEventArgs) Implements IConnectionStatusConsumer.NotifyAPIConnectionStateChange
+    Public Overrides Sub NotifyAPIConnectionStateChange(e As ApiConnectionStateChangeEventArgs) Implements IConnectionStatusConsumer.NotifyAPIConnectionStateChange
         OnConnectionStateChange(e)
     End Sub
 
@@ -216,7 +217,7 @@ Public Class EventSource
         RaiseEvent ConnectionStateChange(Me, e)
     End Sub
 
-    Private Sub NotifyCurrentTime(e As CurrentTimeEventArgs) Implements IConnectionStatusConsumer.NotifyCurrentTime
+    Public Overrides Sub NotifyCurrentTime(e As CurrentTimeEventArgs) Implements IConnectionStatusConsumer.NotifyCurrentTime
         OnCurrentTime(e)
     End Sub
 
@@ -225,7 +226,7 @@ Public Class EventSource
         RaiseEvent CurrentTime(Me, e)
     End Sub
 
-    Private Sub NotifyIBServerConnectionStateChange(e As IBServerConnectionStateChangeEventArgs) Implements IConnectionStatusConsumer.NotifyIBServerConnectionStateChange
+    Public Overrides Sub NotifyIBServerConnectionStateChange(e As IBServerConnectionStateChangeEventArgs) Implements IConnectionStatusConsumer.NotifyIBServerConnectionStateChange
         OnIBServerConnectionClosed(e)
     End Sub
 
@@ -238,7 +239,7 @@ Public Class EventSource
 
 #Region "IContractDetailsConsumer"
 
-    Private Sub EndSecurityDefinitionOptionParameter(e As RequestEndEventArgs) Implements IContractDetailsConsumer.EndSecurityDefinitionOptionParameter
+    Public Overrides Sub EndSecurityDefinitionOptionParameter(e As RequestEndEventArgs) Implements IContractDetailsConsumer.EndSecurityDefinitionOptionParameter
         OnSecurityDefinitionOptionParameterEnd(e)
     End Sub
 
@@ -247,7 +248,7 @@ Public Class EventSource
         RaiseEvent SecurityDefinitionOptionParameterEnd(Me, e)
     End Sub
 
-    Private Sub NotifyMarketRule(e As MarketRuleEventArgs) Implements IContractDetailsConsumer.NotifyMarketRule
+    Public Overrides Sub NotifyMarketRule(e As MarketRuleEventArgs) Implements IContractDetailsConsumer.NotifyMarketRule
         OnMarketRule(e)
     End Sub
 
@@ -256,7 +257,7 @@ Public Class EventSource
         RaiseEvent MarketRule(Me, e)
     End Sub
 
-    Private Sub NotifySecurityDefinitionOptionParameter(e As SecurityDefinitionOptionParameterEventArgs) Implements IContractDetailsConsumer.NotifySecurityDefinitionOptionParameter
+    Public Overrides Sub NotifySecurityDefinitionOptionParameter(e As SecurityDefinitionOptionParameterEventArgs) Implements IContractDetailsConsumer.NotifySecurityDefinitionOptionParameter
         OnSecurityDefinitionOptionParameter(e)
     End Sub
 
@@ -265,7 +266,7 @@ Public Class EventSource
         RaiseEvent SecurityDefinitionOptionParameter(Me, e)
     End Sub
 
-    Private Sub NotifySmartComponents(e As SmartComponentsEventArgs) Implements IContractDetailsConsumer.NotifySmartComponents
+    Public Overrides Sub NotifySmartComponents(e As SmartComponentsEventArgs) Implements IContractDetailsConsumer.NotifySmartComponents
         OnSmartComponents(e)
     End Sub
 
@@ -274,7 +275,7 @@ Public Class EventSource
         RaiseEvent SmartComponents(Me, e)
     End Sub
 
-    Private Sub NotifySymbolSamples(e As SymbolSamplesEventArgs) Implements IContractDetailsConsumer.NotifySymbolSamples
+    Public Overrides Sub NotifySymbolSamples(e As SymbolSamplesEventArgs) Implements IContractDetailsConsumer.NotifySymbolSamples
         OnSymbolSamples(e)
     End Sub
 
@@ -283,7 +284,7 @@ Public Class EventSource
         RaiseEvent SymbolSamples(Me, e)
     End Sub
 
-    Private Sub EndContractDetails(e As RequestEndEventArgs) Implements IContractDetailsConsumer.EndContractDetails
+    Public Overrides Sub EndContractDetails(e As RequestEndEventArgs) Implements IContractDetailsConsumer.EndContractDetails
         OnContractDetailsEnd(e)
     End Sub
 
@@ -292,7 +293,7 @@ Public Class EventSource
         RaiseEvent ContractDetailsEnd(Me, e)
     End Sub
 
-    Private Sub NotifyContract(e As ContractDetailsEventArgs) Implements IContractDetailsConsumer.NotifyContract
+    Public Overrides Sub NotifyContract(e As ContractDetailsEventArgs) Implements IContractDetailsConsumer.NotifyContract
         OnContractDetails(e)
     End Sub
 
@@ -301,7 +302,7 @@ Public Class EventSource
         RaiseEvent ContractDetails(Me, e)
     End Sub
 
-    Private Sub NotifyContractDataError(e As RequestErrorEventArgs) Implements IContractDetailsConsumer.NotifyContractError
+    Public Overrides Sub NotifyContractError(e As RequestErrorEventArgs) Implements IContractDetailsConsumer.NotifyContractError
         OnContractDetailsError(e)
     End Sub
 
@@ -314,7 +315,7 @@ Public Class EventSource
 
 #Region "IDisplayGroupConsumer"
 
-    Private Sub NotifyDisplayGroupList(e As DisplayGroupListEventArgs) Implements IDisplayGroupConsumer.NotifyDisplayGroupList
+    Public Overrides Sub NotifyDisplayGroupList(e As DisplayGroupListEventArgs) Implements IDisplayGroupConsumer.NotifyDisplayGroupList
         OnDisplayGroupList(e)
     End Sub
 
@@ -323,7 +324,7 @@ Public Class EventSource
         RaiseEvent DisplayGroupList(Me, e)
     End Sub
 
-    Private Sub NotifyDisplayGroupUpdated(e As DisplayGroupUpdatedEventArgs) Implements IDisplayGroupConsumer.NotifyDisplayGroupUpdated
+    Public Overrides Sub NotifyDisplayGroupUpdated(e As DisplayGroupUpdatedEventArgs) Implements IDisplayGroupConsumer.NotifyDisplayGroupUpdated
         OnDisplayGroupUpdated(e)
     End Sub
 
@@ -336,7 +337,7 @@ Public Class EventSource
 
 #Region "IErrorAndNotificationConsumer"
 
-    Private Sub NotifyException(e As ExceptionEventArgs) Implements IErrorAndNotificationConsumer.NotifyException
+    Public Overrides Sub NotifyException(e As ExceptionEventArgs) Implements IErrorAndNotificationConsumer.NotifyException
         OnException(e)
     End Sub
 
@@ -345,7 +346,7 @@ Public Class EventSource
         RaiseEvent Exception(Me, e)
     End Sub
 
-    Private Sub NotifyApiError(e As ApiErrorEventArgs) Implements IErrorAndNotificationConsumer.NotifyApiError
+    Public Overrides Sub NotifyApiError(e As ApiErrorEventArgs) Implements IErrorAndNotificationConsumer.NotifyApiError
         OnApiError(e)
     End Sub
 
@@ -354,7 +355,7 @@ Public Class EventSource
         RaiseEvent ApiError(Me, e)
     End Sub
 
-    Private Sub NotifyApiEvent(e As ApiEventEventArgs) Implements IErrorAndNotificationConsumer.NotifyApiEvent
+    Public Overrides Sub NotifyApiEvent(e As ApiEventEventArgs) Implements IErrorAndNotificationConsumer.NotifyApiEvent
         OnApiEvent(e)
     End Sub
 
@@ -367,7 +368,7 @@ Public Class EventSource
 
 #Region "IFundamentalDataConsumer"
 
-    Private Sub NotifyFundamentalData(e As FundamentalDataEventArgs) Implements IFundamentalDataConsumer.NotifyFundamentalData
+    Public Overrides Sub NotifyFundamentalData(e As FundamentalDataEventArgs) Implements IFundamentalDataConsumer.NotifyFundamentalData
         OnFundamentalData(e)
     End Sub
 
@@ -381,7 +382,7 @@ Public Class EventSource
 
 #Region "IHistDataConsumer"
 
-    Private Sub NotifyHeadTimestamp(e As HeadTimestampEventArgs) Implements IHistoricalDataConsumer.NotifyHeadTimestamp
+    Public Overrides Sub NotifyHeadTimestamp(e As HeadTimestampEventArgs) Implements IHistoricalDataConsumer.NotifyHeadTimestamp
         OnHeadTimestamp(e)
     End Sub
 
@@ -390,7 +391,7 @@ Public Class EventSource
         RaiseEvent HeadTimestamp(Me, e)
     End Sub
 
-    Private Sub NotifyHistogramData(e As HistogramDataEventArgs) Implements IHistoricalDataConsumer.NotifyHistogramData
+    Public Overrides Sub NotifyHistogramData(e As HistogramDataEventArgs) Implements IHistoricalDataConsumer.NotifyHistogramData
         OnHistogramData(e)
     End Sub
 
@@ -399,7 +400,7 @@ Public Class EventSource
         RaiseEvent HistogramData(Me, e)
     End Sub
 
-    Private Sub EndHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalData
+    Public Overrides Sub EndHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalData
         OnHistoricalDataEnd(e)
     End Sub
 
@@ -408,11 +409,11 @@ Public Class EventSource
         RaiseEvent HistoricalDataEnd(Me, e)
     End Sub
 
-    Private Sub UpdateHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalData
+    Public Overrides Sub UpdateHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalData
         OnHistoricalData(e)
     End Sub
 
-    Private Sub NotifyHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalData
+    Public Overrides Sub NotifyHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalData
         OnHistoricalData(e)
     End Sub
 
@@ -421,7 +422,7 @@ Public Class EventSource
         RaiseEvent HistoricalData(Me, e)
     End Sub
 
-    Private Sub NotifyHistoricalDataError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalDataError
+    Public Overrides Sub NotifyHistoricalDataError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalDataError
         OnHistoricalDataError(e)
     End Sub
 
@@ -430,7 +431,7 @@ Public Class EventSource
         RaiseEvent HistoricalDataError(Me, e)
     End Sub
 
-    Private Sub StartHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalData
+    Public Overrides Sub StartHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalData
         OnHistoricalDataStart(e)
     End Sub
 
@@ -443,7 +444,7 @@ Public Class EventSource
 
 #Region "IMarketDataConsumer"
 
-    Private Sub NotifyRerouteData(e As RerouteDataEventArgs) Implements IMarketDataConsumer.NotifyRerouteData
+    Public Overrides Sub NotifyRerouteData(e As RerouteDataEventArgs) Implements IMarketDataConsumer.NotifyRerouteData
         OnRerouteMarketData(e)
     End Sub
 
@@ -452,7 +453,7 @@ Public Class EventSource
         RaiseEvent RerouteMarketData(Me, e)
     End Sub
 
-    Private Sub NotifyTickRequestParams(e As TickRequestParamsEventArgs) Implements IMarketDataConsumer.NotifyTickRequestParams
+    Public Overrides Sub NotifyTickRequestParams(e As TickRequestParamsEventArgs) Implements IMarketDataConsumer.NotifyTickRequestParams
         OnTickRequestParams(e)
     End Sub
 
@@ -461,7 +462,7 @@ Public Class EventSource
         RaiseEvent TickRequestParams(Me, e)
     End Sub
 
-    Private Sub EndTickSnapshot(e As RequestEndEventArgs) Implements IMarketDataConsumer.EndTickSnapshot
+    Public Overrides Sub EndTickSnapshot(e As RequestEndEventArgs) Implements IMarketDataConsumer.EndTickSnapshot
         OnTickSnapshotEnd(e)
     End Sub
 
@@ -470,7 +471,7 @@ Public Class EventSource
         RaiseEvent TickSnapshotEnd(Me, e)
     End Sub
 
-    Private Sub NotifyMarketDataError(e As RequestErrorEventArgs) Implements IMarketDataConsumer.NotifyMarketDataError
+    Public Overrides Sub NotifyMarketDataError(e As RequestErrorEventArgs) Implements IMarketDataConsumer.NotifyMarketDataError
         OnMarketDataError(e)
     End Sub
 
@@ -479,7 +480,7 @@ Public Class EventSource
         RaiseEvent MarketDataError(Me, e)
     End Sub
 
-    Private Sub NotifyMarketDataType(e As MarketDataTypeEventArgs) Implements IMarketDataConsumer.NotifyMarketDataType
+    Public Overrides Sub NotifyMarketDataType(e As MarketDataTypeEventArgs) Implements IMarketDataConsumer.NotifyMarketDataType
         OnMarketDataType(e)
     End Sub
 
@@ -488,7 +489,7 @@ Public Class EventSource
         RaiseEvent MarketDataType(Me, e)
     End Sub
 
-    Private Sub NotifyRealtimeBar(e As RealtimeBarEventArgs) Implements IMarketDataConsumer.NotifyRealtimeBar
+    Public Overrides Sub NotifyRealtimeBar(e As RealtimeBarEventArgs) Implements IMarketDataConsumer.NotifyRealtimeBar
         OnRealtimeBar(e)
     End Sub
 
@@ -497,7 +498,7 @@ Public Class EventSource
         RaiseEvent RealtimeBar(Me, e)
     End Sub
 
-    Private Sub NotifyTickEFP(e As TickEFPEventArgs) Implements IMarketDataConsumer.NotifyTickEFP
+    Public Overrides Sub NotifyTickEFP(e As TickEFPEventArgs) Implements IMarketDataConsumer.NotifyTickEFP
         OnTickEFP(e)
     End Sub
 
@@ -506,7 +507,7 @@ Public Class EventSource
         RaiseEvent TickEFP(Me, e)
     End Sub
 
-    Private Sub NotifyTickGeneric(e As TickGenericEventArgs) Implements IMarketDataConsumer.NotifyTickGeneric
+    Public Overrides Sub NotifyTickGeneric(e As TickGenericEventArgs) Implements IMarketDataConsumer.NotifyTickGeneric
         OnTickGeneric(e)
     End Sub
 
@@ -515,7 +516,7 @@ Public Class EventSource
         RaiseEvent TickGeneric(Me, e)
     End Sub
 
-    Private Sub NotifyTickOptionComputation(e As TickOptionComputationEventArgs) Implements IMarketDataConsumer.NotifyTickOptionComputation
+    Public Overrides Sub NotifyTickOptionComputation(e As TickOptionComputationEventArgs) Implements IMarketDataConsumer.NotifyTickOptionComputation
         OnTickOptionComputation(e)
     End Sub
 
@@ -524,7 +525,7 @@ Public Class EventSource
         RaiseEvent TickOptionComputation(Me, e)
     End Sub
 
-    Private Sub NotifyTickPrice(e As TickPriceEventArgs) Implements IMarketDataConsumer.NotifyTickPrice
+    Public Overrides Sub NotifyTickPrice(e As TickPriceEventArgs) Implements IMarketDataConsumer.NotifyTickPrice
         OnTickPrice(e)
     End Sub
 
@@ -533,7 +534,7 @@ Public Class EventSource
         RaiseEvent TickPrice(Me, e)
     End Sub
 
-    Private Sub NotifyTickSize(e As TickSizeEventArgs) Implements IMarketDataConsumer.NotifyTickSize
+    Public Overrides Sub NotifyTickSize(e As TickSizeEventArgs) Implements IMarketDataConsumer.NotifyTickSize
         OnTickSize(e)
     End Sub
 
@@ -542,7 +543,7 @@ Public Class EventSource
         RaiseEvent TickSize(Me, e)
     End Sub
 
-    Private Sub NotifyTickString(e As TickStringEventArgs) Implements IMarketDataConsumer.NotifyTickString
+    Public Overrides Sub NotifyTickString(e As TickStringEventArgs) Implements IMarketDataConsumer.NotifyTickString
         OnTickString(e)
     End Sub
 
@@ -555,7 +556,7 @@ Public Class EventSource
 
 #Region "IMarketDepthConsumer"
 
-    Private Sub NotifyMarketDepthExchanges(e As MarketDepthExchangesEventArgs) Implements IMarketDepthConsumer.NotifyMarketDepthExchanges
+    Public Overrides Sub NotifyMarketDepthExchanges(e As MarketDepthExchangesEventArgs) Implements IMarketDepthConsumer.NotifyMarketDepthExchanges
         OnMarketDepthExchanges(e)
     End Sub
 
@@ -564,7 +565,7 @@ Public Class EventSource
         RaiseEvent MarketDepthExchanges(Me, e)
     End Sub
 
-    Private Sub NotifyRerouteDepthData(e As RerouteDataEventArgs) Implements IMarketDepthConsumer.NotifyRerouteData
+    Public Overrides Sub NotifyRerouteDepthData(e As RerouteDataEventArgs) Implements IMarketDepthConsumer.NotifyRerouteData
         OnRerouteDepthData(e)
     End Sub
 
@@ -573,7 +574,7 @@ Public Class EventSource
         RaiseEvent RerouteDepthData(Me, e)
     End Sub
 
-    Private Sub NotifyMarketDepthError(e As RequestErrorEventArgs) Implements IMarketDepthConsumer.NotifyMarketDepthError
+    Public Overrides Sub NotifyMarketDepthError(e As RequestErrorEventArgs) Implements IMarketDepthConsumer.NotifyMarketDepthError
         OnMarketDepthError(e)
     End Sub
 
@@ -582,7 +583,7 @@ Public Class EventSource
         RaiseEvent MarketDepthError(Me, e)
     End Sub
 
-    Private Sub NotifyMarketDepth(e As MarketDepthUpdateEventArgs) Implements IMarketDepthConsumer.NotifyMarketDepth
+    Public Overrides Sub NotifyMarketDepth(e As MarketDepthUpdateEventArgs) Implements IMarketDepthConsumer.NotifyMarketDepth
         OnMarketDepthUpdate(e)
     End Sub
 
@@ -591,7 +592,7 @@ Public Class EventSource
         RaiseEvent MarketDepthUpdate(Me, e)
     End Sub
 
-    Private Sub ResetMktDepth(e As MarketDepthRestEventArgs) Implements IMarketDepthConsumer.ResetMarketDepth
+    Public Overrides Sub NotifyMarketDepthReset(e As MarketDepthRestEventArgs) Implements IMarketDepthConsumer.NotifyMarketDepthReset
         OnResetMarketDepth(e)
     End Sub
 
@@ -604,7 +605,7 @@ Public Class EventSource
 
 #Region "INewsConsumer"
 
-    Private Sub EndHistoricalNews(e As HistoricalNewsEndEventArgs) Implements INewsConsumer.EndHistoricalNews
+    Public Overrides Sub EndHistoricalNews(e As HistoricalNewsEndEventArgs) Implements INewsConsumer.EndHistoricalNews
         OnHistoricalNewsEnd(e)
     End Sub
 
@@ -613,7 +614,7 @@ Public Class EventSource
         RaiseEvent HistoricalNewsEnd(Me, e)
     End Sub
 
-    Private Sub NotifyNewsArticle(e As NewsArticleEventArgs) Implements INewsConsumer.NotifyNewsArticle
+    Public Overrides Sub NotifyNewsArticle(e As NewsArticleEventArgs) Implements INewsConsumer.NotifyNewsArticle
         OnNewsArticle(e)
     End Sub
 
@@ -622,7 +623,7 @@ Public Class EventSource
         RaiseEvent NewsArticle(Me, e)
     End Sub
 
-    Private Sub NotifyHistoricalNews(e As HistoricalNewsEventArgs) Implements INewsConsumer.NotifyHistoricalNews
+    Public Overrides Sub NotifyHistoricalNews(e As HistoricalNewsEventArgs) Implements INewsConsumer.NotifyHistoricalNews
         OnHistoricalNews(e)
     End Sub
 
@@ -631,7 +632,7 @@ Public Class EventSource
         RaiseEvent HistoricalNews(Me, e)
     End Sub
 
-    Private Sub NotifyNewsProviders(e As NewsProvidersEventArgs) Implements INewsConsumer.NotifyNewsProviders
+    Public Overrides Sub NotifyNewsProviders(e As NewsProvidersEventArgs) Implements INewsConsumer.NotifyNewsProviders
         OnNewsProviders(e)
     End Sub
 
@@ -640,7 +641,7 @@ Public Class EventSource
         RaiseEvent NewsProviders(Me, e)
     End Sub
 
-    Private Sub NotifyTickNews(e As TickNewsEventArgs) Implements INewsConsumer.NotifyTickNews
+    Public Overrides Sub NotifyTickNews(e As TickNewsEventArgs) Implements INewsConsumer.NotifyTickNews
         OnTickNews(e)
     End Sub
 
@@ -649,7 +650,7 @@ Public Class EventSource
         RaiseEvent TickNews(Me, e)
     End Sub
 
-    Private Sub NotifyNewsBulletin(e As NewsBulletinEventArgs) Implements INewsConsumer.NotifyNewsBulletin
+    Public Overrides Sub NotifyNewsBulletin(e As NewsBulletinEventArgs) Implements INewsConsumer.NotifyNewsBulletin
         OnNewsBulletin(e)
     End Sub
 
@@ -662,7 +663,7 @@ Public Class EventSource
 
 #Region "IOrderInfoConsumer"
 
-    Private Sub EndExecutions(e As RequestEndEventArgs) Implements IOrderInfoConsumer.EndExecutions
+    Public Overrides Sub EndExecutions(e As RequestEndEventArgs) Implements IOrderInfoConsumer.EndExecutions
         OnExecutionDetailsEnd(e)
     End Sub
 
@@ -671,7 +672,7 @@ Public Class EventSource
         RaiseEvent ExecutionDetailsEnd(Me, e)
     End Sub
 
-    Private Sub EndOpenOrders() Implements IOrderInfoConsumer.EndOpenOrders
+    Public Overrides Sub EndOpenOrders(e As EventArgs) Implements IOrderInfoConsumer.EndOpenOrders
         OnOpenOrderEnd(EventArgs.Empty)
     End Sub
 
@@ -680,7 +681,7 @@ Public Class EventSource
         RaiseEvent OpenOrderEnd(Me, e)
     End Sub
 
-    Private Sub NotifyCommissionReport(e As CommissionReportEventArgs) Implements IOrderInfoConsumer.NotifyCommissionReport
+    Public Overrides Sub NotifyCommissionReport(e As CommissionReportEventArgs) Implements IOrderInfoConsumer.NotifyCommissionReport
         OnCommissionReport(e)
     End Sub
 
@@ -689,7 +690,7 @@ Public Class EventSource
         RaiseEvent CommissionReport(Me, e)
     End Sub
 
-    Private Sub NotifyDeltaNeutralValidation(e As DeltaNeutralValidationEventArgs) Implements IOrderInfoConsumer.NotifyDeltaNeutralValidation
+    Public Overrides Sub NotifyDeltaNeutralValidation(e As DeltaNeutralValidationEventArgs) Implements IOrderInfoConsumer.NotifyDeltaNeutralValidation
         OnDeltaNeutralValidation(e)
     End Sub
 
@@ -698,7 +699,7 @@ Public Class EventSource
         RaiseEvent DeltaNeutralValidation(Me, e)
     End Sub
 
-    Private Sub NotifyError(e As OrderErrorEventArgs) Implements IOrderInfoConsumer.NotifyOrderError
+    Public Overrides Sub NotifyOrderError(e As OrderErrorEventArgs) Implements IOrderInfoConsumer.NotifyOrderError
         OnOrderError(e)
     End Sub
 
@@ -707,7 +708,7 @@ Public Class EventSource
         RaiseEvent OrderError(Me, e)
     End Sub
 
-    Private Sub NotifyExecution(e As ExecutionDetailsEventArgs) Implements IOrderInfoConsumer.NotifyExecution
+    Public Overrides Sub NotifyExecution(e As ExecutionDetailsEventArgs) Implements IOrderInfoConsumer.NotifyExecution
         OnExecutionDetails(e)
     End Sub
 
@@ -716,7 +717,7 @@ Public Class EventSource
         RaiseEvent ExecutionDetails(Me, e)
     End Sub
 
-    Private Sub NotifyOpenOrder(e As OpenOrderEventArgs) Implements IOrderInfoConsumer.NotifyOpenOrder
+    Public Overrides Sub NotifyOpenOrder(e As OpenOrderEventArgs) Implements IOrderInfoConsumer.NotifyOpenOrder
         OnOpenOrder(e)
     End Sub
 
@@ -725,7 +726,7 @@ Public Class EventSource
         RaiseEvent OpenOrder(Me, e)
     End Sub
 
-    Private Sub NotifyOrderStatus(e As OrderStatusEventArgs) Implements IOrderInfoConsumer.NotifyOrderStatus
+    Public Overrides Sub NotifyOrderStatus(e As OrderStatusEventArgs) Implements IOrderInfoConsumer.NotifyOrderStatus
         OnOrderStatus(e)
     End Sub
 
@@ -738,7 +739,7 @@ Public Class EventSource
 
 #Region "IPerformanceDataConsumer"
 
-    Private Sub NotifyPerformanceStats(e As PerformanceStatsUpdateEventArgs) Implements IPerformanceDataConsumer.NotifyPerformanceStats
+    Public Overrides Sub NotifyPerformanceStats(e As PerformanceStatsUpdateEventArgs) Implements IPerformanceDataConsumer.NotifyPerformanceStats
         OnPerformanceStatsUpdate(e)
     End Sub
 
@@ -751,7 +752,7 @@ Public Class EventSource
 
 #Region "IScannerDataConsumer"
 
-    Private Sub EndScannerData(e As RequestEndEventArgs) Implements IScannerDataConsumer.EndScannerData
+    Public Overrides Sub EndScannerData(e As RequestEndEventArgs) Implements IScannerDataConsumer.EndScannerData
         OnScannerDataEnd(e)
     End Sub
 
@@ -760,7 +761,7 @@ Public Class EventSource
         RaiseEvent ScannerDataEnd(Me, e)
     End Sub
 
-    Private Sub NotifyScannerData(e As ScannerDataEventArgs) Implements IScannerDataConsumer.NotifyScannerData
+    Public Overrides Sub NotifyScannerData(e As ScannerDataEventArgs) Implements IScannerDataConsumer.NotifyScannerData
         OnScannerData(e)
     End Sub
 
@@ -769,7 +770,7 @@ Public Class EventSource
         RaiseEvent ScannerData(Me, e)
     End Sub
 
-    Private Sub NotifyScannerParameters(e As ScannerParametersEventArgs) Implements IScannerDataConsumer.NotifyScannerParameters
+    Public Overrides Sub NotifyScannerParameters(e As ScannerParametersEventArgs) Implements IScannerDataConsumer.NotifyScannerParameters
         OnScannerParameters(e)
     End Sub
 
