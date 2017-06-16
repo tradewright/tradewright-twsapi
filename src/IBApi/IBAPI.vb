@@ -80,7 +80,7 @@ Public Class IBAPI
     Private mUseSSL As Boolean
     Private mUseV100Plus As Boolean
 
-    Private mEventSource As EventSource
+    Private mCallbackHandler As CallbackHandler
 
     Private mIdManager As New IdManager
 
@@ -121,7 +121,7 @@ Public Class IBAPI
     ''' 
     ''' <param name="disableEventSource">
     ''' If <c>False</c> an <c>EventSource</c> object is automatically created to
-    ''' receive API callbacks and raise corresponding events, and can be accessed via the <c>EventSource</c> 
+    ''' receive API callbacks and raise corresponding events, and can be accessed via the <c>CallbackHandler</c> 
     ''' property. If <c>True</c>, the application must register its own object(s) to receive API callbacks.
     ''' </param>
     ''' 
@@ -158,7 +158,7 @@ Public Class IBAPI
         mPort = port
         mClientID = clientId
 
-        If Not disableEventSource Then mEventSource = useEventSource(New EventSource())
+        If Not disableEventSource Then mCallbackHandler = registerCallbackHandler(New EventSource())
         Me.SyncContext = syncContext
         mUseSSL = useSSL
         mUseV100Plus = Not useLegacyProtocol
@@ -215,12 +215,12 @@ Public Class IBAPI
         End Set
     End Property
 
-    Public Property EventSource As EventSource
+    Public Property CallbackHandler As CallbackHandler
         Get
-            Return mEventSource
+            Return mCallbackHandler
         End Get
         Set
-            mEventSource = useEventSource(Value)
+            mCallbackHandler = registerCallbackHandler(Value)
         End Set
     End Property
 
@@ -746,20 +746,20 @@ Public Class IBAPI
         mInMessageHandler.Start(Scheduler, mCancellationSource, Sub() mConnectionManager.Disconnect("Message processing completed"))
     End Sub
 
-    Private Function useEventSource(eventSource As EventSource) As EventSource
-        Me.AccountDataConsumer = eventSource
-        Me.ConnectionStatusConsumer = eventSource
-        Me.ContractDetailsConsumer = eventSource
-        Me.ErrorAndNotificationConsumer = eventSource
-        Me.FundamentalDataConsumer = eventSource
-        Me.HistDataConsumer = eventSource
-        Me.MarketDataConsumer = eventSource
-        Me.MarketDepthConsumer = eventSource
-        Me.NewsConsumer = eventSource
-        Me.OrderInfoConsumer = eventSource
-        Me.PerformanceDataConsumer = eventSource
-        Me.ScannerDataConsumer = eventSource
-        Return eventSource
+    Private Function registerCallbackHandler(handler As CallbackHandler) As CallbackHandler
+        Me.AccountDataConsumer = handler
+        Me.ConnectionStatusConsumer = handler
+        Me.ContractDetailsConsumer = handler
+        Me.ErrorAndNotificationConsumer = handler
+        Me.FundamentalDataConsumer = handler
+        Me.HistDataConsumer = handler
+        Me.MarketDataConsumer = handler
+        Me.MarketDepthConsumer = handler
+        Me.NewsConsumer = handler
+        Me.OrderInfoConsumer = handler
+        Me.PerformanceDataConsumer = handler
+        Me.ScannerDataConsumer = handler
+        Return handler
     End Function
 
 End Class
