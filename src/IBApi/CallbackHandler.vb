@@ -24,10 +24,13 @@
 
 #End Region
 
-Public Class EventHandlerAdaptor
+Imports TradeWright.IBAPI
+
+Public MustInherit Class CallbackHandler
     Implements IAccountDataConsumer,
         IConnectionStatusConsumer,
         IContractDetailsConsumer,
+        IDisplayGroupConsumer,
         IErrorAndNotificationConsumer,
         IFundamentalDataConsumer,
         IHistoricalDataConsumer,
@@ -52,7 +55,7 @@ Public Class EventHandlerAdaptor
         ' no action
     End Sub
 
-    Public Overridable Sub EndPosition() Implements IAccountDataConsumer.EndPosition
+    Public Overridable Sub EndPosition(e As EventArgs) Implements IAccountDataConsumer.EndPosition
         ' no action
     End Sub
 
@@ -166,6 +169,18 @@ Public Class EventHandlerAdaptor
 
 #End Region
 
+#Region "IDisplayGroupConsumer"
+
+    Public Overridable Sub NotifyDisplayGroupList(e As DisplayGroupListEventArgs) Implements IDisplayGroupConsumer.NotifyDisplayGroupList
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifyDisplayGroupUpdated(e As DisplayGroupUpdatedEventArgs) Implements IDisplayGroupConsumer.NotifyDisplayGroupUpdated
+        ' no action
+    End Sub
+
+#End Region
+
 #Region "IErrorAndNotificationConsumer"
 
     Public Overridable Sub NotifyException(e As ExceptionEventArgs) Implements IErrorAndNotificationConsumer.NotifyException
@@ -240,7 +255,7 @@ Public Class EventHandlerAdaptor
         ' no action
     End Sub
 
-    Public Overridable Sub NotifyRerouteMarketData(e As RerouteDataEventArgs) Implements IMarketDataConsumer.NotifyRerouteData
+    Public Overridable Sub NotifyRerouteData(e As RerouteDataEventArgs) Implements IMarketDataConsumer.NotifyRerouteData
         ' no action
     End Sub
 
@@ -292,7 +307,7 @@ Public Class EventHandlerAdaptor
         ' no action
     End Sub
 
-    Public Overridable Sub ResetMarketDepth(e As MarketDepthRestEventArgs) Implements IMarketDepthConsumer.ResetMarketDepth
+    Public Overridable Sub NotifyMarketDepthReset(e As MarketDepthRestEventArgs) Implements IMarketDepthConsumer.NotifyMarketDepthReset
         ' no action
     End Sub
 
@@ -332,7 +347,7 @@ Public Class EventHandlerAdaptor
         ' no action
     End Sub
 
-    Public Overridable Sub EndOpenOrders() Implements IOrderInfoConsumer.EndOpenOrders
+    Public Overridable Sub EndOpenOrders(e As EventArgs) Implements IOrderInfoConsumer.EndOpenOrders
         ' no action
     End Sub
 
