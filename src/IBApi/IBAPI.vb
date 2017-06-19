@@ -37,22 +37,7 @@ Imports System.Threading.Tasks
 Public Class IBAPI
     Implements IDisposable
 
-    ''
-    ' Description here
-    '
-    '@/
-
-    '@================================================================================
-    ' Interfaces
-    '@================================================================================
-
-    '@================================================================================
-    ' Events
-    '@================================================================================
-
-    '@================================================================================
-    ' Constants
-    '@================================================================================
+#Region "Constants"
 
     Private Const ModuleName As String = NameOf(IBAPI)
 
@@ -62,17 +47,9 @@ Public Class IBAPI
     Public Const MaxMarketDataRequestId As Integer = IdManager.MaxCallersMarketDataRequestId
     Public Const MaxMarketDepthRequestId As Integer = IdManager.MaxCallersMarketDepthRequestId
 
-    '@================================================================================
-    ' Enums
-    '@================================================================================
+#End Region
 
-    '@================================================================================
-    ' Types
-    '@================================================================================
-
-    '@================================================================================
-    ' Member variables
-    '@================================================================================
+#Region "Member variables"
 
     Private mServer As String
     Private mPort As Integer
@@ -99,9 +76,9 @@ Public Class IBAPI
 
     Private mStatsRecorder As PerformanceStatsRecorder = New PerformanceStatsRecorder(mEventConsumers)
 
-    '@================================================================================
-    ' Class Event Handlers
-    '@================================================================================
+#End Region
+
+#Region "Constructor"
 
     ''' <summary>
     ''' Creates a new IBAPI instance.
@@ -167,6 +144,8 @@ Public Class IBAPI
         mConnectionManager = New ApiConnectionManager(mServer, mPort, mClientID, mUseV100Plus, mRegistry, mEventConsumers)
     End Sub
 
+#End Region
+
 #Region "IDisposable"
 
     Protected Overridable Sub Dispose(disposing As Boolean)
@@ -183,9 +162,7 @@ Public Class IBAPI
 
 #End Region
 
-    '@================================================================================
-    ' Properties
-    '@================================================================================
+#Region "Properties"
 
     Public Property AccountDataConsumer() As IAccountDataConsumer
         Get
@@ -265,7 +242,6 @@ Public Class IBAPI
         End Set
     End Property
 
-
     Public Property HistDataConsumer() As IHistoricalDataConsumer
         Get
             Return mEventConsumers.HistDataConsumer
@@ -290,7 +266,6 @@ Public Class IBAPI
         End Set
     End Property
 
-
     Public Property MarketDepthConsumer() As IMarketDepthConsumer
         Get
             Return mEventConsumers.MarketDepthConsumer
@@ -311,7 +286,6 @@ Public Class IBAPI
             NextOrderId = mIdManager.NextOrderId
         End Get
     End Property
-
 
     Public Property NewsConsumer() As INewsConsumer
         Get
@@ -399,9 +373,9 @@ Public Class IBAPI
         End Set
     End Property
 
-    '@================================================================================
-    ' Shared Methods
-    '@================================================================================
+#End Region
+
+#Region "Shared Methods"
 
     Public Shared Function IsContractExpired(pContract As Contract) As Boolean
         If pContract.SecType = SecurityType.Cash Or pContract.SecType = SecurityType.Index Or pContract.SecType = SecurityType.Stock Then Return False
@@ -414,9 +388,9 @@ Public Class IBAPI
         Return unixBaseTime.AddSeconds(unixTimestamp)
     End Function
 
-    '@================================================================================
-    ' Methods
-    '@================================================================================
+#End Region
+
+#Region "Methods"
 
     Public Sub CalculateImpliedVolatility(pReqId As Integer, pContract As Contract, pOptionPrice As Double, pUnderPrice As Double)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.CalculateImpliedVolatility, {pReqId, pContract, pOptionPrice, pUnderPrice})
@@ -714,9 +688,9 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.UpdateDisplayGroup, {requestId, contractInfo})
     End Sub
 
-    '@================================================================================
-    ' Helper Functions
-    '@================================================================================
+#End Region
+
+#Region "Helper Functions"
 
     Private Shared Function contractExpiryToDate(pContract As Contract) As Date
         Dim expiry = pContract.Expiry.Trim
@@ -774,5 +748,7 @@ Public Class IBAPI
         Me.ScannerDataConsumer = handler
         Return handler
     End Function
+
+#End Region
 
 End Class
