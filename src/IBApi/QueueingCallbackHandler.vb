@@ -60,13 +60,30 @@ Public Class QueueingCallbackHandler
 
     Private mSyncContext As SynchronizationContext
 
+    Private mCancellationTokenSource As CancellationTokenSource
+
+    Private mDispatcher As Task
+
     Public Sub New(Ev As CallbackHandler, syncContext As SynchronizationContext)
         mEv = Ev
 
         If syncContext Is Nothing Then Throw New ArgumentNullException(NameOf(syncContext))
         mSyncContext = syncContext
 
-        Dim dispatcher = Task.Factory.StartNew(Sub() dispatchLoop())
+        Start()
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        Static disposed As Boolean
+        If disposed Then Exit Sub
+        disposed = True
+
+        If disposing Then
+            Pause()
+            mQueue.Dispose()
+        End If
+
+        MyBase.Dispose()
     End Sub
 
 #Region "IAccountDataConsumer"
@@ -417,6 +434,20 @@ Public Class QueueingCallbackHandler
 
 #End Region
 
+#Region "Methods"
+
+    Public Sub Start()
+        mCancellationTokenSource = New CancellationTokenSource()
+        mDispatcher = Task.Factory.StartNew(Sub() dispatchLoop(mCancellationTokenSource.Token))
+    End Sub
+
+    Public Sub Pause()
+        mCancellationTokenSource.Cancel()
+        mCancellationTokenSource.Dispose()
+    End Sub
+
+#End Region
+
 #Region "Helper functions"
 
     Private Sub queueEvent(e As EventArgs, eventHandler As Action(Of EventArgs))
@@ -424,10 +455,9 @@ Public Class QueueingCallbackHandler
         mQueue.Add(entry)
     End Sub
 
-    Private Sub dispatchLoop()
-        '    Dim token As CancellationToken
-        For Each entry In mQueue.GetConsumingEnumerable()
-            '       If token.IsCancellationRequested Then Exit For
+    Private Sub dispatchLoop(token As CancellationToken)
+        For Each entry In mQueue.GetConsumingEnumerable(token)
+            If token.IsCancellationRequested Then Exit For
             dispatchItem(entry)
         Next
     End Sub

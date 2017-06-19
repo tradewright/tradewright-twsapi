@@ -35,6 +35,7 @@ Imports System.Threading.Tasks
 ''' Trader Workstation and Gateway products.
 ''' </summary>
 Public Class IBAPI
+    Implements IDisposable
 
     ''
     ' Description here
@@ -166,9 +167,21 @@ Public Class IBAPI
         mConnectionManager = New ApiConnectionManager(mServer, mPort, mClientID, mUseV100Plus, mRegistry, mEventConsumers)
     End Sub
 
-    '@================================================================================
-    ' XXXX Interface Members
-    '@================================================================================
+#Region "IDisposable"
+
+    Protected Overridable Sub Dispose(disposing As Boolean)
+        Static disposed As Boolean
+        If disposed Then Exit Sub
+        disposed = True
+
+        If disposing Then mCallbackHandler?.Dispose()
+    End Sub
+
+    Public Sub Dispose() Implements IDisposable.Dispose
+        Dispose(True)
+    End Sub
+
+#End Region
 
     '@================================================================================
     ' Properties

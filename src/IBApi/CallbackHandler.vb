@@ -27,7 +27,8 @@
 Imports TradeWright.IBAPI
 
 Public MustInherit Class CallbackHandler
-    Implements IAccountDataConsumer,
+    Implements IDisposable,
+        IAccountDataConsumer,
         IConnectionStatusConsumer,
         IContractDetailsConsumer,
         IDisplayGroupConsumer,
@@ -179,6 +180,24 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
+#End Region
+
+#Region "IDisposable"
+
+    Protected Overridable Sub Dispose(disposing As Boolean)
+        Static disposed As Boolean
+        If disposed Then Exit Sub
+        disposed = True
+
+        If disposing Then
+            ' TODO: dispose managed state (managed objects).
+        End If
+
+    End Sub
+
+    Public Sub Dispose() Implements IDisposable.Dispose
+        Dispose(True)
+    End Sub
 #End Region
 
 #Region "IErrorAndNotificationConsumer"
