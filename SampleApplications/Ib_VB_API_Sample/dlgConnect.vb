@@ -2,48 +2,49 @@
 ' and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable.
 
 Friend Class dlgConnect
-	Inherits System.Windows.Forms.Form
+    Inherits System.Windows.Forms.Form
 #Region "Windows Form Designer generated code "
-	Public Sub New()
-		MyBase.New()
-		If m_vb6FormDefInstance Is Nothing Then
-			If m_InitializingDefInstance Then
-				m_vb6FormDefInstance = Me
-			Else
-				Try 
-					'For the start-up form, the first instance created is the default instance.
-					If System.Reflection.Assembly.GetExecutingAssembly.EntryPoint.DeclaringType Is Me.GetType Then
-						m_vb6FormDefInstance = Me
-					End If
-				Catch
-				End Try
-			End If
-		End If
-		'This call is required by the Windows Form Designer.
-		InitializeComponent()
-	End Sub
-	'Form overrides dispose to clean up the component list.
-	Protected Overloads Overrides Sub Dispose(Disposing As Boolean)
-		If Disposing Then
-			If Not components Is Nothing Then
-				components.Dispose()
-			End If
-		End If
-		MyBase.Dispose(Disposing)
-	End Sub
-	'Required by the Windows Form Designer
-	Private components As System.ComponentModel.IContainer
-	Public ToolTip1 As System.Windows.Forms.ToolTip
-	Public WithEvents cmdOk As System.Windows.Forms.Button
-	Public WithEvents cmdCancel As System.Windows.Forms.Button
-	Public WithEvents txtPort As System.Windows.Forms.TextBox
-	Public WithEvents txtClientId As System.Windows.Forms.TextBox
-	Public WithEvents txtHostIP As System.Windows.Forms.TextBox
-	Public WithEvents Label3 As System.Windows.Forms.Label
+    Public Sub New()
+        MyBase.New()
+        If m_vb6FormDefInstance Is Nothing Then
+            If m_InitializingDefInstance Then
+                m_vb6FormDefInstance = Me
+            Else
+                Try
+                    'For the start-up form, the first instance created is the default instance.
+                    If System.Reflection.Assembly.GetExecutingAssembly.EntryPoint.DeclaringType Is Me.GetType Then
+                        m_vb6FormDefInstance = Me
+                    End If
+                Catch
+                End Try
+            End If
+        End If
+        'This call is required by the Windows Form Designer.
+        InitializeComponent()
+    End Sub
+    'Form overrides dispose to clean up the component list.
+    Protected Overloads Overrides Sub Dispose(Disposing As Boolean)
+        If Disposing Then
+            If Not components Is Nothing Then
+                components.Dispose()
+            End If
+        End If
+        MyBase.Dispose(Disposing)
+    End Sub
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+    Public ToolTip1 As System.Windows.Forms.ToolTip
+    Public WithEvents cmdOk As System.Windows.Forms.Button
+    Public WithEvents cmdCancel As System.Windows.Forms.Button
+    Public WithEvents txtPort As System.Windows.Forms.TextBox
+    Public WithEvents txtClientId As System.Windows.Forms.TextBox
+    Public WithEvents txtHostIP As System.Windows.Forms.TextBox
+    Public WithEvents Label3 As System.Windows.Forms.Label
     Public WithEvents Label2 As System.Windows.Forms.Label
     Public WithEvents txtOptCapts As System.Windows.Forms.TextBox
     Public WithEvents Label4 As System.Windows.Forms.Label
     Public WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents UseQueueingCheck As CheckBox
     Public WithEvents Label1 As System.Windows.Forms.Label
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.
@@ -62,6 +63,7 @@ Friend Class dlgConnect
         Me.txtOptCapts = New System.Windows.Forms.TextBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.UseQueueingCheck = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'cmdOk
@@ -71,11 +73,11 @@ Friend Class dlgConnect
         Me.cmdOk.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdOk.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdOk.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdOk.Location = New System.Drawing.Point(60, 315)
+        Me.cmdOk.Location = New System.Drawing.Point(60, 393)
         Me.cmdOk.Name = "cmdOk"
         Me.cmdOk.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdOk.Size = New System.Drawing.Size(73, 25)
-        Me.cmdOk.TabIndex = 3
+        Me.cmdOk.TabIndex = 5
         Me.cmdOk.Text = "Ok"
         Me.cmdOk.UseVisualStyleBackColor = True
         '
@@ -84,13 +86,14 @@ Friend Class dlgConnect
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.BackColor = System.Drawing.SystemColors.Control
         Me.cmdCancel.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.cmdCancel.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdCancel.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdCancel.Location = New System.Drawing.Point(148, 315)
+        Me.cmdCancel.Location = New System.Drawing.Point(148, 393)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdCancel.Size = New System.Drawing.Size(73, 25)
-        Me.cmdCancel.TabIndex = 4
+        Me.cmdCancel.TabIndex = 6
         Me.cmdCancel.Text = "Cancel"
         Me.cmdCancel.UseVisualStyleBackColor = True
         '
@@ -193,7 +196,7 @@ Friend Class dlgConnect
         Me.txtOptCapts.Name = "txtOptCapts"
         Me.txtOptCapts.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtOptCapts.Size = New System.Drawing.Size(241, 13)
-        Me.txtOptCapts.TabIndex = 8
+        Me.txtOptCapts.TabIndex = 3
         '
         'Label4
         '
@@ -222,11 +225,24 @@ Friend Class dlgConnect
         Me.Label5.Text = "Live Trading ports: TWS: 7496; IB Gateway: 4001. Simulated Trading ports for new " &
     "installations of version 954.1 or newer:  TWS: 7497; IB Gateway: 4002"
         '
+        'UseQueueingCheck
+        '
+        Me.UseQueueingCheck.AutoSize = True
+        Me.UseQueueingCheck.Location = New System.Drawing.Point(16, 328)
+        Me.UseQueueingCheck.Name = "UseQueueingCheck"
+        Me.UseQueueingCheck.Size = New System.Drawing.Size(193, 18)
+        Me.UseQueueingCheck.TabIndex = 4
+        Me.UseQueueingCheck.Text = "Use the Queueing callback handler"
+        Me.UseQueueingCheck.UseVisualStyleBackColor = True
+        '
         'dlgConnect
         '
+        Me.AcceptButton = Me.cmdOk
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
         Me.BackColor = System.Drawing.Color.Gainsboro
-        Me.ClientSize = New System.Drawing.Size(280, 348)
+        Me.CancelButton = Me.cmdCancel
+        Me.ClientSize = New System.Drawing.Size(280, 426)
+        Me.Controls.Add(Me.UseQueueingCheck)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.txtOptCapts)
         Me.Controls.Add(Me.Label4)
@@ -256,20 +272,20 @@ Friend Class dlgConnect
 #End Region
 #Region "Upgrade Support "
     Private Shared m_vb6FormDefInstance As dlgConnect
-	Private Shared m_InitializingDefInstance As Boolean
-	Public Shared Property DefInstance() As dlgConnect
-		Get
-			If m_vb6FormDefInstance Is Nothing OrElse m_vb6FormDefInstance.IsDisposed Then
-				m_InitializingDefInstance = True
-				m_vb6FormDefInstance = New dlgConnect()
-				m_InitializingDefInstance = False
-			End If
-			DefInstance = m_vb6FormDefInstance
-		End Get
-		Set
-			m_vb6FormDefInstance = Value
-		End Set
-	End Property
+    Private Shared m_InitializingDefInstance As Boolean
+    Public Shared Property DefInstance() As dlgConnect
+        Get
+            If m_vb6FormDefInstance Is Nothing OrElse m_vb6FormDefInstance.IsDisposed Then
+                m_InitializingDefInstance = True
+                m_vb6FormDefInstance = New dlgConnect()
+                m_InitializingDefInstance = False
+            End If
+            DefInstance = m_vb6FormDefInstance
+        End Get
+        Set
+            m_vb6FormDefInstance = Value
+        End Set
+    End Property
 #End Region
 
     ' ===============================================================================
@@ -277,18 +293,19 @@ Friend Class dlgConnect
     ' ===============================================================================
 
     Private m_hostIP As String
-	Private m_port As Integer
-	Private m_clientId As Integer
+    Private m_port As Integer
+    Private m_clientId As Integer
     Private m_ok As Boolean = False
     Private m_optcapts As String
-	
-	' ===============================================================================
-	' Get/Set Properties
-	' ===============================================================================
-	Public ReadOnly Property hostIP() As String
-		Get
-			hostIP = m_hostIP
-		End Get
+    Private m_useQueueing As Boolean
+
+    ' ===============================================================================
+    ' Get/Set Properties
+    ' ===============================================================================
+    Public ReadOnly Property hostIP() As String
+        Get
+            hostIP = m_hostIP
+        End Get
     End Property
 
     Public ReadOnly Property optCaps As String
@@ -296,40 +313,41 @@ Friend Class dlgConnect
             optCaps = m_optcapts
         End Get
     End Property
-	
-	Public ReadOnly Property port() As Integer
-		Get
-			port = m_port
-		End Get
-	End Property
-	
-	Public ReadOnly Property clientId() As Integer
-		Get
-			clientId = m_clientId
-		End Get
-	End Property
-	
-	Public ReadOnly Property ok() As Boolean
-		Get
-			ok = m_ok
-		End Get
-	End Property
-	
-	' ========================================================
-	' Button Events
-	' ========================================================
-	Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
-		m_hostIP = txtHostIP.Text
-		m_port = CInt(txtPort.Text)
-		m_clientId = CInt(txtClientId.Text)
+
+    Public ReadOnly Property port() As Integer
+        Get
+            port = m_port
+        End Get
+    End Property
+
+    Public ReadOnly Property clientId() As Integer
+        Get
+            clientId = m_clientId
+        End Get
+    End Property
+
+    Public ReadOnly Property ok() As Boolean
+        Get
+            ok = m_ok
+        End Get
+    End Property
+
+    ' ========================================================
+    ' Button Events
+    ' ========================================================
+    Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOk.Click
+        m_hostIP = txtHostIP.Text
+        m_port = CInt(txtPort.Text)
+        m_clientId = CInt(txtClientId.Text)
         m_ok = True
         m_optcapts = txtOptCapts.Text
-		
+
         Close()
-	End Sub
-	
-	Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
-		m_ok = False
+    End Sub
+
+    Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
+        m_ok = False
         Close()
-	End Sub
+    End Sub
+
 End Class

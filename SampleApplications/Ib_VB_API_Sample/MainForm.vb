@@ -99,6 +99,7 @@ Friend Class MainForm
     Friend WithEvents cmdFamilyCodes As System.Windows.Forms.Button
     Friend WithEvents cmdReqMatchingSymbols As System.Windows.Forms.Button
     Friend WithEvents cmdReqMktDepthExchanges As System.Windows.Forms.Button
+    Public WithEvents PauseAPIButton As Button
     Public WithEvents cmdScanner As System.Windows.Forms.Button
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.cmdReqHistoricalData = New System.Windows.Forms.Button()
@@ -157,6 +158,7 @@ Friend Class MainForm
         Me.cmdFamilyCodes = New System.Windows.Forms.Button()
         Me.cmdReqMatchingSymbols = New System.Windows.Forms.Button()
         Me.cmdReqMktDepthExchanges = New System.Windows.Forms.Button()
+        Me.PauseAPIButton = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'cmdReqHistoricalData
@@ -291,7 +293,7 @@ Friend Class MainForm
         Me.cmdClearForm.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdClearForm.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdClearForm.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdClearForm.Location = New System.Drawing.Point(224, 639)
+        Me.cmdClearForm.Location = New System.Drawing.Point(63, 639)
         Me.cmdClearForm.Name = "cmdClearForm"
         Me.cmdClearForm.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdClearForm.Size = New System.Drawing.Size(89, 25)
@@ -305,7 +307,7 @@ Friend Class MainForm
         Me.cmdClose.Cursor = System.Windows.Forms.Cursors.Default
         Me.cmdClose.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdClose.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdClose.Location = New System.Drawing.Point(320, 639)
+        Me.cmdClose.Location = New System.Drawing.Point(159, 639)
         Me.cmdClose.Name = "cmdClose"
         Me.cmdClose.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cmdClose.Size = New System.Drawing.Size(89, 25)
@@ -838,11 +840,27 @@ Friend Class MainForm
         Me.cmdReqMktDepthExchanges.Text = "Req Mkt Depth Exch"
         Me.cmdReqMktDepthExchanges.UseVisualStyleBackColor = True
         '
+        'PauseAPIButton
+        '
+        Me.PauseAPIButton.BackColor = System.Drawing.SystemColors.Control
+        Me.PauseAPIButton.Cursor = System.Windows.Forms.Cursors.Default
+        Me.PauseAPIButton.Enabled = False
+        Me.PauseAPIButton.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PauseAPIButton.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.PauseAPIButton.Location = New System.Drawing.Point(320, 641)
+        Me.PauseAPIButton.Name = "PauseAPIButton"
+        Me.PauseAPIButton.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.PauseAPIButton.Size = New System.Drawing.Size(89, 25)
+        Me.PauseAPIButton.TabIndex = 56
+        Me.PauseAPIButton.Text = "Pause API"
+        Me.PauseAPIButton.UseVisualStyleBackColor = True
+        '
         'MainForm
         '
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
         Me.BackColor = System.Drawing.Color.Gainsboro
         Me.ClientSize = New System.Drawing.Size(823, 683)
+        Me.Controls.Add(Me.PauseAPIButton)
         Me.Controls.Add(Me.cmdReqMktDepthExchanges)
         Me.Controls.Add(Me.cmdFamilyCodes)
         Me.Controls.Add(Me.cmdReqMatchingSymbols)
@@ -935,7 +953,11 @@ Friend Class MainForm
 #Region "Member variables"
 
     Private WithEvents m_apiEvents As EventSource
+    Private m_CallbackHandler As QueueingCallbackHandler
+    Private m_useQueueing As Boolean
+
     Public m_api As IBAPI
+    Private m_apiPaused As Boolean
 
     ' data members
     Private m_contractInfo As Contract
@@ -1041,8 +1063,15 @@ Friend Class MainForm
                 m_utils.addListItem(Utils.ListType.ServerResponses,
                      "Connecting to Tws using clientId " & .clientId & " ...")
 
+                m_useQueueing = .UseQueueingCheck.Checked
                 m_api = New IBAPI(.hostIP, .port, .clientId)
-                m_apiEvents = m_api.EventSource
+                m_apiEvents = New EventSource()
+                If m_useQueueing Then
+                    m_CallbackHandler = New QueueingCallbackHandler(m_apiEvents, WindowsFormsSynchronizationContext.Current)
+                    m_api.CallbackHandler = m_CallbackHandler
+                Else
+                    m_api.CallbackHandler = m_apiEvents
+                End If
                 Dim logger = New Logger(New FormattingLogger(""))
                 m_api.Logger = logger
                 m_api.SocketLogger = logger
@@ -1058,6 +1087,23 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     Private Sub cmdDisconnect_Click(sender As Object, e As EventArgs) Handles cmdDisconnect.Click
         m_api.Disconnect("Closed by user")
+        m_api.Dispose()
+        PauseAPIButton.Enabled = False
+    End Sub
+
+    '--------------------------------------------------------------------------------
+    ' Pause or resume the flow of events from the API
+    '--------------------------------------------------------------------------------
+    Private Sub PauseAPIButton_Click(sender As Object, e As EventArgs) Handles PauseAPIButton.Click
+        If m_apiPaused Then
+            PauseAPIButton.Text = "Pause API"
+            m_apiPaused = False
+            m_CallbackHandler.Start()
+        Else
+            PauseAPIButton.Text = "Resume API"
+            m_apiPaused = True
+            m_CallbackHandler.Pause()
+        End If
     End Sub
 
     '--------------------------------------------------------------------------------
@@ -1748,11 +1794,19 @@ Friend Class MainForm
             If (m_api.ServerVersion() > 0) Then
                 Dim msg = "Connected to Tws: server version " & m_api.ServerVersion()
                 m_utils.addListItem(Utils.ListType.ServerResponses, msg)
+
+                If m_useQueueing Then
+                    PauseAPIButton.Enabled = True
+                    PauseAPIButton.Text = "Pause API"
+                End If
+
             End If
         ElseIf e.State = ApiConnectionState.Failed Then
             m_utils.addListItem(Utils.ListType.Errors, "Connection to Tws failed: " & e.Message)
+            PauseAPIButton.Enabled = False
         ElseIf e.State = ApiConnectionState.NotConnected Then
             m_utils.addListItem(Utils.ListType.Errors, "Connection to Tws has been closed")
+            PauseAPIButton.Enabled = False
         End If
     End Sub
 
@@ -2870,22 +2924,6 @@ Friend Class MainForm
                                nodeName As String) As String
         Return node.SelectSingleNode(nodeName).InnerText
     End Function
-
-    'Private Function NullableIntegerToString(intVal As Integer) As String
-    '    If intVal = Integer.MaxValue Then
-    '        Return ""
-    '    Else
-    '        Return CStr(intVal)
-    '    End If
-    'End Function
-
-    'Private Function NullableDoubleToString(dblVal As Double) As String
-    '    If dblVal = Double.MaxValue Then
-    '        Return ""
-    '    Else
-    '        Return CStr(dblVal)
-    '    End If
-    'End Function
 
 #End Region
 
