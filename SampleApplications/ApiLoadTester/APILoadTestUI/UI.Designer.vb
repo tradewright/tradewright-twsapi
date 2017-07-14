@@ -90,6 +90,7 @@
         Me.Label1 = New System.Windows.Forms.Label()
         Me.EventsLastSecondText = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.UseQueueingCheck = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'ConnectButton
@@ -301,6 +302,7 @@
         Me.UseV100Check.AutoSize = True
         Me.UseV100Check.Checked = True
         Me.UseV100Check.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.UseV100Check.Enabled = False
         Me.UseV100Check.Location = New System.Drawing.Point(227, 9)
         Me.UseV100Check.Name = "UseV100Check"
         Me.UseV100Check.Size = New System.Drawing.Size(120, 17)
@@ -511,13 +513,25 @@
         Me.Label2.TabIndex = 44
         Me.Label2.Text = "Events last second"
         '
-        'MainForm
+        'UseQueueingCheck
+        '
+        Me.UseQueueingCheck.AutoSize = True
+        Me.UseQueueingCheck.Enabled = False
+        Me.UseQueueingCheck.Location = New System.Drawing.Point(225, 34)
+        Me.UseQueueingCheck.Name = "UseQueueingCheck"
+        Me.UseQueueingCheck.Size = New System.Drawing.Size(173, 17)
+        Me.UseQueueingCheck.TabIndex = 4
+        Me.UseQueueingCheck.Text = "Use queueing callback handler"
+        Me.UseQueueingCheck.UseVisualStyleBackColor = True
+        '
+        'UI
         '
         Me.AcceptButton = Me.ConnectButton
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(616, 466)
+        Me.Controls.Add(Me.UseQueueingCheck)
         Me.Controls.Add(Me.MaxEventsPerSecText)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.EventsLastSecondText)
@@ -552,7 +566,7 @@
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Location = New System.Drawing.Point(25, 30)
-        Me.Name = "MainForm"
+        Me.Name = "UI"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Me.Text = "API Load Tester"
@@ -581,5 +595,6 @@
     Public WithEvents Label1 As Label
     Public WithEvents EventsLastSecondText As TextBox
     Public WithEvents Label2 As Label
+    Friend WithEvents UseQueueingCheck As CheckBox
 #End Region
 End Class

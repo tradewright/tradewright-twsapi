@@ -24,17 +24,18 @@
 
 #End Region
 
-Public Interface IApiLoadTestController
+Imports ApiLoadTestUI
 
-    ReadOnly Property EnableUseV100ProtocolCheckbox As Boolean
+Module Program
+    Private mController As ApiLoadTestTWVB6
+    Private mUi As UI
 
-    ReadOnly Property EnableUseQueueingCallbackHandlerCheckbox As Boolean
-
-    Sub Connect(server As String, clientId As Integer, port As Integer)
-
-    Sub Disconnect()
-
-    Function StartTicker(symbol As String, secType As String, expiry As String, exchange As String, currencyCode As String, primaryExchange As String, multiplier As Integer, marketDepth As Boolean) As Integer
-
-    Sub StopTickers()
-End Interface
+    <STAThread>
+    Public Sub Main(args() As String)
+        mUi = New UI()
+        mController = New ApiLoadTestTWVB6(mUi)
+        mUi.Initialise(mController)
+        Application.EnableVisualStyles()
+        Application.Run(mUi)
+    End Sub
+End Module

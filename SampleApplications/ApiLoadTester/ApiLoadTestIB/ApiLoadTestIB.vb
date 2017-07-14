@@ -48,11 +48,27 @@ Public Class ApiLoadTestIB
         mUI.ClientId = 13243578
     End Sub
 
+#Region "Properties"
+
+    Public ReadOnly Property EnableUseV100ProtocolCheckbox As Boolean Implements IApiLoadTestController.EnableUseV100ProtocolCheckbox
+        Get
+            Return True
+        End Get
+    End Property
+
+    Public ReadOnly Property EnableUseQueueingCallbackHandlerCheckbox As Boolean Implements IApiLoadTestController.EnableUseQueueingCallbackHandlerCheckbox
+        Get
+            Return False
+        End Get
+    End Property
+
+#End Region
+
 #Region "IApiLoadTestController Interface"
 
-    Private Sub Connect(server As String, port As Integer, clientId As Integer, useLegacyProtocol As Boolean) Implements IApiLoadTestController.Connect
+    Private Sub Connect(server As String, port As Integer, clientId As Integer) Implements IApiLoadTestController.Connect
         mIBApi = New EClientSocket(Me, mSignal)
-        If useLegacyProtocol Then mIBApi.DisableUseV100Plus()
+        If Not mUI.UseV100Protocol Then mIBApi.DisableUseV100Plus()
 
         Dim s = DirectCast(mIBApi, EClientSocket)
         s.eConnect(server, port, clientId, False)

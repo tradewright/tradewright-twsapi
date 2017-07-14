@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ApiLoadTestUI", "ApiLoadTestUI\ApiLoadTestUI.vbproj", "{56AA2BFC-2966-423A-87F6-CE1DC3825098}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ApiLoadTestTW", "ApiLoadTestTW\ApiLoadTestTW.vbproj", "{C635C6A2-20B4-4E33-BC5D-653360FF5470}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ApiLoadTestIB", "ApiLoadTestIB\ApiLoadTestIB.vbproj", "{3A07D7A1-3DAB-4535-A03F-9051D9DDF66D}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ApiLoadTestTW-VB6", "ApiLoadTestTW-VB6\ApiLoadTestTW-VB6.vbproj", "{E7555331-F9EE-462E-91A2-CC0778C00D90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{3A07D7A1-3DAB-4535-A03F-9051D9DDF66D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A07D7A1-3DAB-4535-A03F-9051D9DDF66D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A07D7A1-3DAB-4535-A03F-9051D9DDF66D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7555331-F9EE-462E-91A2-CC0778C00D90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7555331-F9EE-462E-91A2-CC0778C00D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7555331-F9EE-462E-91A2-CC0778C00D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7555331-F9EE-462E-91A2-CC0778C00D90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

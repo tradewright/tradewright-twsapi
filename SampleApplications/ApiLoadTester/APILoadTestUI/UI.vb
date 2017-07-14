@@ -107,8 +107,9 @@ Public Class UI
 #Region "Other Event Handlers"
 
     Private Sub ConnectButton_Click(sender As Object, eventArgs As EventArgs) Handles ConnectButton.Click
+        LogMessage($"Connect(): Thread id: {System.Threading.Thread.CurrentThread.ManagedThreadId}")
         If ConnectButton.Text = "Connect" Then
-            mController.Connect(ServerText.Text, CInt(PortText.Text), CInt(ClientIdText.Text), Not UseV100Check.Checked)
+            mController.Connect(ServerText.Text, CInt(PortText.Text), CInt(ClientIdText.Text))
 
             ConnectButton.Enabled = False
             ConnectButton.Cursor = System.Windows.Forms.Cursors.WaitCursor
@@ -219,6 +220,18 @@ Public Class UI
         End Set
     End Property
 
+    Public ReadOnly Property UseQueueingCallbackHandler As Boolean
+        Get
+            Return UseQueueingCheck.Checked
+        End Get
+    End Property
+
+    Public ReadOnly Property UseV100Protocol As Boolean
+        Get
+            Return UseV100Check.Checked
+        End Get
+    End Property
+
 #End Region
 
 #Region "Methods"
@@ -231,10 +244,13 @@ Public Class UI
 
     Public Sub Initialise(controller As IApiLoadTestController)
         mController = controller
+        If mController.EnableUseQueueingCallbackHandlerCheckbox Then UseQueueingCheck.Enabled = True
+        If mController.EnableUseV100ProtocolCheckbox Then UseV100Check.Enabled = True
     End Sub
 
     Public Sub IncrementTotalTicks()
         If mTotalTicks = 0 And mCounting Then
+            LogMessage($"IncrementTotalTicks(): Thread id: {System.Threading.Thread.CurrentThread.ManagedThreadId}")
             mPerformanceTimer = startPerformanceTimer()
             mInitialCPUTime = getCpuTime()
             mPrevCPUTime = mInitialCPUTime
