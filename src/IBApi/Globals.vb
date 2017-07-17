@@ -380,9 +380,9 @@ Public Module Globals
 
         Dim d As Date
         If Len(pDateString) = 8 Then
-            d = DateTime.ParseExact(pDateString, "yyyyHHdd", System.Globalization.CultureInfo.InvariantCulture)
+            d = DateTime.ParseExact(pDateString, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
         ElseIf Len(pDateString) >= 17 Then
-            d = DateTime.ParseExact(pDateString.Substring(0, 17), "yyyyHHdd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)
+            d = DateTime.ParseExact(pDateString.Substring(0, 18), "yyyyMMdd  HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)
         Else
             Throw New ArgumentException("Invalid date string format")
         End If
