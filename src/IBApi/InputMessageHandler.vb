@@ -196,18 +196,23 @@ Friend Class InputMessageHandler
         End Try
     End Function
 
+    Private Function messageHasVersion(messageId As ApiSocketInMsgType) As Boolean
+        If messageId = ApiSocketInMsgType.HistoricalData And mServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then Return False
+        Return messageId <= ApiSocketInMsgType.MaxIdWithVersion
+    End Function
+
     Private Async Function processNextMessageAsync() As Task(Of Boolean)
         Const ProcName = "processNextMessageAsync"
 
         Dim messageId As ApiSocketInMsgType
-        Dim messageVersion As Integer
+        Dim messageVersion = Integer.MaxValue
         Try
             Await mReader.BeginMessageAsync("IN: ", mLogTwsMessages)
             messageId = DirectCast(Await mReader.GetIntAsync("Msg id"), ApiSocketInMsgType)
             Dim timestamp = Date.UtcNow
             mReader.AppendToMessageString($" ({ApiSocketInMsgTypes.ToExternalString(messageId)}) ")
 
-            If messageId <= ApiSocketInMsgType.MaxIdWithVersion Then messageVersion = Await mReader.GetIntAsync("Version")
+            If messageHasVersion(messageId) Then messageVersion = Await mReader.GetIntAsync("Version")
 
             getPerformanceTimer.Restart()
             If Not Await handleMessageAsync(messageId, messageVersion, timestamp) Then Return False
