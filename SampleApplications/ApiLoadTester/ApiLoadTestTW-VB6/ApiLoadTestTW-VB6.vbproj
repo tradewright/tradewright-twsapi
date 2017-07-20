@@ -51,6 +51,10 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ApiLoadTestUI, Version=1.0.6410.32219, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\APILoadTestUI\bin\ApiLoadTestUI.dll</HintPath>
+    </Reference>
     <Reference Include="IBAPI27, Version=268.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -119,12 +123,6 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ApiLoadTestUI\ApiLoadTestUI.vbproj">
-      <Project>{56aa2bfc-2966-423a-87f6-ce1dc3825098}</Project>
-      <Name>ApiLoadTestUI</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
