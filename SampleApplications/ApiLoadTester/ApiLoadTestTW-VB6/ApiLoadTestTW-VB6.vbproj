@@ -51,9 +51,10 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IBAPI27">
-      <HintPath>..\..\..\..\COMInterop40\IBAPI27.dll</HintPath>
+    <Reference Include="IBAPI27, Version=268.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\..\TradeWright.TradeBuild.ComInterop\IBAPI27.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
