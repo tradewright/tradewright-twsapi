@@ -97,9 +97,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LoggingUtils">
-      <HintPath>..\..\..\tradewright-common.net\bin\LoggingUtils.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -114,6 +111,21 @@
     </Reference>
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
+    </Reference>
+    <Reference Include="TradeWright.CommandLineUtils">
+      <HintPath>..\Dependencies\TradeWright.CommandLineUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.IBAPI973">
+      <HintPath>..\..\src\IBApi\bin\debug\TradeWright.IBAPI973.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.IOUtils">
+      <HintPath>..\Dependencies\TradeWright.IOUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.LoggingUtils">
+      <HintPath>..\Dependencies\TradeWright.LoggingUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.TimeUtils">
+      <HintPath>..\Dependencies\TradeWright.TimeUtils.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +179,11 @@
     <Compile Include="dlgPositions.vb">
       <SubType>Form</SubType>
     </Compile>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
     <None Include="app.config" />
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
@@ -229,6 +246,11 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Logger.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utils.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -334,9 +356,7 @@
     <None Include="app.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="My Project\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
@@ -348,12 +368,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\IBApi\IBAPI.vbproj">
-      <Project>{11cf761f-181d-4d30-a2f4-cfd2c798abda}</Project>
-      <Name>IBAPI</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

@@ -971,7 +971,7 @@ Friend Class MainForm
 
     Private m_dlgOrder As New dlgOrder
     Private m_dlgConnect As New dlgConnect
-    Private m_dlgMktDepth As New dlgMktDepth
+    Private m_dlgMktDepth As dlgMktDepth
     Private m_dlgAcctData As New dlgAcctData
     Private m_utils As New Utils
     Private m_dlgNewsBulletins As New dlgNewsBulletins
@@ -1142,23 +1142,29 @@ Friend Class MainForm
     ' Request market depth for a security
     '--------------------------------------------------------------------------------
     Private Sub cmdReqMktDepth_Click(sender As Object, e As EventArgs) Handles cmdReqMktDepth.Click
+        If m_dlgMktDepth IsNot Nothing Then
+            m_utils.addListItem(Utils.ListType.Errors, "Market depth is already being displayed")
+            Exit Sub
+        End If
+
         ' Set the dialog state
         m_dlgOrder.init(dlgOrder.DialogType.RequestMarketDepth,
-            m_contractInfo, m_orderInfo, m_underComp, m_mktDepthOptions, Me)
+        m_contractInfo, m_orderInfo, m_underComp, m_mktDepthOptions, Me)
 
         m_dlgOrder.ShowDialog()
 
         m_mktDepthOptions = m_dlgOrder.options
 
         If m_dlgOrder.ok Then
-
+            m_dlgMktDepth = New dlgMktDepth
             m_dlgMktDepth.init(m_dlgOrder.numRows, m_contractInfo)
+            AddHandler m_dlgMktDepth.FormClosing, Sub(s, ev)
+                                                      ' unsubscribe from mkt depth when the dialog is closed
+                                                      m_api.CancelMarketDepth(m_dlgOrder.orderId)
+                                                      m_dlgMktDepth = Nothing
+                                                  End Sub
             m_api.RequestMarketDepth(m_dlgOrder.orderId, m_contractInfo, m_dlgOrder.numRows)
-            m_dlgMktDepth.ShowDialog()
-
-            ' unsubscribe to mkt depth when the dialog is closed
-            m_api.CancelMarketDepth(m_dlgOrder.orderId)
-
+            m_dlgMktDepth.Show(Me)
         End If
 
     End Sub
@@ -1174,6 +1180,10 @@ Friend Class MainForm
         m_dlgOrder.ShowDialog()
         If m_dlgOrder.ok Then
             m_api.CancelMarketDepth(m_dlgOrder.orderId)
+            If m_dlgMktDepth IsNot Nothing Then
+                m_dlgMktDepth.Close()
+                m_dlgMktDepth = Nothing
+            End If
         End If
     End Sub
 

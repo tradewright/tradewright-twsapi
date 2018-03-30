@@ -11,19 +11,7 @@ Friend Class dlgMktDepth
 #Region "Windows Form Designer generated code "
     Public Sub New()
         MyBase.New()
-        If m_vb6FormDefInstance Is Nothing Then
-            If m_InitializingDefInstance Then
-                m_vb6FormDefInstance = Me
-            Else
-                Try
-                    'For the start-up form, the first instance created is the default instance.
-                    If System.Reflection.Assembly.GetExecutingAssembly.EntryPoint.DeclaringType Is Me.GetType Then
-                        m_vb6FormDefInstance = Me
-                    End If
-                Catch
-                End Try
-            End If
-        End If
+
         'This call is required by the Windows Form Designer.
         InitializeComponent()
     End Sub
@@ -385,23 +373,6 @@ Friend Class dlgMktDepth
 
     End Sub
 #End Region
-#Region "Upgrade Support "
-    Private Shared m_vb6FormDefInstance As dlgMktDepth
-    Private Shared m_InitializingDefInstance As Boolean
-    Public Shared Property DefInstance() As dlgMktDepth
-        Get
-            If m_vb6FormDefInstance Is Nothing OrElse m_vb6FormDefInstance.IsDisposed Then
-                m_InitializingDefInstance = True
-                m_vb6FormDefInstance = New dlgMktDepth()
-                m_InitializingDefInstance = False
-            End If
-            DefInstance = m_vb6FormDefInstance
-        End Get
-        Set(value As dlgMktDepth)
-            m_vb6FormDefInstance = value
-        End Set
-    End Property
-#End Region
 
     '================================================================================
     ' Private Members
@@ -436,7 +407,7 @@ Friend Class dlgMktDepth
     End Class
 
     ' member variables
-    Private m_ok As Boolean
+    Private m_ok As Boolean = True
 
     Private m_asks As List(Of ModelEntry)
 
@@ -457,6 +428,8 @@ Friend Class dlgMktDepth
     ' Adds the market depth row to the book
     '--------------------------------------------------------------------------------
     Public Sub updateMktDepth(tickerId As Short, rowId As Integer, marketMaker As String, operation As OperationType, side As Side, price As Double, size As Integer)
+        If Not m_ok Then Exit Sub
+
         Select Case side
             Case Side.Bid
                 updateDepth(m_bids, DataGridViewBid, rowId, marketMaker, operation, side, price, size)
@@ -482,6 +455,8 @@ Friend Class dlgMktDepth
     End Sub
 
     Public Sub clear()
+        If Not m_ok Then Exit Sub
+
         DataGridViewAsk.Rows.Clear()
         DataGridViewBid.Rows.Clear()
     End Sub
