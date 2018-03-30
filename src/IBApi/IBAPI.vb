@@ -214,6 +214,15 @@ Public Class IBAPI
         End Set
     End Property
 
+    Public ReadOnly Property EventSource As EventSource
+        Get
+            If Not TypeOf mCallbackHandler Is EventSource Then
+                Throw New ArgumentException("The currently registered CallbackHandler is not of type EventSource)")
+            End If
+            Return DirectCast(mCallbackHandler, EventSource)
+        End Get
+    End Property
+
     Public Property FundamentalDataConsumer() As IFundamentalDataConsumer
         Get
             Return mEventConsumers.FundamentalDataConsumer

@@ -8,7 +8,7 @@
     <ProjectGuid>{11CF761F-181D-4D30-A2F4-CFD2C798ABDA}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <AssemblyName>IBAPI973</AssemblyName>
+    <AssemblyName>TradeWright.IBAPI973</AssemblyName>
     <OutputType>Library</OutputType>
     <AssemblyMajorVersion>2</AssemblyMajorVersion>
     <AssemblyMinorVersion>7</AssemblyMinorVersion>
@@ -43,8 +43,8 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>.\bin\</OutputPath>
-    <DocumentationFile>IBAPI973.xml</DocumentationFile>
+    <OutputPath>bin\debug\</OutputPath>
+    <DocumentationFile>TradeWright.IBAPI973.xml</DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
     <DefineDebug>True</DefineDebug>
     <DefineTrace>True</DefineTrace>
@@ -57,7 +57,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>.\bin\</OutputPath>
-    <DocumentationFile>IBAPI973.xml</DocumentationFile>
+    <DocumentationFile>TradeWright.IBAPI973.xml</DocumentationFile>
     <DebugSymbols>False</DebugSymbols>
     <DefineDebug>False</DefineDebug>
     <DefineTrace>True</DefineTrace>
