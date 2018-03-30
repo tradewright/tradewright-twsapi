@@ -74,13 +74,6 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IBAPI973">
-      <HintPath>..\..\src\IBApi\bin\IBAPI973.dll</HintPath>
-    </Reference>
-    <Reference Include="LoggingUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\tradewright-common.net\bin\LoggingUtils.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -90,6 +83,25 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="TradeWright.CommandLineUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\TradeWright.CommandLineUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.IBAPI973">
+      <HintPath>..\..\src\IBApi\bin\debug\TradeWright.IBAPI973.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.IOUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\TradeWright.IOUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.LoggingUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\TradeWright.LoggingUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.TimeUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\TradeWright.TimeUtils.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -106,7 +118,6 @@
   <ItemGroup>
     <Compile Include="ActiveOrder.vb" />
     <Compile Include="ApiLogger.vb" />
-    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="MainForm.vb">
       <SubType>Form</SubType>
     </Compile>

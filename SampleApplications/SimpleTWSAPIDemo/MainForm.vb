@@ -40,7 +40,7 @@ Public Class MainForm
     ' Set this constant to the port used for communicating with TWS. The default value for TWS is 7496 (for live account) and
     ' 7497 for paper-trading account; the corresponding default values for the Gateway are 4001 (live) and 4002 (paper). These
     ' values may be changed in the TWS/Gateway Configuration dialogs.
-    Private Const Port As Integer = 7496
+    Private Const Port As Integer = 7497
 
     ' The client id distinguishes this API connection from other connections. Don't use 0, as this has a special meaning
     ' and can cause problems. Otherwise the actual value is not significant. If you have more than one program connecting to
@@ -113,10 +113,32 @@ Public Class MainForm
 #Region "Form Event Handlers"
 
     Private Sub Form1_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+
+        ' Set the default log level to be HighDetail. This will log everything 
+        ' about the API, including data received from the socket, each 
+        ' individual API message, etc. This can be reduced, for example by
+        ' setting the default log level to Normal
+
         Logging.DefaultLogLevel = LogLevel.HighDetail
+
+
+        ' Create the logfile and set the log level according to the following
+        ' command line arguments:
+        '    /log:<filename>
+        '    /loglevel:[ H | D | N | I | W | S ]
+        '
+        ' If these command line arguments are not supplied, the log level is
+        ' set to the default specified above, and the logfile is created as:
+        ' 
+        ' %APPDATA%\Local\TradeWright Software Systems\SimpleTWSAPIDemo\1.0.0.0\Logfile.Log
+
         Logging.SetupDefaultLogging()
+
         logMessage($"Logfile is {Logging.DefaultLogFileName}")
 
+        ' set up the unhandled exception handler. Any exceptions not handled
+        ' within the code will be caught here: log the exception and shut
+        ' down the application
         AddHandler System.AppDomain.CurrentDomain.UnhandledException,
                     Sub(s, ex)
                         Logging.DefaultLogger.Log($"Unhandled exception:{Environment.NewLine}{ex.ExceptionObject.ToString()}", LogLevel.Severe)
@@ -160,7 +182,17 @@ Public Class MainForm
     End Sub
 
     Private Sub ConnectButton_Click(sender As System.Object, e As System.EventArgs) Handles ConnectButton.Click
-        connectToTWS()
+        logMessage("Connecting to TWS")
+        ConnectButton.Enabled = False
+
+        mApi = New IBAPI(ServerTextBox.Text, CInt(PortTextBox.Text), CInt(ClientIdTextBox.Text))
+        mApiEv = mApi.EventSource
+        Dim logger = New ApiLogger(New FormattingLogger(""))
+        mApi.Logger = logger
+        mApi.SocketLogger = logger
+        mApi.PerformanceLogger = logger
+
+        mApi.Connect()
     End Sub
 
     Private Sub DisconnectButton_Click(sender As System.Object, e As System.EventArgs) Handles DisconnectButton.Click
@@ -171,8 +203,11 @@ Public Class MainForm
         SellButton.Enabled = False
 
         mDepthMgr.clear()
+
         stopAllTickers()
-        disconnectFromTWS()
+
+        logMessage("Disconnecting from TWS")
+        mApi.Disconnect("User action")
     End Sub
 
     Private Sub LocalSymbolDepthText_TextChanged(sender As System.Object, e As System.EventArgs) Handles LocalSymbolDepthText.TextChanged
@@ -292,15 +327,15 @@ Public Class MainForm
 
 #Region "TWS API Event Handlers"
 
-    Private Sub mApiEv_ApiError(sender As Object, e As ApiErrorEventArgs) Handles mApiEv.ApiError
+    Private Sub ApiError(sender As Object, e As ApiErrorEventArgs) Handles mApiEv.ApiError
         logMessage($"Api error: error code={e.ErrorCode}; message={e.Message}")
     End Sub
 
-    Private Sub mApiEv_ApiEvent(sender As Object, e As ApiEventEventArgs) Handles mApiEv.ApiEvent
+    Private Sub ApiEvent(sender As Object, e As ApiEventEventArgs) Handles mApiEv.ApiEvent
         logMessage($"Api event: event code={e.EventCode}; message={e.EventMessage}")
     End Sub
 
-    Private Sub mApiEv_ConnectionStateChange(sender As Object, e As ApiConnectionStateChangeEventArgs) Handles mApiEv.ConnectionStateChange
+    Private Sub ConnectionStateChange(sender As Object, e As ApiConnectionStateChangeEventArgs) Handles mApiEv.ConnectionStateChange
         Select Case e.State
             Case ApiConnectionState.NotConnected
                 logMessage("Disconnected from TWS")
@@ -322,27 +357,27 @@ Public Class MainForm
         setStartMarketDepthButtonState()
     End Sub
 
-    Private Sub mApiEv_CurrentTime(sender As Object, e As CurrentTimeEventArgs) Handles mApiEv.CurrentTime
+    Private Sub CurrentTime(sender As Object, e As CurrentTimeEventArgs) Handles mApiEv.CurrentTime
         logMessage($"currentTime: {e.Timestamp}")
     End Sub
 
-    Private Sub mApiEv_Exception(sender As Object, e As ExceptionEventArgs) Handles mApiEv.Exception
+    Private Sub Exception(sender As Object, e As ExceptionEventArgs) Handles mApiEv.Exception
         logMessage($"An exception has occurred: {e.Exception.ToString()}")
     End Sub
 
-    Private Sub mApiEv_ManagedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles mApiEv.ManagedAccounts
+    Private Sub ManagedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles mApiEv.ManagedAccounts
         logMessage($"Managed accounts: {String.Join(",", e.ManagedAccounts)}")
     End Sub
 
-    Private Sub mApiEv_MarketDataError(sender As Object, e As RequestErrorEventArgs) Handles mApiEv.MarketDataError
+    Private Sub MarketDataError(sender As Object, e As RequestErrorEventArgs) Handles mApiEv.MarketDataError
         logMessage($"Marketdata error: tickerId={e.RequestId}; error code={e.ErrorCode}; message={e.Message}")
     End Sub
 
-    Private Sub mApiEv_MarketDepthError(sender As Object, e As RequestErrorEventArgs) Handles mApiEv.MarketDepthError
+    Private Sub MarketDepthError(sender As Object, e As RequestErrorEventArgs) Handles mApiEv.MarketDepthError
         processMarketDepthError(e.RequestId, e.ErrorCode)
     End Sub
 
-    Private Sub mApiEv_MarketDepthUpdate(sender As Object, e As MarketDepthUpdateEventArgs) Handles mApiEv.MarketDepthUpdate
+    Private Sub MarketDepthUpdate(sender As Object, e As MarketDepthUpdateEventArgs) Handles mApiEv.MarketDepthUpdate
         If mDOMTickers(e.RequestId)?.Contract Is Nothing Then
             ' the market depth stream has been stopped but this
             ' update was already on its way
@@ -351,7 +386,7 @@ Public Class MainForm
         mDepthMgr.updateMktDepth(e.RequestId, e.Position, e.MarketMaker, e.Operation, e.Side, e.Price, e.Size)
     End Sub
 
-    Private Sub mApiEv_OpenOrder(sender As Object, e As OpenOrderEventArgs) Handles mApiEv.OpenOrder
+    Private Sub OpenOrder(sender As Object, e As OpenOrderEventArgs) Handles mApiEv.OpenOrder
         If Not mOrders.ContainsKey(e.OrderId) Then
             ' this can happen after connection for orders created in the previous session
             recordOrder(e.Contract, e.Order, e.OrderState)
@@ -364,26 +399,26 @@ Public Class MainForm
         showOrder(e.OrderId)
     End Sub
 
-    Private Sub mApiEv_OrderError(sender As Object, e As OrderErrorEventArgs) Handles mApiEv.OrderError
+    Private Sub OrderError(sender As Object, e As OrderErrorEventArgs) Handles mApiEv.OrderError
         processOrderError(e.RequestId, e.ErrorCode)
     End Sub
 
-    Private Sub mApiEv_OrderStatus(sender As Object, e As OrderStatusEventArgs) Handles mApiEv.OrderStatus
+    Private Sub OrderStatus(sender As Object, e As OrderStatusEventArgs) Handles mApiEv.OrderStatus
         Dim row = mOrders.Item(e.OrderId).GridRow
         showOrderValue(row, OrderColumnFilled, CStr(e.Filled))
         showOrderValue(row, OrderColumAvgPrice, CStr(e.AvgFillPrice))
         saveOrderStatus(e.OrderId, e.Status)
     End Sub
 
-    Private Sub mApiEv_TickGeneric(sender As Object, e As TickGenericEventArgs) Handles mApiEv.TickGeneric
+    Private Sub TickGeneric(sender As Object, e As TickGenericEventArgs) Handles mApiEv.TickGeneric
         logMessage($"tickGeneric: id={e.TickerId}; field={CStr(e.TickType)}; value={e.Value}")
     End Sub
 
-    Private Sub mApiEv_TickString(sender As Object, e As TickStringEventArgs) Handles mApiEv.TickString
+    Private Sub TickString(sender As Object, e As TickStringEventArgs) Handles mApiEv.TickString
         logMessage($"tickString: id={e.TickerId}; field={CStr(e.TickType)}; value={e.Value}")
     End Sub
 
-    Private Sub mApiEv_TickPrice(sender As Object, e As TickPriceEventArgs) Handles mApiEv.TickPrice
+    Private Sub TickPrice(sender As Object, e As TickPriceEventArgs) Handles mApiEv.TickPrice
         Select Case e.Field
             Case TickType.Ask
                 showTickerValue(e.TickerId, TickerColumnAsk, CStr(e.Price))
@@ -394,7 +429,7 @@ Public Class MainForm
         End Select
     End Sub
 
-    Private Sub mApiEv_TickSize(sender As Object, e As TickSizeEventArgs) Handles mApiEv.TickSize
+    Private Sub TickSize(sender As Object, e As TickSizeEventArgs) Handles mApiEv.TickSize
         Select Case e.Field
             Case TickType.AskSize
                 showTickerValue(e.TickerId, TickerColumnAskSize, CStr(e.Size))
@@ -428,20 +463,6 @@ Public Class MainForm
         Return secType <> "" And localSymbol <> ""
     End Function
 
-    Private Sub connectToTWS()
-        logMessage("Connecting to TWS")
-        ConnectButton.Enabled = False
-
-        mApi = New IBAPI(ServerTextBox.Text, CInt(PortTextBox.Text), CInt(ClientIdTextBox.Text))
-        mApiEv = mApi.EventSource
-        Dim logger = New ApiLogger(New FormattingLogger(""))
-        mApi.Logger = logger
-        mApi.SocketLogger = logger
-        mApi.PerformanceLogger = logger
-
-        mApi.Connect()
-    End Sub
-
     Private Function contractToString(contract As Contract) As String
         Return $"secType={SecurityTypes.ToExternalString(contract.SecType)}; localSymbol={contract.LocalSymbol}; exchange={contract.Exchange}; currency={contract.CurrencyCode}"
     End Function
@@ -468,11 +489,6 @@ Public Class MainForm
             .Transmit = True
         }
     End Function
-
-    Private Sub disconnectFromTWS()
-        logMessage("Disconnecting from TWS")
-        mApi.Disconnect("User action")
-    End Sub
 
     Private Sub ensureTickerGridRowExists(tickerId As Integer)
         If mTickers(tickerId).GridRow Is Nothing Then
