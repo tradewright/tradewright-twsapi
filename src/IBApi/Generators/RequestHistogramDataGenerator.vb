@@ -34,7 +34,7 @@ Friend Class RequestHistogramDataGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestHistogramData)
+            Return New ApiMethodDelegate(AddressOf requestHistogramData)
         End Get
     End Property
 
@@ -44,8 +44,8 @@ Friend Class RequestHistogramDataGenerator
         End Get
     End Property
 
-    Private Sub RequestHistogramData(requestId As Integer, contract As Contract, useRTH As Boolean, period As String)
-        Const ProcName As String = NameOf(RequestHistogramData)
+    Private Sub requestHistogramData(requestId As Integer, contract As Contract, useRTH As Boolean, period As String)
+        Const ProcName As String = NameOf(requestHistogramData)
 
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HISTOGRAM_DATA Then Throw New InvalidOperationException("Histogram data requests not supported")
@@ -55,7 +55,7 @@ Friend Class RequestHistogramDataGenerator
 
         lWriter.AddElement(requestId, "Request ID")
         lWriter.AddElement(contract.ConId, "Conid")
-        lWriter.AddElement(contract.Symbol, "Symbol")
+        lWriter.AddElement(contract.Symbol?.ToUpper(), "Symbol")
         lWriter.AddElement(SecurityTypes.ToInternalString(contract.SecType), "Sectype")
         lWriter.AddElement(contract.Expiry, "Expiry")
         lWriter.AddElement(contract.Strike, "Strike")
@@ -66,7 +66,7 @@ Friend Class RequestHistogramDataGenerator
         lWriter.AddElement(contract.CurrencyCode, "Currency")
 
         Dim lExpired = IBAPI.IsContractExpired(contract)
-        lWriter.AddElement(If(lExpired, "", UCase(contract.LocalSymbol)), "Local Symbol")
+        lWriter.AddElement(If(lExpired, "", contract.LocalSymbol?.ToUpper()), "Local Symbol")
         lWriter.AddElement(contract.TradingClass, "Trading Class")
         lWriter.AddElement(If(lExpired, 1, 0), "Include expired") ' can't include expired for non-expiring contracts
 

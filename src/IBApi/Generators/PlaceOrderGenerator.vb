@@ -32,7 +32,7 @@ Friend Class PlaceOrderGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New PlaceOrderDelegate(AddressOf PlaceOrder)
+            Return New PlaceOrderDelegate(AddressOf placeOrder)
         End Get
     End Property
 
@@ -42,7 +42,7 @@ Friend Class PlaceOrderGenerator
         End Get
     End Property
 
-    Private Sub PlaceOrder(order As Order, contract As Contract)
+    Private Sub placeOrder(order As Order, contract As Contract)
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         If ServerVersion < ApiServerVersion.EXT_OPERATOR And Not String.IsNullOrEmpty(order.ExtOperator) Then Throw New InvalidOperationException("extOperator parameter not supported")
@@ -63,7 +63,7 @@ Friend Class PlaceOrderGenerator
         ' mwriter.send contract fields
         With contract
             lWriter.AddElement(.ConId, "Con id")
-            lWriter.AddElement(.Symbol, "Symbol")
+            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
             lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sectype")
             lWriter.AddElement(.Expiry, "Expiry")
             lWriter.AddElement(.Strike, "Strike")
@@ -74,7 +74,7 @@ Friend Class PlaceOrderGenerator
             ' Exchange is SMART and there are SMART routers in more
             ' than one country (eg try IBM in Tws)
             lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(UCase(.LocalSymbol), "Local Symbol")
+            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
             lWriter.AddElement(.TradingClass, "Trading Class")
             lWriter.AddElement(.SecIdType, "Sec id type")
             lWriter.AddElement(.SecId, "Sec id")
@@ -257,7 +257,7 @@ Friend Class PlaceOrderGenerator
             lWriter.AddElement(.AlgoStrategy, "Algo strategy")
             If .AlgoStrategy <> "" Then
 
-                Dim algoParamsCount = UBound(.AlgoParams) + 1
+                Dim algoParamsCount = .AlgoParams.Length
 
                 lWriter.AddElement(algoParamsCount, "Algo params count")
                 If algoParamsCount > 0 Then
@@ -328,7 +328,7 @@ Friend Class PlaceOrderGenerator
 
         End With
 
-        SendMessage(lWriter, NameOf(PlaceOrderGenerator), NameOf(PlaceOrder), True)
+        SendMessage(lWriter, NameOf(PlaceOrderGenerator), NameOf(placeOrder), True)
     End Sub
 
     Private Shared Function legOpenCloseToString(Value As LegOpenCloseCode) As String

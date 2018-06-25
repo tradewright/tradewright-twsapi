@@ -86,27 +86,29 @@ Public Class UI
 
     Private mController As IApiLoadTestController
 
-    Private s As SynchronizationContext
+    Private mSyncContext As SynchronizationContext
 
 #End Region
 
 #Region "Form Event Handlers"
 
-    Private Sub MainForm_Load(sender As Object, eventArgs As EventArgs) Handles MyBase.Load
-        s = SynchronizationContext.Current
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        mSyncContext = SynchronizationContext.Current
         mCurrentProcess = Process.GetCurrentProcess()
+        MyBase.OnLoad(e)
     End Sub
 
-    Private Sub MainForm_FormClosed(eventSender As System.Object, eventArgs As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+    Protected Overrides Sub OnClosed(e As EventArgs)
         LogMessage("Disconnecting from TWS")
         mController.Disconnect()
+        MyBase.OnClosed(e)
     End Sub
 
 #End Region
 
 #Region "Other Event Handlers"
 
-    Private Sub ConnectButton_Click(sender As Object, eventArgs As EventArgs) Handles ConnectButton.Click
+    Private Sub connectButton_Click(sender As Object, eventArgs As EventArgs) Handles ConnectButton.Click
         LogMessage($"Connect(): Thread id: {System.Threading.Thread.CurrentThread.ManagedThreadId}")
         If ConnectButton.Text = "Connect" Then
             mController.Connect(ServerText.Text, CInt(PortText.Text), CInt(ClientIdText.Text))
@@ -122,7 +124,7 @@ Public Class UI
         End If
     End Sub
 
-    Private Sub StartTickersButton_Click(sender As Object, eventArgs As EventArgs) Handles StartTickersButton.Click
+    Private Sub startTickersButton_Click(sender As Object, eventArgs As EventArgs) Handles StartTickersButton.Click
         clearPerformanceFields()
 
         startTickers()
@@ -134,7 +136,7 @@ Public Class UI
         StartTickCountingButton.Focus()
     End Sub
 
-    Private Sub StartTickCountingButton_Click(sender As Object, eventArgs As EventArgs) Handles StartTickCountingButton.Click
+    Private Sub startTickCountingButton_Click(sender As Object, eventArgs As EventArgs) Handles StartTickCountingButton.Click
 
         clearPerformanceFields()
 
@@ -145,7 +147,7 @@ Public Class UI
         mCounting = True
     End Sub
 
-    Private Sub StopTickersButton_Click(sender As Object, eventArgs As EventArgs) Handles StopTickersButton.Click
+    Private Sub stopTickersButton_Click(sender As Object, eventArgs As EventArgs) Handles StopTickersButton.Click
         If mPerformanceTimer IsNot Nothing Then mPerformanceTimer.Stop()
 
         mController.StopTickers()
@@ -161,7 +163,7 @@ Public Class UI
         StopTickCountingButton.Enabled = False
     End Sub
 
-    Private Sub StopTickCountingButton_Click(sender As Object, eventArgs As EventArgs) Handles StopTickCountingButton.Click
+    Private Sub stopTickCountingButton_Click(sender As Object, eventArgs As EventArgs) Handles StopTickCountingButton.Click
         StartTickCountingButton.Enabled = True
         StartTickCountingButton.Focus()
         StopTickCountingButton.Enabled = False
@@ -170,7 +172,7 @@ Public Class UI
         LogMessage("Tick counting stopped")
     End Sub
 
-    Private Sub PerformanceTimer_Elapsed(sender As Object, e As ElapsedEventArgs)
+    Private Sub performanceTimer_Elapsed(sender As Object, e As ElapsedEventArgs)
         mSecondsSinceStart += 1
         SecondsElapsedText.Text = CStr(mSecondsSinceStart)
         TotalEventsText.Text = CStr(mTotalTicks)
@@ -264,7 +266,7 @@ Public Class UI
     End Sub
 
     Public Sub LogMessage(message As String)
-        s.Post(Sub() LogText.AppendText(message & vbCrLf), Nothing)
+        mSyncContext.Post(Sub() If Not LogText.IsDisposed Then LogText.AppendText(message & vbCrLf), Nothing)
     End Sub
 
     Public Sub NotifyConnectionStateChange(state As ConnectionState)
@@ -275,14 +277,12 @@ Public Class UI
                 LogMessage("Connecting to TWS")
             Case ConnectionState.Connected
                 LogMessage("Connected to TWS")
-                's.Post(Sub()
                 ConnectButton.Enabled = True
                 ConnectButton.Cursor = System.Windows.Forms.Cursors.Default
                 ConnectButton.Text = "Disconnect"
 
                 StartTickersButton.Enabled = True
                 StartTickersButton.Focus()
-                '       End Sub, Nothing)
             Case ConnectionState.Failed
                 LogMessage("Failed to connect to TWS")
         End Select
@@ -315,9 +315,10 @@ Public Class UI
     End Function
 
     Private Function startPerformanceTimer() As Timers.Timer
-        Dim performanceTimer = New Timers.Timer(1000)
-        performanceTimer.SynchronizingObject = Me
-        AddHandler performanceTimer.Elapsed, AddressOf PerformanceTimer_Elapsed
+        Dim performanceTimer = New Timers.Timer(1000) With {
+            .SynchronizingObject = Me
+        }
+        AddHandler performanceTimer.Elapsed, AddressOf performanceTimer_Elapsed
         performanceTimer.Start()
         Return performanceTimer
     End Function
@@ -343,7 +344,7 @@ Public Class UI
 
                 Dim tokens = Split(inBuff, ",")
                 If tokens.Length < 2 Then
-                    LogMessage("Missing column(s) in line " & lineNum & " of symbols.txt")
+                    LogMessage($"Missing column(s) in line {lineNum} of symbols.txt")
                     Continue Do
                 End If
 

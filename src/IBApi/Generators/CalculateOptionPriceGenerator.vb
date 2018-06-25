@@ -36,7 +36,7 @@ Friend Class CalculateOptionPriceGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf CalculateOptionPrice)
+            Return New ApiMethodDelegate(AddressOf calculateOptionPrice)
         End Get
     End Property
 
@@ -46,8 +46,8 @@ Friend Class CalculateOptionPriceGenerator
         End Get
     End Property
 
-    Private Sub CalculateOptionPrice(pReqId As Integer, pContract As Contract, pVolatility As Double, pUnderPrice As Double, options As List(Of TagValue))
-        Const ProcName As String = NameOf(CalculateOptionPrice)
+    Private Sub calculateOptionPrice(pReqId As Integer, pContract As Contract, pVolatility As Double, pUnderPrice As Double, options As List(Of TagValue))
+        Const ProcName As String = NameOf(calculateOptionPrice)
 
         If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
@@ -60,7 +60,7 @@ Friend Class CalculateOptionPriceGenerator
 
         With pContract
             lWriter.AddElement(.ConId, "Contract id")
-            lWriter.AddElement(.Symbol, "Symbol")
+            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
             lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
             lWriter.AddElement(.Expiry, "Expiry")
             lWriter.AddElement(.Strike, "Strike")
@@ -69,7 +69,7 @@ Friend Class CalculateOptionPriceGenerator
             lWriter.AddElement(If(.Exchange = "", "*", .Exchange), "Exchange")
             lWriter.AddElement(.PrimaryExch, "PrimaryExch")
             lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(UCase(.LocalSymbol), "Local Symbol")
+            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
             lWriter.AddElement(.TradingClass, "Trading Class")
         End With
 

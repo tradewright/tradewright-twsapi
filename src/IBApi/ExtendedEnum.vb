@@ -67,7 +67,7 @@ Public Class ExtendedEnum(Of TClass As Class, TEnum As {Structure, IConvertible,
     End Function
 
     Public Function TryParseFrom(value As String, ByRef result As TEnum, ByRef nextIndex As Integer, Optional ignoreCase As Boolean = False) As Boolean
-        For i = 0 To UBound(mNames)
+        For i = 0 To mNames.Length - 1
             Dim match = False
             If String.IsNullOrEmpty(value) And String.IsNullOrEmpty(mNames(i).Name) Then
                 match = True
@@ -88,7 +88,7 @@ Public Class ExtendedEnum(Of TClass As Class, TEnum As {Structure, IConvertible,
     End Function
 
     Private Function toExtString(value As TEnum, nameType As EnumNameType) As String
-        For i = 0 To UBound(mNames)
+        For i = 0 To mNames.Length - 1
             If mNames(i).Value.ToInt32(CultureInfo.InvariantCulture) = value.ToInt32(CultureInfo.InvariantCulture) And ((mNames(i).Type And nameType) <> 0) Then Return mNames(i).Name
         Next
         Throw New ArgumentException("Invalid value", NameOf(value))

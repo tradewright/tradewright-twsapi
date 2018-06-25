@@ -62,10 +62,10 @@ Friend Class SocketHandler
     ' Member variables
     '@================================================================================
 
-    Private WithEvents mSocket As SocketManager
+    Private WithEvents Socket As SocketManager
 
-    Private mServer As String
-    Private mPort As Integer
+    Private ReadOnly mServer As String
+    Private ReadOnly mPort As Integer
 
     Private mKeepAlive As Boolean
 
@@ -79,19 +79,19 @@ Friend Class SocketHandler
     Private mConnectionRetryIntervalSecs As Integer
 
     ' Called when a successful connection to Tws has been achieved.
-    Private mConnectedAction As Action
+    Private ReadOnly mConnectedAction As Action
 
     ' Called when connection to Tws has failed
-    Private mConnectFailedAction As Action(Of String)
+    Private ReadOnly mConnectFailedAction As Action(Of String)
 
     ' Called when an attempt to connect to Tws is initiated.
-    Private mConnectingAction As Action
+    Private ReadOnly mConnectingAction As Action
 
     ' Called when the connection to Tws is disconnected.
-    Private mConnectionClosedAction As Action(Of String)
+    Private ReadOnly mConnectionClosedAction As Action(Of String)
 
     ' Called when we Disconnect from Tws
-    Private mDisconnectedAction As Action(Of String)
+    Private ReadOnly mDisconnectedAction As Action(Of String)
 
 
     '@================================================================================
@@ -105,9 +105,9 @@ Friend Class SocketHandler
                    disconnectedAction As Action(Of String),
                    connectionClosedAction As Action(Of String),
                    connectionRetryIntervalSecs As Integer)
-        mSocket = socket
-        mServer = mSocket.Host
-        mPort = mSocket.Port
+        Me.Socket = socket
+        mServer = Me.Socket.Host
+        mPort = Me.Socket.Port
 
         mConnectingAction = connectingAction
         mConnectedAction = connectedAction
@@ -147,7 +147,7 @@ Friend Class SocketHandler
 
     Friend ReadOnly Property SocketManager As SocketManager
         Get
-            Return mSocket
+            Return Socket
         End Get
     End Property
 
@@ -167,11 +167,11 @@ Friend Class SocketHandler
         mIsConnecting = True
 
         ' we don't Await the following call because we don't want this Connect method to have to be async
-        Dim t = mSocket.ConnectAsync(Sub()
-                                         mIsConnecting = False
-                                         mIsConnected = True
-                                         mConnectedAction()
-                                     End Sub,
+        Dim t = Socket.ConnectAsync(Sub()
+                                        mIsConnecting = False
+                                        mIsConnected = True
+                                        mConnectedAction()
+                                    End Sub,
                                      Sub() handleTwsDisconnection("closed by peer", False),
                                      AddressOf handleSocketError,
                                      keepAlive)
@@ -186,7 +186,7 @@ Friend Class SocketHandler
 
         If Not mConnectionTimer Is Nothing Then mConnectionTimer.Dispose()
 
-        ReleaseSocket()
+        releaseSocket()
 
         EventLogger.Log($"Disconnected from: {getConnectionString()} : {pReason}", ModuleName, NameOf(Disconnect))
         handleTwsDisconnection("closed by application", True)
@@ -214,9 +214,9 @@ Friend Class SocketHandler
                  SocketErrorCode.WSAETIMEDOUT,
                  SocketErrorCode.WSAECONNRESET
 
-                ReleaseSocket()
+                releaseSocket()
                 If Not mIsConnected Then
-                    EventLogger.Log($"Failed to connect to Tws {CStr(IIf(mConnectionRetryIntervalSecs <> 0, $" - retrying In {mConnectionRetryIntervalSecs} seconds", ""))}: {e.Exception.Message} : {getConnectionString()}", ModuleName, NameOf(handleSocketError))
+                    EventLogger.Log($"Failed to connect to Tws {CStr(If(mConnectionRetryIntervalSecs <> 0, $" - retrying In {mConnectionRetryIntervalSecs} seconds", ""))}: {e.Exception.Message} : {getConnectionString()}", ModuleName, NameOf(handleSocketError))
 
                     e.ConnectionRetryInterval = mConnectionRetryIntervalSecs
                     mConnectFailedAction(e.Exception.Message)
@@ -233,18 +233,18 @@ Friend Class SocketHandler
     Private Sub handleTwsDisconnection(pMessage As String, pClosedByApplication As Boolean)
         EventLogger.Log($"Connection to Tws closed: {pMessage} : {getConnectionString()}", ModuleName, NameOf(handleTwsDisconnection))
 
-        mSocket = Nothing
+        Socket = Nothing
         mIsConnected = False
 
         mConnectionClosedAction(pMessage)
         If Not pClosedByApplication Then retryConnection()
     End Sub
 
-    Private Sub ReleaseSocket()
-        If Not mSocket Is Nothing Then
-            EventLogger.Log($"Releasing socket: {getConnectionString()}", ModuleName, NameOf(ReleaseSocket))
-            mSocket.Close()
-            mSocket = Nothing
+    Private Sub releaseSocket()
+        If Not Socket Is Nothing Then
+            EventLogger.Log($"Releasing socket: {getConnectionString()}", ModuleName, NameOf(releaseSocket))
+            Socket.Close()
+            Socket = Nothing
         End If
 
         mIsConnected = False

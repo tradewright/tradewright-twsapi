@@ -34,7 +34,7 @@ Friend Class RequestContractDetailsGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New RequestContractDetailsDelegate(AddressOf RequestContractDetails)
+            Return New RequestContractDetailsDelegate(AddressOf requestContractDetails)
         End Get
     End Property
 
@@ -44,8 +44,8 @@ Friend Class RequestContractDetailsGenerator
         End Get
     End Property
 
-    Private Sub RequestContractDetails(pRequestId As Integer, pContract As Contract)
-        Const ProcName As String = NameOf(RequestContractDetails)
+    Private Sub requestContractDetails(pRequestId As Integer, pContract As Contract)
+        Const ProcName As String = NameOf(requestContractDetails)
         Const VERSION As Integer = 8
 
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
@@ -58,7 +58,7 @@ Friend Class RequestContractDetailsGenerator
 
         With pContract
             lWriter.AddElement(.ConId, "Contract id")
-            lWriter.AddElement(.Symbol, "Symbol")
+            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
             lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
             lWriter.AddElement(.Expiry, "Expiry")
             lWriter.AddElement(.Strike, "Strike")
@@ -67,7 +67,7 @@ Friend Class RequestContractDetailsGenerator
             lWriter.AddElement(If(.Exchange = "", "*", .Exchange), "Exchange")
             lWriter.AddElement(.PrimaryExch, "Primary Exchange")
             lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(UCase(.LocalSymbol), "Local Symbol")
+            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
             lWriter.AddElement(.TradingClass, "Trading Class")
             lWriter.AddElement(True, "Include expired")
             lWriter.AddElement(.SecIdType, "SecIdType")

@@ -82,14 +82,14 @@ Public Module Globals
             ("OpenOrderEnd", ApiSocketInMsgType.OpenOrderEnd, EnumNameType.Both),
             ("AccountDownloadEnd", ApiSocketInMsgType.AccountDownloadEnd, EnumNameType.Both),
             ("ExecutionDataEnd", ApiSocketInMsgType.ExecutionDataEnd, EnumNameType.Both),
-            ("DeltaNeutralValidn", ApiSocketInMsgType.DeltaNeutralValidation, EnumNameType.Both),
+            ("DeltaNeutralValidation", ApiSocketInMsgType.DeltaNeutralValidation, EnumNameType.Both),
             ("TickSnapshotEnd", ApiSocketInMsgType.TickSnapshotEnd, EnumNameType.Both),
             ("MarketDataType", ApiSocketInMsgType.MarketDataType, EnumNameType.Both),
             ("CommissionReport", ApiSocketInMsgType.CommissionReport, EnumNameType.Both),
             ("Position", ApiSocketInMsgType.Position, EnumNameType.Both),
             ("PositionEnd", ApiSocketInMsgType.PositionEnd, EnumNameType.Both),
-            ("Accountsummary", ApiSocketInMsgType.AccountSummary, EnumNameType.Both),
-            ("Accountsummaryend", ApiSocketInMsgType.AccountSummaryEnd, EnumNameType.Both),
+            ("AccountSummary", ApiSocketInMsgType.AccountSummary, EnumNameType.Both),
+            ("AccountSummaryEnd", ApiSocketInMsgType.AccountSummaryEnd, EnumNameType.Both),
             ("VerifyMessageApi", ApiSocketInMsgType.VerifyMessageApi, EnumNameType.Both),
             ("VerifyCompleted", ApiSocketInMsgType.VerifyCompleted, EnumNameType.Both),
             ("DisplayGroupList", ApiSocketInMsgType.DisplayGroupList, EnumNameType.Both),
@@ -379,17 +379,17 @@ Public Module Globals
         If String.IsNullOrEmpty(pDateString) Then Return (Date.MaxValue, String.Empty)
 
         Dim d As Date
-        If Len(pDateString) = 8 Then
+        If pDateString.Length = 8 Then
             d = DateTime.ParseExact(pDateString, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
-        ElseIf Len(pDateString) >= 17 Then
+        ElseIf pDateString.Length > 17 Then
             d = DateTime.ParseExact(pDateString.Substring(0, 18), "yyyyMMdd  HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)
         Else
             Throw New ArgumentException("Invalid date string format")
         End If
 
         Dim lTimezoneName As String
-        If Len(pDateString) > 17 Then
-            lTimezoneName = Trim(Right(pDateString, Len(pDateString) - 17))
+        If pDateString.Length > 17 Then
+            lTimezoneName = pDateString.Substring(17, pDateString.Length - 18).Trim()
         Else
             lTimezoneName = ""
         End If

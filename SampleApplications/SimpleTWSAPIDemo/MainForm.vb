@@ -103,7 +103,7 @@ Public Class MainForm
     ' Provides methods to invoke TWS functionality
     Private mApi As IBAPI
 
-    Private WithEvents mApiEv As EventSource
+    Private WithEvents ApiEv As EventSource
 
     ' maintains the market depth model, and updates the market depth displays
     Private mDepthMgr As MarketDepthManager
@@ -112,7 +112,7 @@ Public Class MainForm
 
 #Region "Form Event Handlers"
 
-    Private Sub Form1_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+    Protected Overrides Sub OnLoad(e As EventArgs)
 
         ' Set the default log level to be HighDetail. This will log everything 
         ' about the API, including data received from the socket, each 
@@ -163,17 +163,19 @@ Public Class MainForm
         ExchangeOrderCombo.SelectedItem = "GLOBEX"
         CurrencyOrderCombo.SelectedItem = "USD"
         OrderTypeCombo.SelectedItem = "MKT"
+
+        MyBase.OnLoad(e)
     End Sub
 
 #End Region
 
 #Region "Form Controls Event Handlers"
 
-    Private Sub BuyButton_Click(sender As System.Object, e As System.EventArgs) Handles BuyButton.Click
+    Private Sub buyButton_Click(sender As System.Object, e As System.EventArgs) Handles BuyButton.Click
         generateAndPlaceOrder(OrderAction.Buy)
     End Sub
 
-    Private Sub CancelOrderButton_Click(sender As System.Object, e As System.EventArgs) Handles CancelOrderButton.Click
+    Private Sub cancelOrderButton_Click(sender As System.Object, e As System.EventArgs) Handles CancelOrderButton.Click
         For Each row As DataGridViewRow In OrderGrid.SelectedRows
             Dim orderid = CInt(row.Tag)
             If isCancellableStatus(getOrderStatus(orderid)) Then cancelOrder(orderid)
@@ -181,12 +183,12 @@ Public Class MainForm
         CancelOrderButton.Enabled = False
     End Sub
 
-    Private Sub ConnectButton_Click(sender As System.Object, e As System.EventArgs) Handles ConnectButton.Click
+    Private Sub connectButton_Click(sender As System.Object, e As System.EventArgs) Handles ConnectButton.Click
         logMessage("Connecting to TWS")
         ConnectButton.Enabled = False
 
         mApi = New IBAPI(ServerTextBox.Text, CInt(PortTextBox.Text), CInt(ClientIdTextBox.Text))
-        mApiEv = mApi.EventSource
+        ApiEv = mApi.EventSource
         Dim logger = New ApiLogger(New FormattingLogger(""))
         mApi.Logger = logger
         mApi.SocketLogger = logger
@@ -195,7 +197,7 @@ Public Class MainForm
         mApi.Connect()
     End Sub
 
-    Private Sub DisconnectButton_Click(sender As System.Object, e As System.EventArgs) Handles DisconnectButton.Click
+    Private Sub disconnectButton_Click(sender As System.Object, e As System.EventArgs) Handles DisconnectButton.Click
         ConnectButton.Enabled = True
         DisconnectButton.Enabled = False
         StartTickerButton.Enabled = False
@@ -210,23 +212,23 @@ Public Class MainForm
         mApi.Disconnect("User action")
     End Sub
 
-    Private Sub LocalSymbolDepthText_TextChanged(sender As System.Object, e As System.EventArgs) Handles LocalSymbolDepthText.TextChanged
+    Private Sub localSymbolDepthText_TextChanged(sender As System.Object, e As System.EventArgs) Handles LocalSymbolDepthText.TextChanged
         setStartMarketDepthButtonState()
     End Sub
 
-    Private Sub LocalSymbolOrderText_TextChanged(sender As System.Object, e As System.EventArgs) Handles LocalSymbolOrderText.TextChanged
+    Private Sub localSymbolOrderText_TextChanged(sender As System.Object, e As System.EventArgs) Handles LocalSymbolOrderText.TextChanged
         setBuySellButtonsState()
     End Sub
 
-    Private Sub LocalSymbolTickerText_TextChanged(sender As System.Object, e As System.EventArgs) Handles LocalSymbolTickerText.TextChanged
+    Private Sub localSymbolTickerText_TextChanged(sender As System.Object, e As System.EventArgs) Handles LocalSymbolTickerText.TextChanged
         setStartTickerButtonState()
     End Sub
 
-    Private Sub OrderGrid_CellMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles OrderGrid.CellMouseClick
+    Private Sub orderGrid_CellMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles OrderGrid.CellMouseClick
         CancelOrderButton.Enabled = False
     End Sub
 
-    Private Sub OrderGrid_RowHeaderMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles OrderGrid.RowHeaderMouseClick
+    Private Sub orderGrid_RowHeaderMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles OrderGrid.RowHeaderMouseClick
         CancelOrderButton.Enabled = False
         For Each row As DataGridViewRow In OrderGrid.SelectedRows
             Dim orderid = CInt(row.Tag)
@@ -237,7 +239,7 @@ Public Class MainForm
         Next
     End Sub
 
-    Private Sub OrderTypeCombo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles OrderTypeCombo.SelectedIndexChanged
+    Private Sub orderTypeCombo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles OrderTypeCombo.SelectedIndexChanged
         Select Case OrderTypeCombo.Text
             Case OrderTypeMarket
                 LimitPriceText.Enabled = False
@@ -254,11 +256,11 @@ Public Class MainForm
         End Select
     End Sub
 
-    Private Sub QuantityText_TextChanged(sender As System.Object, e As System.EventArgs) Handles QuantityText.TextChanged
+    Private Sub quantityText_TextChanged(sender As System.Object, e As System.EventArgs) Handles QuantityText.TextChanged
         setBuySellButtonsState()
     End Sub
 
-    Private Sub QuantityText_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles QuantityText.Validating
+    Private Sub quantityText_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles QuantityText.Validating
         Dim errMsg = ""
         If Not validateQuantity(errMsg) Then
             ErrorProvider.SetIconAlignment(QuantityText, ErrorIconAlignment.BottomLeft)
@@ -269,19 +271,19 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub SectypeOrderCombo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles SectypeOrderCombo.SelectedIndexChanged
+    Private Sub sectypeOrderCombo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles SectypeOrderCombo.SelectedIndexChanged
         setBuySellButtonsState()
     End Sub
 
-    Private Sub SecTypeTickerCombo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles SecTypeTickerCombo.SelectedIndexChanged
+    Private Sub secTypeTickerCombo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles SecTypeTickerCombo.SelectedIndexChanged
         setStartTickerButtonState()
     End Sub
 
-    Private Sub SellButton_Click(sender As System.Object, e As System.EventArgs) Handles SellButton.Click
+    Private Sub sellButton_Click(sender As System.Object, e As System.EventArgs) Handles SellButton.Click
         generateAndPlaceOrder(OrderAction.Sell)
     End Sub
 
-    Private Sub StartMarketDepthButton_Click(sender As System.Object, e As System.EventArgs) Handles StartMarketDepthButton.Click
+    Private Sub startMarketDepthButton_Click(sender As System.Object, e As System.EventArgs) Handles StartMarketDepthButton.Click
         mDepthMgr.Initialise(20)
         startMarketDepth(createContract(SecurityTypes.Parse(SecTypeDepthCombo.Text.ToUpper),
                                         LocalSymbolDepthText.Text.ToUpper,
@@ -291,29 +293,29 @@ Public Class MainForm
         StopMarketDepthButton.Enabled = True
     End Sub
 
-    Private Sub StartTickerButton_Click(sender As System.Object, e As System.EventArgs) Handles StartTickerButton.Click
+    Private Sub startTickerButton_Click(sender As System.Object, e As System.EventArgs) Handles StartTickerButton.Click
         startTicker(createContract(SecurityTypes.Parse(SecTypeTickerCombo.Text.ToUpper),
                                    LocalSymbolTickerText.Text.ToUpper,
                                    ExchangeTickerCombo.Text,
                                    CurrencyTickerCombo.Text))
     End Sub
 
-    Private Sub StopTickerButton_Click(sender As System.Object, e As System.EventArgs) Handles StopTickerButton.Click
+    Private Sub stopTickerButton_Click(sender As System.Object, e As System.EventArgs) Handles StopTickerButton.Click
         For Each row As DataGridViewRow In TickerGrid.SelectedRows
             If row.Tag IsNot Nothing Then stopTicker(CInt(row.Tag))
         Next
         StopTickerButton.Enabled = False
     End Sub
 
-    Private Sub StopMarketDepthButton_Click(sender As System.Object, e As System.EventArgs) Handles StopMarketDepthButton.Click
+    Private Sub stopMarketDepthButton_Click(sender As System.Object, e As System.EventArgs) Handles StopMarketDepthButton.Click
         stopMarketDepth()
     End Sub
 
-    Private Sub TickerGrid_CellMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles TickerGrid.CellMouseClick
+    Private Sub tickerGrid_CellMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles TickerGrid.CellMouseClick
         StopTickerButton.Enabled = False
     End Sub
 
-    Private Sub TickerGrid_RowHeaderMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles TickerGrid.RowHeaderMouseClick
+    Private Sub tickerGrid_RowHeaderMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles TickerGrid.RowHeaderMouseClick
         StopTickerButton.Enabled = False
         For Each row As DataGridViewRow In TickerGrid.SelectedRows
             If row.Tag IsNot Nothing Then
@@ -327,15 +329,15 @@ Public Class MainForm
 
 #Region "TWS API Event Handlers"
 
-    Private Sub ApiError(sender As Object, e As ApiErrorEventArgs) Handles mApiEv.ApiError
+    Private Sub apiError(sender As Object, e As ApiErrorEventArgs) Handles ApiEv.ApiError
         logMessage($"Api error: error code={e.ErrorCode}; message={e.Message}")
     End Sub
 
-    Private Sub ApiEvent(sender As Object, e As ApiEventEventArgs) Handles mApiEv.ApiEvent
+    Private Sub apiEvent(sender As Object, e As ApiEventEventArgs) Handles ApiEv.ApiEvent
         logMessage($"Api event: event code={e.EventCode}; message={e.EventMessage}")
     End Sub
 
-    Private Sub ConnectionStateChange(sender As Object, e As ApiConnectionStateChangeEventArgs) Handles mApiEv.ConnectionStateChange
+    Private Sub connectionStateChange(sender As Object, e As ApiConnectionStateChangeEventArgs) Handles ApiEv.ConnectionStateChange
         Select Case e.State
             Case ApiConnectionState.NotConnected
                 logMessage("Disconnected from TWS")
@@ -357,27 +359,27 @@ Public Class MainForm
         setStartMarketDepthButtonState()
     End Sub
 
-    Private Sub CurrentTime(sender As Object, e As CurrentTimeEventArgs) Handles mApiEv.CurrentTime
+    Private Sub currentTime(sender As Object, e As CurrentTimeEventArgs) Handles ApiEv.CurrentTime
         logMessage($"currentTime: {e.Timestamp}")
     End Sub
 
-    Private Sub Exception(sender As Object, e As ExceptionEventArgs) Handles mApiEv.Exception
+    Private Sub exception(sender As Object, e As ExceptionEventArgs) Handles ApiEv.Exception
         logMessage($"An exception has occurred: {e.Exception.ToString()}")
     End Sub
 
-    Private Sub ManagedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles mApiEv.ManagedAccounts
+    Private Sub managedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles ApiEv.ManagedAccounts
         logMessage($"Managed accounts: {String.Join(",", e.ManagedAccounts)}")
     End Sub
 
-    Private Sub MarketDataError(sender As Object, e As RequestErrorEventArgs) Handles mApiEv.MarketDataError
+    Private Sub marketDataError(sender As Object, e As RequestErrorEventArgs) Handles ApiEv.MarketDataError
         logMessage($"Marketdata error: tickerId={e.RequestId}; error code={e.ErrorCode}; message={e.Message}")
     End Sub
 
-    Private Sub MarketDepthError(sender As Object, e As RequestErrorEventArgs) Handles mApiEv.MarketDepthError
+    Private Sub marketDepthError(sender As Object, e As RequestErrorEventArgs) Handles ApiEv.MarketDepthError
         processMarketDepthError(e.RequestId, e.ErrorCode)
     End Sub
 
-    Private Sub MarketDepthUpdate(sender As Object, e As MarketDepthUpdateEventArgs) Handles mApiEv.MarketDepthUpdate
+    Private Sub marketDepthUpdate(sender As Object, e As MarketDepthUpdateEventArgs) Handles ApiEv.MarketDepthUpdate
         If mDOMTickers(e.RequestId)?.Contract Is Nothing Then
             ' the market depth stream has been stopped but this
             ' update was already on its way
@@ -386,7 +388,7 @@ Public Class MainForm
         mDepthMgr.updateMktDepth(e.RequestId, e.Position, e.MarketMaker, e.Operation, e.Side, e.Price, e.Size)
     End Sub
 
-    Private Sub OpenOrder(sender As Object, e As OpenOrderEventArgs) Handles mApiEv.OpenOrder
+    Private Sub openOrder(sender As Object, e As OpenOrderEventArgs) Handles ApiEv.OpenOrder
         If Not mOrders.ContainsKey(e.OrderId) Then
             ' this can happen after connection for orders created in the previous session
             recordOrder(e.Contract, e.Order, e.OrderState)
@@ -399,26 +401,26 @@ Public Class MainForm
         showOrder(e.OrderId)
     End Sub
 
-    Private Sub OrderError(sender As Object, e As OrderErrorEventArgs) Handles mApiEv.OrderError
+    Private Sub orderError(sender As Object, e As OrderErrorEventArgs) Handles ApiEv.OrderError
         processOrderError(e.RequestId, e.ErrorCode)
     End Sub
 
-    Private Sub OrderStatus(sender As Object, e As OrderStatusEventArgs) Handles mApiEv.OrderStatus
+    Private Sub orderStatus(sender As Object, e As OrderStatusEventArgs) Handles ApiEv.OrderStatus
         Dim row = mOrders.Item(e.OrderId).GridRow
         showOrderValue(row, OrderColumnFilled, CStr(e.Filled))
         showOrderValue(row, OrderColumAvgPrice, CStr(e.AvgFillPrice))
         saveOrderStatus(e.OrderId, e.Status)
     End Sub
 
-    Private Sub TickGeneric(sender As Object, e As TickGenericEventArgs) Handles mApiEv.TickGeneric
+    Private Sub tickGeneric(sender As Object, e As TickGenericEventArgs) Handles ApiEv.TickGeneric
         logMessage($"tickGeneric: id={e.TickerId}; field={CStr(e.TickType)}; value={e.Value}")
     End Sub
 
-    Private Sub TickString(sender As Object, e As TickStringEventArgs) Handles mApiEv.TickString
+    Private Sub tickString(sender As Object, e As TickStringEventArgs) Handles ApiEv.TickString
         logMessage($"tickString: id={e.TickerId}; field={CStr(e.TickType)}; value={e.Value}")
     End Sub
 
-    Private Sub TickPrice(sender As Object, e As TickPriceEventArgs) Handles mApiEv.TickPrice
+    Private Sub tickPrice(sender As Object, e As TickPriceEventArgs) Handles ApiEv.TickPrice
         Select Case e.Field
             Case TickType.Ask
                 showTickerValue(e.TickerId, TickerColumnAsk, CStr(e.Price))
@@ -429,7 +431,7 @@ Public Class MainForm
         End Select
     End Sub
 
-    Private Sub TickSize(sender As Object, e As TickSizeEventArgs) Handles mApiEv.TickSize
+    Private Sub tickSize(sender As Object, e As TickSizeEventArgs) Handles ApiEv.TickSize
         Select Case e.Field
             Case TickType.AskSize
                 showTickerValue(e.TickerId, TickerColumnAskSize, CStr(e.Size))
@@ -541,11 +543,12 @@ Public Class MainForm
     Private Sub recordOrder(contract As Contract, order As Order, state As OrderState)
         Dim orderId = order.OrderId
 
-        Dim entry = New ActiveOrder
-        entry.GridRow = allocateOrderGridRow(orderId)
-        entry.Contract = contract
-        entry.Order = order
-        entry.State = state
+        Dim entry = New ActiveOrder With {
+            .GridRow = allocateOrderGridRow(orderId),
+            .Contract = contract,
+            .Order = order,
+            .State = state
+        }
         mOrders.Add(orderId, entry)
     End Sub
 

@@ -34,7 +34,7 @@ Friend Class RequestExecutionsGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestExecutions)
+            Return New ApiMethodDelegate(AddressOf requestExecutions)
         End Get
     End Property
 
@@ -44,8 +44,8 @@ Friend Class RequestExecutionsGenerator
         End Get
     End Property
 
-    Private Sub RequestExecutions(pRequestId As Integer, filter As ExecutionFilter)
-        Const ProcName As String = NameOf(RequestExecutions)
+    Private Sub requestExecutions(pRequestId As Integer, filter As ExecutionFilter)
+        Const ProcName As String = NameOf(requestExecutions)
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3
@@ -69,7 +69,7 @@ Friend Class RequestExecutionsGenerator
                 lWriter.AddElement("", "Client id")
                 lWriter.AddElement(.AccountCode, "Account code")
                 lWriter.AddElement(CStr(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd-hh:mm:ss}", "")), "Fill Time")
-                lWriter.AddElement(.Symbol, "Symbol")
+                lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
                 lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
                 lWriter.AddElement(.Exchange, "Exchange")
                 lWriter.AddElement(OrderActions.ToInternalString(.Action), "Action")

@@ -199,7 +199,7 @@ Friend Class PerformanceStatsRecorder
     End Sub
 
     Private Sub initialise()
-        For i = 0 To UBound(mPerformanceStats)
+        For i = 0 To mPerformanceStats.Length - 1
             mPerformanceStats(i) = New StatisticsEntry With {
                 .MessageId = CType(i, ApiSocketInMsgType)
             }

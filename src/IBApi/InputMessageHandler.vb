@@ -164,7 +164,7 @@ Friend Class InputMessageHandler
                                             s = System.Text.UnicodeEncoding.ASCII.GetString(b, i, l)
                                         End Sub)
 
-        Return pHeader & Replace(s, Chr(0), "_")
+        Return pHeader & s.Replace("0"c, "_")
     End Function
 
     Private Function getElapsedTimer() As Stopwatch
@@ -224,7 +224,7 @@ Friend Class InputMessageHandler
         Catch e As Exception
             Dim s = ""
             mReader.ProcessCurrentProtocolMessage(Sub(b, i, c, l)
-                                                      Dim buff = Replace(System.Text.UnicodeEncoding.ASCII.GetString(b, 0, l), Chr(0), "_")
+                                                      Dim buff = System.Text.UnicodeEncoding.ASCII.GetString(b, 0, l).Replace("0"c, "_")
                                                       s = $"Error while processing input message:{Environment.NewLine}" &
                                                         $"Message ID={messageId} ({ApiSocketInMsgTypes.ToExternalString(messageId)}); version={messageVersion}{Environment.NewLine}" &
                                                         $"MessageStartindex={i}; InputBufferNextFreeIndex={l}; InputParseIndex={c}{Environment.NewLine}" &

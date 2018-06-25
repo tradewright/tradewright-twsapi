@@ -389,7 +389,7 @@ Public Class IBAPI
     Public Shared Function IsContractExpired(pContract As Contract) As Boolean
         If pContract.SecType = SecurityType.Cash Or pContract.SecType = SecurityType.Index Or pContract.SecType = SecurityType.Stock Then Return False
 
-        Return contractExpiryToDate(pContract) < Now
+        Return contractExpiryToDate(pContract) < Date.Now
     End Function
 
     Friend Shared Function UnixTimestampToDateTime(unixTimestamp As Long) As DateTime
@@ -703,8 +703,9 @@ Public Class IBAPI
 
     Private Shared Function contractExpiryToDate(pContract As Contract) As Date
         Dim expiry = pContract.Expiry.Trim
-        If Len(pContract.Expiry) = 8 Then Return CDate($"{Left(pContract.Expiry, 4)}/{Mid(pContract.Expiry, 5, 2)}/{Right(pContract.Expiry, 2)}")
-        If Len(pContract.Expiry) = 6 Then Return CDate($"{Left(pContract.Expiry, 4)}/{Mid(pContract.Expiry, 5, 2)}/01")
+        Dim len = pContract.Expiry.Length
+        If len = 8 Then Return CDate($"{pContract.Expiry.Substring(0, 4)}/{pContract.Expiry.Substring(4, 2)}/{pContract.Expiry.Substring(len - 1, 2)}")
+        If len = 6 Then Return CDate($"{pContract.Expiry.Substring(0, 4)}/{pContract.Expiry.Substring(4, 2)}/01")
         Throw New InvalidOperationException
     End Function
 

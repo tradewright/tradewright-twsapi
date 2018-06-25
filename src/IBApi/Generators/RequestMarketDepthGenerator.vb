@@ -36,7 +36,7 @@ Friend Class RequestMarketDepthGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestMarketDepth)
+            Return New ApiMethodDelegate(AddressOf requestMarketDepth)
         End Get
     End Property
 
@@ -46,8 +46,8 @@ Friend Class RequestMarketDepthGenerator
         End Get
     End Property
 
-    Private Sub RequestMarketDepth(pTickerId As Integer, pContract As Contract, pNumberOfRows As Integer, options As List(Of TagValue))
-        Const ProcName As String = NameOf(RequestMarketDepth)
+    Private Sub requestMarketDepth(pTickerId As Integer, pContract As Contract, pNumberOfRows As Integer, options As List(Of TagValue))
+        Const ProcName As String = NameOf(requestMarketDepth)
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 5
@@ -60,7 +60,7 @@ Friend Class RequestMarketDepthGenerator
         lWriter.AddElement(pContract.ConId, "Contract Id")
 
         With pContract
-            lWriter.AddElement(.Symbol, "Symbol")
+            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
             lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
             lWriter.AddElement(.Expiry, "Expiry")
             lWriter.AddElement(.Strike, "Strike")
@@ -68,7 +68,7 @@ Friend Class RequestMarketDepthGenerator
             lWriter.AddElement(If(.Multiplier = 1, "", CStr(.Multiplier)), "Multiplier")
             lWriter.AddElement(.Exchange, "Exchange")
             lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(UCase(.LocalSymbol), "Local Symbol")
+            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
             lWriter.AddElement(pContract.TradingClass, "Trading Class")
             lWriter.AddElement(pNumberOfRows, "Num rows")
         End With

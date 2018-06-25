@@ -34,7 +34,7 @@ Friend Class ExerciseOptionsGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf ExerciseOptions)
+            Return New ApiMethodDelegate(AddressOf exerciseOptions)
         End Get
     End Property
 
@@ -44,8 +44,8 @@ Friend Class ExerciseOptionsGenerator
         End Get
     End Property
 
-    Private Sub ExerciseOptions(pTickerId As Integer, pContract As Contract, pExerciseAction As Integer, pExerciseQuantity As Integer, pAccount As String, pOverride As Integer)
-        Const ProcName As String = NameOf(ExerciseOptions)
+    Private Sub exerciseOptions(pTickerId As Integer, pContract As Contract, pExerciseAction As Integer, pExerciseQuantity As Integer, pAccount As String, pOverride As Integer)
+        Const ProcName As String = NameOf(exerciseOptions)
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 2
@@ -57,7 +57,7 @@ Friend Class ExerciseOptionsGenerator
 
         lWriter.AddElement(pContract.ConId, "ConId")
 
-        lWriter.AddElement(pContract.Symbol, "Symbol")
+        lWriter.AddElement(pContract.Symbol?.ToUpper(), "Symbol")
         lWriter.AddElement(SecurityTypes.ToInternalString(pContract.SecType), "Sectype")
         lWriter.AddElement(pContract.Expiry, "Expiry")
         lWriter.AddElement(pContract.Strike, "Strike")
@@ -65,7 +65,7 @@ Friend Class ExerciseOptionsGenerator
         lWriter.AddElement(If(pContract.Multiplier = 1, "", CStr(pContract.Multiplier)), "Multiplier")
         lWriter.AddElement(pContract.Exchange, "Exchange")
         lWriter.AddElement(pContract.CurrencyCode, "Currency")
-        lWriter.AddElement(UCase(pContract.LocalSymbol), "LocalSymbol")
+        lWriter.AddElement(pContract.LocalSymbol?.ToUpper(), "LocalSymbol")
         lWriter.AddElement(pContract.TradingClass, "TradingClass")
 
         lWriter.AddElement(pExerciseAction, "ExerciseAction")

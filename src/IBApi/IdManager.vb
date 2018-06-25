@@ -56,6 +56,8 @@ Friend Class IdManager
                 Return twsId - BaseContractRequestId
             Case IdType.Order
                 Return twsId - BaseOrderId
+            Case Else
+                Throw New ArgumentException("")
         End Select
     End Function
 
@@ -107,6 +109,8 @@ Friend Class IdManager
                 Return callerId + BaseContractRequestId
             Case IdType.Order
                 Throw New InvalidOperationException("Invalid call")
+            Case Else
+                Throw New ArgumentException("")
         End Select
     End Function
 End Class

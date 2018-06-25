@@ -69,11 +69,11 @@ Friend NotInheritable Class MessageGenerator
 
     Friend ReadOnly Property MessageAsPrintableBytes As String
         Get
-            If Not mUseV100Plus Then Return $"Out buf: {Encoding.UTF8.GetString(mMessage).Replace(Chr(0), "_")}"
+            If Not mUseV100Plus Then Return $"Out buf: {Encoding.UTF8.GetString(mMessage).Replace("0"c, "_")}"
 
-            If mLengthOffset = 0 Then Return $"Out buf: {{{mLength}}}{Encoding.UTF8.GetString(mMessage, 4, mMessage.Length - 4).Replace(Chr(0), "_")}"
+            If mLengthOffset = 0 Then Return $"Out buf: {{{mLength}}}{Encoding.UTF8.GetString(mMessage, 4, mMessage.Length - 4).Replace("0"c, "_")}"
 
-            Return $"Out buf: {Encoding.UTF8.GetString(mMessage, 0, mLengthOffset)}{{{mLength}}}{Encoding.UTF8.GetString(mMessage, mLengthOffset + 4, mMessage.Length - mLengthOffset - 4).Replace(Chr(0), "_")}"
+            Return $"Out buf: {Encoding.UTF8.GetString(mMessage, 0, mLengthOffset)}{{{mLength}}}{Encoding.UTF8.GetString(mMessage, mLengthOffset + 4, mMessage.Length - mLengthOffset - 4).Replace("0"c, "_")}"
         End Get
     End Property
 
@@ -142,7 +142,7 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub Send()
-        mMessage = GetMessage()
+        mMessage = getMessage()
         SyncLock mThisLock
             mSocketManager.Send(mMessage)
         End SyncLock
@@ -154,7 +154,7 @@ Friend NotInheritable Class MessageGenerator
         writeRawString(value)
     End Sub
 
-    Private Function GetMessage() As Byte()
+    Private Function getMessage() As Byte()
         If (mUseV100Plus) Then
             mWriter.Seek(mLengthOffset, SeekOrigin.Begin)
             mWriter.Write(IPAddress.HostToNetworkOrder(mLength))

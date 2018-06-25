@@ -119,23 +119,23 @@ Public Class Contract
         addField("Strike", CStr(Strike), sb)
         addField("Right", OptionRights.ToExternalString(OptRight), sb)
         addField("Multiplier", CStr(Multiplier), sb)
-        addField("Primary exch", PrimaryExch, sb)
+        addField("Primary exchange", PrimaryExch, sb)
         addField("Sec id type", SecIdType, sb)
         addField("Sec id", SecId, sb)
 
         Dim lLeg As ComboLeg
         Dim i As Integer
         If ComboLegs.Count > 0 Then
-            addField("Como legs count", CStr(ComboLegs.Count), sb)
+            addField("Combo legs count", CStr(ComboLegs.Count), sb)
             For Each lLeg In ComboLegs
                 i = i + 1
                 addField("Con id " & i, CStr(lLeg.ConId), sb)
                 addField("Exchange " & i, lLeg.Exchange, sb)
                 addField("Action " & i, OrderActions.ToInternalString(lLeg.Action), sb)
                 addField("Ratio " & i, CStr(lLeg.Ratio), sb)
-                addField("Open/close " & i, CStr(IIf(lLeg.OpenClose = LegOpenCloseCode.Same, "", CStr(lLeg.OpenClose))), sb)
+                addField("Open/close " & i, CStr(If(lLeg.OpenClose = LegOpenCloseCode.Same, "", CStr(lLeg.OpenClose))), sb)
                 addField("Designated location " & i, lLeg.DesignatedLocation, sb)
-                addField("Short sale slot " & i, CStr(IIf(lLeg.ShortSaleSlot = ShortSaleSlotCode.NotApplicable, "", CStr(lLeg.ShortSaleSlot))), sb)
+                addField("Short sale slot " & i, CStr(If(lLeg.ShortSaleSlot = ShortSaleSlotCode.NotApplicable, "", CStr(lLeg.ShortSaleSlot))), sb)
             Next lLeg
         End If
 

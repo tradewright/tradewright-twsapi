@@ -115,8 +115,8 @@
     <Reference Include="TradeWright.CommandLineUtils">
       <HintPath>..\Dependencies\TradeWright.CommandLineUtils.dll</HintPath>
     </Reference>
-    <Reference Include="TradeWright.IBAPI973">
-      <HintPath>..\..\src\IBApi\bin\debug\TradeWright.IBAPI973.dll</HintPath>
+    <Reference Include="TradeWright.IBAPI973, Version=9.73.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TradeWright.IBAPI.9.73.2\lib\netstandard2.0\TradeWright.IBAPI973.dll</HintPath>
     </Reference>
     <Reference Include="TradeWright.IOUtils">
       <HintPath>..\Dependencies\TradeWright.IOUtils.dll</HintPath>

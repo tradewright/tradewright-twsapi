@@ -34,7 +34,7 @@ Friend Class RequestMarketDataGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestMarketData)
+            Return New ApiMethodDelegate(AddressOf requestMarketData)
         End Get
     End Property
 
@@ -44,22 +44,21 @@ Friend Class RequestMarketDataGenerator
         End Get
     End Property
 
-    Private Sub RequestMarketData(pTickerId As Integer, pContract As Contract, pGenericTicks As String, pSnapshot As Boolean, regulatorySnapshot As Boolean, options As List(Of TagValue))
+    Private Sub requestMarketData(pTickerId As Integer, pContract As Contract, pGenericTicks As String, pSnapshot As Boolean, regulatorySnapshot As Boolean, options As List(Of TagValue))
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 11
 
-        EventLogger.Log($"Requesting market data for: {pContract.ToString()}", NameOf(RequestMarketDataGenerator), NameOf(RequestMarketData))
+        EventLogger.Log($"Requesting market data for: {pContract.ToString()}", NameOf(RequestMarketDataGenerator), NameOf(requestMarketData))
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketData)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketData), "Ticker id")
-        Dim comboLeg As ComboLeg
-        Dim i As Integer
+
         With pContract
             lWriter.AddElement(.ConId, "Con id")
-            lWriter.AddElement(.Symbol, "Symbol")
+            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
             lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
             lWriter.AddElement(.Expiry, "Expiry")
             lWriter.AddElement(.Strike, "Strike")
@@ -68,12 +67,13 @@ Friend Class RequestMarketDataGenerator
             lWriter.AddElement(.Exchange, "Exchange")
             lWriter.AddElement(.PrimaryExch, "Primary Exchange")
             lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(UCase(.LocalSymbol), "Local Symbol")
+            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
             lWriter.AddElement(.TradingClass, "Trading Class")
 
             ' Add combo legs for BAG requests
             If .SecType = SecurityType.Combo Then
                 lWriter.AddElement(.ComboLegs.Count, "Combolegs count")
+                Dim i As Integer
                 For Each comboLeg In .ComboLegs
                     With comboLeg
                         i = i + 1
@@ -102,7 +102,7 @@ Friend Class RequestMarketDataGenerator
 
             lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), "Options")
 
-            SendMessage(lWriter, NameOf(RequestMarketDataGenerator), NameOf(RequestMarketData))
+            SendMessage(lWriter, NameOf(RequestMarketDataGenerator), NameOf(requestMarketData))
         End With
     End Sub
 

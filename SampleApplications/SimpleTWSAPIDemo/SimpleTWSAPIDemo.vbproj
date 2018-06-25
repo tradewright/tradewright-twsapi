@@ -87,8 +87,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\TradeWright.CommandLineUtils.dll</HintPath>
     </Reference>
-    <Reference Include="TradeWright.IBAPI973">
-      <HintPath>..\..\src\IBApi\bin\debug\TradeWright.IBAPI973.dll</HintPath>
+    <Reference Include="TradeWright.IBAPI973, Version=9.73.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TradeWright.IBAPI.9.73.2\lib\netstandard2.0\TradeWright.IBAPI973.dll</HintPath>
     </Reference>
     <Reference Include="TradeWright.IOUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -169,6 +169,7 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

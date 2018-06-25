@@ -36,7 +36,7 @@ Friend Class RequestRealtimeBarsGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestRealtimeBars)
+            Return New ApiMethodDelegate(AddressOf requestRealtimeBars)
         End Get
     End Property
 
@@ -46,8 +46,8 @@ Friend Class RequestRealtimeBarsGenerator
         End Get
     End Property
 
-    Private Sub RequestRealtimeBars(pTickerId As Integer, pContract As Contract, pBarSize As Integer, pWhatToShow As String, pUseRTH As Integer, options As List(Of TagValue))
-        Const ProcName As String = NameOf(RequestRealtimeBars)
+    Private Sub requestRealtimeBars(pTickerId As Integer, pContract As Contract, pBarSize As Integer, pWhatToShow As String, pUseRTH As Integer, options As List(Of TagValue))
+        Const ProcName As String = NameOf(requestRealtimeBars)
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3
@@ -59,7 +59,7 @@ Friend Class RequestRealtimeBarsGenerator
 
         ' send contract fields
         lWriter.AddElement(pContract.ConId, "ConId")
-        lWriter.AddElement(pContract.Symbol, "Symbol")
+        lWriter.AddElement(pContract.Symbol?.ToUpper(), "Symbol")
         lWriter.AddElement(SecurityTypes.ToInternalString(pContract.SecType), "Sectype")
         lWriter.AddElement(pContract.Expiry, "Expiry")
         lWriter.AddElement(pContract.Strike, "Strike")
@@ -68,7 +68,7 @@ Friend Class RequestRealtimeBarsGenerator
         lWriter.AddElement(pContract.Exchange, "Exchange")
         lWriter.AddElement(pContract.PrimaryExch, "PrimaryExch")
         lWriter.AddElement(pContract.CurrencyCode, "Currency")
-        lWriter.AddElement(UCase(pContract.LocalSymbol), "LocalSymbol")
+        lWriter.AddElement(pContract.LocalSymbol?.ToUpper(), "LocalSymbol")
         lWriter.AddElement(pContract.TradingClass, "TradingClass")
         lWriter.AddElement(pBarSize, "BarSize") ' this parameter is not currently used
         lWriter.AddElement(pWhatToShow, "WhatToShow")

@@ -36,7 +36,7 @@ Friend Class RequestHistoricalDataGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestHistoricalData)
+            Return New ApiMethodDelegate(AddressOf requestHistoricalData)
         End Get
     End Property
 
@@ -46,8 +46,8 @@ Friend Class RequestHistoricalDataGenerator
         End Get
     End Property
 
-    Private Sub RequestHistoricalData(pRequestId As Integer, pRequest As HistoricalDataRequest, useRTH As Boolean, keepUpToDate As Boolean, options As List(Of TagValue))
-        Const ProcName As String = NameOf(RequestHistoricalData)
+    Private Sub requestHistoricalData(pRequestId As Integer, pRequest As HistoricalDataRequest, useRTH As Boolean, keepUpToDate As Boolean, options As List(Of TagValue))
+        Const ProcName As String = NameOf(requestHistoricalData)
         Const VERSION As Integer = 6
 
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
@@ -61,7 +61,7 @@ Friend Class RequestHistoricalDataGenerator
 
         With pRequest.Contract
             lWriter.AddElement(.ConId, "Contract id")
-            lWriter.AddElement(.Symbol, "Symbol")
+            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
             lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
             lWriter.AddElement(.Expiry, "Expiry")
             lWriter.AddElement(.Strike, "Strike")
@@ -72,7 +72,7 @@ Friend Class RequestHistoricalDataGenerator
             lWriter.AddElement(.CurrencyCode, "Currency")
 
             Dim lExpired = IBAPI.IsContractExpired(pRequest.Contract)
-            lWriter.AddElement(If(lExpired, "", UCase(.LocalSymbol)), "Local Symbol")
+            lWriter.AddElement(If(lExpired, "", .LocalSymbol?.ToUpper()), "Local Symbol")
             lWriter.AddElement(.TradingClass, "Trading Class")
             lWriter.AddElement(If(lExpired, 1, 0), "Include expired") ' can't include expired for non-expiring contracts
 

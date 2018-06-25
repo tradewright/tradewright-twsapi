@@ -36,7 +36,7 @@ Friend Class RequestFundamentalDataGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestFundamentalData)
+            Return New ApiMethodDelegate(AddressOf requestFundamentalData)
         End Get
     End Property
 
@@ -46,8 +46,8 @@ Friend Class RequestFundamentalDataGenerator
         End Get
     End Property
 
-    Private Sub RequestFundamentalData(pReqId As Integer, pContract As Contract, pReportType As String, options As List(Of TagValue))
-        Const ProcName As String = NameOf(RequestFundamentalData)
+    Private Sub requestFundamentalData(pReqId As Integer, pContract As Contract, pReportType As String, options As List(Of TagValue))
+        Const ProcName As String = NameOf(requestFundamentalData)
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3
@@ -58,12 +58,12 @@ Friend Class RequestFundamentalDataGenerator
         lWriter.AddElement(pReqId, "ReqId")
 
         lWriter.AddElement(pContract.ConId, "ConId")
-        lWriter.AddElement(pContract.Symbol, "Symbol")
+        lWriter.AddElement(pContract.Symbol?.ToUpper(), "Symbol")
         lWriter.AddElement(SecurityTypes.ToInternalString(pContract.SecType), "Sectype")
         lWriter.AddElement(pContract.Exchange, "Exchange")
         lWriter.AddElement(pContract.PrimaryExch, "PrimaryExch")
         lWriter.AddElement(pContract.CurrencyCode, "Currency")
-        lWriter.AddElement(UCase(pContract.LocalSymbol), "LocalSymbol")
+        lWriter.AddElement(pContract.LocalSymbol?.ToUpper(), "LocalSymbol")
         lWriter.AddElement(pReportType, "ReportType")
         lWriter.AddElement(If(options Is Nothing, 0, options.Count), "Options Count")
         lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), "Options")

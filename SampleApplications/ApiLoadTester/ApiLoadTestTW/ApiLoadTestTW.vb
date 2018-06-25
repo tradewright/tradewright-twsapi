@@ -33,8 +33,8 @@ Public Class ApiLoadTestTW
     Implements IApiLoadTestController
 
     Private mIBApi As IBAPI
-    Private WithEvents mEventSource As EventSource
-    Private mCallbackHandler As CallbackHandler
+    Private WithEvents ApiEventSource As EventSource
+    Private ReadOnly mCallbackHandler As CallbackHandler
 
     Private mNextMarketDataTickerId As Integer
     Private mNextMarketDepthTickerId As Integer
@@ -68,11 +68,11 @@ Public Class ApiLoadTestTW
 
     Private Sub Connect(server As String, port As Integer, clientId As Integer) Implements IApiLoadTestController.Connect
         mIBApi = New IBAPI(server, port, clientId, True, useLegacyProtocol:=(Not mUI.UseV100Protocol))
-        mEventSource = New EventSource()
+        ApiEventSource = New EventSource()
         If mUI.UseQueueingCallbackHandler Then
-            mIBApi.CallbackHandler = New QueueingCallbackHandler(mEventSource, SynchronizationContext.Current)
+            mIBApi.CallbackHandler = New QueueingCallbackHandler(ApiEventSource, SynchronizationContext.Current)
         Else
-            mIBApi.CallbackHandler = mEventSource
+            mIBApi.CallbackHandler = ApiEventSource
         End If
 
         mIBApi.Connect()
@@ -84,15 +84,34 @@ Public Class ApiLoadTestTW
         mIBApi?.Disconnect("User")
     End Sub
 
-    Private Function StartTicker(symbol As String, secType As String, expiry As String, exchange As String, currencyCode As String, primaryExchange As String, multiplier As Integer, marketDepth As Boolean) As Integer Implements IApiLoadTestController.StartTicker
-        Dim contract = New Contract() With {.Symbol = symbol, .SecType = SecurityTypes.Parse(secType), .Expiry = expiry, .Exchange = exchange, .CurrencyCode = currencyCode, .PrimaryExch = primaryExchange, .Multiplier = If(multiplier = 0, 1, multiplier)}
-        mIBApi.RequestMarketData(mNextMarketDataTickerId, contract, "", False)
+    Private Function StartTicker(symbol As String,
+                                 secType As String,
+                                 expiry As String,
+                                 exchange As String,
+                                 currencyCode As String,
+                                 primaryExchange As String,
+                                 multiplier As Integer,
+                                 marketDepth As Boolean) As Integer Implements IApiLoadTestController.StartTicker
+        Dim contract = New Contract() With {
+            .Symbol = symbol,
+            .SecType = SecurityTypes.Parse(secType),
+            .Expiry = expiry,
+            .Exchange = exchange,
+            .CurrencyCode = currencyCode,
+            .PrimaryExch = primaryExchange,
+            .Multiplier = If(multiplier = 0, 1, multiplier)}
+
+        Dim tickerId = mNextMarketDataTickerId
         mNextMarketDataTickerId += 1
+
+        mIBApi.RequestMarketData(tickerId, contract, "", False)
+
         If marketDepth Then
             mIBApi.RequestMarketDepth(mNextMarketDepthTickerId, contract, 20)
             mNextMarketDepthTickerId += 1
         End If
-        Return mNextMarketDataTickerId - 1
+
+        Return tickerId
     End Function
 
     Private Sub StopTickers() Implements IApiLoadTestController.StopTickers
@@ -111,21 +130,21 @@ Public Class ApiLoadTestTW
 
 #End Region
 
-#Region "mEventSource event handlers"
+#Region "ApiEventSource event handlers"
 
-    Public Sub Exception(sender As Object, e As ExceptionEventArgs) Handles mEventSource.Exception
+    Private Sub exception(sender As Object, e As ExceptionEventArgs) Handles ApiEventSource.Exception
         mUI.HandleException(e.Exception)
     End Sub
 
-    Public Sub ApiError(sender As Object, e As ApiErrorEventArgs) Handles mEventSource.ApiError
+    Private Sub apiError(sender As Object, e As ApiErrorEventArgs) Handles ApiEventSource.ApiError
         mUI.LogMessage($"Error {e.ErrorCode} :  {e.Message}")
     End Sub
 
-    Private Sub ApiEvent(sender As Object, e As ApiEventEventArgs) Handles mEventSource.ApiEvent
+    Private Sub apiEvent(sender As Object, e As ApiEventEventArgs) Handles ApiEventSource.ApiEvent
         mUI.LogMessage($"Error {e.EventCode} :  {e.EventMessage}")
     End Sub
 
-    Private Sub ConnectionStateChange(sender As Object, e As ApiConnectionStateChangeEventArgs) Handles mEventSource.ConnectionStateChange
+    Private Sub connectionStateChange(sender As Object, e As ApiConnectionStateChangeEventArgs) Handles ApiEventSource.ConnectionStateChange
         Select Case e.State
             Case ApiConnectionState.NotConnected
                 mUI.NotifyConnectionStateChange(ConnectionState.NotConnected)
@@ -138,207 +157,207 @@ Public Class ApiLoadTestTW
         End Select
     End Sub
 
-    Public Sub CurrentTime(sender As Object, e As CurrentTimeEventArgs) Handles mEventSource.CurrentTime
+    Private Sub currentTime(sender As Object, e As CurrentTimeEventArgs) Handles ApiEventSource.CurrentTime
         mUI.IncrementTotalTicks()
     End Sub
 
-    Private Sub MarketDataError(sender As Object, e As RequestErrorEventArgs) Handles mEventSource.MarketDataError
+    Private Sub marketDataError(sender As Object, e As RequestErrorEventArgs) Handles ApiEventSource.MarketDataError
         mUI.LogMessage("Error " & e.ErrorCode & "(" & e.RequestId & ") :  " & e.Message)
     End Sub
 
-    Private Sub MarketDepthError(sender As Object, e As RequestErrorEventArgs) Handles mEventSource.MarketDepthError
+    Private Sub marketDepthError(sender As Object, e As RequestErrorEventArgs) Handles ApiEventSource.MarketDepthError
         mUI.LogMessage("Error " & e.ErrorCode & "(" & e.RequestId & ") :  " & e.Message)
     End Sub
 
-    Public Sub TickPrice(sender As Object, e As TickPriceEventArgs) Handles mEventSource.TickPrice
+    Private Sub tickPrice(sender As Object, e As TickPriceEventArgs) Handles ApiEventSource.TickPrice
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub TickSize(sender As Object, e As TickSizeEventArgs) Handles mEventSource.TickSize
+    Private Sub tickSize(sender As Object, e As TickSizeEventArgs) Handles ApiEventSource.TickSize
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub TickString(sender As Object, e As TickStringEventArgs) Handles mEventSource.TickString
+    Private Sub tickString(sender As Object, e As TickStringEventArgs) Handles ApiEventSource.TickString
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub TickGeneric(sender As Object, e As TickGenericEventArgs) Handles mEventSource.TickGeneric
+    Private Sub tickGeneric(sender As Object, e As TickGenericEventArgs) Handles ApiEventSource.TickGeneric
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub TickEFP(sender As Object, e As TickEFPEventArgs) Handles mEventSource.TickEFP
+    Private Sub tickEFP(sender As Object, e As TickEFPEventArgs) Handles ApiEventSource.TickEFP
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub DeltaNeutralValidation(sender As Object, e As DeltaNeutralValidationEventArgs) Handles mEventSource.DeltaNeutralValidation
+    Private Sub deltaNeutralValidation(sender As Object, e As DeltaNeutralValidationEventArgs) Handles ApiEventSource.DeltaNeutralValidation
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub TickOptionComputation(sender As Object, e As TickOptionComputationEventArgs) Handles mEventSource.TickOptionComputation
+    Private Sub tickOptionComputation(sender As Object, e As TickOptionComputationEventArgs) Handles ApiEventSource.TickOptionComputation
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub TickSnapshotEnd(sender As Object, e As RequestEndEventArgs) Handles mEventSource.TickSnapshotEnd
+    Private Sub tickSnapshotEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEventSource.TickSnapshotEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ManagedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles mEventSource.ManagedAccounts
+    Private Sub managedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles ApiEventSource.ManagedAccounts
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub AccountSummary(sender As Object, e As AccountSummaryEventArgs) Handles mEventSource.AccountSummary
+    Private Sub accountSummary(sender As Object, e As AccountSummaryEventArgs) Handles ApiEventSource.AccountSummary
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub AccountSummaryEnd(sender As Object, e As RequestEndEventArgs) Handles mEventSource.AccountSummaryEnd
+    Private Sub accountSummaryEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEventSource.AccountSummaryEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub UpdateAccountValue(sender As Object, e As UpdateAccountValueEventArgs) Handles mEventSource.UpdateAccountValue
+    Private Sub updateAccountValue(sender As Object, e As UpdateAccountValueEventArgs) Handles ApiEventSource.UpdateAccountValue
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub UpdatePortfolio(sender As Object, e As UpdatePortfolioEventArgs) Handles mEventSource.UpdatePortfolio
+    Private Sub updatePortfolio(sender As Object, e As UpdatePortfolioEventArgs) Handles ApiEventSource.UpdatePortfolio
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub UpdateAccountTime(sender As Object, e As UpdateAccountTimeEventArgs) Handles mEventSource.UpdateAccountTime
+    Private Sub updateAccountTime(sender As Object, e As UpdateAccountTimeEventArgs) Handles ApiEventSource.UpdateAccountTime
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub AccountDownloadEnd(sender As Object, e As AccountDownloadEndEventArgs) Handles mEventSource.AccountDownloadEnd
+    Private Sub accountDownloadEnd(sender As Object, e As AccountDownloadEndEventArgs) Handles ApiEventSource.AccountDownloadEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub OrderStatus(sender As Object, e As OrderStatusEventArgs) Handles mEventSource.OrderStatus
+    Private Sub orderStatus(sender As Object, e As OrderStatusEventArgs) Handles ApiEventSource.OrderStatus
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub OpenOrder(sender As Object, e As OpenOrderEventArgs) Handles mEventSource.OpenOrder
+    Private Sub openOrder(sender As Object, e As OpenOrderEventArgs) Handles ApiEventSource.OpenOrder
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub OpenOrderEnd(sender As Object, e As EventArgs) Handles mEventSource.OpenOrderEnd
+    Private Sub openOrderEnd(sender As Object, e As EventArgs) Handles ApiEventSource.OpenOrderEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ContractDetails(sender As Object, e As ContractDetailsEventArgs) Handles mEventSource.ContractDetails
+    Private Sub contractDetails(sender As Object, e As ContractDetailsEventArgs) Handles ApiEventSource.ContractDetails
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ContractDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles mEventSource.ContractDetailsEnd
+    Private Sub contractDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEventSource.ContractDetailsEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ExecDetails(sender As Object, e As ExecutionDetailsEventArgs) Handles mEventSource.ExecutionDetails
+    Private Sub execDetails(sender As Object, e As ExecutionDetailsEventArgs) Handles ApiEventSource.ExecutionDetails
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ExecDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles mEventSource.ExecutionDetailsEnd
+    Private Sub execDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEventSource.ExecutionDetailsEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub CommissionReport(sender As Object, e As CommissionReportEventArgs) Handles mEventSource.CommissionReport
+    Private Sub commissionReport(sender As Object, e As CommissionReportEventArgs) Handles ApiEventSource.CommissionReport
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub FundamentalData(sender As Object, e As FundamentalDataEventArgs) Handles mEventSource.FundamentalData
+    Private Sub fundamentalData(sender As Object, e As FundamentalDataEventArgs) Handles ApiEventSource.FundamentalData
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub HistoricalData(sender As Object, e As HistoricalDataEventArgs) Handles mEventSource.HistoricalData
+    Private Sub historicalData(sender As Object, e As HistoricalDataEventArgs) Handles ApiEventSource.HistoricalData
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub HistoricalDataEnd(sender As Object, e As HistoricalDataRequestEventArgs) Handles mEventSource.HistoricalDataEnd
+    Private Sub historicalDataEnd(sender As Object, e As HistoricalDataRequestEventArgs) Handles ApiEventSource.HistoricalDataEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub MarketDataType(sender As Object, e As MarketDataTypeEventArgs) Handles mEventSource.MarketDataType
+    Private Sub marketDataType(sender As Object, e As MarketDataTypeEventArgs) Handles ApiEventSource.MarketDataType
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub DeepBookUpdate(sender As Object, e As MarketDepthUpdateEventArgs) Handles mEventSource.MarketDepthUpdate
+    Private Sub deepBookUpdate(sender As Object, e As MarketDepthUpdateEventArgs) Handles ApiEventSource.MarketDepthUpdate
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub UpdateNewsBulletin(sender As Object, e As NewsBulletinEventArgs) Handles mEventSource.NewsBulletin
+    Private Sub updateNewsBulletin(sender As Object, e As NewsBulletinEventArgs) Handles ApiEventSource.NewsBulletin
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub Position(sender As Object, e As PositionEventArgs) Handles mEventSource.Position
+    Private Sub position(sender As Object, e As PositionEventArgs) Handles ApiEventSource.Position
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub PositionEnd(sender As Object, e As EventArgs) Handles mEventSource.PositionEnd
+    Private Sub positionEnd(sender As Object, e As EventArgs) Handles ApiEventSource.PositionEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub RealtimeBar(sender As Object, e As RealtimeBarEventArgs) Handles mEventSource.RealtimeBar
+    Private Sub realtimeBar(sender As Object, e As RealtimeBarEventArgs) Handles ApiEventSource.RealtimeBar
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ScannerParameters(sender As Object, e As ScannerParametersEventArgs) Handles mEventSource.ScannerParameters
+    Private Sub scannerParameters(sender As Object, e As ScannerParametersEventArgs) Handles ApiEventSource.ScannerParameters
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ScannerData(sender As Object, e As ScannerDataEventArgs) Handles mEventSource.ScannerData
+    Private Sub scannerData(sender As Object, e As ScannerDataEventArgs) Handles ApiEventSource.ScannerData
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ScannerDataEnd(sender As Object, e As RequestEndEventArgs) Handles mEventSource.ScannerDataEnd
+    Private Sub scannerDataEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEventSource.ScannerDataEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub ReceiveFA(sender As Object, e As AdvisorDataEventArgs) Handles mEventSource.AdvisorData
+    Private Sub receiveFA(sender As Object, e As AdvisorDataEventArgs) Handles ApiEventSource.AdvisorData
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub DisplayGroupList(sender As Object, e As DisplayGroupListEventArgs) Handles mEventSource.DisplayGroupList
+    Private Sub displayGroupList(sender As Object, e As DisplayGroupListEventArgs) Handles ApiEventSource.DisplayGroupList
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub DisplayGroupUpdated(sender As Object, e As DisplayGroupUpdatedEventArgs) Handles mEventSource.DisplayGroupUpdated
+    Private Sub displayGroupUpdated(sender As Object, e As DisplayGroupUpdatedEventArgs) Handles ApiEventSource.DisplayGroupUpdated
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub PositionMulti(sender As Object, e As PositionMultiEventArgs) Handles mEventSource.PositionMulti
+    Private Sub positionMulti(sender As Object, e As PositionMultiEventArgs) Handles ApiEventSource.PositionMulti
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub PositionMultiEnd(sender As Object, e As RequestEndEventArgs) Handles mEventSource.PositionMultiEnd
+    Private Sub positionMultiEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEventSource.PositionMultiEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub AccountUpdateMulti(sender As Object, e As AccountUpdateMultiEventArgs) Handles mEventSource.AccountUpdateMulti
+    Private Sub accountUpdateMulti(sender As Object, e As AccountUpdateMultiEventArgs) Handles ApiEventSource.AccountUpdateMulti
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub AccountUpdateMultiEnd(sender As Object, e As RequestEndEventArgs) Handles mEventSource.AccountUpdateMultiEnd
+    Private Sub accountUpdateMultiEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEventSource.AccountUpdateMultiEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub SecurityDefinitionOptionParameter(sender As Object, e As SecurityDefinitionOptionParameterEventArgs) Handles mEventSource.SecurityDefinitionOptionParameter
+    Private Sub securityDefinitionOptionParameter(sender As Object, e As SecurityDefinitionOptionParameterEventArgs) Handles ApiEventSource.SecurityDefinitionOptionParameter
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub SecurityDefinitionOptionParameterEnd(sender As Object, e As RequestEndEventArgs) Handles mEventSource.SecurityDefinitionOptionParameterEnd
+    Private Sub securityDefinitionOptionParameterEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEventSource.SecurityDefinitionOptionParameterEnd
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub SoftDollarTiers(sender As Object, e As SoftDollarTiersEventArgs) Handles mEventSource.SoftDollarTiers
+    Private Sub softDollarTiers(sender As Object, e As SoftDollarTiersEventArgs) Handles ApiEventSource.SoftDollarTiers
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub FamilyCodes(sender As Object, e As FamilyCodesEventArgs) Handles mEventSource.FamilyCodes
+    Private Sub familyCodes(sender As Object, e As FamilyCodesEventArgs) Handles ApiEventSource.FamilyCodes
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub SymbolSamples(sender As Object, e As SymbolSamplesEventArgs) Handles mEventSource.SymbolSamples
+    Private Sub symbolSamples(sender As Object, e As SymbolSamplesEventArgs) Handles ApiEventSource.SymbolSamples
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub MktDepthExchanges(sender As Object, e As MarketDepthExchangesEventArgs) Handles mEventSource.MarketDepthExchanges
+    Private Sub mktDepthExchanges(sender As Object, e As MarketDepthExchangesEventArgs) Handles ApiEventSource.MarketDepthExchanges
         mUI.IncrementTotalTicks()
     End Sub
 
