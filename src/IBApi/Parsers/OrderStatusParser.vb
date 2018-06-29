@@ -32,7 +32,7 @@ Friend NotInheritable Class OrderStatusParser
 
     Private Const ModuleName As String = NameOf(OrderStatusParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lorderId = Await _Reader.GetIntAsync("id")
         Dim lStatus = Await _Reader.GetStringAsync("Status")
         Dim lFilled = Await _Reader.GetDoubleAsync("Filled")
@@ -54,14 +54,20 @@ Friend NotInheritable Class OrderStatusParser
         Dim lWhyHeld = ""
         If pVersion >= 6 Then lWhyHeld = Await _Reader.GetStringAsync("Why held")
 
+        Dim marketCapPrice = Double.MaxValue
+
+        If ServerVersion >= ApiServerVersion.MARKET_CAP_PRICE Then
+            marketCapPrice = Await _Reader.GetDoubleAsync("Market cap price")
+        End If
+
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.OrderInfoConsumer?.NotifyOrderStatus(New OrderStatusEventArgs(timestamp, lorderId, lStatus, lFilled, lRemaining, lAvgFillPrice, lPermId, lParentId, lLastFillPrice, lClientID, lWhyHeld))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyOrderStatus", e)
-            End Try
+            _EventConsumers.OrderInfoConsumer?.NotifyOrderStatus(New OrderStatusEventArgs(timestamp, lorderId, lStatus, lFilled, lRemaining, lAvgFillPrice, lPermId, lParentId, lLastFillPrice, lClientID, lWhyHeld, marketCapPrice))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyOrderStatus", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

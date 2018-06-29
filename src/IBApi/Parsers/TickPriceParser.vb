@@ -43,16 +43,20 @@ Friend NotInheritable Class TickPriceParser
         Dim lAttributes = New TickAttributes
 
         If version >= 3 Then
+            Const CanAutoExecute As Integer = &H1
+            Const PastLimit As Integer = &H2
+            Const PreOpen As Integer = &H4
+
             Dim attrMask = Await _Reader.GetIntAsync("Attr Mask")
 
             lAttributes.CanAutoExecute = (attrMask = 1)
 
             If ServerVersion >= ApiServerVersion.PAST_LIMIT Then
-                Const CanAutoExecute As Integer = &H1
-                Const PastLimit As Integer = &H2
-
                 lAttributes.CanAutoExecute = (attrMask And CanAutoExecute) > 0
                 lAttributes.PastLimit = (attrMask And PastLimit) > 0
+                If ServerVersion >= ApiServerVersion.PRE_OPEN_BID_ASK Then
+                    lAttributes.PreOpen = (attrMask And PreOpen) > 0
+                End If
             End If
         End If
 

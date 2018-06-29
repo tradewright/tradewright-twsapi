@@ -54,21 +54,8 @@ Friend Class RequestHistogramDataGenerator
         StartMessage(lWriter, MessageType)
 
         lWriter.AddElement(requestId, "Request ID")
-        lWriter.AddElement(contract.ConId, "Conid")
-        lWriter.AddElement(contract.Symbol?.ToUpper(), "Symbol")
-        lWriter.AddElement(SecurityTypes.ToInternalString(contract.SecType), "Sectype")
-        lWriter.AddElement(contract.Expiry, "Expiry")
-        lWriter.AddElement(contract.Strike, "Strike")
-        lWriter.AddElement(OptionRights.ToInternalString(contract.OptRight), "Right")
-        lWriter.AddElement(If(contract.Multiplier = 1, "", CStr(contract.Multiplier)), "Multiplier")
-        lWriter.AddElement(contract.Exchange, "Exchange")
-        lWriter.AddElement(contract.PrimaryExch, "Primary Exchg")
-        lWriter.AddElement(contract.CurrencyCode, "Currency")
-
-        Dim lExpired = IBAPI.IsContractExpired(contract)
-        lWriter.AddElement(If(lExpired, "", contract.LocalSymbol?.ToUpper()), "Local Symbol")
-        lWriter.AddElement(contract.TradingClass, "Trading Class")
-        lWriter.AddElement(If(lExpired, 1, 0), "Include expired") ' can't include expired for non-expiring contracts
+        lWriter.AddElement(contract, "Contract")
+        lWriter.AddElement(If(IBAPI.IsContractExpirable(contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
 
         lWriter.AddElement(useRTH, "Use RTH")
         lWriter.AddElement(period, "Period")

@@ -119,8 +119,8 @@ Public Module Globals
             ("RerouteMarketData", ApiSocketInMsgType.RerouteMarketData, EnumNameType.Both),
             ("RerouteMarketDepth", ApiSocketInMsgType.RerouteMarketDepth, EnumNameType.Both),
             ("MarketRule", ApiSocketInMsgType.MarketRule, EnumNameType.Both),
-            ("DailyPnL", ApiSocketInMsgType.DailyPnL, EnumNameType.Both),
-            ("DailyPnLSingle", ApiSocketInMsgType.DailyPnLSingle, EnumNameType.Both)
+            ("DailyPnL", ApiSocketInMsgType.PnL, EnumNameType.Both),
+            ("DailyPnLSingle", ApiSocketInMsgType.PnLSingle, EnumNameType.Both)
         })
 
     Friend ApiSocketOutMsgTypes As New ExtendedEnum(Of System.Enum, ApiSocketOutMsgType)(
@@ -196,7 +196,14 @@ Public Module Globals
             ("Pair", HedgeType.Pair, EnumNameType.External),
             ("", HedgeType.None, EnumNameType.Internal),
             ("*None*", HedgeType.None, EnumNameType.External)
-    })
+        })
+
+    Public LiquidityTypes As New ExtendedEnum(Of System.Enum, LiquidityType)({
+            ("", LiquidityType.None, EnumNameType.None),
+            ("Added Liquidity", LiquidityType.AddedLiquidity, EnumNameType.Both),
+            ("Removed Liquidity", LiquidityType.RemovedLiquidity, EnumNameType.Both),
+            ("Liquidity Routed Out", LiquidityType.LiquidityRoutedOut, EnumNameType.Both)
+        })
 
     Public OcaTypes As New ExtendedEnum(Of System.Enum, OcaType)({
             ("", OcaType.None, EnumNameType.None),

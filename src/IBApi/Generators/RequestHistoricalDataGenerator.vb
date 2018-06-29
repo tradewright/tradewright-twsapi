@@ -58,25 +58,9 @@ Friend Class RequestHistoricalDataGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.RequestHistoricalData)
         If ServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(IdManager.GetTwsId(pRequestId, IdType.HistoricalData), "Request id")
+        lWriter.AddElement(pRequest.Contract, "Contract")
 
-        With pRequest.Contract
-            lWriter.AddElement(.ConId, "Contract id")
-            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
-            lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
-            lWriter.AddElement(.Expiry, "Expiry")
-            lWriter.AddElement(.Strike, "Strike")
-            lWriter.AddElement(OptionRights.ToInternalString(.OptRight), "Right")
-            lWriter.AddElement(If(.Multiplier = 1, "", CStr(.Multiplier)), "Multiplier")
-            lWriter.AddElement(.Exchange, "Exchange")
-            lWriter.AddElement(.PrimaryExch, "Primary Exchange")
-            lWriter.AddElement(.CurrencyCode, "Currency")
-
-            Dim lExpired = IBAPI.IsContractExpired(pRequest.Contract)
-            lWriter.AddElement(If(lExpired, "", .LocalSymbol?.ToUpper()), "Local Symbol")
-            lWriter.AddElement(.TradingClass, "Trading Class")
-            lWriter.AddElement(If(lExpired, 1, 0), "Include expired") ' can't include expired for non-expiring contracts
-
-        End With
+        lWriter.AddElement(If(IBAPI.IsContractExpirable(pRequest.Contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
 
         lWriter.AddElement(pRequest.EndDateTime.ToString("yyyyMMdd HH:mm:ss") & If(String.IsNullOrEmpty(pRequest.TimeZone), "", " " & pRequest.TimeZone), "End date")
         lWriter.AddElement(pRequest.BarSizeSetting, "Bar Size")
@@ -104,7 +88,7 @@ Friend Class RequestHistoricalDataGenerator
 
         If ServerVersion >= ApiServerVersion.SYNT_REALTIME_BARS Then lWriter.AddElement(keepUpToDate, "KeepUpToDate")
 
-        lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), "Options")
+        lWriter.AddElement(options, "Options")
 
         SendMessage(lWriter, ModuleName, ProcName)
     End Sub

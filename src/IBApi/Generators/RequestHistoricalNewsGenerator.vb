@@ -34,7 +34,7 @@ Friend Class RequestHistoricalNewsGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestHistoricalNews)
+            Return New ApiMethodDelegate(AddressOf requestHistoricalNews)
         End Get
     End Property
 
@@ -44,8 +44,8 @@ Friend Class RequestHistoricalNewsGenerator
         End Get
     End Property
 
-    Private Sub RequestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer)
-        Const ProcName As String = NameOf(RequestHistoricalNews)
+    Private Sub requestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer)
+        Const ProcName As String = NameOf(requestHistoricalNews)
 
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HISTORICAL_NEWS Then Throw New InvalidOperationException("Historical news requests not supported")

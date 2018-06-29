@@ -74,6 +74,7 @@ Public Class Execution
     Public Property EvRule As String
     Public Property EvMultiplier As Double
     Public Property ModelCode As String
+    Public Property LastLiquidity As LiquidityType
 
     '@================================================================================
     ' Class Event Handlers

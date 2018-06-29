@@ -84,11 +84,11 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
-    Public Overridable Sub NotifyDailyPnL(e As DailyPnLEventArgs) Implements IAccountDataConsumer.NotifyDailyPnL
+    Public Overridable Sub NotifyPnL(e As PnLEventArgs) Implements IAccountDataConsumer.NotifyPnL
         ' no action
     End Sub
 
-    Public Overridable Sub NotifyDailyPnLSingle(e As DailyPnLSingleEventArgs) Implements IAccountDataConsumer.NotifyDailyPnLSingle
+    Public Overridable Sub NotifyPnLSingle(e As PnLSingleEventArgs) Implements IAccountDataConsumer.NotifyPnLSingle
         ' no action
     End Sub
 

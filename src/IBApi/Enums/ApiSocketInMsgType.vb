@@ -75,7 +75,7 @@ Public Enum ApiSocketInMsgType
     AccountUpdateMulti = 73
     AccountUpdateMultiEnd = 74
 
-    ' Messages from here on don't have a version mnumber
+    ' Messages from here on don't have a version number
     MaxIdWithVersion = AccountUpdateMultiEnd
 
     SecurityDefinitionOptionParameter = 75
@@ -97,8 +97,13 @@ Public Enum ApiSocketInMsgType
     RerouteMarketData = 91
     RerouteMarketDepth = 92
     MarketRule = 93
-    DailyPnL = 94
-    DailyPnLSingle = 95
-    Max
+    PnL = 94
+    PnLSingle = 95
+    HistoricalTick = 96
+    HistoricalTickBidAsk = 97
+    HistoricalTickLast = 98
+    TickByTick = 99
+    OrderBound = 100
+    Max = OrderBound
 End Enum
 

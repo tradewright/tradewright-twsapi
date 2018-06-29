@@ -24,17 +24,17 @@
 
 #End Region
 
-Friend Class CancelPositionsMulti
+Friend Class CancelPositionsMultiGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
     Private Delegate Sub ApiMethodDelegate(requestId As Integer)
 
-    Private Const ModuleName As String = NameOf(CancelPositionsMulti)
+    Private Const ModuleName As String = NameOf(cancelPositionsMulti)
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf CancelPositionsMulti)
+            Return New ApiMethodDelegate(AddressOf cancelPositionsMulti)
         End Get
     End Property
 
@@ -44,8 +44,8 @@ Friend Class CancelPositionsMulti
         End Get
     End Property
 
-    Private Sub CancelPositionsMulti(requestId As Integer)
-        Const ProcName As String = NameOf(CancelPositionsMulti)
+    Private Sub cancelPositionsMulti(requestId As Integer)
+        Const ProcName As String = NameOf(cancelPositionsMulti)
         Const Version As Integer = 1
 
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")

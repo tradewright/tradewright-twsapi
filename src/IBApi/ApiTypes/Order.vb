@@ -64,10 +64,10 @@ Public Class Order
     Private Const OptUnknown As String = "?"
     Private Const OptBrokerDealer As String = "b"
     Private Const OptCustomer As String = "c"
-    Private Const OprFirm As String = "f"
-    Private Const OptIsemm As String = "m"
+    Private Const OptFirm As String = "f"
+    Private Const OptIsEmm As String = "m"
     Private Const OptFarmm As String = "n"
-    Private Const OprSpecialist As String = "y"
+    Private Const OptSpecialist As String = "y"
     Private Const AuctionMatch As Short = 1
     Private Const AuctionImprovement As Short = 2
     Private Const AuctionTransparent As Short = 3
@@ -89,7 +89,6 @@ Public Class Order
     Public Property OcaGroup As String ' one cancels all group name
     Public Property OcaType As OcaType
     Public Property OrderRef As String
-    Public Property Transmit As Boolean ' if false, Order will be created but not transmited
     Public Property ParentId As Integer ' Parent Order Id, to associate Auto STP or TRAIL orders with the original Order.
     Public Property BlockOrder As Boolean
     Public Property SweepToFill As Boolean
@@ -212,6 +211,12 @@ Public Class Order
     ''' <returns></returns>
     Public Property ExtOperator As String
     Public Property CashQty As Double?
+    Public Property Mifid2DecisionMaker As String
+    Public Property Mifid2DecisionAlgo As String
+    Public Property Mifid2ExecutionTrader As String
+    Public Property Mifid2ExecutionAlgo As String
+
+    Public Property DontUseAutoPriceForHedge As Boolean
     Public Property RandomizeSize As Boolean
     Public Property RandomizePrice As Boolean
 
@@ -321,7 +326,6 @@ Public Class Order
         OutsideRth = False
         OpenClose = "O"
         Origin = Customer
-        Transmit = True
         DesignatedLocation = ""
         ExemptCode = -1
         OptOutSmartRouting = False

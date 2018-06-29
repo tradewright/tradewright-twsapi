@@ -92,10 +92,13 @@ Friend Enum ApiSocketOutMsgType
     CancelHistogramData = 89
     CancelHeadTimestamp = 90
     RequestMarketRule = 91
-    ReqDailyPnL = 92
-    CancelDailyPnL = 93
-    ReqDailyPnLSingle = 94
-    CancelDailyPnLSingle = 95
+    RequestPnL = 92
+    CancelPnL = 93
+    RequestPnLSingle = 94
+    CancelPnLSingle = 95
+    RequestHistoricalTickData = 96
+    RequestTickByTickData = 97
+    CancelTickByTickData = 98
     Max
 End Enum
 

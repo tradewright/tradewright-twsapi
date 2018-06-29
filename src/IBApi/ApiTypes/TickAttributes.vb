@@ -27,4 +27,5 @@
 Public Class TickAttributes
     Public Property CanAutoExecute As Boolean
     Public Property PastLimit As Boolean
+    Public Property PreOpen As Boolean
 End Class

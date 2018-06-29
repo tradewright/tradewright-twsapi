@@ -46,11 +46,11 @@ Friend NotInheritable Class MessageGenerator
 
     Private mLengthOffset As Integer
 
-    Private mUseV100Plus As Boolean
+    Private ReadOnly mUseV100Plus As Boolean
 
-    Private mThisLock As Object = New Object()
+    Private ReadOnly mThisLock As Object = New Object()
 
-    Private mMessageBuilder As StringBuilder
+    Private ReadOnly mMessageBuilder As StringBuilder
 
     Private mDisposed As Boolean
 
@@ -139,6 +139,25 @@ Friend NotInheritable Class MessageGenerator
         writeRawString(value)
         mWriter.Write(EOL)
         mLength += 1
+    End Sub
+
+    Friend Sub AddElement(value As Contract, fieldName As String)
+        AddElement(value.ConId, $"{fieldName}.ConId")
+        AddElement(value.Symbol?.ToUpper(), $"{fieldName}.Symbol")
+        AddElement(SecurityTypes.ToInternalString(value.SecType), $"{fieldName}.Sectype")
+        AddElement(value.Expiry, $"{fieldName}.Expiry")
+        AddElement(value.Strike, $"{fieldName}.Strike")
+        AddElement(OptionRights.ToInternalString(value.OptRight), $"{fieldName}.Right")
+        AddElement(If(value.Multiplier = 1, "", CStr(value.Multiplier)), $"{fieldName}.Multiplier")
+        AddElement(value.Exchange, $"{fieldName}.Exchange")
+        AddElement(value.PrimaryExch, $"{fieldName}.Primary Exchange")
+        AddElement(value.CurrencyCode, $"{fieldName}.Currency")
+        AddElement(value.LocalSymbol?.ToUpper(), $"{fieldName}.Local Symbol")
+        AddElement(value.TradingClass, $"{fieldName}.Trading Class")
+    End Sub
+
+    Friend Sub AddElement(options As List(Of TagValue), fieldName As String)
+        AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), fieldName)
     End Sub
 
     Friend Sub Send()

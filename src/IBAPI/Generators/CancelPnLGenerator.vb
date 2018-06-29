@@ -24,34 +24,38 @@
 
 #End Region
 
-Imports System.Threading.Tasks
+Friend Class CancelPnLGenerator
+    Inherits GeneratorBase
+    Implements IGenerator
 
-Friend NotInheritable Class DailyPnLSingleParser
-    Inherits ParserBase
-    Implements IParser
+    Private Delegate Sub ApiMethodDelegate(requestId As Integer)
 
-    Private Const ModuleName As String = NameOf(DailyPnLSingleParser)
+    Private Const ModuleName As String = NameOf(CancelPnLGenerator)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim requestId = Await _Reader.GetIntAsync("Request Id")
-        Dim position = Await _Reader.GetIntAsync("Position")
-        Dim dailyPnL = Await _Reader.GetDoubleAsync("Daily PnL")
-        Dim value = Await _Reader.GetDoubleAsync("Value")
-
-        LogSocketInputMessage(ModuleName, "ParseAsync")
-
-        Try
-        _EventConsumers.AccountDataConsumer?.NotifyDailyPnLSingle(New DailyPnLSingleEventArgs(timestamp, requestId, position, dailyPnL, value))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyDailyPnLSingle", e)
-            End Try
-    End Function
-
-    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
+    Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return ApiSocketInMsgType.DailyPnLSingle
+            Return New ApiMethodDelegate(AddressOf cancelPnL)
         End Get
     End Property
+
+    Friend Overrides ReadOnly Property MessageType As ApiSocketOutMsgType
+        Get
+            Return ApiSocketOutMsgType.CancelPnL
+        End Get
+    End Property
+
+    Private Sub cancelPnL(requestId As Integer)
+        Const ProcName As String = NameOf(cancelPnL)
+
+        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ServerVersion < ApiServerVersion.PNL Then Throw New InvalidOperationException("PnL requests not supported")
+
+        Dim lWriter = CreateOutputMessageGenerator()
+        StartMessage(lWriter, MessageType)
+
+        lWriter.AddElement(requestId, "Request Id")
+
+        SendMessage(lWriter, ModuleName, ProcName)
+    End Sub
 
 End Class

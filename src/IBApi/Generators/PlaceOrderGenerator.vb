@@ -28,7 +28,7 @@ Friend Class PlaceOrderGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub PlaceOrderDelegate(pOrder As Order, pContract As Contract)
+    Private Delegate Sub PlaceOrderDelegate(pOrder As Order, pContract As Contract, transmit As Boolean, pSecIdType As String, pSecId As String)
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
@@ -42,7 +42,7 @@ Friend Class PlaceOrderGenerator
         End Get
     End Property
 
-    Private Sub placeOrder(order As Order, contract As Contract)
+    Private Sub placeOrder(order As Order, contract As Contract, transmit As Boolean, secIdType As String, secId As String)
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         If ServerVersion < ApiServerVersion.EXT_OPERATOR And Not String.IsNullOrEmpty(order.ExtOperator) Then Throw New InvalidOperationException("extOperator parameter not supported")
@@ -60,25 +60,10 @@ Friend Class PlaceOrderGenerator
 
         lWriter.AddElement(order.OrderId, "Order id")
 
-        ' mwriter.send contract fields
-        With contract
-            lWriter.AddElement(.ConId, "Con id")
-            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
-            lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sectype")
-            lWriter.AddElement(.Expiry, "Expiry")
-            lWriter.AddElement(.Strike, "Strike")
-            lWriter.AddElement(OptionRights.ToInternalString(.OptRight), "Right")
-            lWriter.AddElement(If(.Multiplier = 1, "", CStr(.Multiplier)), "Multiplier")
-            lWriter.AddElement(.Exchange, "Exchange")
-            lWriter.AddElement(.PrimaryExch, "Primary Exchange") ' only relevant when
-            ' Exchange is SMART and there are SMART routers in more
-            ' than one country (eg try IBM in Tws)
-            lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
-            lWriter.AddElement(.TradingClass, "Trading Class")
-            lWriter.AddElement(.SecIdType, "Sec id type")
-            lWriter.AddElement(.SecId, "Sec id")
-        End With
+        lWriter.AddElement(contract, "Contract")
+
+        lWriter.AddElement(secIdType, "Sec id type")
+        lWriter.AddElement(secId, "Sec id")
 
         With order
 
@@ -101,7 +86,7 @@ Friend Class PlaceOrderGenerator
             lWriter.AddElement(.OpenClose, "OpenClose")
             lWriter.AddElement(.Origin, "Origin")
             lWriter.AddElement(.OrderRef, "Order ref")
-            lWriter.AddElement(.Transmit, "Transmit")
+            lWriter.AddElement(transmit, "Transmit")
             lWriter.AddElement(.ParentId, "Parent id")
             lWriter.AddElement(.BlockOrder, "Block Order")
             lWriter.AddElement(.SweepToFill, "Sweep to fill")
@@ -278,10 +263,8 @@ Friend Class PlaceOrderGenerator
 
             lWriter.AddElement(.Solicited, "Solicited")
 
-            If (ServerVersion >= ApiServerVersion.RANDOMIZE_SIZE_AND_PRICE) Then
-                lWriter.AddElement(.RandomizeSize, "Randomize Size")
-                lWriter.AddElement(.RandomizePrice, "Randomize Price")
-            End If
+            lWriter.AddElement(.RandomizeSize, "Randomize Size")
+            lWriter.AddElement(.RandomizePrice, "Randomize Price")
 
             If (ServerVersion >= ApiServerVersion.PEGGED_TO_BENCHMARK) Then
                 If (.OrderType = OrderType.PeggedToBenchmark) Then
@@ -324,6 +307,20 @@ Friend Class PlaceOrderGenerator
 
             If (ServerVersion >= ApiServerVersion.CASH_QTY) Then
                 lWriter.AddElement(.CashQty, "Cash Qty")
+            End If
+
+            If ServerVersion >= ApiServerVersion.DECISION_MAKER Then
+                lWriter.AddElement(.Mifid2DecisionMaker, "Mifid2DecisionMaker")
+                lWriter.AddElement(.Mifid2DecisionAlgo, "Mifid2DecisionAlgo")
+            End If
+
+            If ServerVersion >= ApiServerVersion.MIFID_EXECUTION Then
+                lWriter.AddElement(.Mifid2ExecutionTrader, "Mifid2ExecutionTrader")
+                lWriter.AddElement(.Mifid2ExecutionAlgo, "Mifid2ExecutionAlgo")
+            End If
+
+            If ServerVersion >= ApiServerVersion.AUTO_PRICE_FOR_HEDGE Then
+                lWriter.AddElement(.DontUseAutoPriceForHedge, "DontUseAutoPriceForHedge")
             End If
 
         End With

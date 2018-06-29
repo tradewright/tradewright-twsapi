@@ -24,16 +24,35 @@
 
 #End Region
 
-Public Class DailyPnLEventArgs
-    Inherits AbstractEventArgsWithTimestamp
-    Public Property DailyPnL As Double
+Imports System.Threading.Tasks
 
-    Public Property RequestId As Integer
+Friend NotInheritable Class PnLSingleParser
+    Inherits ParserBase
+    Implements IParser
 
-    Public Sub New(timestamp As DateTime, requestId As Integer, dailyPnL As Double)
-        MyBase.New()
-        Me._Timestamp = timestamp
-        Me.RequestId = requestId
-        Me.DailyPnL = dailyPnL
-    End Sub
+    Private Const ModuleName As String = NameOf(PnLSingleParser)
+
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+        Dim requestId = Await _Reader.GetIntAsync("Request Id")
+        Dim position = Await _Reader.GetIntAsync("Position")
+        Dim pnl = Await _Reader.GetDoubleAsync("PnL")
+        Dim unrealizedPnL = Await _Reader.GetDoubleAsync("Unrealized PnL")
+        Dim value = Await _Reader.GetDoubleAsync("Value")
+
+        LogSocketInputMessage(ModuleName, "ParseAsync")
+
+        Try
+            _EventConsumers.AccountDataConsumer?.NotifyPnLSingle(New PnLSingleEventArgs(timestamp, requestId, position, pnl, unrealizedPnL, value))
+            Return True
+            Catch e As Exception
+            Throw New ApiApplicationException("NotifyPnLSingle", e)
+        End Try
+    End Function
+
+    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
+        Get
+            Return ApiSocketInMsgType.PnLSingle
+        End Get
+    End Property
+
 End Class

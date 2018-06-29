@@ -66,7 +66,7 @@ Friend Class RequestFundamentalDataGenerator
         lWriter.AddElement(pContract.LocalSymbol?.ToUpper(), "LocalSymbol")
         lWriter.AddElement(pReportType, "ReportType")
         lWriter.AddElement(If(options Is Nothing, 0, options.Count), "Options Count")
-        lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), "Options")
+        lWriter.AddElement(options, "Options")
 
         SendMessage(lWriter, ModuleName, ProcName)
     End Sub

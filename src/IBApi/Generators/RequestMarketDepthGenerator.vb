@@ -57,23 +57,11 @@ Friend Class RequestMarketDepthGenerator
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Request id")
 
-        lWriter.AddElement(pContract.ConId, "Contract Id")
+        lWriter.AddElement(pContract, "Contract")
 
-        With pContract
-            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
-            lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
-            lWriter.AddElement(.Expiry, "Expiry")
-            lWriter.AddElement(.Strike, "Strike")
-            lWriter.AddElement(OptionRights.ToInternalString(.OptRight), "Right")
-            lWriter.AddElement(If(.Multiplier = 1, "", CStr(.Multiplier)), "Multiplier")
-            lWriter.AddElement(.Exchange, "Exchange")
-            lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
-            lWriter.AddElement(pContract.TradingClass, "Trading Class")
-            lWriter.AddElement(pNumberOfRows, "Num rows")
-        End With
+        lWriter.AddElement(pNumberOfRows, "Num rows")
 
-        lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), "Options")
+        lWriter.AddElement(options, "Options")
         SendMessage(lWriter, ModuleName, ProcName)
     End Sub
 

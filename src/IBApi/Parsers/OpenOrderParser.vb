@@ -34,11 +34,11 @@ Friend NotInheritable Class OpenOrderParser
     Private Const ModuleName As String = NameOf(OpenOrderParser)
 
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim lOrderState As New OrderState
         Dim lOrder As New Order
+        Dim lOrderState = New OrderState()
+
         lOrder.OrderId = Await _Reader.GetIntAsync("Id")
 
-        ' read contract fields
         Dim lContract As New Contract
         With lContract
             .ConId = Await _Reader.GetIntAsync("conId")
@@ -146,15 +146,16 @@ Friend NotInheritable Class OpenOrderParser
             Dim lComboLegsCount = Await _Reader.GetIntAsync("ComboLegsCount")
             If lComboLegsCount > 0 Then
                 For i = 1 To lComboLegsCount
-                    Dim lComboLeg As New ComboLeg
-                    lComboLeg.ConId = Await _Reader.GetIntAsync($"ConId{i}")
-                    lComboLeg.Ratio = Await _Reader.GetIntAsync($"Ratio{i}")
-                    lComboLeg.Action = OrderActions.Parse(Await _Reader.GetStringAsync($"Action{i}"))
-                    lComboLeg.Exchange = Await _Reader.GetStringAsync($"Exchange{i}")
-                    lComboLeg.OpenClose = DirectCast(Await _Reader.GetIntAsync($"OpenClose{i}"), LegOpenCloseCode)
-                    lComboLeg.ShortSaleSlot = DirectCast(Await _Reader.GetIntAsync($"ShortSaleSlot{i}"), ShortSaleSlotCode)
-                    lComboLeg.DesignatedLocation = Await _Reader.GetStringAsync($"DesignatedLocation{i}")
-                    lComboLeg.ExemptCode = Await _Reader.GetIntAsync($"ExemptCode{i}")
+                    Dim lComboLeg As New ComboLeg With {
+                        .ConId = Await _Reader.GetIntAsync($"ConId{i}"),
+                        .Ratio = Await _Reader.GetIntAsync($"Ratio{i}"),
+                        .Action = OrderActions.Parse(Await _Reader.GetStringAsync($"Action{i}")),
+                        .Exchange = Await _Reader.GetStringAsync($"Exchange{i}"),
+                        .OpenClose = DirectCast(Await _Reader.GetIntAsync($"OpenClose{i}"), LegOpenCloseCode),
+                        .ShortSaleSlot = DirectCast(Await _Reader.GetIntAsync($"ShortSaleSlot{i}"), ShortSaleSlotCode),
+                        .DesignatedLocation = Await _Reader.GetStringAsync($"DesignatedLocation{i}"),
+                        .ExemptCode = Await _Reader.GetIntAsync($"ExemptCode{i}")
+                    }
 
                     lContract.ComboLegs.Add((lComboLeg))
                 Next
@@ -232,12 +233,21 @@ Friend NotInheritable Class OpenOrderParser
 
             .WhatIf = Await _Reader.GetBooleanAsync("What If")
 
-            lOrderState = New OrderState()
             With lOrderState
                 .Status = Await _Reader.GetStringAsync("Status")
-                .InitMargin = Await _Reader.GetNullableDoubleAsync("Init Margin")
-                .MaintMargin = Await _Reader.GetNullableDoubleAsync("Maint Margin")
-                .EquityWithLoan = Await _Reader.GetNullableDoubleAsync("Equity With Loan")
+                If ServerVersion >= ApiServerVersion.WHAT_IF_EXT_FIELDS Then
+                    .InitMarginBefore = Await _Reader.GetNullableDoubleAsync("Init Margin Before")
+                    .MaintMarginBefore = Await _Reader.GetNullableDoubleAsync("Maint Margin Before")
+                    .EquityWithLoanBefore = Await _Reader.GetNullableDoubleAsync("Equity With Loan Before")
+                    .InitMarginChange = Await _Reader.GetNullableDoubleAsync("Init Margin Change")
+                    .MaintMarginChange = Await _Reader.GetNullableDoubleAsync("Maint Margin Change")
+                    .EquityWithLoanChange = Await _Reader.GetNullableDoubleAsync("Equity With Loan Change")
+                End If
+
+                .InitMarginAfter = Await _Reader.GetNullableDoubleAsync("Init Margin After")
+                .MaintMarginAfter = Await _Reader.GetNullableDoubleAsync("Maint Margin After")
+                .EquityWithLoanAfter = Await _Reader.GetNullableDoubleAsync("Equity With Loan After")
+
                 .Commission = Await _Reader.GetNullableDoubleAsync("Commission")
                 .MinCommission = Await _Reader.GetNullableDoubleAsync("Min Commission")
                 .MaxCommission = Await _Reader.GetNullableDoubleAsync("Max Commission")
@@ -289,6 +299,11 @@ Friend NotInheritable Class OpenOrderParser
             If (ServerVersion >= ApiServerVersion.CASH_QTY) Then
                 .CashQty = Await _Reader.GetNullableDoubleAsync("Cash Qty")
             End If
+
+            If (ServerVersion >= ApiServerVersion.AUTO_PRICE_FOR_HEDGE) Then
+                .DontUseAutoPriceForHedge = Await _Reader.GetBoolFromIntAsync("Dont Use Auto Price For Hedge")
+            End If
+
         End With
 
         LogSocketInputMessage(ModuleName, "ParseAsync")

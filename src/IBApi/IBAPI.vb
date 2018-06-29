@@ -51,12 +51,12 @@ Public Class IBAPI
 
 #Region "Member variables"
 
-    Private mServer As String
-    Private mPort As Integer
-    Private mClientID As Integer
+    Private ReadOnly mServer As String
+    Private ReadOnly mPort As Integer
+    Private ReadOnly mClientID As Integer
 
-    Private mUseSSL As Boolean
-    Private mUseV100Plus As Boolean
+    Private ReadOnly mUseSSL As Boolean
+    Private ReadOnly mUseV100Plus As Boolean
 
     Private mCallbackHandler As CallbackHandler
 
@@ -386,9 +386,22 @@ Public Class IBAPI
 
 #Region "Shared Methods"
 
-    Public Shared Function IsContractExpired(pContract As Contract) As Boolean
-        If pContract.SecType = SecurityType.Cash Or pContract.SecType = SecurityType.Index Or pContract.SecType = SecurityType.Stock Then Return False
+    Public Shared Function IsContractExpirable(pContract As Contract) As Boolean
+        Select Case pContract.SecType
+            Case SecurityType.Option,
+                    SecurityType.FuturesOption,
+                    SecurityType.Warrant,
+                    SecurityType.Bond,
+                    SecurityType.Commodity
+                Return True
+            Case Else
+                Return False
+        End Select
+    End Function
 
+
+    Public Shared Function IsContractExpired(pContract As Contract) As Boolean
+        If Not IsContractExpirable(pContract) Then Return False
         Return contractExpiryToDate(pContract) < Date.Now
     End Function
 
@@ -425,12 +438,12 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelCalculateOptionPrice, {pReqId})
     End Sub
 
-    Public Sub CancelDailyPnL(requestId As Integer)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelDailyPnL, {requestId})
+    Public Sub CancelPnL(requestId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelPnL, {requestId})
     End Sub
 
-    Sub CancelDailyPnLSingle(requestId As Integer)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelDailyPnLSingle, {requestId})
+    Sub CancelPnLSingle(requestId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelPnLSingle, {requestId})
     End Sub
 
     Public Sub CancelFundamentalData(pReqId As Integer)
@@ -481,6 +494,11 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelScannerSubscription, {pTickerId})
     End Sub
 
+    Public Sub CancelTickByTickData(requestId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelTickByTickData, {requestId})
+    End Sub
+
+
     Public Sub Connect(Optional useSSL As Boolean = False)
         mCancellationSource = New CancellationTokenSource()
         Dim lreader = mConnectionManager.Connect(AddressOf startInputMessageHandler,
@@ -517,8 +535,12 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.ExerciseOptions, {pTickerId, pContract, pExerciseAction, pExerciseQuantity, pAccount, pOverride})
     End Sub
 
-    Public Sub PlaceOrder(pOrder As Order, pContract As Contract)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.PlaceOrder, {pOrder, pContract})
+    Public Sub PlaceOrder(pOrder As Order, pContract As Contract, pTransmit As Boolean)
+        PlaceOrder(pOrder, pContract, pTransmit, "", "")
+    End Sub
+
+    Public Sub PlaceOrder(pOrder As Order, pContract As Contract, pTransmit As Boolean, pSecIdType As String, pSecId As String)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.PlaceOrder, {pOrder, pContract, pTransmit, pSecIdType, pSecId})
     End Sub
 
     Public Sub QueryDisplayGroups(requestId As Integer)
@@ -550,7 +572,19 @@ Public Class IBAPI
     End Sub
 
     Public Sub RequestContractData(pRequestId As Integer, pContract As Contract)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestContractData, {pRequestId, pContract})
+        RequestContractData(pRequestId, pContract, False)
+    End Sub
+
+    Public Sub RequestContractData(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean)
+        RequestContractData(pRequestId, pContract, pIncludeExpired, "", "")
+    End Sub
+
+    Public Sub RequestContractData(pRequestId As Integer, pContract As Contract, pSecIdType As String, pSecId As String)
+        RequestContractData(pRequestId, pContract, False, pSecIdType, pSecId)
+    End Sub
+
+    Public Sub RequestContractData(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestContractData, {pRequestId, pContract, pIncludeExpired, pSecIdType, pSecId})
     End Sub
 
     Public Sub RequestCurrentTime()
@@ -591,6 +625,18 @@ Public Class IBAPI
 
     Public Sub RequestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalNews, {requestId, conid, providerCodes, startTime, endTime, maxResults})
+    End Sub
+
+    ''' <summary>
+    ''' Requests historical time-and-sales data for an instrument
+    ''' </summary>
+    ''' <param name="requestId">Identifies this request</param>
+    ''' <param name="request">A <c>HistoricalTickDataRequest</c> object that specifies the information required</param>
+    ''' <param name="useRTH">If <c>True</c> only data within regular trading hours is returned</param>
+    ''' <param name="ignoreSize">A filter only used when the source price is Bid_Ask</param>
+    ''' <param name="options">Reserved for internal use</param>
+    Public Sub RequestHistoricalTickData(requestId As Integer, request As HistoricalTickDataRequest, Optional useRTH As Boolean = False, Optional ignoreSize As Boolean = False, Optional options As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalTickData, {requestId, request, useRTH, ignoreSize, options})
     End Sub
 
     Public Sub RequestManagedAccounts()
@@ -637,6 +683,14 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestOpenOrders, Nothing)
     End Sub
 
+    Public Sub RequestPnL(requestId As Integer, account As String, modelCode As String)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestPnL, {requestId, account, modelCode})
+    End Sub
+
+    Public Sub RequestPnLSingle(requestId As Integer, account As String, modelCode As String, conId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestPnLSingle, {requestId, account, modelCode, conId})
+    End Sub
+
     Public Sub RequestPositions()
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestPositions, Nothing)
     End Sub
@@ -653,8 +707,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerParameters, Nothing)
     End Sub
 
-    Public Sub RequestScannerSubscription(pTickerId As Integer, pSubscription As ScannerSubscription, Optional options As List(Of TagValue) = Nothing)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerSubscription, {pTickerId, pSubscription, options})
+    Public Sub RequestScannerSubscription(pTickerId As Integer, pSubscription As ScannerSubscription, Optional options As List(Of TagValue) = Nothing, Optional filterOptions As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerSubscription, {pTickerId, pSubscription, options, filterOptions})
     End Sub
 
     Public Sub RequestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
@@ -667,6 +721,10 @@ Public Class IBAPI
 
     Public Sub RequestSoftDollarTiers(requestId As Integer)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestSoftDollarTiers, {requestId})
+    End Sub
+
+    Public Sub RequestTickByTickData(requestId As Integer, contract As Contract, tickType As String, numberOfTicks As Integer, ignoreSize As Boolean)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestTickByTickData, {requestId, contract, tickType, numberOfTicks, ignoreSize})
     End Sub
 
     Public Sub SetLogLevel(pLogLevel As ApiLogLevel)

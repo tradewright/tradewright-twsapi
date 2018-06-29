@@ -58,26 +58,13 @@ Friend Class CalculateOptionPriceGenerator
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pReqId, "ReqId")
 
-        With pContract
-            lWriter.AddElement(.ConId, "Contract id")
-            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
-            lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
-            lWriter.AddElement(.Expiry, "Expiry")
-            lWriter.AddElement(.Strike, "Strike")
-            lWriter.AddElement(OptionRights.ToInternalString(.OptRight), "Right")
-            lWriter.AddElement(If(.Multiplier = 1, "", CStr(.Multiplier)), "Multiplier")
-            lWriter.AddElement(If(.Exchange = "", "*", .Exchange), "Exchange")
-            lWriter.AddElement(.PrimaryExch, "PrimaryExch")
-            lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
-            lWriter.AddElement(.TradingClass, "Trading Class")
-        End With
+        lWriter.AddElement(pContract, "Contract")
 
         lWriter.AddElement(pVolatility, "Volatility")
         lWriter.AddElement(pUnderPrice, "UnderPrice")
 
         lWriter.AddElement(If(options Is Nothing, 0, options.Count), "Options Count")
-        lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), "Options")
+        lWriter.AddElement(options, "Options")
 
         SendMessage(lWriter, ModuleName, ProcName)
     End Sub

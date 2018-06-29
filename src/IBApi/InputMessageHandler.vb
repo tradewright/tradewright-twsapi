@@ -72,9 +72,9 @@ Friend Class InputMessageHandler
 
     Private mStatsRecorder As PerformanceStatsRecorder
 
-    Private mLogTwsMessages As Boolean = True
+    Private ReadOnly mLogTwsMessages As Boolean = True
 
-    Private mServerVersion As Integer
+    Private ReadOnly mServerVersion As Integer
 
     '@================================================================================
     ' Class Event Handlers
@@ -197,7 +197,9 @@ Friend Class InputMessageHandler
     End Function
 
     Private Function messageHasVersion(messageId As ApiSocketInMsgType) As Boolean
-        If messageId = ApiSocketInMsgType.HistoricalData And mServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then Return False
+        If messageId = ApiSocketInMsgType.ExecutionData And mServerVersion < ApiServerVersion.LAST_LIQUIDITY Then Return True
+        If messageId = ApiSocketInMsgType.HistoricalData And mServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then Return True
+        If messageId = ApiSocketInMsgType.OrderStatus And mServerVersion < ApiServerVersion.MARKET_CAP_PRICE Then Return True
         Return messageId <= ApiSocketInMsgType.MaxIdWithVersion
     End Function
 

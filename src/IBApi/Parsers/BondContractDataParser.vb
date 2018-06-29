@@ -25,6 +25,7 @@
 #End Region
 
 Imports System.Collections.Generic
+Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 
 Friend NotInheritable Class BondContractDataParser
@@ -33,13 +34,13 @@ Friend NotInheritable Class BondContractDataParser
 
     Private Const ModuleName As String = NameOf(BondContractDataParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lContract As New Contract
         Dim lContractDetails As New ContractDetails With {
             .Summary = lContract
         }
 
-        Dim lRequestId = If(pVersion >= 3, Await _Reader.GetIntAsync("Req Id"), 0)
+        Dim lRequestId = If(pVersion >= 3, Await _Reader.GetIntAsync("Req Id"), -1)
 
         lContract.Symbol = Await _Reader.GetStringAsync("Symbol")
         lContract.SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("Sectype"))
@@ -47,6 +48,14 @@ Friend NotInheritable Class BondContractDataParser
         With lContractDetails
             .Cusip = Await _Reader.GetStringAsync("Cusip")
             .Coupon = Await _Reader.GetDoubleAsync("Coupon")
+
+            Dim lMaturity = Await _Reader.GetStringAsync("Maturity")
+            If Not String.IsNullOrEmpty(lMaturity) Then
+                Dim ar() = lMaturity.Split({" "c}, StringSplitOptions.RemoveEmptyEntries)
+                If ar.Length > 0 Then lContract.Expiry = ar(0)
+                If ar.Length > 1 Then lContractDetails.LastTradeTime = ar(1)
+                If ar.Length > 2 Then lContractDetails.TimeZoneId = ar(2)
+            End If
             .Maturity = Await _Reader.GetStringAsync("Maturity")
             .IssueDate = Await _Reader.GetStringAsync("IssueDate")
             .Ratings = Await _Reader.GetStringAsync("Ratings")
@@ -104,11 +113,11 @@ Friend NotInheritable Class BondContractDataParser
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.ContractDetailsConsumer?.NotifyContract(New ContractDetailsEventArgs(timestamp, lRequestId, lContractDetails))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyContract", e)
-            End Try
+            _EventConsumers.ContractDetailsConsumer?.NotifyContract(New ContractDetailsEventArgs(timestamp, lRequestId, lContractDetails))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyContract", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

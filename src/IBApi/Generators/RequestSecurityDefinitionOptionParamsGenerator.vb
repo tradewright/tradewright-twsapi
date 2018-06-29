@@ -34,7 +34,7 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestSecurityDefinitionOptionParams)
+            Return New ApiMethodDelegate(AddressOf requestSecurityDefinitionOptionParams)
         End Get
     End Property
 
@@ -44,8 +44,8 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
         End Get
     End Property
 
-    Private Sub RequestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
-        Const ProcName As String = NameOf(RequestSecurityDefinitionOptionParams)
+    Private Sub requestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
+        Const ProcName As String = NameOf(requestSecurityDefinitionOptionParams)
 
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.SEC_DEF_OPT_PARAMS_REQ Then Throw New InvalidOperationException("Security definition option parameters requests not supported")

@@ -83,6 +83,8 @@ Public Class ContractDetails
     Public Property UnderSymbol As String
     Public Property UnderSecType As SecurityType
     Public Property MarketRuleIds As String
+    Public Property RealExpirationDate As String
+    Public Property LastTradeTime As String
 
 
 

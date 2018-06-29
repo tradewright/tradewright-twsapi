@@ -24,38 +24,33 @@
 
 #End Region
 
-Friend Class CancelDailyPnLGenerator
-    Inherits GeneratorBase
-    Implements IGenerator
+Imports System.Threading.Tasks
 
-    Private Delegate Sub ApiMethodDelegate(requestId As Integer)
+Friend NotInheritable Class PnLParser
+    Inherits ParserBase
+    Implements IParser
 
-    Private Const ModuleName As String = NameOf(CancelDailyPnLGenerator)
+    Private Const ModuleName As String = NameOf(PnLParser)
 
-    Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+        Dim requestId = Await _Reader.GetIntAsync("Request Id")
+        Dim pnl = Await _Reader.GetDoubleAsync("Daily PnL")
+        Dim unrealizedPnL = Await _Reader.GetDoubleAsync("Unrealized PnL")
+
+        LogSocketInputMessage(ModuleName, "ParseAsync")
+
+        Try
+            _EventConsumers.AccountDataConsumer?.NotifyPnL(New PnLEventArgs(timestamp, requestId, pnl, unrealizedPnL))
+            Return True
+            Catch e As Exception
+            Throw New ApiApplicationException("NotifyPnl", e)
+        End Try
+    End Function
+
+    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
         Get
-            Return New ApiMethodDelegate(AddressOf CancelDailyPnL)
+            Return ApiSocketInMsgType.PnL
         End Get
     End Property
-
-    Friend Overrides ReadOnly Property MessageType As ApiSocketOutMsgType
-        Get
-            Return ApiSocketOutMsgType.CancelDailyPnL
-        End Get
-    End Property
-
-    Private Sub CancelDailyPnL(requestId As Integer)
-        Const ProcName As String = NameOf(CancelDailyPnL)
-
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
-        If ServerVersion < ApiServerVersion.DAILY_PNL Then Throw New InvalidOperationException("Daily PnL requests not supported")
-
-        Dim lWriter = CreateOutputMessageGenerator()
-        StartMessage(lWriter, MessageType)
-
-        lWriter.AddElement(requestId, "Request Id")
-
-        SendMessage(lWriter, ModuleName, ProcName)
-    End Sub
 
 End Class

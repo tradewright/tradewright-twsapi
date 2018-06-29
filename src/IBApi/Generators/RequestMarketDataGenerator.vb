@@ -56,19 +56,8 @@ Friend Class RequestMarketDataGenerator
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketData), "Ticker id")
 
+        lWriter.AddElement(pContract, "Contract")
         With pContract
-            lWriter.AddElement(.ConId, "Con id")
-            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
-            lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
-            lWriter.AddElement(.Expiry, "Expiry")
-            lWriter.AddElement(.Strike, "Strike")
-            lWriter.AddElement(OptionRights.ToInternalString(.OptRight), "Right")
-            lWriter.AddElement(If(.Multiplier = 1, "", CStr(.Multiplier)), "Multiplier")
-            lWriter.AddElement(.Exchange, "Exchange")
-            lWriter.AddElement(.PrimaryExch, "Primary Exchange")
-            lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
-            lWriter.AddElement(.TradingClass, "Trading Class")
 
             ' Add combo legs for BAG requests
             If .SecType = SecurityType.Combo Then
@@ -100,7 +89,7 @@ Friend Class RequestMarketDataGenerator
 
             If ServerVersion >= ApiServerVersion.SMART_COMPONENTS Then lWriter.AddElement(regulatorySnapshot, "Regulatory Snapshot")
 
-            lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), "Options")
+            lWriter.AddElement(options, "Options")
 
             SendMessage(lWriter, NameOf(RequestMarketDataGenerator), NameOf(requestMarketData))
         End With

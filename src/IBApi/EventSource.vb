@@ -69,22 +69,22 @@ Public Class EventSource
         RaiseEvent AccountUpdateMulti(Me, e)
     End Sub
 
-    Public Overrides Sub NotifyDailyPnL(e As DailyPnLEventArgs) Implements IAccountDataConsumer.NotifyDailyPnL
-        OnDailyPnL(e)
+    Public Overrides Sub NotifyPnL(e As PnLEventArgs) Implements IAccountDataConsumer.NotifyPnL
+        OnPnL(e)
     End Sub
 
-    Public Event DailyPnL(sender As Object, e As DailyPnLEventArgs)
-    Protected Overridable Sub OnDailyPnL(e As DailyPnLEventArgs)
-        RaiseEvent DailyPnL(Me, e)
+    Public Event PnL(sender As Object, e As PnLEventArgs)
+    Protected Overridable Sub OnPnL(e As PnLEventArgs)
+        RaiseEvent PnL(Me, e)
     End Sub
 
-    Public Overrides Sub NotifyDailyPnLSingle(e As DailyPnLSingleEventArgs) Implements IAccountDataConsumer.NotifyDailyPnLSingle
-        OnDailyPnLSingle(e)
+    Public Overrides Sub NotifyPnLSingle(e As PnLSingleEventArgs) Implements IAccountDataConsumer.NotifyPnLSingle
+        OnPnLSingle(e)
     End Sub
 
-    Public Event DailyPnLSingle(sender As Object, e As DailyPnLSingleEventArgs)
-    Protected Overridable Sub OnDailyPnLSingle(e As DailyPnLSingleEventArgs)
-        RaiseEvent DailyPnLSingle(Me, e)
+    Public Event PnLSingle(sender As Object, e As PnLSingleEventArgs)
+    Protected Overridable Sub OnPnLSingle(e As PnLSingleEventArgs)
+        RaiseEvent PnLSingle(Me, e)
     End Sub
 
     Public Overrides Sub NotifyFamilyCodes(e As FamilyCodesEventArgs) Implements IAccountDataConsumer.NotifyFamilyCodes

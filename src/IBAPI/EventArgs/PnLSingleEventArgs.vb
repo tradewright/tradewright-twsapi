@@ -24,32 +24,22 @@
 
 #End Region
 
-Imports System.Threading.Tasks
+Public Class PnLSingleEventArgs
+    Inherits AbstractEventArgsWithTimestamp
 
-Friend NotInheritable Class DailyPnLParser
-    Inherits ParserBase
-    Implements IParser
+    Public Property PnL As Double
+    Public Property Position As Integer
+    Public Property RequestId As Integer
+    Public Property UnrealizedPnL As Double
+    Public Property Value As Double
 
-    Private Const ModuleName As String = NameOf(DailyPnLParser)
-
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim requestId = Await _Reader.GetIntAsync("Request Id")
-        Dim dailyPnL = Await _Reader.GetDoubleAsync("Daily PnL")
-
-        LogSocketInputMessage(ModuleName, "ParseAsync")
-
-        Try
-        _EventConsumers.AccountDataConsumer?.NotifyDailyPnL(New DailyPnLEventArgs(timestamp, requestId, dailyPnL))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyDailyPnL", e)
-            End Try
-    End Function
-
-    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
-        Get
-            Return ApiSocketInMsgType.DailyPnL
-        End Get
-    End Property
-
+    Public Sub New(timestamp As DateTime, requestId As Integer, position As Integer, pnl As Double, unrealizedPnL As Double, value As Double)
+        MyBase.New()
+        Me._Timestamp = timestamp
+        Me.RequestId = requestId
+        Me.Position = position
+        Me.PnL = pnl
+        Me.UnrealizedPnL = unrealizedPnL
+        Me.Value = value
+    End Sub
 End Class

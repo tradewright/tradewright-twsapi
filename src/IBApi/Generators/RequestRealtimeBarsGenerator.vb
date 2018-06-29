@@ -57,23 +57,12 @@ Friend Class RequestRealtimeBarsGenerator
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pTickerId, "TickerId")
 
-        ' send contract fields
-        lWriter.AddElement(pContract.ConId, "ConId")
-        lWriter.AddElement(pContract.Symbol?.ToUpper(), "Symbol")
-        lWriter.AddElement(SecurityTypes.ToInternalString(pContract.SecType), "Sectype")
-        lWriter.AddElement(pContract.Expiry, "Expiry")
-        lWriter.AddElement(pContract.Strike, "Strike")
-        lWriter.AddElement(OptionRights.ToInternalString(pContract.OptRight), "Right")
-        lWriter.AddElement(If(pContract.Multiplier = 1, "", CStr(pContract.Multiplier)), "Multiplier")
-        lWriter.AddElement(pContract.Exchange, "Exchange")
-        lWriter.AddElement(pContract.PrimaryExch, "PrimaryExch")
-        lWriter.AddElement(pContract.CurrencyCode, "Currency")
-        lWriter.AddElement(pContract.LocalSymbol?.ToUpper(), "LocalSymbol")
-        lWriter.AddElement(pContract.TradingClass, "TradingClass")
+        lWriter.AddElement(pContract, "Contract")
+
         lWriter.AddElement(pBarSize, "BarSize") ' this parameter is not currently used
         lWriter.AddElement(pWhatToShow, "WhatToShow")
         lWriter.AddElement(pUseRTH, "UseRTH")
-        lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options)), "Options")
+        lWriter.AddElement(options, "Options")
         SendMessage(lWriter, ModuleName, ProcName)
     End Sub
 

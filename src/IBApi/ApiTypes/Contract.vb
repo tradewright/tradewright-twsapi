@@ -71,12 +71,12 @@ Public Class Contract
     Public Property CurrencyCode As String
     Public Property LocalSymbol As String
     Public Property TradingClass As String
-    Public Property PrimaryExch As String ' pick a non-aggregate (ie not the SMART Exchange) Exchange that the contract trades on.  DO NOT SET TO SMART.
 
-    Public Property IncludeExpired As Boolean ' can not be set to true for orders.
+    ' only relevant when Exchange is SMART and there are SMART routers in more
+    ' than one country (eg try IBM in Tws)
+    Public Property PrimaryExch As String
 
-    Public Property SecIdType As String ' CUSIP;SEDOL;ISIN;RIC
-    Public Property SecId As String
+    ' Public Property IncludeExpired As Boolean ' can not be set to true for orders.
 
     ' COMBOS
     Public Property ComboLegsDescription As String ' received in open Order version 14 and up for all combos
@@ -120,8 +120,6 @@ Public Class Contract
         addField("Right", OptionRights.ToExternalString(OptRight), sb)
         addField("Multiplier", CStr(Multiplier), sb)
         addField("Primary exchange", PrimaryExch, sb)
-        addField("Sec id type", SecIdType, sb)
-        addField("Sec id", SecId, sb)
 
         Dim lLeg As ComboLeg
         Dim i As Integer

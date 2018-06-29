@@ -128,12 +128,12 @@ Public Class QueueingCallbackHandler
         queueEvent(e, AddressOf mEv.NotifyAdvisorData)
     End Sub
 
-    Public Overrides Sub NotifyDailyPnL(e As DailyPnLEventArgs) Implements IAccountDataConsumer.NotifyDailyPnL
-        queueEvent(e, AddressOf mEv.NotifyDailyPnL)
+    Public Overrides Sub NotifyPnL(e As PnLEventArgs) Implements IAccountDataConsumer.NotifyPnL
+        queueEvent(e, AddressOf mEv.NotifyPnL)
     End Sub
 
-    Public Overrides Sub NotifyDailyPnLSingle(e As DailyPnLSingleEventArgs) Implements IAccountDataConsumer.NotifyDailyPnLSingle
-        queueEvent(e, AddressOf mEv.NotifyDailyPnLSingle)
+    Public Overrides Sub NotifyPnLSingle(e As PnLSingleEventArgs) Implements IAccountDataConsumer.NotifyPnLSingle
+        queueEvent(e, AddressOf mEv.NotifyPnLSingle)
     End Sub
 
     Public Overrides Sub NotifyFamilyCodes(e As FamilyCodesEventArgs) Implements IAccountDataConsumer.NotifyFamilyCodes

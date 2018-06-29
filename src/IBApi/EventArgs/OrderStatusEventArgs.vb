@@ -46,7 +46,9 @@ Public Class OrderStatusEventArgs
 
     Public Property WhyHeld As String
 
-    Public Sub New(timestamp As DateTime, orderId As Integer, status As String, filled As Double, remaining As Double, avgFillPrice As Double, permId As Integer, parentId As Integer, lastFillPrice As Double, clientId As Integer, whyHeld As String)
+    Public Property MarketCapPrice As Double
+
+    Public Sub New(timestamp As DateTime, orderId As Integer, status As String, filled As Double, remaining As Double, avgFillPrice As Double, permId As Integer, parentId As Integer, lastFillPrice As Double, clientId As Integer, whyHeld As String, marketCapPrice As Double)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.OrderId = orderId
@@ -59,5 +61,6 @@ Public Class OrderStatusEventArgs
         Me.LastFillPrice = lastFillPrice
         Me.ClientId = clientId
         Me.WhyHeld = whyHeld
+        Me.MarketCapPrice = marketCapPrice
     End Sub
 End Class

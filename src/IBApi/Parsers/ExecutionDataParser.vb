@@ -32,7 +32,7 @@ Friend NotInheritable Class ExecutionDataParser
 
     Private Const ModuleName As String = NameOf(ExecutionDataParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = -1
         If (pVersion >= 7) Then lReqId = IdManager.GetCallerId(Await _Reader.GetIntAsync("lReqId"), IdType.Execution)
 
@@ -70,18 +70,19 @@ Friend NotInheritable Class ExecutionDataParser
             .AvgPrice = If(pVersion >= 6, Await _Reader.GetDoubleAsync("Avg Price"), 0),
             .OrderRef = If(pVersion >= 8, Await _Reader.GetStringAsync("OrderRef"), ""),
             .EvRule = If(pVersion >= 9, Await _Reader.GetStringAsync("EvRule"), ""),
-            .EvMultiplier = If(pVersion >= 9, Await _Reader.GetDoubleAsync("EvMultiplier"), 1)
+            .EvMultiplier = If(pVersion >= 9, Await _Reader.GetDoubleAsync("EvMultiplier"), 1),
+            .ModelCode = If(ServerVersion >= ApiServerVersion.MODELS_SUPPORT, Await _Reader.GetStringAsync("Model Code"), ""),
+            .LastLiquidity = CType(If(ServerVersion >= ApiServerVersion.LAST_LIQUIDITY, Await _Reader.GetIntAsync("Last Liquidity"), 0), LiquidityType)
         }
-        If ServerVersion >= ApiServerVersion.MODELS_SUPPORT Then lExecution.ModelCode = Await _Reader.GetStringAsync("Model Code")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.OrderInfoConsumer?.NotifyExecution(New ExecutionDetailsEventArgs(timestamp, lReqId, lContract, lExecution))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyExecution", e)
-            End Try
+            _EventConsumers.OrderInfoConsumer?.NotifyExecution(New ExecutionDetailsEventArgs(timestamp, lReqId, lContract, lExecution))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyExecution", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

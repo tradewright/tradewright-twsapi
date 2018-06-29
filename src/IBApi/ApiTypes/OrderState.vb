@@ -59,9 +59,17 @@ Public Class OrderState
 
     Public Property Status As String
 
-    Public Property InitMargin As Double?
-    Public Property MaintMargin As Double?
-    Public Property EquityWithLoan As Double?
+    Public Property InitMarginBefore As Double?
+    Public Property MaintMarginBefore As Double?
+    Public Property EquityWithLoanBefore As Double?
+
+    Public Property InitMarginChange As Double?
+    Public Property MaintMarginChange As Double?
+    Public Property EquityWithLoanChange As Double?
+
+    Public Property InitMarginAfter As Double?
+    Public Property MaintMarginAfter As Double?
+    Public Property EquityWithLoanAfter As Double?
 
     Public Property Commission As Double?
     Public Property MinCommission As Double?

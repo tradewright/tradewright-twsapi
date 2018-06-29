@@ -24,31 +24,31 @@
 
 #End Region
 
-Friend Class CancelDailyPnLSingleGenerator
+Friend Class CancelPnLSingleGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
     Private Delegate Sub ApiMethodDelegate(requestId As Integer)
 
-    Private Const ModuleName As String = NameOf(CancelDailyPnLSingleGenerator)
+    Private Const ModuleName As String = NameOf(CancelPnLSingleGenerator)
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf CancelDailyPnLSingle)
+            Return New ApiMethodDelegate(AddressOf CancelPnLSingle)
         End Get
     End Property
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketOutMsgType
         Get
-            Return ApiSocketOutMsgType.CancelDailyPnLSingle
+            Return ApiSocketOutMsgType.CancelPnLSingle
         End Get
     End Property
 
-    Private Sub CancelDailyPnLSingle(requestId As Integer)
-        Const ProcName As String = NameOf(CancelDailyPnLSingle)
+    Private Sub CancelPnLSingle(requestId As Integer)
+        Const ProcName As String = NameOf(CancelPnLSingle)
 
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
-        If ServerVersion < ApiServerVersion.DAILY_PNL Then Throw New InvalidOperationException("Daily PnL requests not supported")
+        If ServerVersion < ApiServerVersion.PNL Then Throw New InvalidOperationException("Daily PnL requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)

@@ -24,22 +24,18 @@
 
 #End Region
 
-Public Class DailyPnLSingleEventArgs
+Public Class PnLEventArgs
     Inherits AbstractEventArgsWithTimestamp
+
     Public Property DailyPnL As Double
-
-    Public Property Position As Integer
-
     Public Property RequestId As Integer
+    Public Property UnrealizedPnL As Double
 
-    Public Property Value As Double
-
-    Public Sub New(timestamp As DateTime, requestId As Integer, position As Integer, dailyPnL As Double, value As Double)
+    Public Sub New(timestamp As DateTime, requestId As Integer, dailyPnL As Double, unrealizedPnL As Double)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = requestId
-        Me.Position = position
         Me.DailyPnL = dailyPnL
-        Me.Value = value
+        Me.UnrealizedPnL = unrealizedPnL
     End Sub
 End Class

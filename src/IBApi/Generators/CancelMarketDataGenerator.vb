@@ -34,7 +34,7 @@ Friend Class CancelMarketDataGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf CancelMarketData)
+            Return New ApiMethodDelegate(AddressOf cancelMarketData)
         End Get
     End Property
 
@@ -44,8 +44,8 @@ Friend Class CancelMarketDataGenerator
         End Get
     End Property
 
-    Private Sub CancelMarketData(pTickerId As Integer)
-        Const ProcName As String = NameOf(CancelMarketData)
+    Private Sub cancelMarketData(pTickerId As Integer)
+        Const ProcName As String = NameOf(cancelMarketData)
         If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 2

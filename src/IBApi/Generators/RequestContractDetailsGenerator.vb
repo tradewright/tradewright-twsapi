@@ -28,7 +28,7 @@ Friend Class RequestContractDetailsGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub RequestContractDetailsDelegate(pRequestId As Integer, pContract As Contract)
+    Private Delegate Sub RequestContractDetailsDelegate(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String)
 
     Private Const ModuleName As String = NameOf(RequestContractDetailsGenerator)
 
@@ -44,7 +44,7 @@ Friend Class RequestContractDetailsGenerator
         End Get
     End Property
 
-    Private Sub requestContractDetails(pRequestId As Integer, pContract As Contract)
+    Private Sub requestContractDetails(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String)
         Const ProcName As String = NameOf(requestContractDetails)
         Const VERSION As Integer = 8
 
@@ -55,24 +55,11 @@ Friend Class RequestContractDetailsGenerator
         lWriter.AddElement(VERSION, "Version")
 
         lWriter.AddElement(IdManager.GetTwsId(pRequestId, IdType.ContractData), "Request id")
+        lWriter.AddElement(pContract, "Contract")
+        lWriter.AddElement(pIncludeExpired, "Include expired")
+        lWriter.AddElement(pSecIdType, "SecIdType")
+        lWriter.AddElement(pSecId, "SecId")
 
-        With pContract
-            lWriter.AddElement(.ConId, "Contract id")
-            lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
-            lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
-            lWriter.AddElement(.Expiry, "Expiry")
-            lWriter.AddElement(.Strike, "Strike")
-            lWriter.AddElement(OptionRights.ToInternalString(.OptRight), "Right")
-            lWriter.AddElement(If(.Multiplier = 1, "", CStr(.Multiplier)), "Multiplier")
-            lWriter.AddElement(If(.Exchange = "", "*", .Exchange), "Exchange")
-            lWriter.AddElement(.PrimaryExch, "Primary Exchange")
-            lWriter.AddElement(.CurrencyCode, "Currency")
-            lWriter.AddElement(.LocalSymbol?.ToUpper(), "Local Symbol")
-            lWriter.AddElement(.TradingClass, "Trading Class")
-            lWriter.AddElement(True, "Include expired")
-            lWriter.AddElement(.SecIdType, "SecIdType")
-            lWriter.AddElement(.SecId, "SecId")
-        End With
         SendMessage(lWriter, ModuleName, ProcName)
     End Sub
 

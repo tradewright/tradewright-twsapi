@@ -38,11 +38,11 @@ Public Class UpdatePortfolioEventArgs
 
     Public Property Position As Double
 
-    Public Property RealisedPNL As Double
+    Public Property RealizedPNL As Double
 
-    Public Property UnrealisedPNL As Double
+    Public Property UnrealizedPNL As Double
 
-    Public Sub New(timestamp As DateTime, contract As TradeWright.IBAPI.Contract, position As Double, marketPrice As Double, marketValue As Double, averageCost As Double, unrealisedPNL As Double, realisedPNL As Double, accountName As String)
+    Public Sub New(timestamp As DateTime, contract As TradeWright.IBAPI.Contract, position As Double, marketPrice As Double, marketValue As Double, averageCost As Double, unrealizedPNL As Double, realizedPNL As Double, accountName As String)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.Contract = contract
@@ -50,8 +50,8 @@ Public Class UpdatePortfolioEventArgs
         Me.MarketPrice = marketPrice
         Me.MarketValue = marketValue
         Me.AverageCost = averageCost
-        Me.UnrealisedPNL = unrealisedPNL
-        Me.RealisedPNL = realisedPNL
+        Me.UnrealizedPNL = unrealizedPNL
+        Me.RealizedPNL = realizedPNL
         Me.AccountName = accountName
     End Sub
 End Class

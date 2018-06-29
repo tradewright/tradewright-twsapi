@@ -30,13 +30,13 @@ Friend Class RequestScannerSubscriptionGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pSubscription As ScannerSubscription, options As List(Of TagValue))
+    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pSubscription As ScannerSubscription, options As List(Of TagValue), filterOptions As List(Of TagValue))
 
     Private Const ModuleName As String = NameOf(RequestScannerSubscriptionGenerator)
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestScannerSubscription)
+            Return New ApiMethodDelegate(AddressOf requestScannerSubscription)
         End Get
     End Property
 
@@ -46,15 +46,16 @@ Friend Class RequestScannerSubscriptionGenerator
         End Get
     End Property
 
-    Private Sub RequestScannerSubscription(pTickerId As Integer, pSubscription As ScannerSubscription, options As List(Of TagValue))
-        Const ProcName As String = NameOf(RequestScannerSubscription)
+    Private Sub requestScannerSubscription(pTickerId As Integer, pSubscription As ScannerSubscription, options As List(Of TagValue), filterOptions As List(Of TagValue))
+        Const ProcName As String = NameOf(requestScannerSubscription)
         If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ServerVersion < ApiServerVersion.SCANNER_GENERIC_OPTS And filterOptions IsNot Nothing Then Throw New InvalidOperationException("Scanner subscription generic filter options not suported")
 
         Const VERSION As Integer = 4
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestScannerSubscription)
-        lWriter.AddElement(VERSION, "Version")
+        If ServerVersion < ApiServerVersion.SCANNER_GENERIC_OPTS Then lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pTickerId, "Ticker Id")
         lWriter.AddElement(pSubscription.NumberOfRows, "NumberOfRows")
         lWriter.AddElement(pSubscription.Instrument, "Instrument")
@@ -77,7 +78,8 @@ Friend Class RequestScannerSubscriptionGenerator
         lWriter.AddElement(pSubscription.AverageOptionVolumeAbove, "AverageOptionVolumeAbove")
         lWriter.AddElement(pSubscription.ScannerSettingPairs, "ScannerSettingPairs")
         lWriter.AddElement(pSubscription.StockTypeFilter, "StockTypeFilter")
-        lWriter.AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), "Options")
+        If ServerVersion >= ApiServerVersion.SCANNER_GENERIC_OPTS Then lWriter.AddElement(filterOptions, "Filter Options")
+        lWriter.AddElement(options, "Options")
         SendMessage(lWriter, ModuleName, ProcName)
     End Sub
 
