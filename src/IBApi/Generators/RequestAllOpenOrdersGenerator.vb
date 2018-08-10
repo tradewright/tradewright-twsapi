@@ -46,7 +46,7 @@ Friend Class RequestAllOpenOrdersGenerator
 
     Private Sub RequestAllOpenOrders()
         Const ProcName As String = NameOf(RequestAllOpenOrders)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
 
         Const VERSION As Integer = 1
@@ -54,7 +54,7 @@ Friend Class RequestAllOpenOrdersGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestAllOpenOrders)
         lWriter.AddElement(VERSION, "Version")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

@@ -46,7 +46,7 @@ Friend Class CancelCalculateOptionPriceGenerator
 
     Private Sub CancelCalculateOptionPrice(pReqId As Integer)
         Const ProcName As String = NameOf(CancelCalculateOptionPrice)
-        If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
+        If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1
 
@@ -54,7 +54,7 @@ Friend Class CancelCalculateOptionPriceGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.CancelCalculateOptionPrice)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pReqId, "ReqId")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

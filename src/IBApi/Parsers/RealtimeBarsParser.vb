@@ -36,7 +36,7 @@ Friend NotInheritable Class RealtimeBarsParser
         Dim lReqId = Await _Reader.GetIntAsync("ReqId")
 
         Dim bar = New Bar With {
-            .TimeStamp = IBAPI.UnixTimestampToDateTime(Await _Reader.GetLongAsync("System Time")),
+            .TimeStamp = IBAPI.UnixTimestampToDateTime(Await _Reader.GetLongAsync("System Time")).ToLocalTime,
             .OpenValue = Await _Reader.GetDoubleAsync("Open"),
             .HighValue = Await _Reader.GetDoubleAsync("High"),
             .LowValue = Await _Reader.GetDoubleAsync("Low"),

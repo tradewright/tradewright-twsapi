@@ -50,9 +50,9 @@ Friend Class RequestHistoricalDataGenerator
         Const ProcName As String = NameOf(requestHistoricalData)
         Const VERSION As Integer = 6
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
-        EventLogger.Log("Requesting historical data for: {UCase(pRequest.Contract.LocalSymbol)}; id={lTwsId}; barsize={pRequest.BarSizeSetting}; endTime={pRequest.EndDateTime}; duration={pRequest.Duration}", ModuleName, ProcName)
+        IBAPI.EventLogger.Log("Requesting historical data for: {UCase(pRequest.Contract.LocalSymbol)}; id={lTwsId}; barsize={pRequest.BarSizeSetting}; endTime={pRequest.EndDateTime}; duration={pRequest.Duration}", ModuleName, ProcName)
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestHistoricalData)
@@ -80,7 +80,7 @@ Friend Class RequestHistoricalDataGenerator
                     i = i + 1
                     lWriter.AddElement(.ConId, "ConId" & i)
                     lWriter.AddElement(.Ratio, "Ratio" & i)
-                    lWriter.AddElement(OrderActions.ToInternalString(.Action), "Action" & i)
+                    lWriter.AddElement(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)
                     lWriter.AddElement(.Exchange, "Exchange" & i)
                 End With
             Next
@@ -90,7 +90,7 @@ Friend Class RequestHistoricalDataGenerator
 
         lWriter.AddElement(options, "Options")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

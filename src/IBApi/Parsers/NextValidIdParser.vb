@@ -33,11 +33,12 @@ Friend NotInheritable Class NextValidIdParser
     Private Const ModuleName As String = NameOf(NextValidIdParser)
 
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        _IdManager.NextOrderId = Await _Reader.GetIntAsync("Next id")
+        Dim nextId = Await _Reader.GetIntAsync("Next id")
+        LogSocketInputMessage(ModuleName, "ParseAsync")
 
-        LogSocketInputMessage(ModuleName,"ParseAsync")
+        If nextId < IdManager.BaseOrderId Then nextId = IdManager.BaseOrderId
+        _IdManager.NextOrderId = nextId
 
-        If _IdManager.NextOrderId < IdManager.BaseOrderId Then _IdManager.NextOrderId = IdManager.BaseOrderId
         Return True
     End Function
 

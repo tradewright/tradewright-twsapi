@@ -47,13 +47,13 @@ Friend Class CancelHistoricalDataGenerator
     Private Sub CancelHistoricalData(pRequestId As Integer)
         Const ProcName As String = NameOf(CancelHistoricalData)
         Const VERSION As Integer = 1
-        If mConnectionState = ApiConnectionState.Connected Then
+        If ConnectionState = ApiConnectionState.Connected Then
 
             Dim lWriter = CreateOutputMessageGenerator()
             StartMessage(lWriter, ApiSocketOutMsgType.CancelHistoricalData)
             lWriter.AddElement(VERSION, "Version")
             lWriter.AddElement(IdManager.GetTwsId(pRequestId, IdType.HistoricalData), "Request id")
-            SendMessage(lWriter, ModuleName, ProcName)
+           lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
         End If
     End Sub
 

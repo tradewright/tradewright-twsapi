@@ -39,8 +39,6 @@ Public Class IBAPI
 
 #Region "Constants"
 
-    Private Const ModuleName As String = NameOf(IBAPI)
-
     Public Const MaxContractRequestId As Integer = IdManager.MaxCallersContractRequestId
     Public Const MaxExecutionsRequestId As Integer = IdManager.MaxCallersExecutionsRequestId
     Public Const MaxHistoricalDataRequestId As Integer = IdManager.MaxCallersHistoricalDataRequestId
@@ -49,18 +47,350 @@ Public Class IBAPI
 
 #End Region
 
+#Region "Extended Enums"
+
+    Public Shared ApiLogLevels As New ExtendedEnum(Of System.Enum, ApiLogLevel)(
+        {
+            ("System", ApiLogLevel.System, EnumNameType.Both),
+            ("Error", ApiLogLevel.Error, EnumNameType.Both),
+            ("Warning", ApiLogLevel.Warning, EnumNameType.Both),
+            ("Information", ApiLogLevel.Information, EnumNameType.Both),
+            ("Detail", ApiLogLevel.Detail, EnumNameType.Both)
+        })
+
+    Friend Shared ApiSocketInMsgTypes As New ExtendedEnum(Of System.Enum, ApiSocketInMsgType)(
+        {
+            ("TickPrice", ApiSocketInMsgType.TickPrice, EnumNameType.Both),
+            ("TickSize", ApiSocketInMsgType.TickSize, EnumNameType.Both),
+            ("OrderStatus", ApiSocketInMsgType.OrderStatus, EnumNameType.Both),
+            ("ErrorMessage", ApiSocketInMsgType.Error, EnumNameType.Both),
+            ("OpenOrder", ApiSocketInMsgType.OpenOrder, EnumNameType.Both),
+            ("AccountValue", ApiSocketInMsgType.AccountValue, EnumNameType.Both),
+            ("PortfolioValue", ApiSocketInMsgType.PortfolioValue, EnumNameType.Both),
+            ("AccountUpdateTime", ApiSocketInMsgType.AccountTime, EnumNameType.Both),
+            ("NextValidId", ApiSocketInMsgType.NextValidId, EnumNameType.Both),
+            ("ContractData", ApiSocketInMsgType.ContractData, EnumNameType.Both),
+            ("ExecutionData", ApiSocketInMsgType.ExecutionData, EnumNameType.Both),
+            ("MarketDepth", ApiSocketInMsgType.MarketDepth, EnumNameType.Both),
+            ("MarketDepthL2", ApiSocketInMsgType.MarketDepthL2, EnumNameType.Both),
+            ("NewBulletin", ApiSocketInMsgType.NewsBulletins, EnumNameType.Both),
+            ("ManagedAccounts", ApiSocketInMsgType.ManagedAccounts, EnumNameType.Both),
+            ("FinancialAdvisorData", ApiSocketInMsgType.FinanialAdvisorData, EnumNameType.Both),
+            ("HistoricalData", ApiSocketInMsgType.HistoricalData, EnumNameType.Both),
+            ("BondContractData", ApiSocketInMsgType.BondContractData, EnumNameType.Both),
+            ("ScannerParameters", ApiSocketInMsgType.ScannerParameters, EnumNameType.Both),
+            ("ScannerData", ApiSocketInMsgType.ScannerData, EnumNameType.Both),
+            ("OptionComputation", ApiSocketInMsgType.TickOptionComputation, EnumNameType.Both),
+            ("TickGeneric", ApiSocketInMsgType.TickGeneric, EnumNameType.Both),
+            ("TickString", ApiSocketInMsgType.Tickstring, EnumNameType.Both),
+            ("EFP", ApiSocketInMsgType.TickEFP, EnumNameType.Both),
+            ("CurrentTime", ApiSocketInMsgType.CurrentTime, EnumNameType.Both),
+            ("RealtimeBar", ApiSocketInMsgType.RealtimeBars, EnumNameType.Both),
+            ("FundamentalData", ApiSocketInMsgType.FundamentalData, EnumNameType.Both),
+            ("ContractDataEnd", ApiSocketInMsgType.ContractDataEnd, EnumNameType.Both),
+            ("OpenOrderEnd", ApiSocketInMsgType.OpenOrderEnd, EnumNameType.Both),
+            ("AccountDownloadEnd", ApiSocketInMsgType.AccountDownloadEnd, EnumNameType.Both),
+            ("ExecutionDataEnd", ApiSocketInMsgType.ExecutionDataEnd, EnumNameType.Both),
+            ("DeltaNeutralValidation", ApiSocketInMsgType.DeltaNeutralValidation, EnumNameType.Both),
+            ("TickSnapshotEnd", ApiSocketInMsgType.TickSnapshotEnd, EnumNameType.Both),
+            ("MarketDataType", ApiSocketInMsgType.MarketDataType, EnumNameType.Both),
+            ("CommissionReport", ApiSocketInMsgType.CommissionReport, EnumNameType.Both),
+            ("Position", ApiSocketInMsgType.Position, EnumNameType.Both),
+            ("PositionEnd", ApiSocketInMsgType.PositionEnd, EnumNameType.Both),
+            ("AccountSummary", ApiSocketInMsgType.AccountSummary, EnumNameType.Both),
+            ("AccountSummaryEnd", ApiSocketInMsgType.AccountSummaryEnd, EnumNameType.Both),
+            ("VerifyMessageApi", ApiSocketInMsgType.VerifyMessageApi, EnumNameType.Both),
+            ("VerifyCompleted", ApiSocketInMsgType.VerifyCompleted, EnumNameType.Both),
+            ("DisplayGroupList", ApiSocketInMsgType.DisplayGroupList, EnumNameType.Both),
+            ("DisplayGroupUpdated", ApiSocketInMsgType.DisplayGroupUpdated, EnumNameType.Both),
+            ("VerifyAndAuthMessageApi", ApiSocketInMsgType.VerifyAndAuthMessageApi, EnumNameType.Both),
+            ("VerifyAndAuthCompleted", ApiSocketInMsgType.VerifyAndAuthCompleted, EnumNameType.Both),
+            ("PositionMulti", ApiSocketInMsgType.PositionMulti, EnumNameType.Both),
+            ("PositionMultiEnd", ApiSocketInMsgType.PositionMultiEnd, EnumNameType.Both),
+            ("AccountUpdateMulti", ApiSocketInMsgType.AccountUpdateMulti, EnumNameType.Both),
+            ("AccountUpdateMultiEnd", ApiSocketInMsgType.AccountUpdateMultiEnd, EnumNameType.Both),
+            ("SecurityDefinitionOptionParameter", ApiSocketInMsgType.SecurityDefinitionOptionParameter, EnumNameType.Both),
+            ("SecurityDefinitionOptionParameterEnd", ApiSocketInMsgType.SecurityDefinitionOptionParameterEnd, EnumNameType.Both),
+            ("SoftDollarTiers", ApiSocketInMsgType.SoftDollarTiers, EnumNameType.Both),
+            ("FamilyCodes", ApiSocketInMsgType.FamilyCodes, EnumNameType.Both),
+            ("SymbolSamples", ApiSocketInMsgType.SymbolSamples, EnumNameType.Both),
+            ("MarketDepthExchanges", ApiSocketInMsgType.MarketDepthExchanges, EnumNameType.Both),
+            ("TickRequestParams", ApiSocketInMsgType.TickRequestParams, EnumNameType.Both),
+            ("SmartComponents", ApiSocketInMsgType.SmartComponents, EnumNameType.Both),
+            ("NewsArticle", ApiSocketInMsgType.NewsArticle, EnumNameType.Both),
+            ("TickNews", ApiSocketInMsgType.TickNews, EnumNameType.Both),
+            ("NewsProviders", ApiSocketInMsgType.NewsProviders, EnumNameType.Both),
+            ("HistoricalNews", ApiSocketInMsgType.HistoricalNews, EnumNameType.Both),
+            ("HistoricalNewsEnd", ApiSocketInMsgType.HistoricalNewsEnd, EnumNameType.Both),
+            ("HeadTimestamp", ApiSocketInMsgType.HeadTimestamp, EnumNameType.Both),
+            ("HistogramData", ApiSocketInMsgType.HistogramData, EnumNameType.Both),
+            ("HistoricalDataUpdate", ApiSocketInMsgType.HistoricalDataUpdate, EnumNameType.Both),
+            ("RerouteMarketData", ApiSocketInMsgType.RerouteMarketData, EnumNameType.Both),
+            ("RerouteMarketDepth", ApiSocketInMsgType.RerouteMarketDepth, EnumNameType.Both),
+            ("MarketRule", ApiSocketInMsgType.MarketRule, EnumNameType.Both),
+            ("PnL", ApiSocketInMsgType.PnL, EnumNameType.Both),
+            ("PnLSingle", ApiSocketInMsgType.PnLSingle, EnumNameType.Both),
+            ("HistoricalTick", ApiSocketInMsgType.HistoricalTick, EnumNameType.Both),
+            ("HistoricalTickBidAsk", ApiSocketInMsgType.HistoricalTickBidAsk, EnumNameType.Both),
+            ("HistoricalTickLast", ApiSocketInMsgType.HistoricalTickLast, EnumNameType.Both),
+            ("TickByTick", ApiSocketInMsgType.TickByTick, EnumNameType.Both),
+            ("OrderBound", ApiSocketInMsgType.OrderBound, EnumNameType.Both)
+        })
+
+    Friend Shared ApiSocketOutMsgTypes As New ExtendedEnum(Of System.Enum, ApiSocketOutMsgType)(
+        {
+            ("REQ_MKT_DATA", ApiSocketOutMsgType.RequestMarketData, EnumNameType.Both),
+            ("CANCEL_MKT_DATA", ApiSocketOutMsgType.CancelMarketData, EnumNameType.Both),
+            ("PLACE_ORDER", ApiSocketOutMsgType.PlaceOrder, EnumNameType.Both),
+            ("CANCEL_ORDER", ApiSocketOutMsgType.CancelOrder, EnumNameType.Both),
+            ("REQ_OPEN_ORDERS", ApiSocketOutMsgType.RequestOpenOrders, EnumNameType.Both),
+            ("REQ_ACCT_DATA", ApiSocketOutMsgType.RequestAccountData, EnumNameType.Both),
+            ("REQ_EXECUTIONS", ApiSocketOutMsgType.RequestExecutions, EnumNameType.Both),
+            ("REQ_IDS", ApiSocketOutMsgType.RequestIds, EnumNameType.Both),
+            ("REQ_CONTRACT_DATA", ApiSocketOutMsgType.RequestContractData, EnumNameType.Both),
+            ("REQ_MKT_DEPTH", ApiSocketOutMsgType.RequestMarketDepth, EnumNameType.Both),
+            ("CANCEL_MKT_DEPTH", ApiSocketOutMsgType.CancelMarketDepth, EnumNameType.Both),
+            ("REQ_NEWS_BULLETINS", ApiSocketOutMsgType.RequestNewsBulletins, EnumNameType.Both),
+            ("CANCEL_NEWS_BULLETINS", ApiSocketOutMsgType.CancelNewsBulletins, EnumNameType.Both),
+            ("SET_SERVER_LOGLEVEL", ApiSocketOutMsgType.SetServerLogLevel, EnumNameType.Both),
+            ("REQ_AUTO_OPEN_ORDERS", ApiSocketOutMsgType.RequestAutoOpenOrders, EnumNameType.Both),
+            ("REQ_ALL_OPEN_ORDERS", ApiSocketOutMsgType.RequestAllOpenOrders, EnumNameType.Both),
+            ("REQ_MANAGED_ACCTS", ApiSocketOutMsgType.RequestManagedAccounts, EnumNameType.Both),
+            ("REQ_FA", ApiSocketOutMsgType.RequestFinancialAdvisorData, EnumNameType.Both),
+            ("REPLACE_FA", ApiSocketOutMsgType.ReplaceFinancialAdvisorData, EnumNameType.Both),
+            ("REQ_HISTORICAL_DATA", ApiSocketOutMsgType.RequestHistoricalData, EnumNameType.Both),
+            ("EXERCISE_OPTIONS", ApiSocketOutMsgType.ExerciseOptions, EnumNameType.Both),
+            ("REQ_SCANNER_SUBSCRIPTION", ApiSocketOutMsgType.RequestScannerSubscription, EnumNameType.Both),
+            ("CANCEL_SCANNER_SUBSCRIPTION", ApiSocketOutMsgType.CancelScannerSubscription, EnumNameType.Both),
+            ("REQ_SCANNER_PARAMETERS", ApiSocketOutMsgType.RequestScannerParameters, EnumNameType.Both),
+            ("CANCEL_HISTORICAL_DATA", ApiSocketOutMsgType.CancelHistoricalData, EnumNameType.Both),
+            ("REQ_CURRENT_TIME", ApiSocketOutMsgType.RequestCurrentTime, EnumNameType.Both),
+            ("REQ_REALTIME_BARS", ApiSocketOutMsgType.RequestRealtimeBars, EnumNameType.Both),
+            ("CANCEL_REALTIME_BARS", ApiSocketOutMsgType.CancelRealtimeBars, EnumNameType.Both),
+            ("REQ_FUNDAMENTAL_DATA", ApiSocketOutMsgType.RequestFundamentalData, EnumNameType.Both),
+            ("CANCEL_FUNDAMENTAL_DATA", ApiSocketOutMsgType.CancelFundamentalData, EnumNameType.Both),
+            ("CALC_IMPLIED_VOLATILITY", ApiSocketOutMsgType.CalculateImpliedVolatility, EnumNameType.Both),
+            ("CALC_OPTION_PRICE", ApiSocketOutMsgType.CalculateOptionPrice, EnumNameType.Both),
+            ("CANCEL_CALC_MPLIED_VOLATILITY", ApiSocketOutMsgType.CancelCalculateImpliedVolatility, EnumNameType.Both),
+            ("CANCEL_CALC_OPTION_PRICE", ApiSocketOutMsgType.CancelCalculateOptionPrice, EnumNameType.Both),
+            ("REQ_GLOBAL_CANCEL", ApiSocketOutMsgType.RequestGlobalCancel, EnumNameType.Both),
+            ("REQ_MARKET_DATA_TYPE", ApiSocketOutMsgType.RequestMarketDataType, EnumNameType.Both),
+            ("REQ_POSITIONS", ApiSocketOutMsgType.RequestPositions, EnumNameType.Both),
+            ("REQ_ACCOUNT_SUMMARY", ApiSocketOutMsgType.RequestAccountSummary, EnumNameType.Both),
+            ("CANCEL_ACCOUNT_SUMMARY", ApiSocketOutMsgType.CancelAccountSummary, EnumNameType.Both),
+            ("CANCEL_POSITIONS", ApiSocketOutMsgType.CancelPositions, EnumNameType.Both),
+            ("VERIFY_REQUEST", ApiSocketOutMsgType.VerifyRequest, EnumNameType.Both),
+            ("VERIFY_MESSAGE", ApiSocketOutMsgType.VerifyMessage, EnumNameType.Both),
+            ("QUERY_DISPLAY_GROUPS", ApiSocketOutMsgType.QueryDisplayGroups, EnumNameType.Both),
+            ("SUBSCRIBE_TO_GROUP_EVENTS", ApiSocketOutMsgType.SubscribeToGroupEvents, EnumNameType.Both),
+            ("UPDATE_DISPLAY_GROUP", ApiSocketOutMsgType.UpdateDisplayGroup, EnumNameType.Both),
+            ("UNSUBSCRIBE_FROM_GROUP_EVENTS", ApiSocketOutMsgType.UnsubscribeFromGroupEvents, EnumNameType.Both),
+            ("START_API", ApiSocketOutMsgType.StartApi, EnumNameType.Both),
+            ("VERIFY_AND_AUTH_REQ", ApiSocketOutMsgType.VerifyAndAuthRequest, EnumNameType.Both),
+            ("VERIFY_AND_AUTH_MESSAGE", ApiSocketOutMsgType.VerifyAndAuthMessage, EnumNameType.Both),
+            ("REQ_POSITIONS_MULTI", ApiSocketOutMsgType.RequestPositionsMulti, EnumNameType.Both),
+            ("CANCEL_POSITIONS_MULTI", ApiSocketOutMsgType.CancelPositionsMulti, EnumNameType.Both),
+            ("REQ_ACCOUNT_UPDATES_MULTI", ApiSocketOutMsgType.RequestAccountDataMulti, EnumNameType.Both),
+            ("CANCEL_ACCOUNT_UPDATES_MULTI", ApiSocketOutMsgType.CancelAccountUpdatesMulti, EnumNameType.Both),
+            ("REQ_SEC_DEF_OPT_PARAMS", ApiSocketOutMsgType.RequestSecurityDefinitionOptionParameters, EnumNameType.Both),
+            ("REQ_SOFT_DOLLAR_TIERS", ApiSocketOutMsgType.RequestSoftDollarTiers, EnumNameType.Both),
+            ("REQ_FAMILY_CODES", ApiSocketOutMsgType.RequestFamilyCodes, EnumNameType.Both),
+            ("REQ_MATCHING_SYMBOLS", ApiSocketOutMsgType.RequestMatchingSymbols, EnumNameType.Both),
+            ("REQ_MKT_DEPTH_EXCHANGES", ApiSocketOutMsgType.RequestMarketDepthExchanges, EnumNameType.Both),
+            ("RequestSmartComponents", ApiSocketOutMsgType.RequestSmartComponents, EnumNameType.Both),
+            ("RequestNewsArticle", ApiSocketOutMsgType.RequestNewsArticle, EnumNameType.Both),
+            ("RequestNewsProviders", ApiSocketOutMsgType.RequestNewsProviders, EnumNameType.Both),
+            ("RequestHistoricalNews", ApiSocketOutMsgType.RequestHistoricalNews, EnumNameType.Both),
+            ("RequestHeadTimestamp", ApiSocketOutMsgType.RequestHeadTimestamp, EnumNameType.Both),
+            ("RequestHistogramData", ApiSocketOutMsgType.RequestHistogramData, EnumNameType.Both),
+            ("CancelHistogramData", ApiSocketOutMsgType.CancelHistogramData, EnumNameType.Both),
+            ("CancelHeadTimestamp", ApiSocketOutMsgType.CancelHeadTimestamp, EnumNameType.Both),
+            ("RequestMarketRule", ApiSocketOutMsgType.RequestMarketRule, EnumNameType.Both),
+            ("RequestPnL", ApiSocketOutMsgType.RequestPnL, EnumNameType.Both),
+            ("CancelPnL", ApiSocketOutMsgType.CancelPnL, EnumNameType.Both),
+            ("RequestPnLSingle", ApiSocketOutMsgType.RequestPnLSingle, EnumNameType.Both),
+            ("CancelPnLSingle", ApiSocketOutMsgType.CancelPnLSingle, EnumNameType.Both),
+            ("RequestHistoricalTickData ", ApiSocketOutMsgType.RequestHistoricalTickData, EnumNameType.Both),
+            ("RequestTickByTickData ", ApiSocketOutMsgType.RequestTickByTickData, EnumNameType.Both),
+            ("CancelTickByTickData ", ApiSocketOutMsgType.CancelTickByTickData, EnumNameType.Both)
+            })
+
+    Public Shared HedgeTypes As New ExtendedEnum(Of System.Enum, HedgeType)({
+            ("D", HedgeType.Delta, EnumNameType.Internal),
+            ("Delta", HedgeType.Delta, EnumNameType.External),
+            ("B", HedgeType.Beta, EnumNameType.Internal),
+            ("Beta", HedgeType.Beta, EnumNameType.External),
+            ("F", HedgeType.FX, EnumNameType.Internal),
+            ("Fx", HedgeType.FX, EnumNameType.External),
+            ("P", HedgeType.Pair, EnumNameType.Internal),
+            ("Pair", HedgeType.Pair, EnumNameType.External),
+            ("", HedgeType.None, EnumNameType.Internal),
+            ("*None*", HedgeType.None, EnumNameType.External)
+        })
+
+    Public Shared LiquidityTypes As New ExtendedEnum(Of System.Enum, LiquidityType)({
+            ("", LiquidityType.None, EnumNameType.Internal),
+            ("Added Liquidity", LiquidityType.AddedLiquidity, EnumNameType.Both),
+            ("Removed Liquidity", LiquidityType.RemovedLiquidity, EnumNameType.Both),
+            ("Liquidity Routed Out", LiquidityType.LiquidityRoutedOut, EnumNameType.Both)
+        })
+
+    Public Shared OcaTypes As New ExtendedEnum(Of System.Enum, OcaType)({
+            ("", OcaType.None, EnumNameType.Alias),
+            ("*None*", OcaType.None, EnumNameType.NonAliasExternal),
+            ("CancelWithBlock", OcaType.CancelWithBlock, EnumNameType.Both),
+            ("ReduceWithBlock", OcaType.ReduceWithBlock, EnumNameType.Both),
+            ("ReduceNonBlock", OcaType.ReduceNonBlock, EnumNameType.Both)
+        })
+
+    Public Shared OptionRights As New ExtendedEnum(Of System.Enum, OptionRight)({
+            ("", OptionRight.None, EnumNameType.Internal),
+            ("*None*", OptionRight.None, EnumNameType.NonAliasExternal),
+            ("?", OptionRight.None, EnumNameType.External),
+            ("Call", OptionRight.Call, EnumNameType.External),
+            ("C", OptionRight.Call, EnumNameType.Internal),
+            ("Put", OptionRight.Put, EnumNameType.External),
+            ("P", OptionRight.Put, EnumNameType.Internal)
+    })
+
+    Public Shared OrderActions As New ExtendedEnum(Of System.Enum, OrderAction)(
+        {
+            ("Buy", OrderAction.Buy, EnumNameType.External),
+            ("BUY", OrderAction.Buy, EnumNameType.Internal),
+            ("Sell", OrderAction.Sell, EnumNameType.External),
+            ("SELL", OrderAction.Sell, EnumNameType.Internal),
+            ("Sell Short", OrderAction.SellShort, EnumNameType.External),
+            ("SSHORT", OrderAction.SellShort, EnumNameType.Internal),
+            ("", OrderAction.None, EnumNameType.Internal),
+            ("*None*", OrderAction.None, EnumNameType.NonAliasExternal)
+        })
+
+    Public Shared OrderTIFs As New ExtendedEnum(Of System.Enum, OrderTimeInForce)(
+        {
+            ("", OrderTimeInForce.None, EnumNameType.Internal),
+            ("*None*", OrderTimeInForce.None, EnumNameType.NonAliasExternal),
+            ("Day", OrderTimeInForce.Day, EnumNameType.External),
+            ("DAY", OrderTimeInForce.Day, EnumNameType.Internal),
+            ("Good Till Cancelled", OrderTimeInForce.GoodTillCancelled, EnumNameType.External),
+            ("GTC", OrderTimeInForce.GoodTillCancelled, EnumNameType.Internal),
+            ("Immediate or Cancel", OrderTimeInForce.ImmediateOrCancel, EnumNameType.External),
+            ("IOC", OrderTimeInForce.ImmediateOrCancel, EnumNameType.Internal)
+        })
+
+    Public Shared OrderTypes As New ExtendedEnum(Of System.Enum, OrderType)(
+        {
+            ("", OrderType.None, EnumNameType.Internal),
+            ("None", OrderType.None, EnumNameType.Alias),
+            ("*None*", OrderType.None, EnumNameType.NonAliasExternal),
+            ("MKT", OrderType.Market, EnumNameType.Both),
+            ("MKTCLS", OrderType.MarketOnClose, EnumNameType.Both),
+            ("LMT", OrderType.Limit, EnumNameType.Both),
+            ("LMTCLS", OrderType.LimitOnClose, EnumNameType.Both),
+            ("PEGMKT", OrderType.PeggedToMarket, EnumNameType.Both),
+            ("STP", OrderType.Stop, EnumNameType.Both),
+            ("STPLMT", OrderType.StopLimit, EnumNameType.Both),
+            ("STP LMT", OrderType.StopLimit, EnumNameType.Both),
+            ("TRAIL", OrderType.Trail, EnumNameType.Both),
+            ("REL", OrderType.Relative, EnumNameType.Both),
+            ("VWAP", OrderType.VWAP, EnumNameType.Both),
+            ("MTL", OrderType.MarketToLimit, EnumNameType.Both),
+            ("RFQ", OrderType.Quote, EnumNameType.Both),
+            ("ADJUST", OrderType.Adjust, EnumNameType.Both),
+            ("ALERT", OrderType.Alert, EnumNameType.Both),
+            ("LIT", OrderType.LimitIfTouched, EnumNameType.Both),
+            ("MIT", OrderType.MarketIfTouched, EnumNameType.Both),
+            ("TRAILLMT", OrderType.TrailLimit, EnumNameType.Both),
+            ("MKTPROT", OrderType.MarketWithProtection, EnumNameType.Both),
+            ("MOO", OrderType.MarketOnOpen, EnumNameType.Both),
+            ("MOC", OrderType.MarketOnClose, EnumNameType.Both),
+            ("LOO", OrderType.LimitOnOpen, EnumNameType.Both),
+            ("LOC", OrderType.LimitOnClose, EnumNameType.Both),
+            ("PEGPRI", OrderType.PeggedToPrimary, EnumNameType.Both),
+            ("VOL", OrderType.Vol, EnumNameType.Both),
+            ("PEG BENCH", OrderType.PeggedToBenchmark, EnumNameType.Both)
+        })
+
+    Public Shared SecurityTypes As New ExtendedEnum(Of System.Enum, SecurityType)(
+        {
+            ("Bond", SecurityType.Bond, EnumNameType.External),
+            ("BOND", SecurityType.Bond, EnumNameType.Internal),
+            ("Cash", SecurityType.Cash, EnumNameType.External),
+            ("CASH", SecurityType.Cash, EnumNameType.Internal),
+            ("Combo", SecurityType.Combo, EnumNameType.External),
+            ("Cmb", SecurityType.Combo, EnumNameType.Alias),
+            ("BAG", SecurityType.Combo, EnumNameType.Internal),
+            ("Commodity", SecurityType.Commodity, EnumNameType.External),
+            ("CMDTY", SecurityType.Commodity, EnumNameType.Internal),
+            ("Continuous Future", SecurityType.ContinuousFuture, EnumNameType.External),
+            ("Cont Future", SecurityType.ContinuousFuture, EnumNameType.Alias),
+            ("CONTFUT", SecurityType.ContinuousFuture, EnumNameType.Internal),
+            ("Fund", SecurityType.Fund, EnumNameType.External),
+            ("FUND", SecurityType.Fund, EnumNameType.Internal),
+            ("Future", SecurityType.Future, EnumNameType.External),
+            ("FUT", SecurityType.Future, EnumNameType.Internal),
+            ("Futures Option", SecurityType.FuturesOption, EnumNameType.External),
+            ("FOP", SecurityType.FuturesOption, EnumNameType.Internal),
+            ("Index", SecurityType.Index, EnumNameType.External),
+            ("IND", SecurityType.Index, EnumNameType.Internal),
+            ("News", SecurityType.News, EnumNameType.External),
+            ("NEWS", SecurityType.News, EnumNameType.Internal),
+            ("", SecurityType.None, EnumNameType.Internal),
+            ("*None*", SecurityType.None, EnumNameType.External),
+            ("Option", SecurityType.Option, EnumNameType.External),
+            ("OPT", SecurityType.Option, EnumNameType.Internal),
+            ("Stock", SecurityType.Stock, EnumNameType.External),
+            ("STK", SecurityType.Stock, EnumNameType.Internal),
+            ("Warrant", SecurityType.Warrant, EnumNameType.External),
+            ("WAR", SecurityType.Warrant, EnumNameType.Internal),
+            ("Warr", SecurityType.Warrant, EnumNameType.Alias)
+        })
+
+    Public Shared ShortSaleSlotCodes As New ExtendedEnum(Of System.Enum, ShortSaleSlotCode)(
+        {
+            ("", ShortSaleSlotCode.NotApplicable, EnumNameType.Internal),
+            ("N/A", ShortSaleSlotCode.NotApplicable, EnumNameType.External),
+            ("Not applicable", ShortSaleSlotCode.NotApplicable, EnumNameType.Alias),
+            ("1", ShortSaleSlotCode.ClearingBroker, EnumNameType.Internal),
+            ("B", ShortSaleSlotCode.ClearingBroker, EnumNameType.Alias),
+            ("BROKER", ShortSaleSlotCode.ClearingBroker, EnumNameType.External),
+            ("2", ShortSaleSlotCode.ThirdParty, EnumNameType.Internal),
+            ("T", ShortSaleSlotCode.ThirdParty, EnumNameType.Alias),
+            ("TP", ShortSaleSlotCode.ThirdParty, EnumNameType.External),
+            ("THIRD PARTY", ShortSaleSlotCode.ThirdParty, EnumNameType.Alias)
+        })
+
+    Public Shared TriggerMethods As New ExtendedEnum(Of System.Enum, TriggerMethod)(
+        {
+        ("Default", TriggerMethod.Default, EnumNameType.Both),
+        ("Double Bid/Ask", TriggerMethod.BidAsk, EnumNameType.Both),
+        ("Last", TriggerMethod.Last, EnumNameType.Both),
+        ("Double Last", TriggerMethod.DoubleLast, EnumNameType.Both),
+        ("Bid/Ask", TriggerMethod.BidAsk, EnumNameType.Both),
+        ("Last Or Bid/Ask", TriggerMethod.LastOrBidAsk, EnumNameType.Both),
+        ("Midpoint", TriggerMethod.MidPoint, EnumNameType.Both)
+        })
+
+#End Region
+
+#Region "Shared variables"
+
+    Private Shared _EventLogger As ILogger = New NullLogger
+    Private Shared _PerformanceLogger As ILogger = New NullLogger
+    Private Shared _SocketLogger As ILogger = New NullLogger
+
+#End Region
+
 #Region "Member variables"
 
     Private ReadOnly mServer As String
     Private ReadOnly mPort As Integer
-    Private ReadOnly mClientID As Integer
 
     Private ReadOnly mUseSSL As Boolean
     Private ReadOnly mUseV100Plus As Boolean
 
     Private mCallbackHandler As CallbackHandler
 
-    Private mIdManager As New IdManager
+    Private mIdManager As IdManager
 
     Private mCancellationSource As CancellationTokenSource
     Friend Property Scheduler As TaskScheduler
@@ -68,13 +398,13 @@ Public Class IBAPI
 
     Private mConnectionManager As ApiConnectionManager
 
-    Private mEventConsumers As New ApiEventConsumers
+    Private ReadOnly mEventConsumers As New ApiEventConsumers
 
-    Private mRegistry As New GeneratorAndParserRegistry
+    Private ReadOnly mRegistry As New GeneratorAndParserRegistry
 
-    Private mInMessageHandler As InputMessageHandler = New InputMessageHandler(mEventConsumers, mRegistry)
+    Private ReadOnly mInMessageHandler As InputMessageHandler
 
-    Private mStatsRecorder As PerformanceStatsRecorder = New PerformanceStatsRecorder(mEventConsumers)
+    Private ReadOnly mStatsRecorder As PerformanceStatsRecorder = New PerformanceStatsRecorder(mEventConsumers)
 
 #End Region
 
@@ -123,10 +453,8 @@ Public Class IBAPI
                    Optional disableEventSource As Boolean = False,
                    Optional syncContext As SynchronizationContext = Nothing,
                    Optional useSSL As Boolean = False,
-                   Optional useLegacyProtocol As Boolean = False)
-        Logger = New NullLogger
-        PerformanceLogger = New NullLogger
-        SocketLogger = New NullLogger
+                   Optional useLegacyProtocol As Boolean = False,
+                   Optional generateSocketDataEvents As Boolean = False)
 
         If Not (port > 0) Then Throw New ArgumentException("Port must be > 0")
         If Not (clientId >= 0) Then Throw New ArgumentException("ClientID must be >= 0")
@@ -134,14 +462,28 @@ Public Class IBAPI
 
         mServer = server
         mPort = port
-        mClientID = clientId
+        Me.ClientID = clientId
 
         If Not disableEventSource Then mCallbackHandler = registerCallbackHandler(New EventSource())
         Me.SyncContext = syncContext
         mUseSSL = useSSL
         mUseV100Plus = Not useLegacyProtocol
 
-        mConnectionManager = New ApiConnectionManager(mServer, mPort, mClientID, mUseV100Plus, mRegistry, mEventConsumers)
+        mEventConsumers.NotifyOpenOrderAction = Sub(e)
+                                                    Dim order = e.Order
+                                                    If order.OrderId > mIdManager.NextOrderId Then
+                                                        ' this can happen when RequestAllOpenOrders has been called, or if this is
+                                                        ' the master client. For some absurd reason, IB insists that orders placed
+                                                        ' with this client must now have higher orderIDs than all other orders placed 
+                                                        ' by ALL clients!
+                                                        Dim id = mIdManager.NextOrderId
+                                                        mIdManager.NextOrderId = order.OrderId + 1
+                                                        IBAPI.EventLogger.Log($"NextOrderId was {id}, now increased to {mIdManager.NextOrderId}")
+                                                    End If
+                                                End Sub
+
+        mConnectionManager = New ApiConnectionManager(mServer, mPort, Me.ClientID, mUseV100Plus, mRegistry, mEventConsumers, generateSocketDataEvents)
+        mInMessageHandler = New InputMessageHandler(mEventConsumers, mRegistry, generateSocketDataEvents)
     End Sub
 
 #End Region
@@ -162,11 +504,45 @@ Public Class IBAPI
 
 #End Region
 
+#Region "Shared Properties"
+
+    Public Shared Property EventLogger As ILogger
+        Friend Get
+            Return _EventLogger
+        End Get
+        Set
+            _EventLogger = Value
+            If _EventLogger Is Nothing Then _EventLogger = New NullLogger
+        End Set
+    End Property
+
+    Public Shared Property PerformanceLogger As ILogger
+        Friend Get
+            Return _PerformanceLogger
+        End Get
+        Set
+            If Value Is Nothing Then Value = New NullLogger
+            _PerformanceLogger = Value
+        End Set
+    End Property
+
+    Public Shared Property SocketLogger As ILogger
+        Friend Get
+            Return _SocketLogger
+        End Get
+        Set
+            _SocketLogger = Value
+            If _SocketLogger Is Nothing Then _SocketLogger = New NullLogger
+        End Set
+    End Property
+
+#End Region
+
 #Region "Properties"
 
     Public Property AccountDataConsumer() As IAccountDataConsumer
         Get
-            AccountDataConsumer = mEventConsumers.AccountDataConsumer
+            Return mEventConsumers.AccountDataConsumer
         End Get
         Set(Value As IAccountDataConsumer)
             mEventConsumers.AccountDataConsumer = Value
@@ -174,10 +550,6 @@ Public Class IBAPI
     End Property
 
     Public ReadOnly Property ClientID() As Integer
-        Get
-            ClientID = mClientID
-        End Get
-    End Property
 
 
     Public Property ConnectionRetryIntervalSecs() As Integer
@@ -260,12 +632,6 @@ Public Class IBAPI
         End Set
     End Property
 
-    Public WriteOnly Property Logger As ILogger
-        Set
-            EventLogger = Value
-        End Set
-    End Property
-
     Public Property MarketDataConsumer() As IMarketDataConsumer
         Get
             Return mEventConsumers.MarketDataConsumer
@@ -290,10 +656,13 @@ Public Class IBAPI
         End Get
     End Property
 
-    Public ReadOnly Property NextOrderId() As Integer
+    Public Property NextOrderId() As Integer
         Get
             NextOrderId = mIdManager.NextOrderId
         End Get
+        Set(value As Integer)
+            mIdManager.NextOrderId = value
+        End Set
     End Property
 
     Public Property NewsConsumer() As INewsConsumer
@@ -323,12 +692,6 @@ Public Class IBAPI
         End Set
     End Property
 
-    Public WriteOnly Property PerformanceLogger As ILogger
-        Set
-            mStatsRecorder.Logger = Value
-        End Set
-    End Property
-
     Public ReadOnly Property Port() As Integer
         Get
             Port = mPort
@@ -339,8 +702,17 @@ Public Class IBAPI
         Get
             Return mEventConsumers.ScannerDataConsumer
         End Get
-        Set(Value As IScannerDataConsumer)
+        Set
             mEventConsumers.ScannerDataConsumer = Value
+        End Set
+    End Property
+
+    Public Property SocketDataConsumer() As ISocketDataConsumer
+        Get
+            Return mEventConsumers.SocketDataConsumer
+        End Get
+        Set
+            mEventConsumers.SocketDataConsumer = Value
         End Set
     End Property
 
@@ -354,12 +726,6 @@ Public Class IBAPI
         Get
             ServerVersion = mConnectionManager.ServerVersion
         End Get
-    End Property
-
-    Public WriteOnly Property SocketLogger As ILogger
-        Set
-            Globals.SocketLogger = Value
-        End Set
     End Property
 
     Public Property SyncContext As SynchronizationContext
@@ -386,6 +752,19 @@ Public Class IBAPI
 
 #Region "Shared Methods"
 
+    Friend Shared Function FormatBuffer(pBuffer As String, pBufferNextFreeIndex As Integer) As String
+        Dim s = New Text.StringBuilder
+
+        Dim i = 0
+        Do While i < pBufferNextFreeIndex
+            s.Append($"{i,-6:0000}")
+            s.Append(pBuffer.Substring(i, System.Math.Min(50, pBuffer.Length - i)))
+            i = i + 50
+            If i < pBufferNextFreeIndex Then s.AppendLine("")
+        Loop
+        Return s.ToString
+    End Function
+
     Public Shared Function IsContractExpirable(pContract As Contract) As Boolean
         Select Case pContract.SecType
             Case SecurityType.Option,
@@ -399,10 +778,52 @@ Public Class IBAPI
         End Select
     End Function
 
-
     Public Shared Function IsContractExpired(pContract As Contract) As Boolean
         If Not IsContractExpirable(pContract) Then Return False
         Return contractExpiryToDate(pContract) < Date.Now
+    End Function
+
+    Public Shared Function NullableDoubleFromString(val As String) As Double?
+        Dim result As Double?
+        If Not String.IsNullOrWhiteSpace(val) Then result = CDbl(val)
+        Return result
+    End Function
+
+    Public Shared Function NullableIntegerFromString(val As String) As Integer?
+        Dim result As Integer?
+        If Not String.IsNullOrWhiteSpace(val) Then result = CInt(val)
+        Return result
+    End Function
+
+    Public Shared Function NullableToString(Of T As Structure)(val As T?) As String
+        Return NullableToString(val, "")
+    End Function
+
+    Public Shared Function NullableToString(Of T As Structure)(val As T?, defaultValue As String) As String
+        Return If(val.HasValue, val.Value.ToString(), defaultValue)
+    End Function
+
+    Public Shared Function TwsDateStringToDate(pDateString As String) As (theDate As Date, timezoneName As String)
+        ' format is yyyymmdd [hh:mm:ss  [timezone]]
+        If String.IsNullOrEmpty(pDateString) Then Return (Date.MaxValue, String.Empty)
+
+        Dim d As Date
+        If pDateString.Length = 8 Then
+            d = DateTime.ParseExact(pDateString, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+        ElseIf pDateString.Length > 17 Then
+            d = DateTime.ParseExact(pDateString.Substring(0, 18), "yyyyMMdd  HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)
+        Else
+            Throw New ArgumentException("Invalid date string format")
+        End If
+
+        Dim lTimezoneName As String
+        If pDateString.Length > 17 Then
+            lTimezoneName = pDateString.Substring(17, pDateString.Length - 18).Trim()
+        Else
+            lTimezoneName = ""
+        End If
+
+        Return (d, lTimezoneName)
     End Function
 
     Friend Shared Function UnixTimestampToDateTime(unixTimestamp As Long) As DateTime
@@ -508,6 +929,7 @@ Public Class IBAPI
         mInMessageHandler.Initialise(lreader, mStatsRecorder)
         mInMessageHandler.Reset()
 
+        mIdManager = New IdManager
         mRegistry.Initialise(mIdManager,
                              mEventConsumers,
                              lreader,
@@ -531,7 +953,7 @@ Public Class IBAPI
         mStatsRecorder?.StopRecording()
     End Sub
 
-    Public Sub ExerciseOptions(pTickerId As Integer, pContract As Contract, pExerciseAction As Integer, pExerciseQuantity As Integer, pAccount As String, pOverride As Integer)
+    Public Sub ExerciseOptions(pTickerId As Integer, pContract As Contract, pExerciseAction As ExerciseAction, pExerciseQuantity As Integer, pAccount As String, pOverride As Boolean)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.ExerciseOptions, {pTickerId, pContract, pExerciseAction, pExerciseQuantity, pAccount, pOverride})
     End Sub
 
@@ -623,8 +1045,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalData, {pRequestId, pRequest, useRTH, keepUpToDate, options})
     End Sub
 
-    Public Sub RequestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalNews, {requestId, conid, providerCodes, startTime, endTime, maxResults})
+    Public Sub RequestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, Optional options As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalNews, {requestId, conid, providerCodes, startTime, endTime, maxResults, options})
     End Sub
 
     ''' <summary>
@@ -643,8 +1065,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestManagedAccounts, Nothing)
     End Sub
 
-    Public Sub RequestMarketData(pTickerId As Integer, pContract As Contract, Optional pGenericTicks As String = "", Optional pSnapshot As Boolean = False, Optional regulatorySnapshot As Boolean = False, Optional options As List(Of TagValue) = Nothing)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestMarketData, {pTickerId, pContract, pGenericTicks, pSnapshot, regulatorySnapshot, options})
+    Public Sub RequestMarketData(pTickerId As Integer, pContract As Contract, Optional pGenericTicks As String = "", Optional pSnapshot As Boolean = False, Optional pRegulatorySnapshot As Boolean = False, Optional options As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestMarketData, {pTickerId, pContract, pGenericTicks, pSnapshot, pRegulatorySnapshot, options})
     End Sub
 
     Public Sub RequestMarketDataType(pMarketDataType As MarketDataType)
@@ -667,8 +1089,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestMatchingSymbols, {requestId, pattern})
     End Sub
 
-    Public Sub RequestNewsArticle(requestId As Integer, providerCode As String, articleId As String)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestNewsArticle, {requestId, providerCode, articleId})
+    Public Sub RequestNewsArticle(requestId As Integer, providerCode As String, articleId As String, Optional options As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestNewsArticle, {requestId, providerCode, articleId, options})
     End Sub
 
     Public Sub RequestNewsBulletins(allMsgs As Boolean)
@@ -731,18 +1153,6 @@ Public Class IBAPI
         mConnectionManager.SetLogLevel(pLogLevel)
     End Sub
 
-    Public Sub SetPerformanceDataCollection(logger As ILogger)
-        SetPerformanceDataCollection(logger, Nothing)
-    End Sub
-
-    Public Sub SetPerformanceDataCollection(performanceDataConsumer As IPerformanceDataConsumer)
-        SetPerformanceDataCollection(Nothing, performanceDataConsumer)
-    End Sub
-
-    Public Sub SetPerformanceDataCollection(logger As ILogger, performanceDataConsumer As IPerformanceDataConsumer)
-        mStatsRecorder.Logger = logger
-    End Sub
-
     Public Sub SubscribeToGroupEvents(requestId As Integer, groupId As Integer)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.SubscribeToGroupEvents, {requestId, groupId})
     End Sub
@@ -777,7 +1187,7 @@ Public Class IBAPI
                 p.SetRegistry(mRegistry)
             Next
         Catch e As Exception
-            EventLogger.Log($"Failed loading generators: {e.ToString}")
+            IBAPI.EventLogger.Log($"Failed loading generators: {e.ToString}")
             Throw
         End Try
     End Sub
@@ -792,13 +1202,16 @@ Public Class IBAPI
                 p.SetRegistry(mRegistry)
             Next
         Catch e As Exception
-            EventLogger.Log($"Failed loading parsers: {e.ToString}")
+            IBAPI.EventLogger.Log($"Failed loading parsers: {e.ToString}")
             Throw
         End Try
     End Sub
 
     Private Sub startInputMessageHandler()
-        mInMessageHandler.Start(Scheduler, mCancellationSource, Sub() mConnectionManager.Disconnect("Message processing completed"))
+        mInMessageHandler.Start(mConnectionManager.ServerVersion,
+                                Scheduler,
+                                mCancellationSource,
+                                Sub() mConnectionManager.Disconnect("Message processing completed"))
     End Sub
 
     Private Function registerCallbackHandler(handler As CallbackHandler) As CallbackHandler
@@ -814,6 +1227,7 @@ Public Class IBAPI
         Me.OrderInfoConsumer = handler
         Me.PerformanceDataConsumer = handler
         Me.ScannerDataConsumer = handler
+        Me.SocketDataConsumer = handler
         Return handler
     End Function
 

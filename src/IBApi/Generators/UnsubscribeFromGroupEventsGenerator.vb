@@ -48,7 +48,7 @@ Friend Class UnsubscribeFromGroupEventsGenerator
         Const ProcName As String = NameOf(UnsubscribeFromGroupEvents)
         Const VERSION As Integer = 1
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
@@ -56,7 +56,7 @@ Friend Class UnsubscribeFromGroupEventsGenerator
 
         lWriter.AddElement(requestId, "Request Id")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

@@ -45,11 +45,11 @@ Friend Class RequestMarketDataGenerator
     End Property
 
     Private Sub requestMarketData(pTickerId As Integer, pContract As Contract, pGenericTicks As String, pSnapshot As Boolean, regulatorySnapshot As Boolean, options As List(Of TagValue))
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 11
 
-        EventLogger.Log($"Requesting market data for: {pContract.ToString()}", NameOf(RequestMarketDataGenerator), NameOf(requestMarketData))
+        IBAPI.EventLogger.Log($"Requesting market data for: {pContract.ToString()}", NameOf(RequestMarketDataGenerator), NameOf(requestMarketData))
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketData)
@@ -68,17 +68,17 @@ Friend Class RequestMarketDataGenerator
                         i = i + 1
                         lWriter.AddElement(.ConId, "ConId" & i)
                         lWriter.AddElement(.Ratio, "Ratio" & i)
-                        lWriter.AddElement(OrderActions.ToInternalString(.Action), "Action" & i)
+                        lWriter.AddElement(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)
                         lWriter.AddElement(.Exchange, "Exchange" & i)
                     End With
                 Next comboLeg
             End If
 
-            If .UnderComp?.ConId <> 0 Then
+            If .DeltaNeutralContract?.ConId <> 0 Then
                 lWriter.AddElement(True, "Under comp")
-                lWriter.AddElement(.UnderComp.ConId, "Under comp conid")
-                lWriter.AddElement(.UnderComp.Delta, "Under comp delta")
-                lWriter.AddElement(.UnderComp.Price, "Under comp price")
+                lWriter.AddElement(.DeltaNeutralContract.ConId, "Under comp conid")
+                lWriter.AddElement(.DeltaNeutralContract.Delta, "Under comp delta")
+                lWriter.AddElement(.DeltaNeutralContract.Price, "Under comp price")
             Else
                 lWriter.AddElement(False, "Under comp")
             End If
@@ -91,7 +91,7 @@ Friend Class RequestMarketDataGenerator
 
             lWriter.AddElement(options, "Options")
 
-            SendMessage(lWriter, NameOf(RequestMarketDataGenerator), NameOf(requestMarketData))
+            lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
         End With
     End Sub
 

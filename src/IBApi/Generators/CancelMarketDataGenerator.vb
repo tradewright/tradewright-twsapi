@@ -46,7 +46,7 @@ Friend Class CancelMarketDataGenerator
 
     Private Sub cancelMarketData(pTickerId As Integer)
         Const ProcName As String = NameOf(cancelMarketData)
-        If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
+        If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 2
 
@@ -54,7 +54,7 @@ Friend Class CancelMarketDataGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.CancelMarketData)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketData), "Ticker id")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

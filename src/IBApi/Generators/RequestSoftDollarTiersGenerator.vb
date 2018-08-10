@@ -47,7 +47,7 @@ Friend Class RequestSoftDollarTiersGenerator
     Private Sub RequestSoftDollarTiers(requestId As Integer)
         Const ProcName As String = NameOf(RequestSoftDollarTiers)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.SOFT_DOLLAR_TIER Then Throw New InvalidOperationException("Soft dollar tiers requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -55,7 +55,7 @@ Friend Class RequestSoftDollarTiersGenerator
 
         lWriter.AddElement(requestId, "RequestId")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

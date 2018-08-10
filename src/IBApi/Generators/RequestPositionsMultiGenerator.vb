@@ -48,7 +48,7 @@ Friend Class RequestPositionsMultiGenerator
         Const ProcName As String = NameOf(RequestPositionsMulti)
         Const VERSION As Integer = 1
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.MODELS_SUPPORT Then Throw New InvalidOperationException("Positions multi requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -59,7 +59,7 @@ Friend Class RequestPositionsMultiGenerator
         lWriter.AddElement(account, "Account")
         lWriter.AddElement(modelCode, "Model Code")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

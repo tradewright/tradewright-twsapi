@@ -28,7 +28,7 @@ Friend Class RequestHistoricalNewsGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer)
+    Private Delegate Sub ApiMethodDelegate(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, options As List(Of TagValue))
 
     Private Const ModuleName As String = NameOf(RequestHistoricalNewsGenerator)
 
@@ -44,10 +44,10 @@ Friend Class RequestHistoricalNewsGenerator
         End Get
     End Property
 
-    Private Sub requestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer)
+    Private Sub requestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, options As List(Of TagValue))
         Const ProcName As String = NameOf(requestHistoricalNews)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HISTORICAL_NEWS Then Throw New InvalidOperationException("Historical news requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -62,8 +62,10 @@ Friend Class RequestHistoricalNewsGenerator
         lWriter.AddElement(endTime.ToString(DateFormat), "End Time")
         lWriter.AddElement(maxResults, "Max Results")
 
+        If ServerVersion >= ApiServerVersion.NEWS_QUERY_ORIGINS Then lWriter.AddElement(options, "Options")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

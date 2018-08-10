@@ -52,7 +52,7 @@ Friend Class SetServerLogLevelGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.SetServerLogLevel)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(logLevel, "Loglevel")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

@@ -47,7 +47,7 @@ Friend Class RequestMatchingSymbolsGenerator
     Private Sub RequestMatchingSymbols(requestId As Integer, pattern As String)
         Const ProcName As String = NameOf(RequestMatchingSymbols)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_MATCHING_SYMBOLS Then Throw New InvalidOperationException("Matching symbols requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -56,7 +56,7 @@ Friend Class RequestMatchingSymbolsGenerator
         lWriter.AddElement(requestId, "Request Id")
         lWriter.AddElement(pattern, "Pattern")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

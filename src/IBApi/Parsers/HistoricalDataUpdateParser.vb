@@ -37,7 +37,7 @@ Friend NotInheritable Class HistoricalDataUpdateParser
 
         Dim bar As New Bar With {
                 .TickVolume = Await _Reader.GetLongAsync("Tick Volume"),
-                .TimeStamp = TwsDateStringToDate(Await _Reader.GetStringAsync("Bar date")).theDate,
+                .TimeStamp = IBAPI.TwsDateStringToDate(Await _Reader.GetStringAsync("Bar date")).theDate,
                 .OpenValue = Await _Reader.GetDoubleAsync("Open"),
                 .CloseValue = Await _Reader.GetDoubleAsync("Close"),
                 .HighValue = Await _Reader.GetDoubleAsync("High"),

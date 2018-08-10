@@ -48,7 +48,7 @@ Friend Class RequestMarketDepthGenerator
 
     Private Sub requestMarketDepth(pTickerId As Integer, pContract As Contract, pNumberOfRows As Integer, options As List(Of TagValue))
         Const ProcName As String = NameOf(requestMarketDepth)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 5
 
@@ -57,12 +57,12 @@ Friend Class RequestMarketDepthGenerator
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Request id")
 
-        lWriter.AddElement(pContract, "Contract")
+        lWriter.AddElement(pContract, "Contract", ignorePrimaryExchange:=True)
 
         lWriter.AddElement(pNumberOfRows, "Num rows")
 
         lWriter.AddElement(options, "Options")
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

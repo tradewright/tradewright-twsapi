@@ -39,10 +39,10 @@ Friend NotInheritable Class PositionMultiParser
         Dim contract = New Contract()
         contract.ConId = Await _Reader.GetIntAsync("Conid")
         contract.Symbol = Await _Reader.GetStringAsync("Symbol")
-        contract.SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
+        contract.SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
         contract.Expiry = Await _Reader.GetStringAsync("Expiry")
         contract.Strike = Await _Reader.GetDoubleAsync("Strike")
-        contract.OptRight = OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
+        contract.OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
         Dim mult = Await _Reader.GetStringAsync("Multiplier")
         contract.Multiplier = If(mult = "", 1, CInt(mult))
         contract.Exchange = Await _Reader.GetStringAsync("Exchange")
@@ -50,8 +50,8 @@ Friend NotInheritable Class PositionMultiParser
         contract.LocalSymbol = Await _Reader.GetStringAsync("LocalSymbol")
         contract.TradingClass = Await _Reader.GetStringAsync("TradingClass")
 
-        Dim position = Await _Reader.GetDoubleAsync("Position")
-        Dim avgCost = Await _Reader.GetDoubleAsync("Avg Cost")
+        Dim position = Await _Reader.GetNullableDoubleAsync("Position")
+        Dim avgCost = Await _Reader.GetNullableDoubleAsync("Avg Cost")
         Dim modelCode = Await _Reader.GetStringAsync("Model Code")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")

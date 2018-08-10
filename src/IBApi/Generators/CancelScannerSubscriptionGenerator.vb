@@ -46,7 +46,7 @@ Friend Class CancelScannerSubscriptionGenerator
 
     Private Sub CancelScannerSubscription(pTickerId As Integer)
         Const ProcName As String = NameOf(CancelScannerSubscription)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1
 
@@ -54,7 +54,7 @@ Friend Class CancelScannerSubscriptionGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.CancelScannerSubscription)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pTickerId, "Ticker Id")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

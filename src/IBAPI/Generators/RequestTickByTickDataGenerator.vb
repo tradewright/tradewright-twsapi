@@ -21,7 +21,7 @@
     Private Sub requestTickByTickData(requestId As Integer, contract As Contract, tickType As String, numberOfTicks As Integer, ignoreSize As Boolean)
         Const ProcName As String = NameOf(requestTickByTickData)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.TICK_BY_TICK Then Throw New InvalidOperationException("Tick-by-tick requests not supported")
         If ServerVersion < ApiServerVersion.TICK_BY_TICK_IGNORE_SIZE And (numberOfTicks <> 0 Or ignoreSize) Then Throw New InvalidOperationException("ignoreSize and numberOfTicks parameters not supported")
 
@@ -37,7 +37,7 @@
             lWriter.AddElement(ignoreSize, "Ignore Size")
         End If
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

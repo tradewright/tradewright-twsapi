@@ -37,39 +37,48 @@ Friend Class ApiConnectionManager
     Private Const MinReqdServerVersion As Integer = ApiServerVersion.RANDOMIZE_SIZE_AND_PRICE
 
 
-    Private mServer As String
-    Private mPort As Integer
-    Private mClientId As Integer
+    Private ReadOnly mServer As String
+    Private ReadOnly mPort As Integer
+    Private ReadOnly mClientId As Integer
 
-    Private WithEvents mSocketHandler As SocketHandler
+    Private WithEvents TheSocketHandler As SocketHandler
     Private mConnectedAction As Action
 
-    Private mUseV100Plus As Boolean
+    Private ReadOnly mUseV100Plus As Boolean
 
     Private mReader As MessageReader
 
     Private mServerVersion As Integer
 
-    Private mEventConsumers As New ApiEventConsumers
+    Private ReadOnly mEventConsumers As ApiEventConsumers
 
     Private mConnectionState As ApiConnectionState = ApiConnectionState.NotConnected
 
-    Private mRegistry As GeneratorAndParserRegistry
+    Private ReadOnly mRegistry As GeneratorAndParserRegistry
 
     Private mLogLevel As ApiLogLevel = ApiLogLevel.Information
 
     Private mConnectionRetryIntervalSecs As Integer
 
+    Private ReadOnly mGenerateSocketDataEvents As Boolean
+
 
 #Region "Constructors"
 
-    Friend Sub New(server As String, port As Integer, clientId As Integer, useV100Plus As Boolean, registry As GeneratorAndParserRegistry, eventConsumers As ApiEventConsumers)
+    Friend Sub New(server As String,
+                   port As Integer,
+                   clientId As Integer,
+                   useV100Plus As Boolean,
+                   registry As GeneratorAndParserRegistry,
+                   eventConsumers As ApiEventConsumers,
+                   generateSocketDataEvents As Boolean)
         mServer = server
         mPort = port
         mClientId = clientId
         mUseV100Plus = useV100Plus
         mRegistry = registry
         mEventConsumers = eventConsumers
+        mGenerateSocketDataEvents = generateSocketDataEvents
     End Sub
 
 #End Region
@@ -83,7 +92,7 @@ Friend Class ApiConnectionManager
         Set(Value As Integer)
             If Value < 0 Then Throw New ArgumentException("Value cannot be negative")
             mConnectionRetryIntervalSecs = Value
-            If Not mSocketHandler Is Nothing Then mSocketHandler.ConnectionRetryIntervalSecs = Value
+            If Not TheSocketHandler Is Nothing Then TheSocketHandler.ConnectionRetryIntervalSecs = Value
         End Set
     End Property
 
@@ -112,25 +121,25 @@ Friend Class ApiConnectionManager
     Friend Function Connect(connectedAction As Action, cancellationSource As CancellationTokenSource, Optional useSSL As Boolean = False) As MessageReader
         mConnectedAction = connectedAction
         Dim socket = createSocket(mServer, mPort, useSSL)
-        mSocketHandler = New SocketHandler(socket,
+        TheSocketHandler = New SocketHandler(socket,
                                            Sub() setConnectionState(ApiConnectionState.Connecting, ConnectionString),
                                            AddressOf socketHandlerConnected,
-                                           Sub(message) setConnectionState(ApiConnectionState.Failed, $"{message}: {ConnectionString}"),
+                                           Sub(reason) setConnectionState(ApiConnectionState.Failed, $"{reason}: {ConnectionString}"),
                                            Sub(reason) setConnectionState(ApiConnectionState.NotConnected, $"{reason}: {ConnectionString}"),
                                            Sub(reason) setConnectionState(ApiConnectionState.NotConnected, $"{reason}: {ConnectionString}"),
                                            mConnectionRetryIntervalSecs)
-        mReader = New MessageReader(New InputStringReader(socket, cancellationSource, MaxMessageSize), mUseV100Plus)
-        mSocketHandler.Connect(keepAlive:=True)
+        mReader = New MessageReader(New InputStringReader(socket, cancellationSource, MaxMessageSize), mUseV100Plus, mGenerateSocketDataEvents)
+        TheSocketHandler.Connect(keepAlive:=True)
         Return mReader
     End Function
 
     Friend Function CreateMessageGenerator() As MessageGenerator
-        Return mSocketHandler.CreateMessageGenerator(mUseV100Plus)
+        Return TheSocketHandler.CreateMessageGenerator(mUseV100Plus, mGenerateSocketDataEvents)
     End Function
 
     Friend Sub Disconnect(pReason As String)
-        mSocketHandler?.Disconnect(pReason)
-        mSocketHandler = Nothing
+        TheSocketHandler?.Disconnect(pReason)
+        TheSocketHandler = Nothing
     End Sub
 
     Friend Sub SetLogLevel(pLogLevel As ApiLogLevel)
@@ -143,7 +152,7 @@ Friend Class ApiConnectionManager
         If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         If mLogLevel <> 0 Then
-            EventLogger.Log("Setting TWS log level", ModuleName, NameOf(SetLogLevel))
+            IBAPI.EventLogger.Log("Setting TWS log level", ModuleName, NameOf(SetLogLevel))
             mRegistry.InvokeGenerator(ApiSocketOutMsgType.SetServerLogLevel, {mLogLevel})
         End If
     End Sub
@@ -174,17 +183,17 @@ Friend Class ApiConnectionManager
             mServerVersion = Await mReader.GetIntAsync("Server Version")
 
             Dim lServerTime = Await mReader.GetStringAsync("TWS Time")
-            mReader.LogSocketInputMessage(ModuleName, ProcName)
+            mReader.LogSocketInputMessage(mEventConsumers.SocketDataConsumer)
             mReader.EndMessage()
 
             If Not isValidServerVersion() Then
                 Dim e = New ApiException(ErrorCodes.TwsOutOfDate, "TWS is out of date and needs to be upgraded")
-                EventLogger.Log("An exception occurred:" & vbCrLf & e.ToString(), ModuleName, ProcName, ILogger.LogLevel.Severe)
+                IBAPI.EventLogger.Log("An exception occurred:" & vbCrLf & e.ToString(), ModuleName, ProcName, ILogger.LogLevel.Severe)
                 mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
                 Return False
             End If
 
-            EventLogger.Log($"TWS version: {mServerVersion}; TWS Time at connection: {lServerTime}", ModuleName, ProcName)
+            IBAPI.EventLogger.Log($"TWS version: {mServerVersion}; TWS Time at connection: {lServerTime}", ModuleName, ProcName)
 
             Return True
         Catch e As ApiException When e.ErrorCode = ErrorCodes.DataStreamEnded
@@ -196,31 +205,31 @@ Friend Class ApiConnectionManager
     Private Sub setConnectionState(pState As ApiConnectionState, pMessage As String)
         If pState = mConnectionState Then Exit Sub
         mConnectionState = pState
-        mEventConsumers.ConnectionStatusConsumer?.NotifyAPIConnectionStateChange(New ApiConnectionStateChangeEventArgs(Date.UtcNow, mConnectionState, pMessage))
+        mEventConsumers.ConnectionStatusConsumer?.NotifyAPIConnectionStateChange(New ApiConnectionStateChangeEventArgs(Date.UtcNow, mConnectionState, pMessage, mServer, mPort, mClientId))
     End Sub
 
     Private Async Sub socketHandlerConnected()
         Const ProcName As String = "socketHandlerConnected"
 
-        Dim lwriter = mSocketHandler.CreateMessageGenerator(mUseV100Plus)
+        Dim lwriter = TheSocketHandler.CreateMessageGenerator(mUseV100Plus, mGenerateSocketDataEvents)
         If mUseV100Plus Then
-            EventLogger.Log("Connecting to Tws: negotiating API connection", ModuleName, ProcName)
+            IBAPI.EventLogger.Log("Connecting to Tws: negotiating API connection", ModuleName, ProcName)
             lwriter.StartMessage("API")
-            lwriter.AddString("v" & ApiServerVersion.MinV100Plus & ".." & ApiServerVersion.Max, "SupportedServerVersions")
-            lwriter.SendMessage(ModuleName, ProcName)
+            lwriter.AddString($"v{CInt(ApiServerVersion.MinV100Plus)}..{CInt(ApiServerVersion.Max)}", "SupportedServerVersions")
+            lwriter.SendMessage(mEventConsumers.SocketDataConsumer)
         Else
-            EventLogger.Log("Connecting to Tws: sending client version", ModuleName, ProcName)
+            IBAPI.EventLogger.Log("Connecting to Tws: sending client version", ModuleName, ProcName)
             lwriter.StartMessage()
             lwriter.AddElement(ClientVersion, "Client Version")
-            lwriter.SendMessage(ModuleName, ProcName)
+            lwriter.SendMessage(mEventConsumers.SocketDataConsumer)
         End If
 
         If Await negotiateConnection() Then
-            EventLogger.Log("Connecting to Tws: starting API", ModuleName, ProcName)
+            IBAPI.EventLogger.Log("Connecting to Tws: starting API", ModuleName, ProcName)
             mRegistry.InvokeGenerator(ApiSocketOutMsgType.StartApi, {mClientId, ""})
 
             If mLogLevel <> 0 Then
-                EventLogger.Log("Connecting to Tws: setting TWS log level", ModuleName, ProcName)
+                IBAPI.EventLogger.Log("Connecting to Tws: setting TWS log level", ModuleName, ProcName)
                 mRegistry.InvokeGenerator(ApiSocketOutMsgType.SetServerLogLevel, {mLogLevel})
             End If
 

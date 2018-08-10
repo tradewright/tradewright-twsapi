@@ -33,6 +33,7 @@ Option Strict Off
 Imports System.Collections.Concurrent
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports TradeWright.IBAPI
 
 Public Class QueueingCallbackHandler
     Inherits CallbackHandler
@@ -47,13 +48,14 @@ Public Class QueueingCallbackHandler
         INewsConsumer,
         IOrderInfoConsumer,
         IPerformanceDataConsumer,
-        IScannerDataConsumer
+        IScannerDataConsumer,
+        ISocketDataConsumer
 
     Private mEv As CallbackHandler
 
     Private Structure QueueEntry(Of T As EventArgs)
-        Dim e As T
-        Dim eventHandler As Action(Of T)
+        Dim E As T
+        Dim EventHandler As Action(Of T)
     End Structure
 
     Private mQueue As BlockingCollection(Of QueueEntry(Of EventArgs)) = New BlockingCollection(Of QueueEntry(Of EventArgs))()
@@ -434,6 +436,29 @@ Public Class QueueingCallbackHandler
 
 #End Region
 
+#Region "ISocketDataConsumer"
+
+    ' We don't queue these methods as the sending and receiving of messages continues regardless of whether
+    ' our queue is paused
+
+    Public Overrides Sub NotifySocketInputData(e As SocketDataEventArgs) Implements ISocketDataConsumer.NotifySocketInputData
+        mEv.NotifySocketInputData(e)
+    End Sub
+
+    Public Overrides Sub NotifySocketInputMessage(e As ApiMessageEventArgs) Implements ISocketDataConsumer.NotifySocketInputMessage
+        mEv.NotifySocketInputMessage(e)
+    End Sub
+
+    Public Overrides Sub NotifySocketOutputData(e As SocketDataEventArgs) Implements ISocketDataConsumer.NotifySocketOutputData
+        mEv.NotifySocketOutputData(e)
+    End Sub
+
+    Public Overrides Sub NotifySocketOutputMessage(e As ApiMessageEventArgs) Implements ISocketDataConsumer.NotifySocketOutputMessage
+        mEv.NotifySocketOutputMessage(e)
+    End Sub
+
+#End Region
+
 #Region "Methods"
 
     Public Sub Start()
@@ -451,7 +476,7 @@ Public Class QueueingCallbackHandler
 #Region "Helper functions"
 
     Private Sub queueEvent(e As EventArgs, eventHandler As Action(Of EventArgs))
-        Dim entry = New QueueEntry(Of EventArgs) With {.e = e, .eventHandler = eventHandler}
+        Dim entry = New QueueEntry(Of EventArgs) With {.E = e, .EventHandler = eventHandler}
         mQueue.Add(entry)
     End Sub
 
@@ -464,9 +489,9 @@ Public Class QueueingCallbackHandler
 
     Private Sub dispatchItem(entry As QueueEntry(Of EventArgs))
         If mSyncContext Is Nothing Then
-            entry.eventHandler(entry.e)
+            entry.EventHandler(entry.E)
         Else
-            mSyncContext.Post(Sub() entry.eventHandler(entry.e), Nothing)
+            mSyncContext.Post(Sub() entry.EventHandler(entry.E), Nothing)
         End If
     End Sub
 

@@ -47,13 +47,13 @@ Friend Class RequestFamilyCodesGenerator
     Private Sub RequestFamilyCodes()
         Const ProcName As String = NameOf(RequestFamilyCodes)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_FAMILY_CODES Then Throw New InvalidOperationException("Family codes requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

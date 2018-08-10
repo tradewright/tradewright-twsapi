@@ -27,7 +27,6 @@
 Imports System.IO
 Imports System.Net.Sockets
 Imports System.Threading
-Imports System.Threading.Tasks
 
 Friend Class SocketManager
 
@@ -38,7 +37,6 @@ Friend Class SocketManager
     End Structure
 
     Protected _Host As String
-    Private mPort As Integer
 
     Private mTcpClient As TcpClient
     Private mSocket As Socket
@@ -49,7 +47,7 @@ Friend Class SocketManager
 
     Friend Sub New(host As String, port As Integer)
         Me._Host = host
-        Me.mPort = port
+        Me.Port = port
     End Sub
 
     Friend ReadOnly Property Host As String
@@ -59,10 +57,6 @@ Friend Class SocketManager
     End Property
 
     Friend ReadOnly Property Port As Integer
-        Get
-            Return Me.mPort
-        End Get
-    End Property
 
     Friend Sub Close()
         If mBaseStream IsNot Nothing Then mBaseStream.Dispose()
@@ -78,11 +72,11 @@ Friend Class SocketManager
             mClosedAction = closedAction
 
             Me.mTcpClient = New TcpClient()
-            Await Me.mTcpClient.ConnectAsync(Me._Host, Me.mPort)
+            Await Me.mTcpClient.ConnectAsync(Me._Host, Me.Port)
 
             Me.mSocket = Me.mTcpClient.Client
 
-            If (keepAlive) Then Me.setKeepAliveOn()
+            If keepAlive Then Me.setKeepAliveOn()
 
             Me.mBaseStream = Me.mTcpClient.GetStream()
             Me._ClientStream = Me.mBaseStream
@@ -90,7 +84,7 @@ Friend Class SocketManager
             connectedAction()
 
         Catch e As System.Net.Sockets.SocketException
-            errorAction(New SocketEventArgs(e, Me._Host, Me.mPort, 0, String.Empty))
+            errorAction(New SocketEventArgs(e, Me._Host, Me.Port, 0, String.Empty))
         End Try
 
         Return True
@@ -116,10 +110,11 @@ Friend Class SocketManager
     Private Sub setKeepAliveOn()
         Me.mSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, True)
 
-        Dim ka = New SocketManager.TcpKeepAlive()
-        ka.Onoff = 1
-        ka.KeepaliveInterval = 1000
-        ka.KeepaliveTime = 15000
+        Dim ka = New TcpKeepAlive With {
+            .Onoff = 1,
+            .KeepaliveInterval = 1000,
+            .KeepaliveTime = 15000
+        }
 
         Dim mem = New MemoryStream()
         Dim w = New BinaryWriter(mem)

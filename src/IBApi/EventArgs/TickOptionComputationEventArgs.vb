@@ -26,27 +26,37 @@
 
 Public Class TickOptionComputationEventArgs
     Inherits AbstractEventArgsWithTimestamp
-    Public Property Delta As Double
+    Public Property Delta As Double?
 
     Public Property Field As TickType
 
-    Public Property Gamma As Double
+    Public Property Gamma As Double?
 
-    Public Property ImpliedVolatility As Double
+    Public Property ImpliedVolatility As Double?
 
-    Public Property OptPrice As Double
+    Public Property OptPrice As Double?
 
-    Public Property PvDividend As Double
+    Public Property PvDividend As Double?
 
-    Public Property Theta As Double
+    Public Property Theta As Double?
 
     Public Property TickerId As Integer
 
-    Public Property UndPrice As Double
+    Public Property UndPrice As Double?
 
-    Public Property Vega As Double
+    Public Property Vega As Double?
 
-    Public Sub New(timestamp As DateTime, tickerId As Integer, field As TickType, impliedVolatility As Double, delta As Double, optPrice As Double, pvDividend As Double, gamma As Double, vega As Double, theta As Double, undPrice As Double)
+    Public Sub New(timestamp As DateTime,
+                   tickerId As Integer,
+                   field As TickType,
+                   impliedVolatility As Double?,
+                   delta As Double?,
+                   optPrice As Double?,
+                   pvDividend As Double?,
+                   gamma As Double?,
+                   vega As Double?,
+                   theta As Double?,
+                   undPrice As Double?)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.TickerId = tickerId

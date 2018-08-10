@@ -29,8 +29,8 @@ Imports TradeWright.IBAPI.ApiException
 Friend MustInherit Class GeneratorBase
     Implements IGenerator
 
-    Protected mIdManager As IdManager
-    Protected mEventConsumers As ApiEventConsumers
+    Protected _IdManager As IdManager
+    Protected _EventConsumers As ApiEventConsumers
 
     Protected CreateOutputMessageGenerator As Func(Of MessageGenerator)
     Private mGetConnectionState As Func(Of ApiConnectionState)
@@ -39,8 +39,8 @@ Friend MustInherit Class GeneratorBase
     Friend MustOverride ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
 
     Private Sub Initialise(idmanager As IdManager, eventConsumers As ApiEventConsumers, getServerVersion As Func(Of Integer), createOutputMessageGenerator As Func(Of MessageGenerator), getConnectionState As Func(Of ApiConnectionState)) Implements IGenerator.Initialise
-        mIdManager = idmanager
-        mEventConsumers = eventConsumers
+        _IdManager = idmanager
+        _EventConsumers = eventConsumers
         Me.mGetServerVersion = getServerVersion
         Me.CreateOutputMessageGenerator = createOutputMessageGenerator
         Me.mGetConnectionState = getConnectionState
@@ -50,18 +50,7 @@ Friend MustInherit Class GeneratorBase
         registry.RegisterGenerator(Me, MessageType)
     End Sub
 
-    Private Shared Sub logSocketOutputMessage(messageWriter As MessageGenerator, moduleName As String, procName As String, Optional ignoreLogLevel As Boolean = False)
-        If ignoreLogLevel Then
-            SocketLogger.Log(messageWriter.MessageAsStructuredString, moduleName, procName)
-        ElseIf SocketLogger.IsLoggable(ILogger.LogLevel.Detail) Then
-            SocketLogger.Log(messageWriter.MessageAsStructuredString, moduleName, procName, ILogger.LogLevel.Detail)
-        End If
-        If SocketLogger.IsLoggable(ILogger.LogLevel.HighDetail) Then
-            SocketLogger.Log(messageWriter.MessageAsPrintableBytes, moduleName, procName, ILogger.LogLevel.HighDetail)
-        End If
-    End Sub
-
-    Protected ReadOnly Property mConnectionState As ApiConnectionState
+    Protected ReadOnly Property ConnectionState As ApiConnectionState
         Get
             Return mGetConnectionState()
         End Get
@@ -73,13 +62,8 @@ Friend MustInherit Class GeneratorBase
         End Get
     End Property
 
-    Protected Sub SendMessage(writer As MessageGenerator, moduleName As String, procName As String, Optional ignoreLogLevel As Boolean = False)
-        writer.Send()
-        logSocketOutputMessage(writer, moduleName, procName, ignoreLogLevel)
-    End Sub
-
     Protected Shared Sub StartMessage(writer As MessageGenerator, msgId As ApiSocketOutMsgType)
-        writer.StartMessage(msgId, ApiSocketOutMsgTypes.ToExternalString(msgId))
+        writer.StartMessage(msgId, IBAPI.ApiSocketOutMsgTypes.ToExternalString(msgId))
     End Sub
 
     Friend MustOverride ReadOnly Property MessageType As ApiSocketOutMsgType

@@ -74,11 +74,11 @@ Public Class CommissionReport
     '@================================================================================
 
     Public Property ExecId As String
-    Public Property Commission As Double
+    Public Property Commission As Double?
     Public Property CurrencyCode As String
-    Public Property RealizedPNL As Double
-    Public Property Yield As Double
-    Public Property YieldRedemptionDate As Integer 'YYYYMMDD format
+    Public Property RealizedPNL As Double?
+    Public Property Yield As Double?
+    Public Property YieldRedemptionDate As Integer? 'YYYYMMDD format
 
     '@================================================================================
     ' Methods

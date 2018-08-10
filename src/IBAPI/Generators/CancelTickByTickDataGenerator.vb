@@ -21,7 +21,7 @@
     Private Sub cancelTickByTickData(requestId As Integer)
         Const ProcName As String = NameOf(cancelTickByTickData)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.TICK_BY_TICK Then Throw New InvalidOperationException("Tick-by-tick requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -29,7 +29,7 @@
 
         lWriter.AddElement(requestId, "Request Id")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

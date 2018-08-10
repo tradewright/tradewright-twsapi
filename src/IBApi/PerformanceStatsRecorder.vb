@@ -63,8 +63,8 @@ Friend Class PerformanceStatsRecorder
 
     Private mPerformanceStats(ApiSocketInMsgType.Max) As StatisticsEntry
 
-    Private WithEvents mTimerSecond As Timer
-    Private WithEvents mTimerPeriod As Timer
+    Private WithEvents TimerSecond As Timer
+    Private WithEvents TimerPeriod As Timer
 
     Private mEventConsumers As ApiEventConsumers
 
@@ -87,8 +87,6 @@ Friend Class PerformanceStatsRecorder
     '@================================================================================
     ' Properties
     '@================================================================================
-
-    Friend Property Logger As ILogger
 
     Friend ReadOnly Property StatisticsEntries As IEnumerable(Of StatisticsEntry)
         Get
@@ -120,10 +118,10 @@ Friend Class PerformanceStatsRecorder
     End Sub
 
     Friend Sub StopRecording()
-        mTimerSecond?.Dispose()
-        mTimerSecond = Nothing
-        mTimerPeriod?.Dispose()
-        mTimerPeriod = Nothing
+        TimerSecond?.Dispose()
+        TimerSecond = Nothing
+        TimerPeriod?.Dispose()
+        TimerPeriod = Nothing
     End Sub
 
     Friend Sub UpdateMessageTypeStats(pMessageId As ApiSocketInMsgType, pEt As Long)
@@ -140,17 +138,17 @@ Friend Class PerformanceStatsRecorder
     '@================================================================================
 
     Private Sub createPerformanceLoggers()
-        If mTimerSecond Is Nothing Then
-            mTimerSecond = New Timer(Sub(o)
-                                         AccumulateStats()
-                                     End Sub,
+        If TimerSecond Is Nothing Then
+            TimerSecond = New Timer(Sub(o)
+                                        AccumulateStats()
+                                    End Sub,
                                                 Nothing,
                                                 New TimeSpan(0, 0, 0, 0, 1000 - System.DateTime.Now.Millisecond),
                                                 New TimeSpan(0, 0, 0, 0, 1000))
 
-            mTimerPeriod = New Timer(Sub(o)
-                                         generateStats()
-                                     End Sub,
+            TimerPeriod = New Timer(Sub(o)
+                                        generateStats()
+                                    End Sub,
                                                 Nothing,
                                                 New TimeSpan(0, 0, 0, 59 - System.DateTime.Now.Second, 1000 - System.DateTime.Now.Millisecond),
                                                 New TimeSpan(0, 0, 1, 0, 0))
@@ -167,7 +165,7 @@ Friend Class PerformanceStatsRecorder
                 .TotalTime = .TotalTime + .LastSecondTime
 
                 If .TotalCount <> 0 Then
-                    lSb.Append($"{ApiSocketInMsgTypes.ToExternalString(DirectCast(i, ApiSocketInMsgType)),-20}")
+                    lSb.Append($"{IBAPI.ApiSocketInMsgTypes.ToExternalString(DirectCast(i, ApiSocketInMsgType)),-20}")
                     lSb.Append($"{ .LastPeriodCount,6:####0}")
                     If .LastPeriodCount <> 0 Then
                         lSb.Append($"{ .LastPeriodTime / .LastPeriodCount,10:######0.0}")
@@ -194,7 +192,7 @@ Friend Class PerformanceStatsRecorder
         Next
 
         Dim s = lSb.ToString
-        Logger.Log("Socket message statistics:" & vbCrLf & s)
+        IBAPI.PerformanceLogger.Log("Socket message statistics:" & vbCrLf & s)
         mEventConsumers.PerformanceDataConsumer?.NotifyPerformanceStats(New PerformanceStatsUpdateEventArgs(s))
     End Sub
 
@@ -213,8 +211,8 @@ Friend Class PerformanceStatsRecorder
     Protected Overridable Sub Dispose(disposing As Boolean)
         If Not mDisposedValue Then
             If disposing Then
-                mTimerPeriod.Dispose()
-                mTimerSecond.Dispose()
+                TimerPeriod.Dispose()
+                TimerSecond.Dispose()
             End If
 
             ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.

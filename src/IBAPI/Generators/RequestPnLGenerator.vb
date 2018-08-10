@@ -21,7 +21,7 @@
     Private Sub reqPnL(requestId As Integer, account As String, modelCode As String)
         Const ProcName As String = NameOf(reqPnL)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.PNL Then Throw New InvalidOperationException("PnL requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -31,7 +31,7 @@
         lWriter.AddElement(account, "Account")
         lWriter.AddElement(modelCode, "Model Code")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

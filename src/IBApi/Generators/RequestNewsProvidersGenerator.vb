@@ -47,13 +47,13 @@ Friend Class RequestNewsProvidersGenerator
     Private Sub RequestNewsProviders()
         Const ProcName As String = NameOf(RequestNewsProviders)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_NEWS_PROVIDERS Then Throw New InvalidOperationException("News provider requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

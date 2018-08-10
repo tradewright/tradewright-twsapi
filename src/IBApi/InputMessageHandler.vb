@@ -24,10 +24,8 @@
 
 #End Region
 
-Imports TradeWright.IBAPI.ApiException
 
 Imports System.Threading
-Imports System.Threading.Tasks
 
 Friend Class InputMessageHandler
 
@@ -62,9 +60,9 @@ Friend Class InputMessageHandler
     ' Member variables
     '@================================================================================
 
-    Private mEventConsumers As ApiEventConsumers
+    Private ReadOnly mEventConsumers As ApiEventConsumers
 
-    Private mRegistry As GeneratorAndParserRegistry
+    Private ReadOnly mRegistry As GeneratorAndParserRegistry
 
     Private mReader As MessageReader
 
@@ -72,17 +70,18 @@ Friend Class InputMessageHandler
 
     Private mStatsRecorder As PerformanceStatsRecorder
 
-    Private ReadOnly mLogTwsMessages As Boolean = True
+    Private mServerVersion As Integer
 
-    Private ReadOnly mServerVersion As Integer
+    Private ReadOnly mGenerateSocketDataEvents As Boolean
 
     '@================================================================================
     ' Class Event Handlers
     '@================================================================================
 
-    Friend Sub New(eventConsumers As ApiEventConsumers, registry As GeneratorAndParserRegistry)
+    Friend Sub New(eventConsumers As ApiEventConsumers, registry As GeneratorAndParserRegistry, generateSocketDataEvents As Boolean)
         mEventConsumers = eventConsumers
         mRegistry = registry
+        mGenerateSocketDataEvents = generateSocketDataEvents
     End Sub
 
     '@================================================================================
@@ -103,25 +102,29 @@ Friend Class InputMessageHandler
         mApiConnectionEstablished = False
         getElapsedTimer()
 
-        If SocketLogger?.IsLoggable(ILogger.LogLevel.Detail) Then
+        If IBAPI.SocketLogger?.IsLoggable(ILogger.LogLevel.Detail) Or
+            (mGenerateSocketDataEvents And mEventConsumers.SocketDataConsumer IsNot Nothing) Then
             mReader.NewDataCallback = Sub()
                                           Dim s = getBuffer("In buf: ")
-                                          SocketLogger.Log(s, ModuleName, "NewDataCallback", ILogger.LogLevel.Detail)
+                                          IBAPI.SocketLogger?.Log(s, ModuleName, "NewDataCallback", ILogger.LogLevel.HighDetail)
+                                          mEventConsumers.SocketDataConsumer?.NotifySocketInputData(New SocketDataEventArgs(s))
                                       End Sub
         End If
     End Sub
 
     Friend Sub LogSocketInputMessage(moduleName As String, procName As String, Optional pIgnoreLogLevel As Boolean = False)
-        If Not mLogTwsMessages Then Exit Sub
-        mReader.LogSocketInputMessage(moduleName, procName)
+        mReader.LogSocketInputMessage(mEventConsumers.SocketDataConsumer)
     End Sub
 
     Friend Sub Reset()
         mApiConnectionEstablished = False
     End Sub
 
-    Friend Sub Start(scheduler As TaskScheduler, cancellationSource As CancellationTokenSource, closeSocket As Action)
+    Friend Sub Start(serverVersion As Integer, scheduler As TaskScheduler, cancellationSource As CancellationTokenSource, closeSocket As Action)
         Const ProcName As String = NameOf(Start)
+
+        mServerVersion = serverVersion
+
         Dim token = cancellationSource.Token
         Dim t As Task
         t = New Task(Async Sub()
@@ -140,11 +143,11 @@ Friend Class InputMessageHandler
                              ' these have already been notified to the application
                              terminationReason = "application failure"
                          Catch e As Exception
-                             EventLogger.Log($"Exception in message processing loop{Environment.NewLine}{e.ToString()}", ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
+                             IBAPI.EventLogger.Log($"Exception in message processing loop{Environment.NewLine}{e.ToString()}", ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
                              terminationReason = "exception"
                              mEventConsumers.ErrorAndNotificationConsumer?.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
                          Finally
-                             EventLogger.Log($"Message processing terminated due to {terminationReason}", ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
+                             IBAPI.EventLogger.Log($"Message processing terminated due to {terminationReason}", ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
                              System.Diagnostics.Debug.WriteLine("Reader finished")
                              closeSocket()
                              mStatsRecorder.StopRecording()
@@ -164,7 +167,7 @@ Friend Class InputMessageHandler
                                             s = System.Text.UnicodeEncoding.ASCII.GetString(b, i, l)
                                         End Sub)
 
-        Return pHeader & s.Replace("0"c, "_")
+        Return pHeader & s.Replace(ChrW(0), "_")
     End Function
 
     Private Function getElapsedTimer() As Stopwatch
@@ -190,16 +193,16 @@ Friend Class InputMessageHandler
         Catch e As ApiException When e.ErrorCode = ErrorCodes.DataStreamEnded
             Return False
         Catch e As ApiApplicationException
-            EventLogger.Log($"An exception occurred in the API user's application code while it was processing a callback: {ApiSocketInMsgTypes.ToExternalString(pMessageId)}{vbCrLf}{e.ToString()}", NameOf(InputMessageHandler), Procname, ILogger.LogLevel.Severe)
+            IBAPI.EventLogger.Log($"An exception occurred in the API user's application code while it was processing a callback: {IBAPI.ApiSocketInMsgTypes.ToExternalString(pMessageId)}{vbCrLf}{e.ToString()}", NameOf(InputMessageHandler), Procname, ILogger.LogLevel.Severe)
             mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
             Return False
         End Try
     End Function
 
     Private Function messageHasVersion(messageId As ApiSocketInMsgType) As Boolean
-        If messageId = ApiSocketInMsgType.ExecutionData And mServerVersion < ApiServerVersion.LAST_LIQUIDITY Then Return True
-        If messageId = ApiSocketInMsgType.HistoricalData And mServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then Return True
-        If messageId = ApiSocketInMsgType.OrderStatus And mServerVersion < ApiServerVersion.MARKET_CAP_PRICE Then Return True
+        If messageId = ApiSocketInMsgType.ExecutionData And mServerVersion >= ApiServerVersion.LAST_LIQUIDITY Then Return False
+        If messageId = ApiSocketInMsgType.HistoricalData And mServerVersion >= ApiServerVersion.SYNT_REALTIME_BARS Then Return False
+        If messageId = ApiSocketInMsgType.OrderStatus And mServerVersion >= ApiServerVersion.MARKET_CAP_PRICE Then Return False
         Return messageId <= ApiSocketInMsgType.MaxIdWithVersion
     End Function
 
@@ -209,10 +212,10 @@ Friend Class InputMessageHandler
         Dim messageId As ApiSocketInMsgType
         Dim messageVersion = Integer.MaxValue
         Try
-            Await mReader.BeginMessageAsync("IN: ", mLogTwsMessages)
+            Await mReader.BeginMessageAsync("IN: ", mGenerateSocketDataEvents)
             messageId = DirectCast(Await mReader.GetIntAsync("Msg id"), ApiSocketInMsgType)
             Dim timestamp = Date.UtcNow
-            mReader.AppendToMessageString($" ({ApiSocketInMsgTypes.ToExternalString(messageId)}) ")
+            mReader.AppendToMessageString($" ({IBAPI.ApiSocketInMsgTypes.ToExternalString(messageId)}) ")
 
             If messageHasVersion(messageId) Then messageVersion = Await mReader.GetIntAsync("Version")
 
@@ -226,16 +229,16 @@ Friend Class InputMessageHandler
         Catch e As Exception
             Dim s = ""
             mReader.ProcessCurrentProtocolMessage(Sub(b, i, c, l)
-                                                      Dim buff = System.Text.UnicodeEncoding.ASCII.GetString(b, 0, l).Replace("0"c, "_")
+                                                      Dim buff = System.Text.UnicodeEncoding.ASCII.GetString(b, 0, l).Replace(ChrW(0), "_")
                                                       s = $"Error while processing input message:{Environment.NewLine}" &
-                                                        $"Message ID={messageId} ({ApiSocketInMsgTypes.ToExternalString(messageId)}); version={messageVersion}{Environment.NewLine}" &
+                                                        $"Message ID={messageId} ({IBAPI.ApiSocketInMsgTypes.ToExternalString(messageId)}); version={messageVersion}{Environment.NewLine}" &
                                                         $"MessageStartindex={i}; InputBufferNextFreeIndex={l}; InputParseIndex={c}{Environment.NewLine}" &
                                                         $"Buffer contents:{Environment.NewLine}" &
-                                                        $"{Globals.FormatBuffer(buff, l)}{Environment.NewLine}" &
+                                                        $"{IBAPI.FormatBuffer(buff, l)}{Environment.NewLine}" &
                                                         $"{e.ToString}"
                                                   End Sub)
 
-            EventLogger.Log(s, ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
+            IBAPI.EventLogger.Log(s, ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
             LogSocketInputMessage(ModuleName, ProcName, True)
 
             Return False
@@ -247,14 +250,14 @@ Friend Class InputMessageHandler
         Static sEventCount As Integer
 
 
-        If mLogTwsMessages Then
+        If mGenerateSocketDataEvents Then
             mStatsRecorder.UpdateMessageTypeStats(CType(pMessageId, ApiSocketInMsgType), pMessageElapsedTime)
             sEventCount = sEventCount + 1
 
             Dim secs = getElapsedTimer.ElapsedTicks / Stopwatch.Frequency
             If secs >= 10.0 Then
                 Dim s = $"Event rate per second: {sEventCount / secs,0:0.0}"
-                EventLogger.Log(s, ModuleName, ProcName, ILogger.LogLevel.Detail)
+                IBAPI.EventLogger.Log(s, ModuleName, ProcName, ILogger.LogLevel.Detail)
                 Debug.Print(s)
                 sEventCount = 0
                 getElapsedTimer.Restart()

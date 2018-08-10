@@ -47,13 +47,13 @@ Friend Class RequestMarketDepthExchangesGenerator
     Private Sub RequestMarketDepthExchanges()
         Const ProcName As String = NameOf(RequestMarketDepthExchanges)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_MKT_DEPTH_EXCHANGES Then Throw New InvalidOperationException("Market depth exchanges requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

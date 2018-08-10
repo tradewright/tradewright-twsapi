@@ -36,11 +36,11 @@ Friend NotInheritable Class HistoricalDataParser
         Dim reqId = Await _Reader.GetIntAsync("Request id")
         Dim requestId = IdManager.GetCallerId(reqId, IdType.HistoricalData)
 
-        Dim startDate = String.Empty
-        Dim endDate = String.Empty
+        Dim startDate As Date
+        Dim endDate As Date
         If pVersion >= 2 Then
-            startDate = Await _Reader.GetStringAsync("Start date")
-            endDate = Await _Reader.GetStringAsync("End date")
+            startDate = IBAPI.TwsDateStringToDate(Await _Reader.GetStringAsync("Start date")).theDate
+            endDate = IBAPI.TwsDateStringToDate(Await _Reader.GetStringAsync("End date")).theDate
         End If
 
         Dim barCount = Await _Reader.GetIntAsync("Item count")
@@ -50,7 +50,7 @@ Friend NotInheritable Class HistoricalDataParser
 
         For i = 0 To barCount - 1
             Dim bar As New Bar With {
-                .TimeStamp = TwsDateStringToDate(Await _Reader.GetStringAsync("Bar date")).theDate,
+                .TimeStamp = IBAPI.TwsDateStringToDate(Await _Reader.GetStringAsync("Bar date")).theDate,
                 .OpenValue = Await _Reader.GetDoubleAsync("Open"),
                 .HighValue = Await _Reader.GetDoubleAsync("High"),
                 .LowValue = Await _Reader.GetDoubleAsync("Low"),
@@ -65,11 +65,11 @@ Friend NotInheritable Class HistoricalDataParser
 
         Next
 
-        LogSocketInputMessage(ModuleName,"ParseAsync")
+        LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.HistDataConsumer?.EndHistoricalData(New HistoricalDataRequestEventArgs(timestamp, requestId, startDate, endDate, barCount))
-        Return True
+            _EventConsumers.HistDataConsumer?.EndHistoricalData(New HistoricalDataRequestEventArgs(timestamp, requestId, startDate, endDate, barCount))
+            Return True
             Catch e As Exception
                 Throw New ApiApplicationException("EndHistoricalData", e)
             End Try

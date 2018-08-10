@@ -37,7 +37,11 @@ Friend MustInherit Class ParserBase
 
     Private mGetServerVersion As Func(Of Integer)
 
-    Private Sub Initialise(reader As MessageReader, idManager As IdManager, eventConsumers As ApiEventConsumers, getServerVersion As Func(Of Integer), logSocketInputMessage As Action(Of String, String, Boolean)) Implements IParser.Initialise
+    Private Sub Initialise(reader As MessageReader,
+                           idManager As IdManager,
+                           eventConsumers As ApiEventConsumers,
+                           getServerVersion As Func(Of Integer),
+                           logSocketInputMessage As Action(Of String, String, Boolean)) Implements IParser.Initialise
         _Reader = reader
         _LogSocketInputMessage = logSocketInputMessage
         _EventConsumers = eventConsumers

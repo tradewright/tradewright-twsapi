@@ -46,7 +46,7 @@ Friend Class CancelMarketDepthGenerator
 
     Private Sub CancelMarketDepth(pTickerId As Integer)
         Const ProcName As String = NameOf(CancelMarketDepth)
-        If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
+        If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1
 
@@ -54,7 +54,7 @@ Friend Class CancelMarketDepthGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.CancelMarketDepth)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Ticker id")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

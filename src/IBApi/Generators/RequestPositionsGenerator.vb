@@ -46,14 +46,14 @@ Friend Class RequestPositionsGenerator
 
     Private Sub RequestPositions()
         Const ProcName As String = NameOf(RequestPositions)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestPositions)
         lWriter.AddElement(VERSION, "Version")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

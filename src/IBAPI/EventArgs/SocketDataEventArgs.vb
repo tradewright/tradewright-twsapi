@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,13 @@
 
 #End Region
 
-Public Class PositionEventArgs
-    Inherits AbstractEventArgsWithTimestamp
-    Public Property Account As String
+Public Class SocketDataEventArgs
+    Inherits System.EventArgs
 
-    Public Property AverageCost As Double?
+    Public ReadOnly Property Data As String
 
-    Public Property Contract As Contract
-
-    Public Property Position As Double?
-
-    Public Sub New(timestamp As DateTime, account As String, contract As TradeWright.IBAPI.Contract, pos As Double?, avgCost As Double?)
-        MyBase.New()
-        Me._Timestamp = timestamp
-        Me.Account = account
-        Me.Contract = contract
-        Me.Position = pos
-        Me.AverageCost = avgCost
+    Public Sub New(data As String)
+        Me.Data = data
     End Sub
+
 End Class

@@ -43,7 +43,7 @@ Friend NotInheritable Class BondContractDataParser
         Dim lRequestId = If(pVersion >= 3, Await _Reader.GetIntAsync("Req Id"), -1)
 
         lContract.Symbol = Await _Reader.GetStringAsync("Symbol")
-        lContract.SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("Sectype"))
+        lContract.SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sectype"))
 
         With lContractDetails
             .Cusip = Await _Reader.GetStringAsync("Cusip")

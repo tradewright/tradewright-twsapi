@@ -44,7 +44,7 @@ Friend NotInheritable Class ContractDataParser
         }
 
         lContract.Symbol = Await _Reader.GetStringAsync("Symbol")
-        lContract.SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
+        lContract.SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
 
         Dim lExpiry = Await _Reader.GetStringAsync("Expiry")
         If Not String.IsNullOrEmpty(lExpiry) Then
@@ -54,7 +54,7 @@ Friend NotInheritable Class ContractDataParser
         End If
 
         lContract.Strike = Await _Reader.GetDoubleAsync("Strike")
-        lContract.OptRight = OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
+        lContract.OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
         lContract.Exchange = Await _Reader.GetStringAsync("Exchange")
         lContract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
         lContract.LocalSymbol = Await _Reader.GetStringAsync("Local Symbol")
@@ -129,7 +129,7 @@ Friend NotInheritable Class ContractDataParser
 
         If ServerVersion >= ApiServerVersion.UNDERLYING_INFO Then
             lContractDetails.UnderSymbol = Await _Reader.GetStringAsync("Under Symbol")
-            lContractDetails.UnderSecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("UnderSecType"))
+            lContractDetails.UnderSecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("UnderSecType"))
         End If
 
         If ServerVersion >= ApiServerVersion.MARKET_RULES Then lContractDetails.MarketRuleIds = Await _Reader.GetStringAsync("Market Rule Ids")

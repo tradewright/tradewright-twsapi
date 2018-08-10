@@ -27,8 +27,8 @@
 Imports TradeWright.IBAPI.ApiException
 
 Friend NotInheritable Class GeneratorAndParserRegistry
-    Private mParsers(ApiSocketInMsgType.Max) As IParser
-    Private mGenerators(ApiSocketOutMsgType.Max) As [Delegate]
+    Private ReadOnly mParsers(ApiSocketInMsgType.Max) As IParser
+    Private ReadOnly mGenerators(ApiSocketOutMsgType.Max) As [Delegate]
 
     Private mReader As MessageReader
     Private mEventConsumers As ApiEventConsumers
@@ -57,7 +57,7 @@ Friend NotInheritable Class GeneratorAndParserRegistry
 
     Friend Sub InvokeGenerator(messageType As ApiSocketOutMsgType, params() As Object)
         Try
-            GetGeneratorDelegate(messageType).DynamicInvoke(params)
+            getGeneratorDelegate(messageType).DynamicInvoke(params)
         Catch e As Exception
             mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
             Throw
@@ -80,7 +80,7 @@ Friend NotInheritable Class GeneratorAndParserRegistry
         Return mParsers(messageType)
     End Function
 
-    Private Function GetGeneratorDelegate(messageType As ApiSocketOutMsgType) As [Delegate]
+    Private Function getGeneratorDelegate(messageType As ApiSocketOutMsgType) As [Delegate]
         Return mGenerators(messageType)
     End Function
 

@@ -162,7 +162,7 @@ Friend Class SocketHandler
 
         Dim s As String
         s = $"Connecting to Tws: {getConnectionString()}"
-        EventLogger.Log(s, ModuleName, "Connect")
+        IBAPI.EventLogger.Log(s, ModuleName, "Connect")
 
         mIsConnecting = True
 
@@ -188,7 +188,7 @@ Friend Class SocketHandler
 
         releaseSocket()
 
-        EventLogger.Log($"Disconnected from: {getConnectionString()} : {pReason}", ModuleName, NameOf(Disconnect))
+        IBAPI.EventLogger.Log($"Disconnected from: {getConnectionString()} : {pReason}", ModuleName, NameOf(Disconnect))
         handleTwsDisconnection("closed by application", True)
         mDisconnectedAction(pReason)
     End Sub
@@ -216,13 +216,13 @@ Friend Class SocketHandler
 
                 releaseSocket()
                 If Not mIsConnected Then
-                    EventLogger.Log($"Failed to connect to Tws {CStr(If(mConnectionRetryIntervalSecs <> 0, $" - retrying In {mConnectionRetryIntervalSecs} seconds", ""))}: {e.Exception.Message} : {getConnectionString()}", ModuleName, NameOf(handleSocketError))
+                    IBAPI.EventLogger.Log($"Failed to connect to Tws {CStr(If(mConnectionRetryIntervalSecs <> 0, $" - retrying In {mConnectionRetryIntervalSecs} seconds", ""))}: {e.Exception.Message} : {getConnectionString()}", ModuleName, NameOf(handleSocketError))
 
                     e.ConnectionRetryInterval = mConnectionRetryIntervalSecs
                     mConnectFailedAction(e.Exception.Message)
                     If mConnectionRetryIntervalSecs <> 0 Then retryConnection()
                 Else
-                    EventLogger.Log($"Socket error {e.Exception.ErrorCode} : {e.Exception.Message} : {getConnectionString()}", ModuleName, NameOf(handleSocketError))
+                    IBAPI.EventLogger.Log($"Socket error {e.Exception.ErrorCode} : {e.Exception.Message} : {getConnectionString()}", ModuleName, NameOf(handleSocketError))
                     handleTwsDisconnection(e.Exception.Message, False)
                 End If
             Case Else
@@ -231,7 +231,7 @@ Friend Class SocketHandler
     End Sub
 
     Private Sub handleTwsDisconnection(pMessage As String, pClosedByApplication As Boolean)
-        EventLogger.Log($"Connection to Tws closed: {pMessage} : {getConnectionString()}", ModuleName, NameOf(handleTwsDisconnection))
+        IBAPI.EventLogger.Log($"Connection to Tws closed: {pMessage} : {getConnectionString()}", ModuleName, NameOf(handleTwsDisconnection))
 
         Socket = Nothing
         mIsConnected = False
@@ -242,7 +242,7 @@ Friend Class SocketHandler
 
     Private Sub releaseSocket()
         If Not Socket Is Nothing Then
-            EventLogger.Log($"Releasing socket: {getConnectionString()}", ModuleName, NameOf(releaseSocket))
+            IBAPI.EventLogger.Log($"Releasing socket: {getConnectionString()}", ModuleName, NameOf(releaseSocket))
             Socket.Close()
             Socket = Nothing
         End If
@@ -252,7 +252,7 @@ Friend Class SocketHandler
 
     Private Sub retryConnection()
         If mConnectionRetryIntervalSecs <> 0 Then
-            EventLogger.Log($"Reconnecting in {mConnectionRetryIntervalSecs} seconds", ModuleName, NameOf(retryConnection))
+            IBAPI.EventLogger.Log($"Reconnecting in {mConnectionRetryIntervalSecs} seconds", ModuleName, NameOf(retryConnection))
             mConnectionTimer = New Timer(AddressOf mConnectionTimer_TimerExpired, Nothing, 1000 * mConnectionRetryIntervalSecs, Timeout.Infinite)
             mRetryingConnection = True
         End If

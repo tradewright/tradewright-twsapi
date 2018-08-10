@@ -43,7 +43,7 @@ Friend Class PlaceOrderGenerator
     End Property
 
     Private Sub placeOrder(order As Order, contract As Contract, transmit As Boolean, secIdType As String, secId As String)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         If ServerVersion < ApiServerVersion.EXT_OPERATOR And Not String.IsNullOrEmpty(order.ExtOperator) Then Throw New InvalidOperationException("extOperator parameter not supported")
         If ServerVersion < ApiServerVersion.CASH_QTY And order.CashQty.HasValue Then Throw New InvalidOperationException("cashQty parameter not supported")
@@ -54,9 +54,9 @@ Friend Class PlaceOrderGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.PlaceOrder)
         lWriter.AddElement(VERSION, "Version")
 
-        If order.OrderId = 0 Then order.OrderId = mIdManager.NextOrderId
+        If order.OrderId = 0 Then order.OrderId = _IdManager.NextOrderId
         If order.OrderId < IdManager.BaseOrderId Then Throw New ArgumentException($"Order id must not be less than {IdManager.BaseOrderId}")
-        If order.OrderId > mIdManager.NextOrderId Then mIdManager.NextOrderId = order.OrderId + 1
+        If order.OrderId > _IdManager.NextOrderId Then _IdManager.NextOrderId = order.OrderId + 1
 
         lWriter.AddElement(order.OrderId, "Order id")
 
@@ -68,19 +68,19 @@ Friend Class PlaceOrderGenerator
         With order
 
             ' mwriter.send main Order fields
-            lWriter.AddElement(OrderActions.ToInternalString(.Action), "Action")
+            lWriter.AddElement(IBAPI.OrderActions.ToInternalString(.Action), "Action")
             If ServerVersion >= ApiServerVersion.FRACTIONAL_POSITIONS Then
                 lWriter.AddElement(.TotalQuantity, "Quantity")
             Else
                 lWriter.AddElement(CInt(.TotalQuantity), "Quantity")
             End If
-            lWriter.AddElement(OrderTypes.ToInternalString(.OrderType), "Order type")
+            lWriter.AddElement(IBAPI.OrderTypes.ToInternalString(.OrderType), "Order type")
 
             lWriter.AddElement(.LmtPrice, "Price")
             lWriter.AddElement(.AuxPrice, "Aux price")
 
             ' mwriter.send extended Order fields
-            lWriter.AddElement(OrderTIFs.ToInternalString(.Tif), "TIF")
+            lWriter.AddElement(IBAPI.OrderTIFs.ToInternalString(.Tif), "TIF")
             lWriter.AddElement(.OcaGroup, "Oca Group")
             lWriter.AddElement(.Account, "Account")
             lWriter.AddElement(.OpenClose, "OpenClose")
@@ -105,7 +105,7 @@ Friend Class PlaceOrderGenerator
                         With .ComboLegs.Item(i)
                             lWriter.AddElement(.ConId, $"Leg {i} Con id")
                             lWriter.AddElement(.Ratio, $"Leg {i} Ratio")
-                            lWriter.AddElement(OrderActions.ToInternalString(.Action), $"Leg {i} Action")
+                            lWriter.AddElement(IBAPI.OrderActions.ToInternalString(.Action), $"Leg {i} Action")
                             lWriter.AddElement(.Exchange, $"Leg {i} Exchange")
                             lWriter.AddElement(legOpenCloseToString(.OpenClose), $"Leg {i} Open/close")
 
@@ -179,7 +179,7 @@ Friend Class PlaceOrderGenerator
             ' Volatility orders
             lWriter.AddElement(.Volatility, "Volatility")
             lWriter.AddElement(.VolatilityType, "Volatility type")
-            lWriter.AddElement(OrderTypes.ToInternalString(.DeltaNeutralOrderType), "Delta neutral Order type")
+            lWriter.AddElement(IBAPI.OrderTypes.ToInternalString(.DeltaNeutralOrderType), "Delta neutral Order type")
             lWriter.AddElement(.DeltaNeutralAuxPrice, "Delta neutral aux price")
             If .DeltaNeutralOrderType <> SecurityType.None Then
                 lWriter.AddElement(.DeltaNeutralConId, "Delta Neutral Con Id")
@@ -220,7 +220,7 @@ Friend Class PlaceOrderGenerator
             lWriter.AddElement(.ActiveStartTime, "Active Start Time")
             lWriter.AddElement(.ActiveStopTime, "Active Stop Time")
 
-            lWriter.AddElement(HedgeTypes.ToInternalString(.HedgeType), "Hedge Type")
+            lWriter.AddElement(IBAPI.HedgeTypes.ToInternalString(.HedgeType), "Hedge Type")
             If .HedgeType <> SecurityType.None Then lWriter.AddElement(.HedgeParam, "Hedge Param")
 
             lWriter.AddElement(.OptOutSmartRouting, "Opt Out Smart Routing")
@@ -230,11 +230,11 @@ Friend Class PlaceOrderGenerator
 
             lWriter.AddElement(.NotHeld, "Not held")
 
-            If contract.UnderComp IsNot Nothing Then
+            If contract.DeltaNeutralContract IsNot Nothing Then
                 lWriter.AddElement(True, "Under comp")
-                lWriter.AddElement(contract.UnderComp.ConId, "Under comp conid")
-                lWriter.AddElement(contract.UnderComp.Delta, "Under comp delta")
-                lWriter.AddElement(contract.UnderComp.Price, "Under comp price")
+                lWriter.AddElement(contract.DeltaNeutralContract.ConId, "Under comp conid")
+                lWriter.AddElement(contract.DeltaNeutralContract.Delta, "Under comp delta")
+                lWriter.AddElement(contract.DeltaNeutralContract.Price, "Under comp price")
             Else
                 lWriter.AddElement(False, "Under comp")
             End If
@@ -325,7 +325,7 @@ Friend Class PlaceOrderGenerator
 
         End With
 
-        SendMessage(lWriter, NameOf(PlaceOrderGenerator), NameOf(placeOrder), True)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer, True)
     End Sub
 
     Private Shared Function legOpenCloseToString(Value As LegOpenCloseCode) As String

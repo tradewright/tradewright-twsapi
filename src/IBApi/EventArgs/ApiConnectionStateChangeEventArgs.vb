@@ -28,12 +28,18 @@ Public Class ApiConnectionStateChangeEventArgs
     Inherits AbstractEventArgsWithTimestamp
     Public Property Message As String
 
-    Public Property State As ApiConnectionState
+    Public ReadOnly Property State As ApiConnectionState
+    Public ReadOnly Property Server As String
+    Public ReadOnly Property Port As Integer
+    Public ReadOnly Property ClientId As Integer
 
-    Public Sub New(timestamp As DateTime, state As ApiConnectionState, message As String)
+    Public Sub New(timestamp As DateTime, state As ApiConnectionState, message As String, server As String, port As Integer, clientId As Integer)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.State = state
         Me.Message = message
+        Me.Server = server
+        Me.Port = port
+        Me.ClientId = clientId
     End Sub
 End Class

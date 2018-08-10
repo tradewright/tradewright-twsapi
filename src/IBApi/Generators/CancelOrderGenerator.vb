@@ -34,7 +34,7 @@ Friend Class CancelOrderGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf CancelOrder)
+            Return New ApiMethodDelegate(AddressOf cancelOrder)
         End Get
     End Property
 
@@ -44,16 +44,16 @@ Friend Class CancelOrderGenerator
         End Get
     End Property
 
-    Private Sub CancelOrder(pOrderId As Integer)
-        Const ProcName As String = NameOf(CancelOrder)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+    Private Sub cancelOrder(pOrderId As Integer)
+        Const ProcName As String = NameOf(cancelOrder)
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelOrder)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pOrderId, "Order id")
-        SendMessage(lWriter, ModuleName, ProcName, True)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer, True)
     End Sub
 
 End Class

@@ -47,7 +47,7 @@ Friend Class CancelHistogramDataGenerator
     Private Sub CancelHistogramData(requestId As Integer)
         Const ProcName As String = NameOf(CancelHistogramData)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HISTOGRAM_DATA Then Throw New InvalidOperationException("Histogram data requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -55,7 +55,7 @@ Friend Class CancelHistogramDataGenerator
 
         lWriter.AddElement(requestId, "Request Id")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

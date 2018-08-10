@@ -85,6 +85,7 @@ Friend Class IdManager
             mNextOrderID += 1
         End Get
         Set(Value As Integer)
+            If Value < mNextOrderID Then Throw New ArgumentException($"Value must be >={mNextOrderID}")
             mNextOrderID = Value
         End Set
     End Property

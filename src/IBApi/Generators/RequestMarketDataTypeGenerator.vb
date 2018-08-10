@@ -34,7 +34,7 @@ Friend Class RequestMarketDataTypeGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestMarketDataType)
+            Return New ApiMethodDelegate(AddressOf requestMarketDataType)
         End Get
     End Property
 
@@ -44,9 +44,9 @@ Friend Class RequestMarketDataTypeGenerator
         End Get
     End Property
 
-    Private Sub RequestMarketDataType(pMarketDataType As MarketDataType)
-        Const ProcName As String = NameOf(RequestMarketDataType)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+    Private Sub requestMarketDataType(pMarketDataType As MarketDataType)
+        Const ProcName As String = NameOf(requestMarketDataType)
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1
 
@@ -54,7 +54,7 @@ Friend Class RequestMarketDataTypeGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketDataType)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pMarketDataType, "MarketDataType")
-        SendMessage(lWriter, ModuleName, ProcName)
+        lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

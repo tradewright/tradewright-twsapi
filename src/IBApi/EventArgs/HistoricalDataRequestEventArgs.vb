@@ -26,15 +26,15 @@
 
 Public Class HistoricalDataRequestEventArgs
     Inherits AbstractEventArgsWithTimestamp
-    Public Property EndDate As String
+    Public Property EndDate As Date
 
     Public Property NumberOfBars As Integer
 
     Public Property RequestId As Integer
 
-    Public Property StartDate As String
+    Public Property StartDate As Date
 
-    Public Sub New(timestamp As DateTime, requestId As Integer, startDate As String, endDate As String, numberOfBars As Integer)
+    Public Sub New(timestamp As DateTime, requestId As Integer, startDate As Date, endDate As Date, numberOfBars As Integer)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = requestId

@@ -30,7 +30,7 @@ Friend Class RequestRealtimeBarsGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pContract As Contract, pBarSize As Integer, pWhatToShow As String, pUseRTH As Integer, options As List(Of TagValue))
+    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pContract As Contract, pBarSize As Integer, pWhatToShow As String, pUseRTH As Boolean, options As List(Of TagValue))
 
     Private Const ModuleName As String = NameOf(RequestRealtimeBarsGenerator)
 
@@ -46,9 +46,9 @@ Friend Class RequestRealtimeBarsGenerator
         End Get
     End Property
 
-    Private Sub requestRealtimeBars(pTickerId As Integer, pContract As Contract, pBarSize As Integer, pWhatToShow As String, pUseRTH As Integer, options As List(Of TagValue))
+    Private Sub requestRealtimeBars(pTickerId As Integer, pContract As Contract, pBarSize As Integer, pWhatToShow As String, pUseRTH As Boolean, options As List(Of TagValue))
         Const ProcName As String = NameOf(requestRealtimeBars)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3
 
@@ -63,7 +63,7 @@ Friend Class RequestRealtimeBarsGenerator
         lWriter.AddElement(pWhatToShow, "WhatToShow")
         lWriter.AddElement(pUseRTH, "UseRTH")
         lWriter.AddElement(options, "Options")
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

@@ -55,7 +55,7 @@ Friend Class StartAPIGenerator
 
         lwriter.AddElement(optionalCapabilities, "Optional Capabilities")
 
-        SendMessage(lwriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

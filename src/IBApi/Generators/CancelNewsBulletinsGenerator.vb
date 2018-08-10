@@ -46,14 +46,14 @@ Friend Class CancelNewsBulletinsGenerator
 
     Private Sub CancelNewsBulletins()
         Const ProcName As String = NameOf(CancelNewsBulletins)
-        If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
+        If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelNewsBulletins)
         lWriter.AddElement(VERSION, "Version")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

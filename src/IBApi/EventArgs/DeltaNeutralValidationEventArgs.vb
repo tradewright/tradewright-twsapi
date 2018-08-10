@@ -28,12 +28,14 @@ Public Class DeltaNeutralValidationEventArgs
     Inherits AbstractEventArgsWithTimestamp
     Public Property RequestId As Integer
 
-    Public Property UnderComp As UnderComp
+    Public Property DeltaNeutralContract As DeltaNeutralContract
 
-    Public Sub New(timestamp As DateTime, requestId As Integer, underComp As TradeWright.IBAPI.UnderComp)
+
+    Public Sub New(timestamp As DateTime, requestId As Integer, deltaNeutralContract As TradeWright.IBAPI.DeltaNeutralContract
+)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = requestId
-        Me.UnderComp = underComp
+        Me.DeltaNeutralContract = deltaNeutralContract
     End Sub
 End Class

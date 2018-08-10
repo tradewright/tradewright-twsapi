@@ -31,14 +31,17 @@ Imports System.Threading.Tasks
 Friend NotInheritable Class MessageReader
     Private mInputReader As InputStringReader
 
-    Private mUseV100Plus As Boolean
+    Private ReadOnly mUseV100Plus As Boolean
 
     Private mInMessageBuilder As StringBuilder
 
-    Friend Sub New(inputReader As InputStringReader, useV100Plus As Boolean)
+    Friend Sub New(inputReader As InputStringReader, useV100Plus As Boolean, generateSocketDataEvents As Boolean)
         mUseV100Plus = useV100Plus
         mInputReader = inputReader
+        Me.GenerateSocketDataEvents = generateSocketDataEvents
     End Sub
+
+    Friend ReadOnly Property GenerateSocketDataEvents As Boolean
 
     Friend ReadOnly Property Message As String
         Get
@@ -85,7 +88,7 @@ Friend NotInheritable Class MessageReader
 
     Friend Async Function GetCharAsync(fieldName As String) As Task(Of Char)
         Dim s = Await GetStringAsync(fieldName)
-        Return If(String.IsNullOrEmpty(s), "0"c, s(0))
+        Return If(String.IsNullOrEmpty(s), ChrW(0), s(0))
     End Function
 
     Friend Async Function GetDoubleAsync(fieldName As String) As Task(Of Double)

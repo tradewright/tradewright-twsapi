@@ -32,66 +32,77 @@ Friend NotInheritable Class TickOptionComputationParser
 
     Private Const ModuleName As String = NameOf(TickOptionComputationParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lTickerId = Await _Reader.GetIntAsync("tickerId")
         Dim lTickType = DirectCast(Await _Reader.GetIntAsync("tickType"), TickType)
 
-        Dim lImpliedVol = Await _Reader.GetDoubleAsync("impliedVol")
-        If lImpliedVol < 0 Then
+        Dim lImpliedVol? = Await _Reader.GetDoubleAsync("impliedVol")
+        If lImpliedVol = -1 Then
             ' -1 is the "not yet computed" indicator
-            lImpliedVol = Double.MaxValue
+            lImpliedVol = Nothing
         End If
 
-        Dim lDelta = Await _Reader.GetDoubleAsync("delta")
-        If System.Math.Abs(lDelta) > 1 Then
+        Dim lDelta? = Await _Reader.GetDoubleAsync("delta")
+        If lDelta = -2 Then
             ' -2 is the "not yet computed" indicator
-            lDelta = Double.MaxValue
+            lDelta = Nothing
         End If
 
-        Dim lOptPrice = Double.MaxValue
-        Dim lPvDividend = Double.MaxValue
-        If pVersion >= 6 Or lTickType = TickType.ModelOption Then ' introduced in pVersion == 5
+        Dim lOptPrice As Double?
+        Dim lPvDividend As Double?
+        If pVersion >= 6 Or lTickType = TickType.ModelOption Or lTickType = TickType.DelayedModelOption Then ' introduced in pVersion == 5
             lOptPrice = Await _Reader.GetDoubleAsync("optPrice")
             If lOptPrice < 0 Then ' -1 is the "not yet computed" indicator
-                lOptPrice = Double.MaxValue
+                lOptPrice = Nothing
             End If
             lPvDividend = Await _Reader.GetDoubleAsync("pvDividend")
             If lPvDividend < 0 Then ' -1 is the "not yet computed" indicator
-                lPvDividend = Double.MaxValue
+                lPvDividend = Nothing
             End If
         End If
 
-        Dim lGamma = Double.MaxValue
-        Dim lVega = Double.MaxValue
-        Dim lTheta = Double.MaxValue
-        Dim lUndPrice = Double.MaxValue
+        Dim lGamma As Double?
+        Dim lVega As Double?
+        Dim lTheta As Double?
+        Dim lUndPrice As Double?
         If (pVersion >= 6) Then
             lGamma = Await _Reader.GetDoubleAsync("gamma")
-            If (System.Math.Abs(lGamma) > 1) Then ' -2 is the "not yet computed" indicator
-                lGamma = Double.MaxValue
+            If lGamma = -2 Then ' -2 is the "not yet computed" indicator
+                lGamma = Nothing
             End If
             lVega = Await _Reader.GetDoubleAsync("Vega")
-            If (System.Math.Abs(lVega) > 1) Then ' -2 is the "not yet computed" indicator
-                lVega = Double.MaxValue
+            If lVega = -2 Then ' -2 is the "not yet computed" indicator
+                lVega = Nothing
             End If
             lTheta = Await _Reader.GetDoubleAsync("theta")
-            If (System.Math.Abs(lTheta) > 1) Then ' -2 is the "not yet computed" indicator
-                lTheta = Double.MaxValue
+            If lTheta = -2 Then ' -2 is the "not yet computed" indicator
+                lTheta = Nothing
             End If
             lUndPrice = Await _Reader.GetDoubleAsync("undPrice")
-            If (lUndPrice < 0) Then ' -1 is the "not yet computed" indicator
+            If lUndPrice = -1 Then ' -1 is the "not yet computed" indicator
                 lUndPrice = Double.MaxValue
             End If
         End If
 
-        LogSocketInputMessage(ModuleName,"ParseAsync")
+        LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.MarketDataConsumer?.NotifyTickOptionComputation(New TickOptionComputationEventArgs(timestamp, IdManager.GetCallerId(lTickerId, IdType.MarketData), lTickType, lImpliedVol, lDelta, lOptPrice, lPvDividend, lGamma, lVega, lTheta, lUndPrice))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyTickOptionComputation", e)
-            End Try
+            _EventConsumers.MarketDataConsumer?.NotifyTickOptionComputation(
+                New TickOptionComputationEventArgs(timestamp,
+                                                   IdManager.GetCallerId(lTickerId, IdType.MarketData),
+                                                   lTickType,
+                                                   lImpliedVol,
+                                                   lDelta,
+                                                   lOptPrice,
+                                                   lPvDividend,
+                                                   lGamma,
+                                                   lVega,
+                                                   lTheta,
+                                                   lUndPrice))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyTickOptionComputation", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

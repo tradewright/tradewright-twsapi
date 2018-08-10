@@ -21,7 +21,7 @@
     Private Sub requestHistoricalTickData(requestId As Integer, request As HistoricalTickDataRequest, Optional useRTH As Boolean = False, Optional ignoreSize As Boolean = False, Optional options As List(Of TagValue) = Nothing)
         Const ProcName As String = NameOf(requestHistoricalTickData)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.HISTORICAL_TICKS Then Throw New InvalidOperationException("Historical tick requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -29,15 +29,21 @@
 
         lWriter.AddElement(requestId, "Request Id")
         lWriter.AddElement(request.Contract, "Contract")
-        lWriter.AddElement(If(request.StartDateTime.HasValue, request.StartDateTime.Value.ToString("yyyyMMdd HH:mm:ss"), ""), "StartDateTime")
-        lWriter.AddElement(If(request.EndDateTime.HasValue, request.EndDateTime.Value.ToString("yyyyMMdd HH:mm:ss"), ""), "EndDateTime")
+        lWriter.AddElement(If(request.StartDateTime.HasValue,
+                                request.StartDateTime.Value.ToString("yyyyMMdd HH:mm:ss") & If(String.IsNullOrEmpty(request.StartTimezone), "", " " & request.StartTimezone),
+                                ""),
+                           "StartDateTime")
+        lWriter.AddElement(If(request.EndDateTime.HasValue,
+                                request.EndDateTime.Value.ToString("yyyyMMdd HH:mm:ss") & If(String.IsNullOrEmpty(request.EndTimezone), "", " " & request.EndTimezone),
+                                ""),
+                           "EndDateTime")
         lWriter.AddElement(request.NumberOfTicks, "NumberOfTicks")
         lWriter.AddElement(request.WhatToShow, "WhatToShow")
         lWriter.AddElement(useRTH, "UseRTH")
         lWriter.AddElement(ignoreSize, "IgnoreSize")
         lWriter.AddElement(options, "Options")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

@@ -54,10 +54,13 @@ Friend NotInheritable Class MessageGenerator
 
     Private mDisposed As Boolean
 
-    Friend Sub New(socketManager As SocketManager, useV100Plus As Boolean, buildMessageString As Boolean)
+    Friend ReadOnly Property GenerateSocketDataEvents As Boolean
+
+    Friend Sub New(socketManager As SocketManager, useV100Plus As Boolean, buildMessageString As Boolean, generateSocketDataEvents As Boolean)
         mSocketManager = socketManager
         mUseV100Plus = useV100Plus
-        If (buildMessageString) Then mMessageBuilder = New StringBuilder("OUT: ")
+        If buildMessageString Or generateSocketDataEvents Then mMessageBuilder = New StringBuilder("OUT: ")
+        Me.GenerateSocketDataEvents = generateSocketDataEvents
     End Sub
 
 
@@ -69,11 +72,11 @@ Friend NotInheritable Class MessageGenerator
 
     Friend ReadOnly Property MessageAsPrintableBytes As String
         Get
-            If Not mUseV100Plus Then Return $"Out buf: {Encoding.UTF8.GetString(mMessage).Replace("0"c, "_")}"
+            If Not mUseV100Plus Then Return $"Out buf: {Encoding.UTF8.GetString(mMessage).Replace(ChrW(0), "_")}"
 
-            If mLengthOffset = 0 Then Return $"Out buf: {{{mLength}}}{Encoding.UTF8.GetString(mMessage, 4, mMessage.Length - 4).Replace("0"c, "_")}"
+            If mLengthOffset = 0 Then Return $"Out buf: {{{mLength}}}{Encoding.UTF8.GetString(mMessage, 4, mLength).Replace(ChrW(0), "_")}"
 
-            Return $"Out buf: {Encoding.UTF8.GetString(mMessage, 0, mLengthOffset)}{{{mLength}}}{Encoding.UTF8.GetString(mMessage, mLengthOffset + 4, mMessage.Length - mLengthOffset - 4).Replace("0"c, "_")}"
+            Return $"Out buf: {Encoding.UTF8.GetString(mMessage, 0, mLengthOffset)}{{{mLength}}}{Encoding.UTF8.GetString(mMessage, mLengthOffset + 4, mLength)}".Replace(ChrW(0), "_")  ' mLengthOffset + 4, mMessage.Length - mLengthOffset - 4).Replace(ChrW(0), "_")}"
         End Get
     End Property
 
@@ -141,16 +144,16 @@ Friend NotInheritable Class MessageGenerator
         mLength += 1
     End Sub
 
-    Friend Sub AddElement(value As Contract, fieldName As String)
+    Friend Sub AddElement(value As Contract, fieldName As String, Optional ignorePrimaryExchange As Boolean = False)
         AddElement(value.ConId, $"{fieldName}.ConId")
         AddElement(value.Symbol?.ToUpper(), $"{fieldName}.Symbol")
-        AddElement(SecurityTypes.ToInternalString(value.SecType), $"{fieldName}.Sectype")
+        AddElement(IBAPI.SecurityTypes.ToInternalString(value.SecType), $"{fieldName}.Sectype")
         AddElement(value.Expiry, $"{fieldName}.Expiry")
         AddElement(value.Strike, $"{fieldName}.Strike")
-        AddElement(OptionRights.ToInternalString(value.OptRight), $"{fieldName}.Right")
+        AddElement(IBAPI.OptionRights.ToInternalString(value.OptRight), $"{fieldName}.Right")
         AddElement(If(value.Multiplier = 1, "", CStr(value.Multiplier)), $"{fieldName}.Multiplier")
         AddElement(value.Exchange, $"{fieldName}.Exchange")
-        AddElement(value.PrimaryExch, $"{fieldName}.Primary Exchange")
+        If Not ignorePrimaryExchange Then AddElement(value.PrimaryExch, $"{fieldName}.Primary Exchange")
         AddElement(value.CurrencyCode, $"{fieldName}.Currency")
         AddElement(value.LocalSymbol?.ToUpper(), $"{fieldName}.Local Symbol")
         AddElement(value.TradingClass, $"{fieldName}.Trading Class")

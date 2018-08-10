@@ -37,10 +37,10 @@ Friend NotInheritable Class PositionParser
         Dim lContract As New Contract With {
             .ConId = Await _Reader.GetIntAsync("Contract id"),
             .Symbol = Await _Reader.GetStringAsync("Symbol"),
-            .SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("SecType")),
+            .SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("SecType")),
             .Expiry = Await _Reader.GetStringAsync("Expiry"),
             .Strike = Await _Reader.GetDoubleAsync("Strike"),
-            .OptRight = OptionRights.Parse(Await _Reader.GetStringAsync("Right")),
+            .OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right")),
             .Multiplier = Await _Reader.GetIntAsync("Multiplier"),
             .Exchange = Await _Reader.GetStringAsync("Exchange"),
             .CurrencyCode = Await _Reader.GetStringAsync("Currency"),
@@ -50,7 +50,13 @@ Friend NotInheritable Class PositionParser
 
         If lContract.Multiplier = 0 Then lContract.Multiplier = 1
 
-        Dim lPosition = Await _Reader.GetDoubleAsync("Position")
+        Dim lPosition As Double?
+        If ServerVersion >= ApiServerVersion.FRACTIONAL_POSITIONS Then
+            lPosition = Await _Reader.GetNullableDoubleAsync("Position")
+        Else
+            lPosition = CDbl(Await _Reader.GetNullableIntAsync("Position"))
+        End If
+
         Dim lAverageCost As Double
         If pVersion >= 3 Then lAverageCost = Await _Reader.GetDoubleAsync("Average Cost")
 

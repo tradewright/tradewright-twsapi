@@ -34,7 +34,7 @@ Friend Class CancelAccountUpdatesMultiGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf CancelAccountUpdatesMulti)
+            Return New ApiMethodDelegate(AddressOf cancelAccountUpdatesMulti)
         End Get
     End Property
 
@@ -44,11 +44,11 @@ Friend Class CancelAccountUpdatesMultiGenerator
         End Get
     End Property
 
-    Private Sub CancelAccountUpdatesMulti(requestId As Integer)
-        Const ProcName As String = NameOf(CancelAccountUpdatesMulti)
+    Private Sub cancelAccountUpdatesMulti(requestId As Integer)
+        Const ProcName As String = NameOf(cancelAccountUpdatesMulti)
         Const VERSION As Integer = 1
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
@@ -56,7 +56,7 @@ Friend Class CancelAccountUpdatesMultiGenerator
 
         lWriter.AddElement(requestId, "RequestId")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

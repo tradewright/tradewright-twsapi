@@ -47,7 +47,7 @@ Friend Class RequestHeadTimestampGenerator
     Private Sub requestHeadTimestamp(requestId As Integer, contract As Contract, whatToShow As String, useRTH As Boolean)
         Const ProcName As String = NameOf(requestHeadTimestamp)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HEAD_TIMESTAMP Then Throw New InvalidOperationException("Head timestamp requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -61,7 +61,7 @@ Friend Class RequestHeadTimestampGenerator
         lWriter.AddElement(whatToShow, "What to Show")
         lWriter.AddElement(HistoricalDataDateFormat.DateFormatString, "Date format")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

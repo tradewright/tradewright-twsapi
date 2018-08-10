@@ -24,6 +24,8 @@
 
 #End Region
 
+Imports TradeWright.IBAPI
+
 Public Class EventSource
     Inherits CallbackHandler
     Implements IAccountDataConsumer,
@@ -38,7 +40,8 @@ Public Class EventSource
         INewsConsumer,
         IOrderInfoConsumer,
         IPerformanceDataConsumer,
-        IScannerDataConsumer
+        IScannerDataConsumer,
+        ISocketDataConsumer
 
 #Region "IAccountDataConsumer"
 
@@ -781,4 +784,43 @@ Public Class EventSource
 
 #End Region
 
+#Region "ISocketDataConsumer"
+
+    Public Overrides Sub NotifySocketInputData(e As SocketDataEventArgs) Implements ISocketDataConsumer.NotifySocketInputData
+        OnSocketInputData(e)
+    End Sub
+
+    Public Event SocketInputData(sender As Object, e As SocketDataEventArgs)
+    Protected Overridable Sub OnSocketInputData(e As SocketDataEventArgs)
+        RaiseEvent SocketInputData(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifySocketInputMessage(e As ApiMessageEventArgs) Implements ISocketDataConsumer.NotifySocketInputMessage
+        OnSocketInputMessage(e)
+    End Sub
+
+    Public Event SocketInputMessage(sender As Object, e As ApiMessageEventArgs)
+    Protected Overridable Sub OnSocketInputMessage(e As ApiMessageEventArgs)
+        RaiseEvent SocketInputMessage(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifySocketOutputData(e As SocketDataEventArgs) Implements ISocketDataConsumer.NotifySocketOutputData
+        OnSocketOutputData(e)
+    End Sub
+
+    Public Event SocketOutputData(sender As Object, e As SocketDataEventArgs)
+    Protected Overridable Sub OnSocketOutputData(e As SocketDataEventArgs)
+        RaiseEvent SocketOutputData(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifySocketOutputMessage(e As ApiMessageEventArgs) Implements ISocketDataConsumer.NotifySocketOutputMessage
+        OnSocketOutputMessage(e)
+    End Sub
+
+    Public Event SocketOutputMessage(sender As Object, e As ApiMessageEventArgs)
+    Protected Overridable Sub OnSocketOutputMessage(e As ApiMessageEventArgs)
+        RaiseEvent SocketOutputMessage(Me, e)
+    End Sub
+
+#End Region
 End Class

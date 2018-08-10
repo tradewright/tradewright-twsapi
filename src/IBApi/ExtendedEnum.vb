@@ -30,8 +30,11 @@ Imports System.Linq
 <Flags>
 Friend Enum EnumNameType
     None = 0
-    Internal
-    External
+    Internal = 1
+    External = 2
+    [Alias] = 4
+    NonAliasExternal = 8
+    NonAliasInternal = 16
     Both = Internal Or External
 End Enum
 
@@ -46,6 +49,18 @@ Public Class ExtendedEnum(Of TClass As Class, TEnum As {Structure, IConvertible,
         mNames = friendlyNames.OrderByDescending(Function(n) n.Name.Length).ToArray()
     End Sub
 
+    Public ReadOnly Property ExternalNames As String()
+        Get
+            Return (From t In mNames Where t.Type = EnumNameType.External Select t.Name).ToArray()
+        End Get
+    End Property
+
+    Public ReadOnly Property InternalNames As String()
+        Get
+            Return (From t In mNames Where t.Type = EnumNameType.Internal Select t.Name).ToArray()
+        End Get
+    End Property
+
     Public Function Parse(value As String, Optional ignoreCase As Boolean = False) As TEnum
         Dim result As TEnum = Nothing
         If TryParse(value, result, ignoreCase) Then Return result
@@ -53,11 +68,11 @@ Public Class ExtendedEnum(Of TClass As Class, TEnum As {Structure, IConvertible,
     End Function
 
     Public Function ToExternalString(value As TEnum) As String
-        Return toExtString(value, EnumNameType.External)
+        Return toExtString(value, EnumNameType.External Or EnumNameType.NonAliasExternal)
     End Function
 
     Public Function ToInternalString(value As TEnum) As String
-        Return toExtString(value, EnumNameType.Internal)
+        Return toExtString(value, EnumNameType.Internal Or EnumNameType.NonAliasInternal)
     End Function
 
     Public Function TryParse(value As String, ByRef result As TEnum, Optional ignoreCase As Boolean = False) As Boolean
@@ -68,19 +83,21 @@ Public Class ExtendedEnum(Of TClass As Class, TEnum As {Structure, IConvertible,
 
     Public Function TryParseFrom(value As String, ByRef result As TEnum, ByRef nextIndex As Integer, Optional ignoreCase As Boolean = False) As Boolean
         For i = 0 To mNames.Length - 1
-            Dim match = False
-            If String.IsNullOrEmpty(value) And String.IsNullOrEmpty(mNames(i).Name) Then
-                match = True
-            ElseIf String.IsNullOrEmpty(value) Or String.IsNullOrEmpty(mNames(i).Name) Then
-            ElseIf ignoreCase Then
-                If value.StartsWith(mNames(i).Name) Then match = True
-            Else
-                If value.StartsWith(mNames(i).Name, StringComparison.InvariantCultureIgnoreCase) Then match = True
-            End If
-            If match Then
-                result = mNames(i).Value
-                nextIndex = mNames(i).Name.Length
-                Return True
+            If (mNames(i).Type And (EnumNameType.Alias Or EnumNameType.Internal Or EnumNameType.External)) <> 0 Then
+                Dim match = False
+                If String.IsNullOrEmpty(value) And String.IsNullOrEmpty(mNames(i).Name) Then
+                    match = True
+                ElseIf String.IsNullOrEmpty(value) Or String.IsNullOrEmpty(mNames(i).Name) Then
+                ElseIf ignoreCase Then
+                    If value.StartsWith(mNames(i).Name, StringComparison.InvariantCultureIgnoreCase) Then match = True
+                Else
+                    If value.StartsWith(mNames(i).Name) Then match = True
+                End If
+                If match Then
+                    result = mNames(i).Value
+                    nextIndex = mNames(i).Name.Length
+                    Return True
+                End If
             End If
         Next
 

@@ -45,10 +45,10 @@ Friend NotInheritable Class ScannerDataParser
             If (pVersion >= 3) Then contract.ConId = Await _Reader.GetIntAsync("ConId")
 
             contract.Symbol = Await _Reader.GetStringAsync("Symbol")
-            contract.SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
+            contract.SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
             contract.Expiry = Await _Reader.GetStringAsync("Expiry")
             contract.Strike = Await _Reader.GetDoubleAsync("Strike")
-            contract.OptRight = OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
+            contract.OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
             contract.Exchange = Await _Reader.GetStringAsync("Exchange")
             contract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
             contract.LocalSymbol = Await _Reader.GetStringAsync("Local Symbol")

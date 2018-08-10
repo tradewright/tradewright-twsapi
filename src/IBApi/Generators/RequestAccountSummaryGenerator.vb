@@ -46,7 +46,7 @@ Friend Class RequestAccountSummaryGenerator
 
     Private Sub RequestAccountSummary(pReqId As Integer, pGroup As String, pTags As String)
         Const ProcName As String = NameOf(RequestAccountSummary)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1
 
@@ -56,7 +56,7 @@ Friend Class RequestAccountSummaryGenerator
         lWriter.AddElement(pReqId, "ReqId")
         lWriter.AddElement(pGroup, "Group")
         lWriter.AddElement(pTags, "Tags")
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

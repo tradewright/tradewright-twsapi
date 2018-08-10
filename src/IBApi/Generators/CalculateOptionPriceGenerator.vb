@@ -49,7 +49,7 @@ Friend Class CalculateOptionPriceGenerator
     Private Sub calculateOptionPrice(pReqId As Integer, pContract As Contract, pVolatility As Double, pUnderPrice As Double, options As List(Of TagValue))
         Const ProcName As String = NameOf(calculateOptionPrice)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
+        If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 3
 
@@ -66,7 +66,7 @@ Friend Class CalculateOptionPriceGenerator
         lWriter.AddElement(If(options Is Nothing, 0, options.Count), "Options Count")
         lWriter.AddElement(options, "Options")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

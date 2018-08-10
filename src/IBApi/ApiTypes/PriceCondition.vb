@@ -31,21 +31,21 @@ Imports System.Globalization
 Public Class PriceCondition
     Inherits ContractCondition
 
-    Private mPrice As Double
+    Public Property Price As Double
 
     Public Property TriggerMethod As TriggerMethod
 
     Protected Overrides Property Value As String
         Get
-            Return mPrice.ToString()
+            Return Price.ToString()
         End Get
         Set
-            mPrice = Double.Parse(Value, NumberFormatInfo.InvariantInfo)
+            Price = Double.Parse(Value, NumberFormatInfo.InvariantInfo)
         End Set
     End Property
 
     Public Overrides Function ToString() As String
-        Return Globals.TriggerMethods.ToExternalString(TriggerMethod) & " " & MyBase.ToString()
+        Return IBAPI.TriggerMethods.ToExternalString(TriggerMethod) & " " & MyBase.ToString()
     End Function
 
     Public Overrides Function Equals(obj As Object) As Boolean
@@ -72,7 +72,7 @@ Public Class PriceCondition
 
     Protected Overrides Function TryParse(cond As String) As Boolean
         Dim nextIndex As Integer
-        If Globals.TriggerMethods.TryParseFrom(cond, TriggerMethod, nextIndex) Then
+        If IBAPI.TriggerMethods.TryParseFrom(cond, TriggerMethod, nextIndex) Then
             cond = cond.Substring(nextIndex)
             Return MyBase.TryParse(cond)
         Else

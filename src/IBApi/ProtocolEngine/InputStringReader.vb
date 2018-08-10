@@ -27,7 +27,6 @@
 Imports System.Net
 Imports System.Text
 Imports System.Threading
-Imports System.Threading.Tasks
 
 Friend NotInheritable Class InputStringReader
 
@@ -35,7 +34,7 @@ Friend NotInheritable Class InputStringReader
 
     Private mSocketManager As SocketManager
 
-    Private mToken As CancellationToken
+    Private ReadOnly mToken As CancellationToken
 
     Friend Const DataStreamEnded As String = "Data stream ended"
 
@@ -48,7 +47,7 @@ Friend NotInheritable Class InputStringReader
     ' to be adequate for most programs that don't make large historical data requests.
     Private Const InitialBufferSize As Integer = 4096
 
-    Friend mBuffer As Byte() = New Byte(4095) {}
+    Private mBuffer As Byte() = New Byte(4095) {}
 
     ' index of the start of the next unprocessed message
     Private mBufferIndex As Integer
@@ -61,7 +60,7 @@ Friend NotInheritable Class InputStringReader
 
     Private mEncoding As Encoding = New UTF8Encoding(False, True)
 
-    Private mMaxMessageSize As Integer
+    Private ReadOnly mMaxMessageSize As Integer
 
     ' the index of the start of the latest data read from the socket
     Private mLatestDataStartIndex As Integer
@@ -80,11 +79,11 @@ Friend NotInheritable Class InputStringReader
         mMaxMessageSize = maxMessageSize
     End Sub
 
-    Private Async Function AppendDataAsync() As Task
-        If (IsBufferFull()) Then EnsureSpaceInBuffer()
+    Private Async Function appendDataAsync() As Task
+        If (isBufferFull()) Then ensureSpaceInBuffer()
 
         Dim bytesRead = Await mSocketManager.ReadByteArrayAsync(mBuffer, mDataLength, mToken)
-        If (bytesRead = 0) Then ThrowDataStreamEnded()
+        If (bytesRead = 0) Then throwDataStreamEnded()
 
         mLatestDataStartIndex = mDataLength
         mLatestDataLength = bytesRead
@@ -97,7 +96,7 @@ Friend NotInheritable Class InputStringReader
         mMessageStartIndex = mCurrIndex
     End Sub
 
-    Private Sub EnsureSpaceInBuffer()
+    Private Sub ensureSpaceInBuffer()
         Dim oldBuf As Byte() = mBuffer
         ReDim mBuffer(2 * CInt(oldBuf.Length) - 1)
         Debug.WriteLine($"Buffer size increased to: {mBuffer.Length}")
@@ -107,7 +106,7 @@ Friend NotInheritable Class InputStringReader
         mBufferIndex = 0
     End Sub
 
-    Private Function IsBufferFull() As Boolean
+    Private Function isBufferFull() As Boolean
         Return mDataLength >= mBuffer.Length
     End Function
 
@@ -121,7 +120,7 @@ Friend NotInheritable Class InputStringReader
 
     Friend Async Function ReadBinaryIntAsync() As Task(Of Integer)
         While mDataLength - mCurrIndex < SizeOfInt
-            Await AppendDataAsync()
+            Await appendDataAsync()
         End While
 
         Dim value As Integer = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(mBuffer, mCurrIndex))
@@ -132,13 +131,13 @@ Friend NotInheritable Class InputStringReader
     End Function
 
     Friend Async Function ReadStringAsync() As Task(Of String)
-        If mCurrIndex >= mDataLength Then Await AppendDataAsync()
+        If mCurrIndex >= mDataLength Then Await appendDataAsync()
 
         Dim firstIndex = mCurrIndex
         If getByte() = 0 Then Return Nothing
 
         Do
-            If mCurrIndex >= mDataLength Then Await AppendDataAsync()
+            If mCurrIndex >= mDataLength Then Await appendDataAsync()
         Loop While getByte() <> 0
 
         Dim element = mEncoding.GetString(mBuffer, firstIndex, mCurrIndex - firstIndex - 1)
@@ -159,7 +158,7 @@ Friend NotInheritable Class InputStringReader
         Return b
     End Function
 
-    Private Sub ThrowDataStreamEnded()
+    Private Sub throwDataStreamEnded()
         Throw New ApiException(ErrorCodes.DataStreamEnded, "")
     End Sub
 End Class

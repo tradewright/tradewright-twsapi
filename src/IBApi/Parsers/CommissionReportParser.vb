@@ -35,11 +35,11 @@ Friend NotInheritable Class CommissionReportParser
        Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lCommissionReport As New CommissionReport With {
             .ExecId = Await _Reader.GetStringAsync("ExecId"),
-            .Commission = Await _Reader.GetDoubleAsync("Commission"),
+            .Commission = Await _Reader.GetNullableDoubleAsync("Commission"),
             .CurrencyCode = Await _Reader.GetStringAsync("CurrencyCode"),
-            .RealizedPNL = Await _Reader.GetDoubleAsync("RealizedPNL"),
-            .Yield = Await _Reader.GetDoubleAsync("Yield"),
-            .YieldRedemptionDate = Await _Reader.GetIntAsync("YieldRedemptionDate")
+            .RealizedPNL = Await _Reader.GetNullableDoubleAsync("RealizedPNL"),
+            .Yield = Await _Reader.GetNullableDoubleAsync("Yield"),
+            .YieldRedemptionDate = Await _Reader.GetNullableIntAsync("YieldRedemptionDate")
         }
 
         LogSocketInputMessage(ModuleName, "ParseAsync")

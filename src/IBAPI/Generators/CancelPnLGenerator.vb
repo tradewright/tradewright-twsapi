@@ -47,7 +47,7 @@ Friend Class CancelPnLGenerator
     Private Sub cancelPnL(requestId As Integer)
         Const ProcName As String = NameOf(cancelPnL)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.PNL Then Throw New InvalidOperationException("PnL requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -55,7 +55,7 @@ Friend Class CancelPnLGenerator
 
         lWriter.AddElement(requestId, "Request Id")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

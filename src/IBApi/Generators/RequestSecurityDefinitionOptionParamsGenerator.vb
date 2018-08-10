@@ -47,7 +47,7 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
     Private Sub requestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
         Const ProcName As String = NameOf(requestSecurityDefinitionOptionParams)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.SEC_DEF_OPT_PARAMS_REQ Then Throw New InvalidOperationException("Security definition option parameters requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -56,9 +56,9 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
         lWriter.AddElement(requestId, "Request Id")
         lWriter.AddElement(underlyingSymbol, "Underlying Symbol")
         lWriter.AddElement(exchange, "Exchange")
-        lWriter.AddElement(SecurityTypes.ToInternalString(underlyingSecType), "Underlying SecType")
+        lWriter.AddElement(IBAPI.SecurityTypes.ToInternalString(underlyingSecType), "Underlying SecType")
         lWriter.AddElement(underlyingConId, "Underlying ConId")
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

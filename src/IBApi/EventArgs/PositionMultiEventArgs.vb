@@ -28,17 +28,17 @@ Public Class PositionMultiEventArgs
     Inherits AbstractEventArgsWithTimestamp
     Public Property Account As String
 
-    Public Property AverageCost As Double
+    Public Property AverageCost As Double?
 
     Public Property Contract As Contract
 
     Public Property ModelCode As String
 
-    Public Property Position As Double
+    Public Property Position As Double?
 
     Public Property ReqId As Integer
 
-    Public Sub New(timestamp As DateTime, reqId As Integer, account As String, modelCode As String, contract As TradeWright.IBAPI.Contract, pos As Double, avgCost As Double)
+    Public Sub New(timestamp As DateTime, reqId As Integer, account As String, modelCode As String, contract As TradeWright.IBAPI.Contract, pos As Double?, avgCost As Double?)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.ReqId = reqId

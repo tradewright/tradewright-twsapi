@@ -43,7 +43,7 @@ Friend NotInheritable Class SymbolSamplesParser
             Dim contract = New Contract()
             contract.ConId = Await _Reader.GetIntAsync("Conid")
             contract.Symbol = Await _Reader.GetStringAsync("Symbol")
-            contract.SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
+            contract.SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
             contract.PrimaryExch = Await _Reader.GetStringAsync("Primary exch")
                 contract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
 

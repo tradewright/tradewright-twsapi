@@ -40,7 +40,8 @@ Public MustInherit Class CallbackHandler
         INewsConsumer,
         IOrderInfoConsumer,
         IPerformanceDataConsumer,
-        IScannerDataConsumer
+        IScannerDataConsumer,
+        ISocketDataConsumer
 
 #Region "IAccountDataConsumer"
 
@@ -415,6 +416,26 @@ Public MustInherit Class CallbackHandler
     End Sub
 
     Public Overridable Sub NotifyScannerParameters(e As ScannerParametersEventArgs) Implements IScannerDataConsumer.NotifyScannerParameters
+        ' no action
+    End Sub
+
+#End Region
+
+#Region "ISocketDataConsumer"
+
+    Public Overridable Sub NotifySocketInputData(e As SocketDataEventArgs) Implements ISocketDataConsumer.NotifySocketInputData
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifySocketInputMessage(e As ApiMessageEventArgs) Implements ISocketDataConsumer.NotifySocketInputMessage
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifySocketOutputData(e As SocketDataEventArgs) Implements ISocketDataConsumer.NotifySocketOutputData
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifySocketOutputMessage(e As ApiMessageEventArgs) Implements ISocketDataConsumer.NotifySocketOutputMessage
         ' no action
     End Sub
 

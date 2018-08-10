@@ -28,7 +28,7 @@ Friend Class ExerciseOptionsGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pContract As Contract, pExerciseAction As Integer, pExerciseQuantity As Integer, pAccount As String, pOverride As Integer)
+    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pContract As Contract, pExerciseAction As ExerciseAction, pExerciseQuantity As Integer, pAccount As String, pOverride As Boolean)
 
     Private Const ModuleName As String = NameOf(ExerciseOptionsGenerator)
 
@@ -44,9 +44,9 @@ Friend Class ExerciseOptionsGenerator
         End Get
     End Property
 
-    Private Sub exerciseOptions(pTickerId As Integer, pContract As Contract, pExerciseAction As Integer, pExerciseQuantity As Integer, pAccount As String, pOverride As Integer)
+    Private Sub exerciseOptions(pTickerId As Integer, pContract As Contract, pExerciseAction As ExerciseAction, pExerciseQuantity As Integer, pAccount As String, pOverride As Boolean)
         Const ProcName As String = NameOf(exerciseOptions)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 2
 
@@ -55,13 +55,13 @@ Friend Class ExerciseOptionsGenerator
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pTickerId, "TickerId")
 
-        lWriter.AddElement(pContract, "Contract")
+        lWriter.AddElement(pContract, "Contract", ignorePrimaryExchange:=True)
 
         lWriter.AddElement(pExerciseAction, "ExerciseAction")
         lWriter.AddElement(pExerciseQuantity, "ExerciseQuantity")
         lWriter.AddElement(pAccount, "Account")
         lWriter.AddElement(pOverride, "Override")
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

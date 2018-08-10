@@ -31,35 +31,50 @@ Imports System.Runtime.CompilerServices
 Module ExtensionMethods
 
     <Extension()>
-    Friend Function CreateMessageGenerator(socketHandler As SocketHandler, useV100Plus As Boolean) As MessageGenerator
-        Return New MessageGenerator(socketHandler.SocketManager, useV100Plus, SocketLogger.IsLoggable(ILogger.LogLevel.Detail))
+    Friend Function CreateMessageGenerator(socketHandler As SocketHandler, useV100Plus As Boolean, generateSocketDataEvents As Boolean) As MessageGenerator
+        Return New MessageGenerator(socketHandler.SocketManager, useV100Plus, IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.Detail), generateSocketDataEvents)
     End Function
 
     <Extension()>
-    Friend Sub LogSocketInputMessage(reader As MessageReader, moduleName As String, procName As String, Optional pIgnoreLogLevel As Boolean = False)
+    Friend Sub LogSocketInputMessage(reader As MessageReader, socketDataConsumer As ISocketDataConsumer, Optional pIgnoreLogLevel As Boolean = False)
+        Dim s = ""
+        If pIgnoreLogLevel Or IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.Detail) Or
+            (socketDataConsumer IsNot Nothing And reader.GenerateSocketDataEvents) Then
+            s = reader.Message
+        End If
+
         If pIgnoreLogLevel Then
-            EventLogger.Log(reader.Message, moduleName, procName, ILogger.LogLevel.Normal)
-        ElseIf EventLogger.IsLoggable(ILogger.LogLevel.HighDetail) Then
-            EventLogger.Log(reader.Message, moduleName, procName, ILogger.LogLevel.HighDetail)
+            IBAPI.SocketLogger.Log(s, pLogLevel:=ILogger.LogLevel.Normal)
+        ElseIf IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.Detail) Then
+            IBAPI.SocketLogger.Log(s, pLogLevel:=ILogger.LogLevel.Detail)
         End If
+
+        If reader.GenerateSocketDataEvents Then socketDataConsumer?.NotifySocketInputMessage(New ApiMessageEventArgs(s))
     End Sub
 
     <Extension()>
-    Friend Sub LogSocketOutputMessage(messageWriter As MessageGenerator, moduleName As String, procName As String, Optional ignoreLogLevel As Boolean = False)
+    Friend Sub LogSocketOutputMessage(messageWriter As MessageGenerator, socketDataConsumer As ISocketDataConsumer, Optional ignoreLogLevel As Boolean = False)
         If ignoreLogLevel Then
-            SocketLogger.Log(messageWriter.MessageAsStructuredString, moduleName, procName)
-        ElseIf SocketLogger.IsLoggable(ILogger.LogLevel.Detail) Then
-            SocketLogger.Log(messageWriter.MessageAsStructuredString, moduleName, procName, ILogger.LogLevel.Detail)
+            IBAPI.SocketLogger.Log(messageWriter.MessageAsStructuredString)
+        ElseIf IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.Detail) Then
+            IBAPI.SocketLogger.Log(messageWriter.MessageAsStructuredString, pLogLevel:=ILogger.LogLevel.Detail)
         End If
-        If SocketLogger.IsLoggable(ILogger.LogLevel.HighDetail) Then
-            SocketLogger.Log(messageWriter.MessageAsPrintableBytes, moduleName, procName, ILogger.LogLevel.HighDetail)
+
+        If messageWriter.GenerateSocketDataEvents Then socketDataConsumer?.NotifySocketOutputMessage(New ApiMessageEventArgs(messageWriter.MessageAsStructuredString))
+
+        Dim s = ""
+        If IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.HighDetail) Or
+            (messageWriter.GenerateSocketDataEvents And socketDataConsumer IsNot Nothing) Then
+            s = messageWriter.MessageAsPrintableBytes
         End If
+        If IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.HighDetail) Then IBAPI.SocketLogger.Log(s, pLogLevel:=ILogger.LogLevel.HighDetail)
+        If messageWriter.GenerateSocketDataEvents Then socketDataConsumer?.NotifySocketOutputData(New SocketDataEventArgs(s))
     End Sub
 
     <Extension()>
-    Friend Sub SendMessage(writer As MessageGenerator, moduleName As String, procName As String, Optional ignoreLogLevel As Boolean = False)
+    Friend Sub SendMessage(writer As MessageGenerator, socketDataConsumer As ISocketDataConsumer, Optional ignoreLogLevel As Boolean = False)
         writer.Send()
-        writer.LogSocketOutputMessage(moduleName, procName, ignoreLogLevel)
+        writer.LogSocketOutputMessage(socketDataConsumer, ignoreLogLevel)
     End Sub
 
 End Module

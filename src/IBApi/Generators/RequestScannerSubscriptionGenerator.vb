@@ -48,7 +48,7 @@ Friend Class RequestScannerSubscriptionGenerator
 
     Private Sub requestScannerSubscription(pTickerId As Integer, pSubscription As ScannerSubscription, options As List(Of TagValue), filterOptions As List(Of TagValue))
         Const ProcName As String = NameOf(requestScannerSubscription)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.SCANNER_GENERIC_OPTS And filterOptions IsNot Nothing Then Throw New InvalidOperationException("Scanner subscription generic filter options not suported")
 
         Const VERSION As Integer = 4
@@ -80,7 +80,7 @@ Friend Class RequestScannerSubscriptionGenerator
         lWriter.AddElement(pSubscription.StockTypeFilter, "StockTypeFilter")
         If ServerVersion >= ApiServerVersion.SCANNER_GENERIC_OPTS Then lWriter.AddElement(filterOptions, "Filter Options")
         lWriter.AddElement(options, "Options")
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

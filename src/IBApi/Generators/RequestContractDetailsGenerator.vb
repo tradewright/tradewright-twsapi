@@ -48,7 +48,7 @@ Friend Class RequestContractDetailsGenerator
         Const ProcName As String = NameOf(requestContractDetails)
         Const VERSION As Integer = 8
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestContractData)
@@ -60,7 +60,7 @@ Friend Class RequestContractDetailsGenerator
         lWriter.AddElement(pSecIdType, "SecIdType")
         lWriter.AddElement(pSecId, "SecId")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

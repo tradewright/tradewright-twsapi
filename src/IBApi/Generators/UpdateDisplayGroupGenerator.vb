@@ -48,7 +48,7 @@ Friend Class UpdateDisplayGroupGenerator
         Const ProcName As String = NameOf(UpdateDisplayGroup)
         Const VERSION As Integer = 1
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
@@ -57,7 +57,7 @@ Friend Class UpdateDisplayGroupGenerator
         lWriter.AddElement(requestId, "Request Id")
         lWriter.AddElement(contractInfo, "Contract Info")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

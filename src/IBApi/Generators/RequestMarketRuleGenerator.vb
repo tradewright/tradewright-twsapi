@@ -47,7 +47,7 @@ Friend Class RequestMarketRuleGenerator
     Private Sub RequestMarketRule(marketRuleId As Integer)
         Const ProcName As String = NameOf(RequestMarketRule)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.MARKET_RULES Then Throw New InvalidOperationException("Market rule requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -55,7 +55,7 @@ Friend Class RequestMarketRuleGenerator
 
         lWriter.AddElement(marketRuleId, "Market Rule ID")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

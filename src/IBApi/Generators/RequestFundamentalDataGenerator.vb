@@ -48,7 +48,7 @@ Friend Class RequestFundamentalDataGenerator
 
     Private Sub requestFundamentalData(pReqId As Integer, pContract As Contract, pReportType As String, options As List(Of TagValue))
         Const ProcName As String = NameOf(requestFundamentalData)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3
 
@@ -59,7 +59,7 @@ Friend Class RequestFundamentalDataGenerator
 
         lWriter.AddElement(pContract.ConId, "ConId")
         lWriter.AddElement(pContract.Symbol?.ToUpper(), "Symbol")
-        lWriter.AddElement(SecurityTypes.ToInternalString(pContract.SecType), "Sectype")
+        lWriter.AddElement(IBAPI.SecurityTypes.ToInternalString(pContract.SecType), "Sectype")
         lWriter.AddElement(pContract.Exchange, "Exchange")
         lWriter.AddElement(pContract.PrimaryExch, "PrimaryExch")
         lWriter.AddElement(pContract.CurrencyCode, "Currency")
@@ -68,7 +68,7 @@ Friend Class RequestFundamentalDataGenerator
         lWriter.AddElement(If(options Is Nothing, 0, options.Count), "Options Count")
         lWriter.AddElement(options, "Options")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

@@ -60,7 +60,7 @@ Friend NotInheritable Class ErrorParser
                 Return True
             Case IdType.HistoricalData
                 If lErrorCode = 165 Then
-                    EventLogger.Log("Connected to IB Historical Market Data Service - {lErrorMsg}", ModuleName, ProcName)
+                    IBAPI.EventLogger.Log("Connected to IB Historical Market Data Service - {lErrorMsg}", ModuleName, ProcName)
                 Else
                     _EventConsumers.HistDataConsumer?.NotifyHistoricalDataError(New RequestErrorEventArgs(timestamp, IdManager.GetCallerId(id, IdType.HistoricalData), lErrorCode, lErrorMsg))
                 End If
@@ -77,7 +77,7 @@ Friend NotInheritable Class ErrorParser
             Case 317
                 _EventConsumers.MarketDepthConsumer?.NotifyMarketDepthReset(New MarketDepthRestEventArgs(timestamp, reEstablish:=False))
             Case 321 ' invalid Request
-                EventLogger.Log($"Error ({lErrorCode}; id={id}) from Tws: {lErrorMsg}", ModuleName, ProcName)
+                IBAPI.EventLogger.Log($"Error ({lErrorCode}; id={id}) from Tws: {lErrorMsg}", ModuleName, ProcName)
                 _EventConsumers.ErrorAndNotificationConsumer?.NotifyApiError(New ApiErrorEventArgs(timestamp, lErrorCode, lErrorMsg))
             Case 326 ' ClientID already in use
 
@@ -86,7 +86,7 @@ Friend NotInheritable Class ErrorParser
 
                 mLostConnectionToIb = True
                 _EventConsumers.ConnectionStatusConsumer?.NotifyIBServerConnectionStateChange(New IBServerConnectionStateChangeEventArgs(timestamp, IBServerConnectionState.Disconnected, False, lErrorMsg))
-                EventLogger.Log("Connection to IB has been lost", ModuleName, ProcName)
+                IBAPI.EventLogger.Log("Connection to IB has been lost", ModuleName, ProcName)
                 _EventConsumers.ErrorAndNotificationConsumer?.NotifyApiEvent(New ApiEventEventArgs(timestamp, lErrorCode, lErrorMsg))
 
             Case 1101
@@ -99,7 +99,7 @@ Friend NotInheritable Class ErrorParser
 
                 _EventConsumers.ConnectionStatusConsumer?.NotifyIBServerConnectionStateChange(New IBServerConnectionStateChangeEventArgs(timestamp, IBServerConnectionState.Connected, True, lErrorMsg))
 
-                EventLogger.Log("Connection to IB recovered: market data re-established", ModuleName, ProcName)
+                IBAPI.EventLogger.Log("Connection to IB recovered: market data re-established", ModuleName, ProcName)
                 _EventConsumers.ErrorAndNotificationConsumer?.NotifyApiEvent(New ApiEventEventArgs(timestamp, lErrorCode, lErrorMsg))
 
             Case 1102
@@ -110,14 +110,14 @@ Friend NotInheritable Class ErrorParser
 
                 _EventConsumers.ConnectionStatusConsumer?.NotifyIBServerConnectionStateChange(New IBServerConnectionStateChangeEventArgs(timestamp, IBServerConnectionState.Connected, False, lErrorMsg))
 
-                EventLogger.Log("Connection to IB recovered: no loss of data", ModuleName, ProcName)
+                IBAPI.EventLogger.Log("Connection to IB recovered: no loss of data", ModuleName, ProcName)
                 _EventConsumers.ErrorAndNotificationConsumer?.NotifyApiEvent(New ApiEventEventArgs(timestamp, lErrorCode, lErrorMsg))
 
             Case 2103, 2104, 2105, 2106, 2107, 2108
-                EventLogger.Log(lErrorMsg, ModuleName, ProcName)
+                IBAPI.EventLogger.Log(lErrorMsg, ModuleName, ProcName)
                 _EventConsumers.ErrorAndNotificationConsumer?.NotifyApiEvent(New ApiEventEventArgs(timestamp, lErrorCode, lErrorMsg))
             Case Else
-                EventLogger.Log($"Error ({lErrorCode}; id={id}) from Tws: {lErrorMsg}", ModuleName, ProcName)
+                IBAPI.EventLogger.Log($"Error ({lErrorCode}; id={id}) from Tws: {lErrorMsg}", ModuleName, ProcName)
                 _EventConsumers.ErrorAndNotificationConsumer?.NotifyApiError(New ApiErrorEventArgs(timestamp, lErrorCode, lErrorMsg))
         End Select
         Return True

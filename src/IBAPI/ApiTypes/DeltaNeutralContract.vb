@@ -24,7 +24,8 @@
 
 #End Region
 
-Public Class UnderComp
+Public Class DeltaNeutralContract
+
     Public Property ConId As Integer
     Public Property Delta As Double
     Public Property Price As Double

@@ -34,7 +34,7 @@ Friend Class CancelCalculateImpliedVolatilityGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf CancelCalculateImpliedVolatility)
+            Return New ApiMethodDelegate(AddressOf cancelCalculateImpliedVolatility)
         End Get
     End Property
 
@@ -44,9 +44,9 @@ Friend Class CancelCalculateImpliedVolatilityGenerator
         End Get
     End Property
 
-    Private Sub CancelCalculateImpliedVolatility(pReqId As Integer)
-        Const ProcName As String = NameOf(CancelCalculateImpliedVolatility)
-        If mConnectionState <> ApiConnectionState.Connected Then Exit Sub
+    Private Sub cancelCalculateImpliedVolatility(pReqId As Integer)
+        Const ProcName As String = NameOf(cancelCalculateImpliedVolatility)
+        If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1
 
@@ -54,7 +54,7 @@ Friend Class CancelCalculateImpliedVolatilityGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.CancelCalculateImpliedVolatility)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(pReqId, "ReqId")
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

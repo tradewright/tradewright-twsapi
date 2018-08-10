@@ -46,7 +46,7 @@ Friend Class RequestAccountDataGenerator
 
     Private Sub RequestAccountData(subscribe As Boolean, acctCode As String)
         Const ProcName As String = NameOf(RequestAccountData)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 2
 
@@ -57,7 +57,7 @@ Friend Class RequestAccountDataGenerator
 
         If ServerVersion >= 9 Then lWriter.AddElement(acctCode, "Account code")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

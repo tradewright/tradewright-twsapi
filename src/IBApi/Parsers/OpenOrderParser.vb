@@ -43,10 +43,10 @@ Friend NotInheritable Class OpenOrderParser
         With lContract
             .ConId = Await _Reader.GetIntAsync("conId")
             .Symbol = Await _Reader.GetStringAsync("Symbol")
-            .SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
+            .SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
             .Expiry = Await _Reader.GetStringAsync("Expiry")
             .Strike = Await _Reader.GetDoubleAsync("Strike")
-            .OptRight = OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
+            .OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
             .Multiplier = Await _Reader.GetIntAsync("Multiplier")
             If .Multiplier = 0 Then .Multiplier = 1
             .Exchange = Await _Reader.GetStringAsync("Exchange")
@@ -57,13 +57,13 @@ Friend NotInheritable Class OpenOrderParser
 
         ' read Order fields
         With lOrder
-            .Action = OrderActions.Parse(Await _Reader.GetStringAsync("Action"))
+            .Action = IBAPI.OrderActions.Parse(Await _Reader.GetStringAsync("Action"))
             .TotalQuantity = Await _Reader.GetDoubleAsync("Quantity")
-            .OrderType = OrderTypes.Parse(Await _Reader.GetStringAsync("Order type"))
+            .OrderType = IBAPI.OrderTypes.Parse(Await _Reader.GetStringAsync("Order type"))
             If .OrderType = OrderType.None Then Throw New InvalidOperationException("Invalid OrderYype")
             .LmtPrice = Await _Reader.GetNullableDoubleAsync("Limit price")
             .AuxPrice = Await _Reader.GetNullableDoubleAsync("Aux price")
-            .Tif = OrderTIFs.Parse(Await _Reader.GetStringAsync("Time in force"))
+            .Tif = IBAPI.OrderTIFs.Parse(Await _Reader.GetStringAsync("Time in force"))
             .OcaGroup = Await _Reader.GetStringAsync("OCA group")
             .Account = Await _Reader.GetStringAsync("Account")
             .OpenClose = Await _Reader.GetStringAsync("Open/close")
@@ -91,7 +91,7 @@ Friend NotInheritable Class OpenOrderParser
             .GoodTillDate = Await _Reader.GetStringAsync("Good till date")
 
             .Rule80A = Await _Reader.GetStringAsync("Rule80A")
-            .PercentOffset = Await _Reader.GetDoubleAsync("Percent Offset")
+            .PercentOffset = Await _Reader.GetNullableDoubleAsync("Percent Offset")
             .SettlingFirm = Await _Reader.GetStringAsync("Settling Firm")
             .ShortSaleSlot = Await _Reader.GetIntAsync("shortSaleSlot")
             .DesignatedLocation = Await _Reader.GetStringAsync("designatedLocation")
@@ -118,7 +118,7 @@ Friend NotInheritable Class OpenOrderParser
             .Volatility = Await _Reader.GetDoubleAsync("Volatility")
             .VolatilityType = Await _Reader.GetIntAsync("VolatilityType")
 
-            .DeltaNeutralOrderType = OrderTypes.Parse(Await _Reader.GetStringAsync("DeltaNeutralOrderType"))
+            .DeltaNeutralOrderType = IBAPI.OrderTypes.Parse(Await _Reader.GetStringAsync("DeltaNeutralOrderType"))
             .DeltaNeutralAuxPrice = Await _Reader.GetNullableDoubleAsync("DeltaNeutralAuxPrice")
 
             If .DeltaNeutralOrderType = OrderType.None Then
@@ -149,7 +149,7 @@ Friend NotInheritable Class OpenOrderParser
                     Dim lComboLeg As New ComboLeg With {
                         .ConId = Await _Reader.GetIntAsync($"ConId{i}"),
                         .Ratio = Await _Reader.GetIntAsync($"Ratio{i}"),
-                        .Action = OrderActions.Parse(Await _Reader.GetStringAsync($"Action{i}")),
+                        .Action = IBAPI.OrderActions.Parse(Await _Reader.GetStringAsync($"Action{i}")),
                         .Exchange = Await _Reader.GetStringAsync($"Exchange{i}"),
                         .OpenClose = DirectCast(Await _Reader.GetIntAsync($"OpenClose{i}"), LegOpenCloseCode),
                         .ShortSaleSlot = DirectCast(Await _Reader.GetIntAsync($"ShortSaleSlot{i}"), ShortSaleSlotCode),
@@ -166,7 +166,7 @@ Friend NotInheritable Class OpenOrderParser
                 Dim lOrderComboLegs(lOrderComboLegsCount - 1) As OrderComboLeg
                 For i = 0 To lOrderComboLegsCount - 1
                     lOrderComboLegs(i) = New OrderComboLeg With {
-                            .Price = Await _Reader.GetDoubleAsync($"Price{i + 1}")
+                            .Price = Await _Reader.GetNullableDoubleAsync($"Price{i + 1}")
                         }
                 Next
                 .OrderComboLegs = lOrderComboLegs
@@ -197,7 +197,7 @@ Friend NotInheritable Class OpenOrderParser
                 .ScaleRandomPercent = Await _Reader.GetBooleanAsync("ScaleRandomPercent")
             End If
 
-            .HedgeType = HedgeTypes.Parse(Await _Reader.GetStringAsync("HedgeType"))
+            .HedgeType = IBAPI.HedgeTypes.Parse(Await _Reader.GetStringAsync("HedgeType"))
             If .HedgeType <> HedgeType.None Then .HedgeParam = Await _Reader.GetStringAsync("HedgeParam")
 
             .OptOutSmartRouting = Await _Reader.GetBooleanAsync("OptOutSmartRouting")
@@ -208,12 +208,12 @@ Friend NotInheritable Class OpenOrderParser
             .NotHeld = Await _Reader.GetBooleanAsync("Not held")
 
             If CBool(Await _Reader.GetIntAsync("UnderComp")) Then
-                Dim lUnderComp = New UnderComp With {
+                Dim lDeltaNeutralContract = New DeltaNeutralContract With {
                     .ConId = Await _Reader.GetIntAsync("UnderComp ConId"),
                     .Delta = Await _Reader.GetDoubleAsync("UnderComp Delta"),
                     .Price = Await _Reader.GetDoubleAsync("UnderComp Price")
                 }
-                lContract.UnderComp = lUnderComp
+                lContract.DeltaNeutralContract = lDeltaNeutralContract
             End If
 
             .AlgoStrategy = Await _Reader.GetStringAsync("Algo strategy")
@@ -282,7 +282,7 @@ Friend NotInheritable Class OpenOrderParser
                     Next
                 End If
 
-                .AdjustedOrderType = OrderTypes.Parse(Await _Reader.GetStringAsync("AdjustedOrderType"))
+                .AdjustedOrderType = IBAPI.OrderTypes.Parse(Await _Reader.GetStringAsync("AdjustedOrderType"))
                 .TriggerPrice = Await _Reader.GetNullableDoubleAsync("TriggerPrice")
                 .TrailStopPrice = Await _Reader.GetNullableDoubleAsync("TrailStopPrice")
                 .LmtPriceOffset = Await _Reader.GetNullableDoubleAsync("LmtPriceOffset")
@@ -309,7 +309,7 @@ Friend NotInheritable Class OpenOrderParser
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-            _EventConsumers.OrderInfoConsumer?.NotifyOpenOrder(New OpenOrderEventArgs(timestamp, lOrder.OrderId, lContract, lOrder, lOrderState))
+            _EventConsumers.NotifyOpenOrder(New OpenOrderEventArgs(timestamp, lOrder.OrderId, lContract, lOrder, lOrderState))
             Return True
         Catch e As Exception
             Throw New ApiApplicationException("NotifyOpenOrder", e)

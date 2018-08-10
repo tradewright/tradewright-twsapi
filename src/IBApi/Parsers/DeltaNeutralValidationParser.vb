@@ -32,21 +32,21 @@ Friend NotInheritable Class DeltaNeutralValidationParser
 
     Private Const ModuleName As String = NameOf(DeltaNeutralValidationParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim reqId = Await _Reader.GetIntAsync("ReqID")
 
-        Dim underComp = New UnderComp() With {.ConId = Await _Reader.GetIntAsync("ConID"),
+        Dim underComp = New DeltaNeutralContract() With {.ConId = Await _Reader.GetIntAsync("ConID"),
                                                 .Delta = Await _Reader.GetDoubleAsync("Delta"),
                                                 .Price = Await _Reader.GetDoubleAsync("Price")}
 
-        LogSocketInputMessage(ModuleName,"ParseAsync")
+        LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.OrderInfoConsumer?.NotifyDeltaNeutralValidation(New DeltaNeutralValidationEventArgs(timestamp, reqId, underComp))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyDeltaNeutralValidation", e)
-            End Try
+            _EventConsumers.OrderInfoConsumer?.NotifyDeltaNeutralValidation(New DeltaNeutralValidationEventArgs(timestamp, reqId, underComp))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyDeltaNeutralValidation", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

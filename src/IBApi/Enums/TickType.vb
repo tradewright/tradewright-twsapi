@@ -34,12 +34,12 @@ Public Enum TickType
     High
     Low
     Volume
-    Open
     Close
     BidOption
     AskOption
     LastOption
     ModelOption
+    Open
     Low13Week
     High13Week
     Low26Week
@@ -105,11 +105,14 @@ Public Enum TickType
     RTTrdVolume
     CreditmanMarkPrice
     CreditmanSlowMarkPrice
-    DelayedBidOptComp
-    DelayedAskOptComp
-    DelayedLastOptComp
-    DelayedModelOptComp
+    DelayedBidOption
+    DelayedAskOption
+    DelayedLastOption
+    DelayedModelOption
     LastExchange
     LastRegulatoryTime
+    FuturesOpenInterest
+    AverageOptionVolume
+    DelayedLastTimestamp
 End Enum
 

@@ -50,4 +50,14 @@ Friend Class ApiEventConsumers
     Friend Property PerformanceDataConsumer As IPerformanceDataConsumer
 
     Friend Property ScannerDataConsumer As IScannerDataConsumer
+
+    Friend Property SocketDataConsumer() As ISocketDataConsumer
+
+    Friend NotifyOpenOrderAction As Action(Of OpenOrderEventArgs)
+
+    Friend Sub NotifyOpenOrder(e As OpenOrderEventArgs)
+        NotifyOpenOrderAction?(e)
+        OrderInfoConsumer?.NotifyOpenOrder(e)
+    End Sub
+
 End Class

@@ -34,7 +34,7 @@ Friend Class RequestAutoOpenOrdersGenerator
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestAutoOpenOrders)
+            Return New ApiMethodDelegate(AddressOf requestAutoOpenOrders)
         End Get
     End Property
 
@@ -44,9 +44,9 @@ Friend Class RequestAutoOpenOrdersGenerator
         End Get
     End Property
 
-    Private Sub RequestAutoOpenOrders(autoBind As Boolean)
-        Const ProcName As String = NameOf(RequestAutoOpenOrders)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+    Private Sub requestAutoOpenOrders(autoBind As Boolean)
+        Const ProcName As String = NameOf(requestAutoOpenOrders)
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1
 
@@ -54,7 +54,7 @@ Friend Class RequestAutoOpenOrdersGenerator
         StartMessage(lWriter, ApiSocketOutMsgType.RequestAutoOpenOrders)
         lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(autoBind, "Autobind")
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

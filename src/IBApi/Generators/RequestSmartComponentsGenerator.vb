@@ -47,7 +47,7 @@ Friend Class RequestSmartComponentsGenerator
     Private Sub RequestSmartComponents(requestId As Integer, bboExchange As String)
         Const ProcName As String = NameOf(RequestSmartComponents)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_MKT_DEPTH_EXCHANGES Then Throw New InvalidOperationException("Smart components requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -56,7 +56,7 @@ Friend Class RequestSmartComponentsGenerator
         lWriter.AddElement(requestId, "RequestId")
         lWriter.AddElement(bboExchange, "BBO Exchange")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

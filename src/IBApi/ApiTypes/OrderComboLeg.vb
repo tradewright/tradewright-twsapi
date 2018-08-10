@@ -57,7 +57,7 @@ Public Class OrderComboLeg
     ' Member variables
     '@================================================================================
 
-    Public Property Price As Double ' price per leg
+    Public Property Price As Double? ' price per leg
 
     '@================================================================================
     ' Class Event Handlers

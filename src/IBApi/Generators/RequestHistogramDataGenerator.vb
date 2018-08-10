@@ -47,7 +47,7 @@ Friend Class RequestHistogramDataGenerator
     Private Sub requestHistogramData(requestId As Integer, contract As Contract, useRTH As Boolean, period As String)
         Const ProcName As String = NameOf(requestHistogramData)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HISTOGRAM_DATA Then Throw New InvalidOperationException("Histogram data requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -60,7 +60,7 @@ Friend Class RequestHistogramDataGenerator
         lWriter.AddElement(useRTH, "Use RTH")
         lWriter.AddElement(period, "Period")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

@@ -28,13 +28,13 @@ Friend Class RequestNewsArticleGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(requestId As Integer, providerCode As String, articleId As String)
+    Private Delegate Sub ApiMethodDelegate(requestId As Integer, providerCode As String, articleId As String, options As List(Of TagValue))
 
     Private Const ModuleName As String = NameOf(RequestNewsArticleGenerator)
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestNewsArticle)
+            Return New ApiMethodDelegate(AddressOf requestNewsArticle)
         End Get
     End Property
 
@@ -44,10 +44,10 @@ Friend Class RequestNewsArticleGenerator
         End Get
     End Property
 
-    Private Sub RequestNewsArticle(requestId As Integer, providerCode As String, articleId As String)
-        Const ProcName As String = NameOf(RequestNewsArticle)
+    Private Sub requestNewsArticle(requestId As Integer, providerCode As String, articleId As String, options As List(Of TagValue))
+        Const ProcName As String = NameOf(requestNewsArticle)
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_NEWS_ARTICLE Then Throw New InvalidOperationException("News article requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -57,7 +57,9 @@ Friend Class RequestNewsArticleGenerator
         lWriter.AddElement(providerCode, "Provider Code")
         lWriter.AddElement(articleId, "Article Id")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        If ServerVersion >= ApiServerVersion.NEWS_QUERY_ORIGINS Then lWriter.AddElement(options, "Options")
+
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

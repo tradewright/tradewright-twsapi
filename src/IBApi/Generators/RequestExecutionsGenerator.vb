@@ -46,7 +46,7 @@ Friend Class RequestExecutionsGenerator
 
     Private Sub requestExecutions(pRequestId As Integer, filter As ExecutionFilter)
         Const ProcName As String = NameOf(requestExecutions)
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3
 
@@ -70,13 +70,13 @@ Friend Class RequestExecutionsGenerator
                 lWriter.AddElement(.AccountCode, "Account code")
                 lWriter.AddElement(CStr(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd-hh:mm:ss}", "")), "Fill Time")
                 lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
-                lWriter.AddElement(SecurityTypes.ToInternalString(.SecType), "Sec type")
+                lWriter.AddElement(IBAPI.SecurityTypes.ToInternalString(.SecType), "Sec type")
                 lWriter.AddElement(.Exchange, "Exchange")
-                lWriter.AddElement(OrderActions.ToInternalString(.Action), "Action")
+                lWriter.AddElement(IBAPI.OrderActions.ToInternalString(.Action), "Action")
             End With
         End If
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

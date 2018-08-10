@@ -24,8 +24,6 @@
 
 #End Region
 
-Imports System.Threading.Tasks
-
 Friend NotInheritable Class OpenOrderEndParser
     Inherits ParserBase
     Implements IParser

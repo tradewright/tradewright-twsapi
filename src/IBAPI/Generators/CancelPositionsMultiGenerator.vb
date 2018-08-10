@@ -48,7 +48,7 @@ Friend Class CancelPositionsMultiGenerator
         Const ProcName As String = NameOf(cancelPositionsMulti)
         Const Version As Integer = 1
 
-        If mConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.MODELS_SUPPORT Then Throw New InvalidOperationException("Positions multi cancellation not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -57,7 +57,7 @@ Friend Class CancelPositionsMultiGenerator
 
         lWriter.AddElement(requestId, "Request Id")
 
-        SendMessage(lWriter, ModuleName, ProcName)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

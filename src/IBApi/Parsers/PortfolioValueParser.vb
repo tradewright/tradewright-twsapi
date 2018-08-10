@@ -38,10 +38,10 @@ Friend NotInheritable Class PortfolioValueParser
         If pVersion >= 6 Then lContract.ConId = Await _Reader.GetIntAsync("Contract id")
 
         lContract.Symbol = Await _Reader.GetStringAsync("Symbol")
-        lContract.SecType = SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
+        lContract.SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
         lContract.Expiry = Await _Reader.GetStringAsync("Expiry")
         lContract.Strike = Await _Reader.GetDoubleAsync("Strike")
-        lContract.OptRight = OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
+        lContract.OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
 
         If pVersion >= 7 Then
             lContract.Multiplier = Await _Reader.GetIntAsync("Multiplier")
