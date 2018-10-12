@@ -232,8 +232,8 @@
     <Reference Include="TradeWright.DataStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\TradeWright.DataStorage.1.0.0\lib\netstandard1.3\TradeWright.DataStorage.dll</HintPath>
     </Reference>
-    <Reference Include="TradeWright.IBAPI973, Version=9.73.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\TradeWright.IBAPI.9.73.7\lib\netstandard2.0\TradeWright.IBAPI973.dll</HintPath>
+    <Reference Include="TradeWright.IBAPI973, Version=9.73.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TradeWright.IBAPI.9.73.6\lib\netstandard2.0\TradeWright.IBAPI973.dll</HintPath>
     </Reference>
     <Reference Include="TradeWright.Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\TradeWright.Logging.1.0.0\lib\netstandard2.0\TradeWright.Logging.dll</HintPath>
