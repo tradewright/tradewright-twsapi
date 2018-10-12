@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -51,13 +51,13 @@ Public Class ExtendedEnum(Of TClass As Class, TEnum As {Structure, IConvertible,
 
     Public ReadOnly Property ExternalNames As String()
         Get
-            Return (From t In mNames Where t.Type = EnumNameType.External Select t.Name).ToArray()
+            Return (From t In mNames Where t.Type = EnumNameType.External Or t.Type = EnumNameType.Both Select t.Name).ToArray()
         End Get
     End Property
 
     Public ReadOnly Property InternalNames As String()
         Get
-            Return (From t In mNames Where t.Type = EnumNameType.Internal Select t.Name).ToArray()
+            Return (From t In mNames Where t.Type = EnumNameType.Internal Or t.Type = EnumNameType.Both Select t.Name).ToArray()
         End Get
     End Property
 

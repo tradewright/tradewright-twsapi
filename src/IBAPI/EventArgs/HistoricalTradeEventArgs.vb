@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,33 @@
 
 #End Region
 
-Public Class HistoricalDataEventArgs
+Public Class HistoricalTradeEventArgs
     Inherits AbstractEventArgsWithTimestamp
-    Public Property Bar As Bar
 
-    Public Property RequestId As Integer
+    Public ReadOnly Property RequestId As Integer
+    Public ReadOnly Property Time As Date
+    Public ReadOnly Property Price As Double
+    Public ReadOnly Property Size As Long
+    Public ReadOnly Property Exchange As String
+    Public ReadOnly Property SpecialConditions As String
+    Public ReadOnly Property Attributes As TickAttributes
 
-    Public Sub New(timestamp As DateTime, reqId As Integer, bar As TradeWright.IBAPI.Bar)
+    Public Sub New(requestId As Integer,
+                   time As Date,
+                   price As Double,
+                   size As Long,
+                   exchange As String,
+                   specialConditions As String,
+                   attributes As TickAttributes)
         MyBase.New()
-        Me._Timestamp = timestamp
-        Me.RequestId = reqId
-        Me.Bar = bar
+        Me._Timestamp = Timestamp
+        Me.RequestId = requestId
+        Me.Time = time
+        Me.Price = price
+        Me.Size = size
+        Me.Exchange = exchange
+        Me.SpecialConditions = specialConditions
+        Me.Attributes = attributes
     End Sub
+
 End Class

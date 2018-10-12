@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ Friend NotInheritable Class MarketDepthParser
 
        Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim id = Await _Reader.GetIntAsync("Id")
-        Dim lPosition = Await _Reader.GetIntAsync("POSITION")
+        Dim lPosition = Await _Reader.GetIntAsync("Position")
         Dim lOperation = DirectCast(Await _Reader.GetIntAsync("Operation"), DOMOperation)
         Dim lSide = DirectCast(Await _Reader.GetIntAsync("Side"), DOMSide)
         Dim lPrice = Await _Reader.GetDoubleAsync("Price")

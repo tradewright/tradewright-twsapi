@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -26,28 +26,28 @@
 
 Imports System.Collections.Generic
 
-Friend Class RequestHistoricalDataGenerator
+Friend Class RequestHistoricalBarsGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(pRequestId As Integer, pRequest As HistoricalDataRequest, useRTH As Boolean, keepUpToDate As Boolean, chartOptions As List(Of TagValue))
+    Private Delegate Sub ApiMethodDelegate(pRequestId As Integer, pRequest As HistoricalBarsRequest, useRTH As Boolean, keepUpToDate As Boolean, chartOptions As List(Of TagValue))
 
-    Private Const ModuleName As String = NameOf(RequestHistoricalDataGenerator)
+    Private Const ModuleName As String = NameOf(RequestHistoricalBarsGenerator)
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf requestHistoricalData)
+            Return New ApiMethodDelegate(AddressOf requestHistoricalBars)
         End Get
     End Property
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketOutMsgType
         Get
-            Return ApiSocketOutMsgType.RequestHistoricalData
+            Return ApiSocketOutMsgType.RequestHistoricalBars
         End Get
     End Property
 
-    Private Sub requestHistoricalData(pRequestId As Integer, pRequest As HistoricalDataRequest, useRTH As Boolean, keepUpToDate As Boolean, options As List(Of TagValue))
-        Const ProcName As String = NameOf(requestHistoricalData)
+    Private Sub requestHistoricalBars(pRequestId As Integer, pRequest As HistoricalBarsRequest, useRTH As Boolean, keepUpToDate As Boolean, options As List(Of TagValue))
+        Const ProcName As String = NameOf(requestHistoricalBars)
         Const VERSION As Integer = 6
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
@@ -55,14 +55,17 @@ Friend Class RequestHistoricalDataGenerator
         IBAPI.EventLogger.Log("Requesting historical data for: {UCase(pRequest.Contract.LocalSymbol)}; id={lTwsId}; barsize={pRequest.BarSizeSetting}; endTime={pRequest.EndDateTime}; duration={pRequest.Duration}", ModuleName, ProcName)
 
         Dim lWriter = CreateOutputMessageGenerator()
-        StartMessage(lWriter, ApiSocketOutMsgType.RequestHistoricalData)
+        StartMessage(lWriter, ApiSocketOutMsgType.RequestHistoricalBars)
         If ServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then lWriter.AddElement(VERSION, "Version")
         lWriter.AddElement(IdManager.GetTwsId(pRequestId, IdType.HistoricalData), "Request id")
         lWriter.AddElement(pRequest.Contract, "Contract")
 
         lWriter.AddElement(If(IBAPI.IsContractExpirable(pRequest.Contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
 
-        lWriter.AddElement(pRequest.EndDateTime.ToString("yyyyMMdd HH:mm:ss") & If(String.IsNullOrEmpty(pRequest.TimeZone), "", " " & pRequest.TimeZone), "End date")
+        lWriter.AddElement(If(pRequest.EndDateTime.HasValue,
+                              pRequest.EndDateTime.Value.ToString("yyyyMMdd HH:mm:ss") & If(String.IsNullOrEmpty(pRequest.TimeZone), "", " " & pRequest.TimeZone), ""),
+                              "End date")
+
         lWriter.AddElement(pRequest.BarSizeSetting, "Bar Size")
 
         lWriter.AddElement(pRequest.Duration, "Duration")

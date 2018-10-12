@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -32,18 +32,18 @@ Friend NotInheritable Class FundamentalDataParser
 
     Private Const ModuleName As String = NameOf(FundamentalDataParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = Await _Reader.GetIntAsync("ReqID")
         Dim lData = Await _Reader.GetStringAsync("Data")
 
-        LogSocketInputMessage(ModuleName,"ParseAsync")
+        LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.FundamentalDataConsumer?.NotifyFundamentalData(New FundamentalDataEventArgs(timestamp, lReqId, lData))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyFundamentalData", e)
-            End Try
+            _EventConsumers.FundamentalDataConsumer?.NotifyFundamentalData(New FundamentalDataEventArgs(timestamp, lReqId, lData))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyFundamentalData", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -36,13 +36,14 @@ Friend NotInheritable Class PnLSingleParser
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim position = Await _Reader.GetIntAsync("Position")
         Dim pnl = Await _Reader.GetDoubleAsync("PnL")
-        Dim unrealizedPnL = Await _Reader.GetDoubleAsync("Unrealized PnL")
+        Dim unrealizedPnL? = If(ServerVersion >= ApiServerVersion.UNREALIZED_PNL, Await _Reader.GetDoubleAsync("Unrealized PnL"), Nothing)
+        Dim realizedPnL? = If(ServerVersion >= ApiServerVersion.REALIZED_PNL, Await _Reader.GetDoubleAsync("Realized PnL"), Nothing)
         Dim value = Await _Reader.GetDoubleAsync("Value")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-            _EventConsumers.AccountDataConsumer?.NotifyPnLSingle(New PnLSingleEventArgs(timestamp, requestId, position, pnl, unrealizedPnL, value))
+            _EventConsumers.AccountDataConsumer?.NotifyPnLSingle(New PnLSingleEventArgs(timestamp, requestId, position, pnl, unrealizedPnL, realizedPnL, value))
             Return True
             Catch e As Exception
             Throw New ApiApplicationException("NotifyPnLSingle", e)

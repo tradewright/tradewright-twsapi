@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -26,13 +26,13 @@
 
 Imports System.Threading.Tasks
 
-Friend NotInheritable Class HistoricalDataParser
+Friend NotInheritable Class HistoricalBarsParser
     Inherits ParserBase
     Implements IParser
 
-    Private Const ModuleName As String = NameOf(HistoricalDataParser)
+    Private Const ModuleName As String = NameOf(HistoricalBarsParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim reqId = Await _Reader.GetIntAsync("Request id")
         Dim requestId = IdManager.GetCallerId(reqId, IdType.HistoricalData)
 
@@ -46,7 +46,7 @@ Friend NotInheritable Class HistoricalDataParser
         Dim barCount = Await _Reader.GetIntAsync("Item count")
         Debug.Print("Bars retrieved: " & barCount)
 
-        _EventConsumers.HistDataConsumer?.StartHistoricalData(New HistoricalDataRequestEventArgs(timestamp, requestId, startDate, endDate, barCount))
+        _EventConsumers.HistoricalDataConsumer?.StartHistoricalBars(New HistoricalBarsRequestEventArgs(timestamp, requestId, startDate, endDate, barCount))
 
         For i = 0 To barCount - 1
             Dim bar As New Bar With {
@@ -61,23 +61,24 @@ Friend NotInheritable Class HistoricalDataParser
             If ServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then Await _Reader.GetBooleanAsync("Has gaps")
             If pVersion >= 3 Then bar.TickVolume = Await _Reader.GetIntAsync("Tick volume")
 
-            _EventConsumers.HistDataConsumer?.NotifyHistoricalData(New HistoricalDataEventArgs(timestamp, requestId, bar))
+            _EventConsumers.HistoricalDataConsumer?.NotifyHistoricalBar(New HistoricalBarEventArgs(timestamp, requestId, bar))
 
         Next
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-            _EventConsumers.HistDataConsumer?.EndHistoricalData(New HistoricalDataRequestEventArgs(timestamp, requestId, startDate, endDate, barCount))
+            _EventConsumers.HistoricalDataConsumer?.EndHistoricalBars(New HistoricalBarsRequestEventArgs(timestamp, requestId, startDate, endDate, barCount))
             Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("EndHistoricalData", e)
-            End Try
+        Catch e As Exception
+            Throw New ApiApplicationException("EndHistoricalData", e)
+        End Try
     End Function
+
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
         Get
-            Return ApiSocketInMsgType.HistoricalData
+            Return ApiSocketInMsgType.HistoricalBar
         End Get
     End Property
 

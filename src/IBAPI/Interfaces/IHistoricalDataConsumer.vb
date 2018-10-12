@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -75,19 +75,31 @@ Public Interface IHistoricalDataConsumer
     ' Methods
     '@================================================================================
 
-    Sub EndHistoricalData(e As HistoricalDataRequestEventArgs)
+    Sub EndHistoricalBidAsks(e As RequestEndEventArgs)
 
-    Sub NotifyHistoricalDataError(e As RequestErrorEventArgs)
+    Sub EndHistoricalMidpoints(e As RequestEndEventArgs)
+
+    Sub EndHistoricalTrades(e As RequestEndEventArgs)
+
+    Sub EndHistoricalBars(e As HistoricalBarsRequestEventArgs)
+
+    Sub NotifyHistoricalBarError(e As RequestErrorEventArgs)
 
     Sub NotifyHeadTimestamp(e As HeadTimestampEventArgs)
 
     Sub NotifyHistogramData(e As HistogramDataEventArgs)
 
-    Sub NotifyHistoricalData(e As HistoricalDataEventArgs)
+    Sub NotifyHistoricalBar(e As HistoricalBarEventArgs)
 
-    Sub StartHistoricalData(e As HistoricalDataRequestEventArgs)
+    Sub NotifyHistoricalBidAsk(e As HistoricalBidAskEventArgs)
 
-    Sub UpdateHistoricalData(e As HistoricalDataEventArgs)
+    Sub NotifyHistoricalMidpoint(e As HistoricalMidpointEventArgs)
+
+    Sub NotifyHistoricalTrade(e As HistoricalTradeEventArgs)
+
+    Sub StartHistoricalBars(e As HistoricalBarsRequestEventArgs)
+
+    Sub UpdateHistoricalBar(e As HistoricalBarEventArgs)
 
     '@================================================================================
     ' Helper Functions

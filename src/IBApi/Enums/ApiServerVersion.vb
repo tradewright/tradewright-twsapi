@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -68,8 +68,9 @@ Friend Enum ApiServerVersion
     TICK_BY_TICK_IGNORE_SIZE = 140
     AUTO_PRICE_FOR_HEDGE = 141
     WHAT_IF_EXT_FIELDS = 142
-    SCANNER_GENERIC_OPTS = 143
-    API_BIND_ORDER = 144
-    Max = API_BIND_ORDER
+
+    ' Max for API 973.06
+
+    Max = WHAT_IF_EXT_FIELDS
 End Enum
 

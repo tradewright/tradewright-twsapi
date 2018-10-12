@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,27 @@
 
 #End Region
 
-Public Class HistoricalDataRequestEventArgs
+Public Class TickByTickBidAskEventArgs
     Inherits AbstractEventArgsWithTimestamp
-    Public Property EndDate As Date
 
-    Public Property NumberOfBars As Integer
+    Public ReadOnly Property RequestId As Integer
+    Public ReadOnly Property Time As Date
+    Public ReadOnly Property BidPrice As Double
+    Public ReadOnly Property AskPrice As Double
+    Public ReadOnly Property BidSize As Integer
+    Public ReadOnly Property AskSize As Integer
+    Public ReadOnly Property Attributes As TickAttributes
 
-    Public Property RequestId As Integer
-
-    Public Property StartDate As Date
-
-    Public Sub New(timestamp As DateTime, requestId As Integer, startDate As Date, endDate As Date, numberOfBars As Integer)
+    Public Sub New(requestId As Integer, time As Date, bidPrice As Double, askPrice As Double, bidSize As Integer, askSize As Integer, attributes As TickAttributes)
         MyBase.New()
-        Me._Timestamp = timestamp
+        Me._Timestamp = Timestamp
         Me.RequestId = requestId
-        Me.StartDate = startDate
-        Me.EndDate = endDate
-        Me.NumberOfBars = numberOfBars
+        Me.Time = time
+        Me.BidPrice = bidPrice
+        Me.AskPrice = askPrice
+        Me.BidSize = bidSize
+        Me.AskSize = askSize
+        Me.Attributes = attributes
     End Sub
+
 End Class

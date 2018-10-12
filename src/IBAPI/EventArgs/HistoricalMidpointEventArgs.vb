@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,21 @@
 
 #End Region
 
-Public Class HistoricalDataRequest
-    Public Property Contract As Contract
-    Public Property EndDateTime As DateTime
-    Public Property TimeZone As String
-    Public Property BarSizeSetting As String
-    Public Property Duration As String
-    Public Property WhatToShow As String = "TRADES"
-End Class
+Public Class HistoricalMidpointEventArgs
+    Inherits AbstractEventArgsWithTimestamp
 
+    Public ReadOnly Property RequestId As Integer
+    Public ReadOnly Property Time As Date
+    Public ReadOnly Property Price As Double
+    Public ReadOnly Property Size As Long
+
+
+    Public Sub New(requestId As Integer, time As Date, price As Double, size As Long)
+        MyBase.New()
+        Me._Timestamp = Timestamp
+        Me.RequestId = requestId
+        Me.Time = time
+        Me.Price = price
+        Me.Size = size
+    End Sub
+End Class

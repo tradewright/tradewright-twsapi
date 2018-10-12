@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -35,12 +35,13 @@ Friend NotInheritable Class PnLParser
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim pnl = Await _Reader.GetDoubleAsync("Daily PnL")
-        Dim unrealizedPnL = Await _Reader.GetDoubleAsync("Unrealized PnL")
+        Dim unrealizedPnL? = If(ServerVersion >= ApiServerVersion.UNREALIZED_PNL, Await _Reader.GetDoubleAsync("Unrealized PnL"), Nothing)
+        Dim realizedPnL? = If(ServerVersion >= ApiServerVersion.REALIZED_PNL, Await _Reader.GetDoubleAsync("Realized PnL"), Nothing)
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-            _EventConsumers.AccountDataConsumer?.NotifyPnL(New PnLEventArgs(timestamp, requestId, pnl, unrealizedPnL))
+            _EventConsumers.AccountDataConsumer?.NotifyPnL(New PnLEventArgs(timestamp, requestId, pnl, unrealizedPnL, realizedPnL))
             Return True
             Catch e As Exception
             Throw New ApiApplicationException("NotifyPnl", e)

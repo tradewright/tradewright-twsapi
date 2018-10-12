@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -76,7 +76,7 @@ Public Class IBAPI
             ("NewBulletin", ApiSocketInMsgType.NewsBulletins, EnumNameType.Both),
             ("ManagedAccounts", ApiSocketInMsgType.ManagedAccounts, EnumNameType.Both),
             ("FinancialAdvisorData", ApiSocketInMsgType.FinanialAdvisorData, EnumNameType.Both),
-            ("HistoricalData", ApiSocketInMsgType.HistoricalData, EnumNameType.Both),
+            ("HistoricalBar", ApiSocketInMsgType.HistoricalBar, EnumNameType.Both),
             ("BondContractData", ApiSocketInMsgType.BondContractData, EnumNameType.Both),
             ("ScannerParameters", ApiSocketInMsgType.ScannerParameters, EnumNameType.Both),
             ("ScannerData", ApiSocketInMsgType.ScannerData, EnumNameType.Both),
@@ -130,11 +130,10 @@ Public Class IBAPI
             ("MarketRule", ApiSocketInMsgType.MarketRule, EnumNameType.Both),
             ("PnL", ApiSocketInMsgType.PnL, EnumNameType.Both),
             ("PnLSingle", ApiSocketInMsgType.PnLSingle, EnumNameType.Both),
-            ("HistoricalTick", ApiSocketInMsgType.HistoricalTick, EnumNameType.Both),
+            ("HistoricalTickMidpoint", ApiSocketInMsgType.HistoricalTickMidpoint, EnumNameType.Both),
             ("HistoricalTickBidAsk", ApiSocketInMsgType.HistoricalTickBidAsk, EnumNameType.Both),
             ("HistoricalTickLast", ApiSocketInMsgType.HistoricalTickLast, EnumNameType.Both),
-            ("TickByTick", ApiSocketInMsgType.TickByTick, EnumNameType.Both),
-            ("OrderBound", ApiSocketInMsgType.OrderBound, EnumNameType.Both)
+            ("TickByTick", ApiSocketInMsgType.TickByTick, EnumNameType.Both)
         })
 
     Friend Shared ApiSocketOutMsgTypes As New ExtendedEnum(Of System.Enum, ApiSocketOutMsgType)(
@@ -158,7 +157,7 @@ Public Class IBAPI
             ("REQ_MANAGED_ACCTS", ApiSocketOutMsgType.RequestManagedAccounts, EnumNameType.Both),
             ("REQ_FA", ApiSocketOutMsgType.RequestFinancialAdvisorData, EnumNameType.Both),
             ("REPLACE_FA", ApiSocketOutMsgType.ReplaceFinancialAdvisorData, EnumNameType.Both),
-            ("REQ_HISTORICAL_DATA", ApiSocketOutMsgType.RequestHistoricalData, EnumNameType.Both),
+            ("REQ_HISTORICAL_BARS", ApiSocketOutMsgType.RequestHistoricalBars, EnumNameType.Both),
             ("EXERCISE_OPTIONS", ApiSocketOutMsgType.ExerciseOptions, EnumNameType.Both),
             ("REQ_SCANNER_SUBSCRIPTION", ApiSocketOutMsgType.RequestScannerSubscription, EnumNameType.Both),
             ("CANCEL_SCANNER_SUBSCRIPTION", ApiSocketOutMsgType.CancelScannerSubscription, EnumNameType.Both),
@@ -210,9 +209,9 @@ Public Class IBAPI
             ("CancelPnL", ApiSocketOutMsgType.CancelPnL, EnumNameType.Both),
             ("RequestPnLSingle", ApiSocketOutMsgType.RequestPnLSingle, EnumNameType.Both),
             ("CancelPnLSingle", ApiSocketOutMsgType.CancelPnLSingle, EnumNameType.Both),
-            ("RequestHistoricalTickData ", ApiSocketOutMsgType.RequestHistoricalTickData, EnumNameType.Both),
-            ("RequestTickByTickData ", ApiSocketOutMsgType.RequestTickByTickData, EnumNameType.Both),
-            ("CancelTickByTickData ", ApiSocketOutMsgType.CancelTickByTickData, EnumNameType.Both)
+            ("RequestHistoricalTickData", ApiSocketOutMsgType.RequestHistoricalTickData, EnumNameType.Both),
+            ("RequestTickByTickData", ApiSocketOutMsgType.RequestTickByTickData, EnumNameType.Both),
+            ("CancelTickByTickData", ApiSocketOutMsgType.CancelTickByTickData, EnumNameType.Both)
             })
 
     Public Shared HedgeTypes As New ExtendedEnum(Of System.Enum, HedgeType)({
@@ -359,10 +358,22 @@ Public Class IBAPI
             ("THIRD PARTY", ShortSaleSlotCode.ThirdParty, EnumNameType.Alias)
         })
 
+    Public Shared TickByTickDataTypes As New ExtendedEnum(Of System.Enum, TickByTickDataType)(
+        {
+        ("", TickByTickDataType.None, EnumNameType.Both),
+        ("Last", TickByTickDataType.Last, EnumNameType.Both),
+        ("All Last", TickByTickDataType.AllLast, EnumNameType.External),
+        ("AllLast", TickByTickDataType.AllLast, EnumNameType.Internal),
+        ("Bid/Ask", TickByTickDataType.BidAsk, EnumNameType.External),
+        ("BidAsk", TickByTickDataType.BidAsk, EnumNameType.Internal),
+        ("MidPoint", TickByTickDataType.MidPoint, EnumNameType.Both),
+        ("Midpoint", TickByTickDataType.MidPoint, EnumNameType.Alias)
+        })
+
     Public Shared TriggerMethods As New ExtendedEnum(Of System.Enum, TriggerMethod)(
         {
         ("Default", TriggerMethod.Default, EnumNameType.Both),
-        ("Double Bid/Ask", TriggerMethod.BidAsk, EnumNameType.Both),
+        ("Double Bid/Ask", TriggerMethod.DoubleBidAsk, EnumNameType.Both),
         ("Last", TriggerMethod.Last, EnumNameType.Both),
         ("Double Last", TriggerMethod.DoubleLast, EnumNameType.Both),
         ("Bid/Ask", TriggerMethod.BidAsk, EnumNameType.Both),
@@ -482,6 +493,7 @@ Public Class IBAPI
                                                     End If
                                                 End Sub
 
+        generateSocketDataEvents = If(SocketLogger?.IsLoggable(ILogger.LogLevel.Detail), generateSocketDataEvents)
         mConnectionManager = New ApiConnectionManager(mServer, mPort, Me.ClientID, mUseV100Plus, mRegistry, mEventConsumers, generateSocketDataEvents)
         mInMessageHandler = New InputMessageHandler(mEventConsumers, mRegistry, generateSocketDataEvents)
     End Sub
@@ -625,10 +637,10 @@ Public Class IBAPI
 
     Public Property HistDataConsumer() As IHistoricalDataConsumer
         Get
-            Return mEventConsumers.HistDataConsumer
+            Return mEventConsumers.HistoricalDataConsumer
         End Get
         Set(Value As IHistoricalDataConsumer)
-            mEventConsumers.HistDataConsumer = Value
+            mEventConsumers.HistoricalDataConsumer = Value
         End Set
     End Property
 
@@ -948,6 +960,7 @@ Public Class IBAPI
     End Sub
 
     Public Sub Disconnect(pReason As String)
+        mCancellationSource.Cancel()
         mConnectionManager.Disconnect(pReason)
 
         mStatsRecorder?.StopRecording()
@@ -1041,8 +1054,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistogramData, {requestId, contract, useRTH, period})
     End Sub
 
-    Public Sub RequestHistoricalData(pRequestId As Integer, pRequest As HistoricalDataRequest, Optional useRTH As Boolean = False, Optional keepUpToDate As Boolean = False, Optional options As List(Of TagValue) = Nothing)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalData, {pRequestId, pRequest, useRTH, keepUpToDate, options})
+    Public Sub RequestHistoricalBars(pRequestId As Integer, pRequest As HistoricalBarsRequest, Optional useRTH As Boolean = False, Optional keepUpToDate As Boolean = False, Optional options As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalBars, {pRequestId, pRequest, useRTH, keepUpToDate, options})
     End Sub
 
     Public Sub RequestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, Optional options As List(Of TagValue) = Nothing)
@@ -1053,11 +1066,11 @@ Public Class IBAPI
     ''' Requests historical time-and-sales data for an instrument
     ''' </summary>
     ''' <param name="requestId">Identifies this request</param>
-    ''' <param name="request">A <c>HistoricalTickDataRequest</c> object that specifies the information required</param>
+    ''' <param name="request">A <c>HistoricalTicksRequest</c> object that specifies the information required</param>
     ''' <param name="useRTH">If <c>True</c> only data within regular trading hours is returned</param>
     ''' <param name="ignoreSize">A filter only used when the source price is Bid_Ask</param>
     ''' <param name="options">Reserved for internal use</param>
-    Public Sub RequestHistoricalTickData(requestId As Integer, request As HistoricalTickDataRequest, Optional useRTH As Boolean = False, Optional ignoreSize As Boolean = False, Optional options As List(Of TagValue) = Nothing)
+    Public Sub RequestHistoricalTickData(requestId As Integer, request As HistoricalTicksRequest, Optional useRTH As Boolean = False, Optional ignoreSize As Boolean = False, Optional options As List(Of TagValue) = Nothing)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalTickData, {requestId, request, useRTH, ignoreSize, options})
     End Sub
 
@@ -1129,8 +1142,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerParameters, Nothing)
     End Sub
 
-    Public Sub RequestScannerSubscription(pTickerId As Integer, pSubscription As ScannerSubscription, Optional options As List(Of TagValue) = Nothing, Optional filterOptions As List(Of TagValue) = Nothing)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerSubscription, {pTickerId, pSubscription, options, filterOptions})
+    Public Sub RequestScannerSubscription(pTickerId As Integer, pSubscription As ScannerSubscription, Optional options As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerSubscription, {pTickerId, pSubscription, options})
     End Sub
 
     Public Sub RequestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
@@ -1145,7 +1158,7 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestSoftDollarTiers, {requestId})
     End Sub
 
-    Public Sub RequestTickByTickData(requestId As Integer, contract As Contract, tickType As String, numberOfTicks As Integer, ignoreSize As Boolean)
+    Public Sub RequestTickByTickData(requestId As Integer, contract As Contract, tickType As TickByTickDataType, numberOfTicks As Integer, ignoreSize As Boolean)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestTickByTickData, {requestId, contract, tickType, numberOfTicks, ignoreSize})
     End Sub
 

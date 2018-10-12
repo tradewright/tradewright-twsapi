@@ -24,32 +24,29 @@
 
 #End Region
 
-Imports System.Threading.Tasks
+Public Class TickByTickAllLastEventArgs
+    Inherits AbstractEventArgsWithTimestamp
 
-Friend NotInheritable Class DisplayGroupListParser
-    Inherits ParserBase
-    Implements IParser
+    Public ReadOnly Property RequestId As Integer
+    Public ReadOnly Property DataType As TickByTickDataType
+    Public ReadOnly Property Time As Date
+    Public ReadOnly Property Price As Double
+    Public ReadOnly Property Size As Integer
+    Public ReadOnly Property Attributes As TickAttributes
+    Public ReadOnly Property Exchange As String
+    Public ReadOnly Property SpecialConditions As String
 
-    Private Const ModuleName As String = NameOf(DisplayGroupListParser)
-
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim requestId = Await _Reader.GetIntAsync("Request id")
-        Dim groups = Await _Reader.GetStringAsync("Groups")
-
-        LogSocketInputMessage(ModuleName, "ParseAsync")
-
-        Try
-            _EventConsumers.DisplayGroupConsumer?.NotifyDisplayGroupList(New DisplayGroupListEventArgs(timestamp, requestId, groups))
-            Return True
-        Catch e As Exception
-            Throw New ApiApplicationException("NotifyDisplayGroupList", e)
-        End Try
-    End Function
-
-    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
-        Get
-            Return ApiSocketInMsgType.DisplayGroupList
-        End Get
-    End Property
+    Public Sub New(reqId As Integer, tickType As TickByTickDataType, time As Date, price As Double, size As Integer, attributes As TickAttributes, exchange As String, specialConditions As String)
+        MyBase.New()
+        Me._Timestamp = Timestamp
+        Me.RequestId = reqId
+        Me.DataType = tickType
+        Me.Time = time
+        Me.Price = price
+        Me.Size = size
+        Me.Attributes = attributes
+        Me.Exchange = exchange
+        Me.SpecialConditions = specialConditions
+    End Sub
 
 End Class

@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -30,16 +30,18 @@ Public Class PnLSingleEventArgs
     Public Property PnL As Double
     Public Property Position As Integer
     Public Property RequestId As Integer
-    Public Property UnrealizedPnL As Double
+    Public Property UnrealizedPnL As Double?
+    Public Property RealizedPnL As Double?
     Public Property Value As Double
 
-    Public Sub New(timestamp As DateTime, requestId As Integer, position As Integer, pnl As Double, unrealizedPnL As Double, value As Double)
+    Public Sub New(timestamp As DateTime, requestId As Integer, position As Integer, pnl As Double, unrealizedPnL As Double?, realizedPnL As Double?, value As Double)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = requestId
         Me.Position = position
         Me.PnL = pnl
         Me.UnrealizedPnL = unrealizedPnL
+        Me.RealizedPnL = realizedPnL
         Me.Value = value
     End Sub
 End Class

@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -28,4 +28,19 @@ Public Class TickAttributes
     Public Property CanAutoExecute As Boolean
     Public Property PastLimit As Boolean
     Public Property PreOpen As Boolean
+    Public Property Unreported As Boolean
+    Public Property BidPastLow As Boolean
+    Public Property AskPastHigh As Boolean
+
+    Public Overrides Function ToString() As String
+        Dim s() = {If(CanAutoExecute, "Can Auto Execute", ""),
+            If(PastLimit, "Past Limit", ""),
+            If(PreOpen, "Pre-open", ""),
+            If(Unreported, "Unreported", ""),
+            If(BidPastLow, "Bid Past Low", ""),
+            If(AskPastHigh, "Ask Past High", "")
+        }
+        Return String.Join(Of String)(",", s.Where(Function(t) Not String.IsNullOrEmpty(t)))
+    End Function
+
 End Class

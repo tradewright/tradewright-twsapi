@@ -24,32 +24,33 @@
 
 #End Region
 
-Imports System.Threading.Tasks
+Public Class HistoricalBidAskEventArgs
+    Inherits AbstractEventArgsWithTimestamp
 
-Friend NotInheritable Class DisplayGroupListParser
-    Inherits ParserBase
-    Implements IParser
+    Public ReadOnly Property RequestId As Integer
+    Public ReadOnly Property Time As Date
+    Public ReadOnly Property BidPrice As Double
+    Public ReadOnly Property BidSize As Long
+    Public ReadOnly Property AskPrice As Double
+    Public ReadOnly Property AskSize As Long
+    Public ReadOnly Property Attributes As TickAttributes
 
-    Private Const ModuleName As String = NameOf(DisplayGroupListParser)
-
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim requestId = Await _Reader.GetIntAsync("Request id")
-        Dim groups = Await _Reader.GetStringAsync("Groups")
-
-        LogSocketInputMessage(ModuleName, "ParseAsync")
-
-        Try
-            _EventConsumers.DisplayGroupConsumer?.NotifyDisplayGroupList(New DisplayGroupListEventArgs(timestamp, requestId, groups))
-            Return True
-        Catch e As Exception
-            Throw New ApiApplicationException("NotifyDisplayGroupList", e)
-        End Try
-    End Function
-
-    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
-        Get
-            Return ApiSocketInMsgType.DisplayGroupList
-        End Get
-    End Property
+    Public Sub New(requestId As Integer,
+                   time As Date,
+                   bidPrice As Double,
+                   bidSize As Long,
+                   askPrice As Double,
+                   askSize As Long,
+                   attributes As TickAttributes)
+        MyBase.New()
+        Me._Timestamp = Timestamp
+        Me.RequestId = requestId
+        Me.Time = time
+        Me.BidPrice = bidPrice
+        Me.BidSize = bidSize
+        Me.AskPrice = askPrice
+        Me.AskSize = askSize
+        Me.Attributes = attributes
+    End Sub
 
 End Class

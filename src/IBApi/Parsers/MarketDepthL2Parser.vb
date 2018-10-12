@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -32,23 +32,23 @@ Friend NotInheritable Class MarketDepthL2Parser
 
     Private Const ModuleName As String = NameOf(MarketDepthL2Parser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim id = Await _Reader.GetIntAsync("Id")
-        Dim lPosition = Await _Reader.GetIntAsync("POSITION")
+        Dim lPosition = Await _Reader.GetIntAsync("Position")
         Dim lMarketMaker = Await _Reader.GetStringAsync("Marketmaker")
         Dim lOperation = DirectCast(Await _Reader.GetIntAsync("Operation"), DOMOperation)
         Dim lSide = DirectCast(Await _Reader.GetIntAsync("Side"), DOMSide)
         Dim lPrice = Await _Reader.GetDoubleAsync("Price")
         Dim lSize = Await _Reader.GetIntAsync("Size")
 
-        LogSocketInputMessage(ModuleName,"ParseAsync")
+        LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.MarketDepthConsumer?.NotifyMarketDepth(New MarketDepthUpdateEventArgs(timestamp, IdManager.GetCallerId(id, IdType.MarketDepth), lPosition, lOperation, lSide, lPrice, lSize, lMarketMaker))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyMarketDepth", e)
-            End Try
+            _EventConsumers.MarketDepthConsumer?.NotifyMarketDepth(New MarketDepthUpdateEventArgs(timestamp, IdManager.GetCallerId(id, IdType.MarketDepth), lPosition, lOperation, lSide, lPrice, lSize, lMarketMaker))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyMarketDepth", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType

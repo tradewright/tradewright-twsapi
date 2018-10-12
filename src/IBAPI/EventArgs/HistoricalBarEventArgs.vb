@@ -24,32 +24,16 @@
 
 #End Region
 
-Imports System.Threading.Tasks
+Public Class HistoricalBarEventArgs
+    Inherits AbstractEventArgsWithTimestamp
+    Public Property Bar As Bar
 
-Friend NotInheritable Class DisplayGroupListParser
-    Inherits ParserBase
-    Implements IParser
+    Public Property RequestId As Integer
 
-    Private Const ModuleName As String = NameOf(DisplayGroupListParser)
-
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim requestId = Await _Reader.GetIntAsync("Request id")
-        Dim groups = Await _Reader.GetStringAsync("Groups")
-
-        LogSocketInputMessage(ModuleName, "ParseAsync")
-
-        Try
-            _EventConsumers.DisplayGroupConsumer?.NotifyDisplayGroupList(New DisplayGroupListEventArgs(timestamp, requestId, groups))
-            Return True
-        Catch e As Exception
-            Throw New ApiApplicationException("NotifyDisplayGroupList", e)
-        End Try
-    End Function
-
-    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
-        Get
-            Return ApiSocketInMsgType.DisplayGroupList
-        End Get
-    End Property
-
+    Public Sub New(timestamp As DateTime, reqId As Integer, bar As TradeWright.IBAPI.Bar)
+        MyBase.New()
+        Me._Timestamp = timestamp
+        Me.RequestId = reqId
+        Me.Bar = bar
+    End Sub
 End Class

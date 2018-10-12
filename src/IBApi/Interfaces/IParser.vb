@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,11 @@ Imports System.Threading.Tasks
 Imports TradeWright.IBAPI.ApiException
 
 Friend Interface IParser
-    Sub Initialise(reader As MessageReader, idManager As IdManager, eventConsumers As ApiEventConsumers, getServerVersion As Func(Of Integer), logSocketInputMessage As Action(Of String, String, Boolean))
+    Sub Initialise(reader As MessageReader,
+                   idManager As IdManager,
+                   eventConsumers As ApiEventConsumers,
+                   getServerVersion As Func(Of Integer),
+                   logSocketInputMessage As Action(Of String, String, Boolean))
     Function ParseAsync(version As Integer, timestamp As Date) As Task(Of Boolean)
     Sub SetRegistry(registry As GeneratorAndParserRegistry)
 End Interface

@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -32,20 +32,21 @@ Friend NotInheritable Class TickGenericParser
 
     Private Const ModuleName As String = NameOf(TickGenericParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lTickerId = Await _Reader.GetIntAsync("tickerId")
         Dim lTickType = DirectCast(Await _Reader.GetIntAsync("tickType"), TickType)
         Dim lValue = Await _Reader.GetDoubleAsync("Value")
 
-        LogSocketInputMessage(ModuleName,"ParseAsync")
+        LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.MarketDataConsumer?.NotifyTickGeneric(New TickGenericEventArgs(timestamp, IdManager.GetCallerId(lTickerId, IdType.MarketData), lTickType, lValue))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("NotifyTickGeneric", e)
-            End Try
+            _EventConsumers.MarketDataConsumer?.NotifyTickGeneric(New TickGenericEventArgs(timestamp, IdManager.GetCallerId(lTickerId, IdType.MarketData), lTickType, lValue))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("NotifyTickGeneric", e)
+        End Try
     End Function
+
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
         Get

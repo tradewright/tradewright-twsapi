@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -206,10 +206,6 @@ Public Class QueueingCallbackHandler
         queueEvent(e, AddressOf mEv.NotifySecurityDefinitionOptionParameter)
     End Sub
 
-    Public Overrides Sub NotifySmartComponents(e As SmartComponentsEventArgs) Implements IContractDetailsConsumer.NotifySmartComponents
-        queueEvent(e, AddressOf mEv.NotifySmartComponents)
-    End Sub
-
     Public Overrides Sub NotifySymbolSamples(e As SymbolSamplesEventArgs) Implements IContractDetailsConsumer.NotifySymbolSamples
         queueEvent(e, AddressOf mEv.NotifySymbolSamples)
     End Sub
@@ -242,8 +238,20 @@ Public Class QueueingCallbackHandler
 
 #Region "IHistDataConsumer"
 
-    Public Overrides Sub EndHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalData
-        queueEvent(e, AddressOf mEv.EndHistoricalData)
+    Public Overrides Sub EndHistoricalBars(e As HistoricalBarsRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalBars
+        queueEvent(e, AddressOf mEv.EndHistoricalBars)
+    End Sub
+
+    Public Overrides Sub EndHistoricalBidAsks(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalBidAsks
+        queueEvent(e, AddressOf mEv.EndHistoricalBidAsks)
+    End Sub
+
+    Public Overrides Sub EndHistoricalMidpoints(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalMidpoints
+        queueEvent(e, AddressOf mEv.EndHistoricalMidpoints)
+    End Sub
+
+    Public Overrides Sub EndHistoricalTrades(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalTrades
+        queueEvent(e, AddressOf mEv.EndHistoricalTrades)
     End Sub
 
     Public Overrides Sub NotifyHeadTimestamp(e As HeadTimestampEventArgs) Implements IHistoricalDataConsumer.NotifyHeadTimestamp
@@ -254,20 +262,32 @@ Public Class QueueingCallbackHandler
         queueEvent(e, AddressOf mEv.NotifyHistogramData)
     End Sub
 
-    Public Overrides Sub NotifyHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalData
-        queueEvent(e, AddressOf mEv.NotifyHistoricalData)
+    Public Overrides Sub NotifyHistoricalBar(e As HistoricalBarEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBar
+        queueEvent(e, AddressOf mEv.NotifyHistoricalBar)
     End Sub
 
-    Public Overrides Sub NotifyHistoricalDataError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalDataError
-        queueEvent(e, AddressOf mEv.NotifyHistoricalDataError)
+    Public Overrides Sub NotifyHistoricalBarError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBarError
+        queueEvent(e, AddressOf mEv.NotifyHistoricalBarError)
     End Sub
 
-    Public Overrides Sub StartHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalData
-        queueEvent(e, AddressOf mEv.StartHistoricalData)
+    Public Overrides Sub NotifyHistoricalBidAsk(e As HistoricalBidAskEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBidAsk
+        queueEvent(e, AddressOf mEv.NotifyHistoricalBidAsk)
     End Sub
 
-    Public Overrides Sub UpdateHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalData
-        queueEvent(e, AddressOf mEv.UpdateHistoricalData)
+    Public Overrides Sub NotifyHistoricalMidpoint(e As HistoricalMidpointEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalMidpoint
+        queueEvent(e, AddressOf mEv.NotifyHistoricalMidpoint)
+    End Sub
+
+    Public Overrides Sub NotifyHistoricalTrade(e As HistoricalTradeEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalTrade
+        queueEvent(e, AddressOf mEv.NotifyHistoricalTrade)
+    End Sub
+
+    Public Overrides Sub StartHistoricalBars(e As HistoricalBarsRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalBars
+        queueEvent(e, AddressOf mEv.StartHistoricalBars)
+    End Sub
+
+    Public Overrides Sub UpdateHistoricalBar(e As HistoricalBarEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalBar
+        queueEvent(e, AddressOf mEv.UpdateHistoricalBar)
     End Sub
 
 #End Region
@@ -292,6 +312,22 @@ Public Class QueueingCallbackHandler
 
     Public Overrides Sub NotifyRerouteData(e As RerouteDataEventArgs) Implements IMarketDataConsumer.NotifyRerouteData
         queueEvent(e, AddressOf mEv.NotifyRerouteData)
+    End Sub
+
+    Public Overrides Sub NotifySmartComponents(e As SmartComponentsEventArgs) Implements IMarketDataConsumer.NotifySmartComponents
+        queueEvent(e, AddressOf mEv.NotifySmartComponents)
+    End Sub
+
+    Public Overrides Sub NotifyTickByTickAllLast(e As TickByTickAllLastEventArgs) Implements IMarketDataConsumer.NotifyTickByTickAllLast
+        queueEvent(e, AddressOf mEv.NotifyTickByTickAllLast)
+    End Sub
+
+    Public Overrides Sub NotifyTickByTickBidAsk(e As TickByTickBidAskEventArgs) Implements IMarketDataConsumer.NotifyTickByTickBidAsk
+        queueEvent(e, AddressOf mEv.NotifyTickByTickBidAsk)
+    End Sub
+
+    Public Overrides Sub NotifyTickByTickMidPoint(e As TickByTickMidPointEventArgs) Implements IMarketDataConsumer.NotifyTickByTickMidPoint
+        queueEvent(e, AddressOf mEv.NotifyTickByTickMidPoint)
     End Sub
 
     Public Overrides Sub NotifyTickEFP(e As TickEFPEventArgs) Implements IMarketDataConsumer.NotifyTickEFP

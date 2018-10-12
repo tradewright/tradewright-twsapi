@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,6 @@ Public MustInherit Class CallbackHandler
         IPerformanceDataConsumer,
         IScannerDataConsumer,
         ISocketDataConsumer
-
 #Region "IAccountDataConsumer"
 
     Public Overridable Sub EndAccountSummary(e As RequestEndEventArgs) Implements IAccountDataConsumer.EndAccountSummary
@@ -161,10 +160,6 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
-    Public Overridable Sub NotifySmartComponents(e As SmartComponentsEventArgs) Implements IContractDetailsConsumer.NotifySmartComponents
-        ' no action
-    End Sub
-
     Public Overridable Sub NotifySymbolSamples(e As SymbolSamplesEventArgs) Implements IContractDetailsConsumer.NotifySymbolSamples
         ' no action
     End Sub
@@ -225,9 +220,21 @@ Public MustInherit Class CallbackHandler
 
 #End Region
 
-#Region "IHistDataConsumer"
+#Region "IHistoricalDataConsumer"
 
-    Public Overridable Sub EndHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalData
+    Public Overridable Sub EndHistoricalBars(e As HistoricalBarsRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalBars
+        ' no action
+    End Sub
+
+    Public Overridable Sub EndHistoricalBidAsks(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalBidAsks
+        ' no action
+    End Sub
+
+    Public Overridable Sub EndHistoricalMidpoints(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalMidpoints
+        ' no action
+    End Sub
+
+    Public Overridable Sub EndHistoricalTrades(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalTrades
         ' no action
     End Sub
 
@@ -239,19 +246,31 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
-    Public Overridable Sub NotifyHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalData
+    Public Overridable Sub NotifyHistoricalBar(e As HistoricalBarEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBar
         ' no action
     End Sub
 
-    Public Overridable Sub NotifyHistoricalDataError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalDataError
+    Public Overridable Sub NotifyHistoricalBarError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBarError
         ' no action
     End Sub
 
-    Public Overridable Sub StartHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalData
+    Public Overridable Sub NotifyHistoricalBidAsk(e As HistoricalBidAskEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBidAsk
         ' no action
     End Sub
 
-    Public Overridable Sub UpdateHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalData
+    Public Overridable Sub NotifyHistoricalMidpoint(e As HistoricalMidpointEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalMidpoint
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifyHistoricalTrade(e As HistoricalTradeEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalTrade
+        ' no action
+    End Sub
+
+    Public Overridable Sub StartHistoricalBars(e As HistoricalBarsRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalBars
+        ' no action
+    End Sub
+
+    Public Overridable Sub UpdateHistoricalBar(e As HistoricalBarEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalBar
         ' no action
     End Sub
 
@@ -276,6 +295,22 @@ Public MustInherit Class CallbackHandler
     End Sub
 
     Public Overridable Sub NotifyRerouteData(e As RerouteDataEventArgs) Implements IMarketDataConsumer.NotifyRerouteData
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifySmartComponents(e As SmartComponentsEventArgs) Implements IMarketDataConsumer.NotifySmartComponents
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifyTickByTickAllLast(e As TickByTickAllLastEventArgs) Implements IMarketDataConsumer.NotifyTickByTickAllLast
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifyTickByTickBidAsk(e As TickByTickBidAskEventArgs) Implements IMarketDataConsumer.NotifyTickByTickBidAsk
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifyTickByTickMidPoint(e As TickByTickMidPointEventArgs) Implements IMarketDataConsumer.NotifyTickByTickMidPoint
         ' no action
     End Sub
 

@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -230,12 +230,12 @@ Public Class EventSource
     End Sub
 
     Public Overrides Sub NotifyIBServerConnectionStateChange(e As IBServerConnectionStateChangeEventArgs) Implements IConnectionStatusConsumer.NotifyIBServerConnectionStateChange
-        OnIBServerConnectionClosed(e)
+        IBServerConnectionStateChangedIBServerConnectionClosed(e)
     End Sub
 
-    Public Event IBServerConnectionClosed(sender As Object, e As IBServerConnectionStateChangeEventArgs)
-    Protected Overridable Sub OnIBServerConnectionClosed(e As IBServerConnectionStateChangeEventArgs)
-        RaiseEvent IBServerConnectionClosed(Me, e)
+    Public Event IBServerConnectionStateChanged(sender As Object, e As IBServerConnectionStateChangeEventArgs)
+    Protected Overridable Sub IBServerConnectionStateChangedIBServerConnectionClosed(e As IBServerConnectionStateChangeEventArgs)
+        RaiseEvent IBServerConnectionStateChanged(Me, e)
     End Sub
 
 #End Region
@@ -267,15 +267,6 @@ Public Class EventSource
     Public Event SecurityDefinitionOptionParameter(sender As Object, e As SecurityDefinitionOptionParameterEventArgs)
     Protected Overridable Sub OnSecurityDefinitionOptionParameter(e As SecurityDefinitionOptionParameterEventArgs)
         RaiseEvent SecurityDefinitionOptionParameter(Me, e)
-    End Sub
-
-    Public Overrides Sub NotifySmartComponents(e As SmartComponentsEventArgs) Implements IContractDetailsConsumer.NotifySmartComponents
-        OnSmartComponents(e)
-    End Sub
-
-    Public Event SmartComponents(sender As Object, e As SmartComponentsEventArgs)
-    Protected Overridable Sub OnSmartComponents(e As SmartComponentsEventArgs)
-        RaiseEvent SmartComponents(Me, e)
     End Sub
 
     Public Overrides Sub NotifySymbolSamples(e As SymbolSamplesEventArgs) Implements IContractDetailsConsumer.NotifySymbolSamples
@@ -383,7 +374,7 @@ Public Class EventSource
 
 #End Region
 
-#Region "IHistDataConsumer"
+#Region "IHistoricalDataConsumer"
 
     Public Overrides Sub NotifyHeadTimestamp(e As HeadTimestampEventArgs) Implements IHistoricalDataConsumer.NotifyHeadTimestamp
         OnHeadTimestamp(e)
@@ -403,44 +394,98 @@ Public Class EventSource
         RaiseEvent HistogramData(Me, e)
     End Sub
 
-    Public Overrides Sub EndHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalData
-        OnHistoricalDataEnd(e)
+    Public Overrides Sub EndHistoricalBars(e As HistoricalBarsRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalBars
+        OnHistoricalBarsEnd(e)
     End Sub
 
-    Public Event HistoricalDataEnd(sender As Object, e As HistoricalDataRequestEventArgs)
-    Protected Overridable Sub OnHistoricalDataEnd(e As HistoricalDataRequestEventArgs)
-        RaiseEvent HistoricalDataEnd(Me, e)
+    Public Event HistoricalBarsEnd(sender As Object, e As HistoricalBarsRequestEventArgs)
+    Protected Overridable Sub OnHistoricalBarsEnd(e As HistoricalBarsRequestEventArgs)
+        RaiseEvent HistoricalBarsEnd(Me, e)
     End Sub
 
-    Public Overrides Sub UpdateHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalData
-        OnHistoricalData(e)
+    Public Overrides Sub EndHistoricalBidAsks(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalBidAsks
+        OnHistoricalBidAsksEnd(e)
     End Sub
 
-    Public Overrides Sub NotifyHistoricalData(e As HistoricalDataEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalData
-        OnHistoricalData(e)
+    Public Event HistoricalBidAsksEnd(sender As Object, e As RequestEndEventArgs)
+    Protected Overridable Sub OnHistoricalBidAsksEnd(e As RequestEndEventArgs)
+        RaiseEvent HistoricalBidAsksEnd(Me, e)
     End Sub
 
-    Public Event HistoricalData(sender As Object, e As HistoricalDataEventArgs)
-    Protected Overridable Sub OnHistoricalData(e As HistoricalDataEventArgs)
-        RaiseEvent HistoricalData(Me, e)
+    Public Overrides Sub EndHistoricalMidpoints(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalMidpoints
+        OnHistoricalMidpointsEnd(e)
     End Sub
 
-    Public Overrides Sub NotifyHistoricalDataError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalDataError
-        OnHistoricalDataError(e)
+    Public Event HistoricalMidpointsEnd(sender As Object, e As RequestEndEventArgs)
+    Protected Overridable Sub OnHistoricalMidpointsEnd(e As RequestEndEventArgs)
+        RaiseEvent HistoricalMidpointsEnd(Me, e)
     End Sub
 
-    Public Event HistoricalDataError(sender As Object, e As RequestErrorEventArgs)
-    Protected Overridable Sub OnHistoricalDataError(e As RequestErrorEventArgs)
-        RaiseEvent HistoricalDataError(Me, e)
+    Public Overrides Sub EndHistoricalTrades(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalTrades
+        OnHistoricalTradesEnd(e)
     End Sub
 
-    Public Overrides Sub StartHistoricalData(e As HistoricalDataRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalData
+    Public Event HistoricalTradesEnd(sender As Object, e As RequestEndEventArgs)
+    Protected Overridable Sub OnHistoricalTradesEnd(e As RequestEndEventArgs)
+        RaiseEvent HistoricalTradesEnd(Me, e)
+    End Sub
+
+    Public Overrides Sub UpdateHistoricalBar(e As HistoricalBarEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalBar
+        OnHistoricalBar(e)
+    End Sub
+
+    Public Overrides Sub NotifyHistoricalBar(e As HistoricalBarEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBar
+        OnHistoricalBar(e)
+    End Sub
+
+    Public Event HistoricalBar(sender As Object, e As HistoricalBarEventArgs)
+    Protected Overridable Sub OnHistoricalBar(e As HistoricalBarEventArgs)
+        RaiseEvent HistoricalBar(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifyHistoricalBarError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBarError
+        OnHistoricalBarError(e)
+    End Sub
+
+    Public Event HistoricalBarError(sender As Object, e As RequestErrorEventArgs)
+    Protected Overridable Sub OnHistoricalBarError(e As RequestErrorEventArgs)
+        RaiseEvent HistoricalBarError(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifyHistoricalBidAsk(e As HistoricalBidAskEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBidAsk
+        OnHistoricalBidAsk(e)
+    End Sub
+
+    Public Event HistoricalBidAsk(sender As Object, e As HistoricalBidAskEventArgs)
+    Protected Overridable Sub OnHistoricalBidAsk(e As HistoricalBidAskEventArgs)
+        RaiseEvent HistoricalBidAsk(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifyHistoricalMidpoint(e As HistoricalMidpointEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalMidpoint
+        OnHistoricalMidpoint(e)
+    End Sub
+
+    Public Event HistoricalMidpoint(sender As Object, e As HistoricalMidpointEventArgs)
+    Protected Overridable Sub OnHistoricalMidpoint(e As HistoricalMidpointEventArgs)
+        RaiseEvent HistoricalMidpoint(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifyHistoricalTrade(e As HistoricalTradeEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalTrade
+        OnHistoricalTrade(e)
+    End Sub
+
+    Public Event HistoricalTrade(sender As Object, e As HistoricalTradeEventArgs)
+    Protected Overridable Sub OnHistoricalTrade(e As HistoricalTradeEventArgs)
+        RaiseEvent HistoricalTrade(Me, e)
+    End Sub
+
+    Public Overrides Sub StartHistoricalBars(e As HistoricalBarsRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalBars
         OnHistoricalDataStart(e)
     End Sub
 
-    Public Event HistoricalDataStart(sender As Object, e As HistoricalDataRequestEventArgs)
-    Protected Overridable Sub OnHistoricalDataStart(e As HistoricalDataRequestEventArgs)
-        RaiseEvent HistoricalDataStart(Me, e)
+    Public Event HistoricalBarsStart(sender As Object, e As HistoricalBarsRequestEventArgs)
+    Protected Overridable Sub OnHistoricalDataStart(e As HistoricalBarsRequestEventArgs)
+        RaiseEvent HistoricalBarsStart(Me, e)
     End Sub
 
 #End Region
@@ -499,6 +544,42 @@ Public Class EventSource
     Public Event RealtimeBar(sender As Object, e As RealtimeBarEventArgs)
     Protected Overridable Sub OnRealtimeBar(e As RealtimeBarEventArgs)
         RaiseEvent RealtimeBar(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifyTickByTickAllLast(e As TickByTickAllLastEventArgs) Implements IMarketDataConsumer.NotifyTickByTickAllLast
+        OnTickByTickAllLast(e)
+    End Sub
+
+    Public Event TickByTickAllLast(sender As Object, e As TickByTickAllLastEventArgs)
+    Protected Overridable Sub OnTickByTickAllLast(e As TickByTickAllLastEventArgs)
+        RaiseEvent TickByTickAllLast(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifySmartComponents(e As SmartComponentsEventArgs) Implements IMarketDataConsumer.NotifySmartComponents
+        OnSmartComponents(e)
+    End Sub
+
+    Public Event SmartComponents(sender As Object, e As SmartComponentsEventArgs)
+    Protected Overridable Sub OnSmartComponents(e As SmartComponentsEventArgs)
+        RaiseEvent SmartComponents(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifyTickByTickBidAsk(e As TickByTickBidAskEventArgs) Implements IMarketDataConsumer.NotifyTickByTickBidAsk
+        OnTickByTickBidAsk(e)
+    End Sub
+
+    Public Event TickByTickBidAsk(sender As Object, e As TickByTickBidAskEventArgs)
+    Protected Overridable Sub OnTickByTickBidAsk(e As TickByTickBidAskEventArgs)
+        RaiseEvent TickByTickBidAsk(Me, e)
+    End Sub
+
+    Public Overrides Sub NotifyTickByTickMidPoint(e As TickByTickMidPointEventArgs) Implements IMarketDataConsumer.NotifyTickByTickMidPoint
+        OnTickByTickMidPoint(e)
+    End Sub
+
+    Public Event TickByTickMidPoint(sender As Object, e As TickByTickMidPointEventArgs)
+    Protected Overridable Sub OnTickByTickMidPoint(e As TickByTickMidPointEventArgs)
+        RaiseEvent TickByTickMidPoint(Me, e)
     End Sub
 
     Public Overrides Sub NotifyTickEFP(e As TickEFPEventArgs) Implements IMarketDataConsumer.NotifyTickEFP

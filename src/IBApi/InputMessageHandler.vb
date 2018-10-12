@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
 ' SOFTWARE.
 
 #End Region
-
 
 Imports System.Threading
 
@@ -201,7 +200,7 @@ Friend Class InputMessageHandler
 
     Private Function messageHasVersion(messageId As ApiSocketInMsgType) As Boolean
         If messageId = ApiSocketInMsgType.ExecutionData And mServerVersion >= ApiServerVersion.LAST_LIQUIDITY Then Return False
-        If messageId = ApiSocketInMsgType.HistoricalData And mServerVersion >= ApiServerVersion.SYNT_REALTIME_BARS Then Return False
+        If messageId = ApiSocketInMsgType.HistoricalBar And mServerVersion >= ApiServerVersion.SYNT_REALTIME_BARS Then Return False
         If messageId = ApiSocketInMsgType.OrderStatus And mServerVersion >= ApiServerVersion.MARKET_CAP_PRICE Then Return False
         Return messageId <= ApiSocketInMsgType.MaxIdWithVersion
     End Function
@@ -250,18 +249,16 @@ Friend Class InputMessageHandler
         Static sEventCount As Integer
 
 
-        If mGenerateSocketDataEvents Then
-            mStatsRecorder.UpdateMessageTypeStats(CType(pMessageId, ApiSocketInMsgType), pMessageElapsedTime)
-            sEventCount = sEventCount + 1
+        mStatsRecorder.UpdateMessageTypeStats(CType(pMessageId, ApiSocketInMsgType), pMessageElapsedTime)
+        sEventCount = sEventCount + 1
 
-            Dim secs = getElapsedTimer.ElapsedTicks / Stopwatch.Frequency
-            If secs >= 10.0 Then
-                Dim s = $"Event rate per second: {sEventCount / secs,0:0.0}"
-                IBAPI.EventLogger.Log(s, ModuleName, ProcName, ILogger.LogLevel.Detail)
-                Debug.Print(s)
-                sEventCount = 0
-                getElapsedTimer.Restart()
-            End If
+        Dim secs = getElapsedTimer.ElapsedTicks / Stopwatch.Frequency
+        If secs >= 10.0 Then
+            Dim s = $"Event rate per second: {sEventCount / secs,0:0.0}"
+            IBAPI.EventLogger.Log(s, ModuleName, ProcName, ILogger.LogLevel.Detail)
+            Debug.Print(s)
+            sEventCount = 0
+            getElapsedTimer.Restart()
         End If
     End Sub
 End Class

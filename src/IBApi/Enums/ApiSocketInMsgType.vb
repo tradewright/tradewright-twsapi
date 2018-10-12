@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ Public Enum ApiSocketInMsgType
     NewsBulletins = 14
     ManagedAccounts = 15
     FinanialAdvisorData = 16
-    HistoricalData = 17
+    HistoricalBar = 17
     BondContractData = 18
     ScannerParameters = 19
     ScannerData = 20
@@ -99,11 +99,13 @@ Public Enum ApiSocketInMsgType
     MarketRule = 93
     PnL = 94
     PnLSingle = 95
-    HistoricalTick = 96
+    HistoricalTickMidpoint = 96
     HistoricalTickBidAsk = 97
     HistoricalTickLast = 98
     TickByTick = 99
-    OrderBound = 100
-    Max = OrderBound
+
+    ' Max for API 973.06
+
+    Max
 End Enum
 
