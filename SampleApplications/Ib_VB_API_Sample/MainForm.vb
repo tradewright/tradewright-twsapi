@@ -1,1026 +1,1668 @@
 ﻿' Copyright (C) 2016 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
 ' and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable.
 
+Option Strict On
+
 
 Imports System.Xml
 Imports System.Collections.Generic
 
 Imports TradeWright.IBAPI
+Imports TradeWright.Utilities.DataStorage
 Imports TradeWright.Utilities.Logging
+Imports TradeWright.Utilities.Themes
+Imports System.ComponentModel
 
 Friend Class MainForm
     Inherits System.Windows.Forms.Form
 
 #Region "Windows Form Designer generated code "
-    Public Sub New()
-        MyBase.New()
-        If m_vb6FormDefInstance Is Nothing Then
-            If m_InitializingDefInstance Then
-                m_vb6FormDefInstance = Me
-            Else
-                Try
-                    'For the start-up form, the first instance created is the default instance.
-                    If System.Reflection.Assembly.GetExecutingAssembly.EntryPoint.DeclaringType Is Me.GetType Then
-                        m_vb6FormDefInstance = Me
-                    End If
-                Catch
-                End Try
-            End If
-        End If
-        'This call is required by the Windows Form Designer.
-        InitializeComponent()
-    End Sub
     'Form overrides dispose to clean up the component list.
     Protected Overloads Overrides Sub Dispose(Disposing As Boolean)
         If Disposing Then
-            If Not components Is Nothing Then
-                components.Dispose()
+            If Not mComponents Is Nothing Then
+                mComponents.Dispose()
             End If
         End If
         MyBase.Dispose(Disposing)
     End Sub
     'Required by the Windows Form Designer
-    Private components As System.ComponentModel.IContainer
-    Public WithEvents cmdReqHistoricalData As System.Windows.Forms.Button
-    Public WithEvents cmdFinancialAdvisor As System.Windows.Forms.Button
-    Public WithEvents cmdReqAllOpenOrders As System.Windows.Forms.Button
-    Public WithEvents cmdReqAutoOpenOrders As System.Windows.Forms.Button
-    Public WithEvents cmdServerLogLevel As System.Windows.Forms.Button
-    Public WithEvents cmdReqNews As System.Windows.Forms.Button
-    Public WithEvents cmdReqAcctData As System.Windows.Forms.Button
-    Public WithEvents cmdReqExecutions As System.Windows.Forms.Button
-    Public WithEvents cmdClearForm As System.Windows.Forms.Button
-    Public WithEvents cmdClose As System.Windows.Forms.Button
-    Public WithEvents cmdDisconnect As System.Windows.Forms.Button
-    Public WithEvents cmdReqMktData As System.Windows.Forms.Button
-    Public WithEvents cmdReqMktDepth As System.Windows.Forms.Button
-    Public WithEvents cmdCancelMktDepth As System.Windows.Forms.Button
-    Public WithEvents cmdPlaceOrder As System.Windows.Forms.Button
-    Public WithEvents cmdCancelOrder As System.Windows.Forms.Button
-    Public WithEvents cmdExtendedOrderAtribs As System.Windows.Forms.Button
-    Public WithEvents cmdReqContractData As System.Windows.Forms.Button
-    Public WithEvents cmdReqOpenOrders As System.Windows.Forms.Button
-    Public WithEvents cmdConnect As System.Windows.Forms.Button
-    Public WithEvents lstErrors As System.Windows.Forms.ListBox
-    Public WithEvents lstServerResponses As System.Windows.Forms.ListBox
-    Public WithEvents lstMktData As System.Windows.Forms.ListBox
-    Public WithEvents Label3 As System.Windows.Forms.Label
-    Public WithEvents Label2 As System.Windows.Forms.Label
-    Public WithEvents Label1 As System.Windows.Forms.Label
+    Private mComponents As System.ComponentModel.IContainer
+    Public WithEvents ReqHistoricalDataButton As System.Windows.Forms.Button
+    Public WithEvents FinancialAdvisorButton As System.Windows.Forms.Button
+    Public WithEvents ReqAllOpenOrdersButton As System.Windows.Forms.Button
+    Public WithEvents ReqAutoOpenOrdersButton As System.Windows.Forms.Button
+    Public WithEvents ServerLogLevelButton As System.Windows.Forms.Button
+    Public WithEvents ReqNewsButton As System.Windows.Forms.Button
+    Public WithEvents ReqAcctDataButton As System.Windows.Forms.Button
+    Public WithEvents ReqExecutionsButton As System.Windows.Forms.Button
+    Public WithEvents ClearFormButton As TradeWright.Utilities.Themes.ThemedButton1
+    Public WithEvents CancelMktDepthButton As System.Windows.Forms.Button
+    Public WithEvents PlaceOrderButton As System.Windows.Forms.Button
+    Public WithEvents CancelOrderButton As System.Windows.Forms.Button
+    Public WithEvents ExtendedOrderAtribsButton As System.Windows.Forms.Button
+    Public WithEvents ReqContractDataButton As System.Windows.Forms.Button
+    Public WithEvents ReqOpenOrdersButton As System.Windows.Forms.Button
+    Public WithEvents ConnectDisconnectButton As TradeWright.Utilities.Themes.ThemedButton1
+    Public WithEvents ReqAcctsButton As System.Windows.Forms.Button
+    Public WithEvents ExerciseOptionsButton As System.Windows.Forms.Button
+    Public WithEvents CancelHistDataButton As System.Windows.Forms.Button
+    Public WithEvents ReqRealTimeBarsButton As System.Windows.Forms.Button
+    Public WithEvents CancelRealTimeBarsButton As System.Windows.Forms.Button
+    Public WithEvents ReqCurrentTimeButton As System.Windows.Forms.Button
+    Public WithEvents WhatIfButton As System.Windows.Forms.Button
+    Friend WithEvents CalcImpliedVolatilityButton As System.Windows.Forms.Button
+    Friend WithEvents CalcOptionPriceButton As System.Windows.Forms.Button
+    Friend WithEvents CancelCalcImpliedVolatilityButton As System.Windows.Forms.Button
+    Friend WithEvents CancelCalcOptionPriceButton As System.Windows.Forms.Button
+    Friend WithEvents ReqGlobalCancelButton As System.Windows.Forms.Button
+    Friend WithEvents ReqMarketDataTypeButton As System.Windows.Forms.Button
+    Friend WithEvents ReqPositionsButton As System.Windows.Forms.Button
+    Friend WithEvents ReqAccountSummaryButton As System.Windows.Forms.Button
+    Friend WithEvents CancelAccountSummaryButton As System.Windows.Forms.Button
+    Friend WithEvents CancelPositionsButton As System.Windows.Forms.Button
+    Friend WithEvents GroupsButton As System.Windows.Forms.Button
+    Friend WithEvents ReqFundamentalDataButton As System.Windows.Forms.Button
+    Friend WithEvents CancelFundamentalDataButton As System.Windows.Forms.Button
+    Friend WithEvents ReqPositionsMultiButton As System.Windows.Forms.Button
+    Friend WithEvents CancelPositionsMultiButton As System.Windows.Forms.Button
+    Friend WithEvents ReqAccountUpdatesMultiButton As System.Windows.Forms.Button
+    Friend WithEvents CancelAccountUpdatesMultiButton As System.Windows.Forms.Button
+    Friend WithEvents ReqSecDefOptParamsButton As System.Windows.Forms.Button
+    Friend WithEvents FamilyCodesButton As System.Windows.Forms.Button
+    Friend WithEvents ReqMatchingSymbolsButton As System.Windows.Forms.Button
+    Friend WithEvents ReqMktDepthExchangesButton As System.Windows.Forms.Button
+    Public WithEvents PauseAPIButton As TradeWright.Utilities.Themes.ThemedButton1
+    Friend WithEvents ReqTickByTickButton As Button
+    Friend WithEvents ReqHistoricalTicksButton As Button
+    Friend WithEvents ReqPnlSingleButton As Button
+    Friend WithEvents ReqPnlButton As Button
+    Friend WithEvents ReqHistogramDataButton As Button
+    Friend WithEvents ReqHistoricalNewsButton As Button
+    Friend WithEvents ReqSmartComponentsButton As Button
+    Friend WithEvents CancelTickByTickButton As Button
+    Friend WithEvents CancelPnlSingleButton As Button
+    Public WithEvents CancelPnlButton As Button
+    Friend WithEvents ReqMarketRuleButton As Button
+    Public WithEvents ReqHeadTimestampButton As Button
+    Friend WithEvents ReqNewsArticleButton As Button
+    Friend WithEvents ReqNewsProvidersButton As Button
+    Friend WithEvents SplitContainer1 As SplitContainer
+    Friend WithEvents SplitContainer3 As SplitContainer
+    Private WithEvents ConnectionStatusLabel As Label
+    Friend WithEvents SplitContainer4 As SplitContainer
+    Private WithEvents ClientIdText As TextBox
+    Private WithEvents Label15 As New System.Windows.Forms.Label()
+    Private WithEvents PortText As TextBox
+    Private WithEvents Label14 As Label
+    Private WithEvents Label13 As Label
+    Friend WithEvents DisplaySocketDataCheck As CheckBox
+    Friend WithEvents UseQueueingCheck As CheckBox
+    Friend WithEvents ErrorsText As TextBox
+    Friend WithEvents SocketLogText As TextBox
+    Friend WithEvents Label1 As ThemedLabel1
+    Friend WithEvents Label4 As ThemedLabel1
+    Friend WithEvents ServerResponsesText As TextBox
+    Friend WithEvents MarketDataText As TextBox
+    Friend WithEvents Label2 As ThemedLabel1
+    Friend WithEvents ButtonsPanel As TableLayoutPanel
+    Public WithEvents ReqMktDepthButton As Button
+    Public WithEvents ReqMktDataButton As Button
+    Public WithEvents CancelMktDataButton As Button
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents ThemedLabel11 As ThemedLabel1
+    Friend WithEvents TableLayoutPanel3 As TableLayoutPanel
+    Friend WithEvents TableLayoutPanel4 As TableLayoutPanel
+    Friend WithEvents TableLayoutPanel5 As TableLayoutPanel
+    Friend WithEvents TableLayoutPanel6 As TableLayoutPanel
+    Friend WithEvents TopPanel As TableLayoutPanel
+    Friend WithEvents ServerText As TextBox
+    Friend WithEvents TopPanelCheckboxesSite As TableLayoutPanel
+    Friend WithEvents SplitContainer2 As SplitContainer
+    Public WithEvents ScannerButton As System.Windows.Forms.Button
+
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
-    Public WithEvents cmdReqAccts As System.Windows.Forms.Button
-    Public WithEvents cmdExerciseOptions As System.Windows.Forms.Button
-    Public WithEvents cmdCancelHistData As System.Windows.Forms.Button
-    Public WithEvents cmdReqRealTimeBars As System.Windows.Forms.Button
-    Public WithEvents cmdCancelRealTimeBars As System.Windows.Forms.Button
-    Public WithEvents cmdReqCurrentTime As System.Windows.Forms.Button
-    Public WithEvents cmdWhatIf As System.Windows.Forms.Button
-    Friend WithEvents cmdCalcImpliedVolatility As System.Windows.Forms.Button
-    Friend WithEvents cmdCalcOptionPrice As System.Windows.Forms.Button
-    Friend WithEvents cmdCancelCalcImpliedVolatility As System.Windows.Forms.Button
-    Friend WithEvents cmdCancelCalcOptionPrice As System.Windows.Forms.Button
-    Friend WithEvents cmdReqGlobalCancel As System.Windows.Forms.Button
-    Friend WithEvents cmdReqMarketDataType As System.Windows.Forms.Button
-    Public WithEvents cmdCancelMktData As System.Windows.Forms.Button
-    Friend WithEvents cmdReqPositions As System.Windows.Forms.Button
-    Friend WithEvents cmdReqAccountSummary As System.Windows.Forms.Button
-    Friend WithEvents cmdCancelAccountSummary As System.Windows.Forms.Button
-    Friend WithEvents cmdCancelPositions As System.Windows.Forms.Button
-    Friend WithEvents cmdGroups As System.Windows.Forms.Button
-    Friend WithEvents cmdReqFundamentalData As System.Windows.Forms.Button
-    Friend WithEvents cmdCancelFundamentalData As System.Windows.Forms.Button
-    Friend WithEvents cmdReqPositionsMulti As System.Windows.Forms.Button
-    Friend WithEvents cmdCancelPositionsMulti As System.Windows.Forms.Button
-    Friend WithEvents cmdReqAccountUpdatesMulti As System.Windows.Forms.Button
-    Friend WithEvents cmdCancelAccountUpdatesMulti As System.Windows.Forms.Button
-    Friend WithEvents cmdReqSecDefOptParams As System.Windows.Forms.Button
-    Friend WithEvents cmdFamilyCodes As System.Windows.Forms.Button
-    Friend WithEvents cmdReqMatchingSymbols As System.Windows.Forms.Button
-    Friend WithEvents cmdReqMktDepthExchanges As System.Windows.Forms.Button
-    Public WithEvents PauseAPIButton As Button
-    Public WithEvents cmdScanner As System.Windows.Forms.Button
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.cmdReqHistoricalData = New System.Windows.Forms.Button()
-        Me.cmdFinancialAdvisor = New System.Windows.Forms.Button()
-        Me.cmdReqAccts = New System.Windows.Forms.Button()
-        Me.cmdReqAllOpenOrders = New System.Windows.Forms.Button()
-        Me.cmdReqAutoOpenOrders = New System.Windows.Forms.Button()
-        Me.cmdServerLogLevel = New System.Windows.Forms.Button()
-        Me.cmdReqNews = New System.Windows.Forms.Button()
-        Me.cmdReqAcctData = New System.Windows.Forms.Button()
-        Me.cmdReqExecutions = New System.Windows.Forms.Button()
-        Me.cmdClearForm = New System.Windows.Forms.Button()
-        Me.cmdClose = New System.Windows.Forms.Button()
-        Me.cmdDisconnect = New System.Windows.Forms.Button()
-        Me.cmdReqMktData = New System.Windows.Forms.Button()
-        Me.cmdReqMktDepth = New System.Windows.Forms.Button()
-        Me.cmdCancelMktDepth = New System.Windows.Forms.Button()
-        Me.cmdPlaceOrder = New System.Windows.Forms.Button()
-        Me.cmdCancelOrder = New System.Windows.Forms.Button()
-        Me.cmdExtendedOrderAtribs = New System.Windows.Forms.Button()
-        Me.cmdReqContractData = New System.Windows.Forms.Button()
-        Me.cmdReqOpenOrders = New System.Windows.Forms.Button()
-        Me.cmdConnect = New System.Windows.Forms.Button()
-        Me.lstErrors = New System.Windows.Forms.ListBox()
-        Me.lstServerResponses = New System.Windows.Forms.ListBox()
-        Me.lstMktData = New System.Windows.Forms.ListBox()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.cmdExerciseOptions = New System.Windows.Forms.Button()
-        Me.cmdCancelHistData = New System.Windows.Forms.Button()
-        Me.cmdScanner = New System.Windows.Forms.Button()
-        Me.cmdReqRealTimeBars = New System.Windows.Forms.Button()
-        Me.cmdCancelRealTimeBars = New System.Windows.Forms.Button()
-        Me.cmdReqCurrentTime = New System.Windows.Forms.Button()
-        Me.cmdWhatIf = New System.Windows.Forms.Button()
-        Me.cmdCalcImpliedVolatility = New System.Windows.Forms.Button()
-        Me.cmdCalcOptionPrice = New System.Windows.Forms.Button()
-        Me.cmdCancelCalcImpliedVolatility = New System.Windows.Forms.Button()
-        Me.cmdCancelCalcOptionPrice = New System.Windows.Forms.Button()
-        Me.cmdReqGlobalCancel = New System.Windows.Forms.Button()
-        Me.cmdReqMarketDataType = New System.Windows.Forms.Button()
-        Me.cmdCancelMktData = New System.Windows.Forms.Button()
-        Me.cmdReqPositions = New System.Windows.Forms.Button()
-        Me.cmdReqAccountSummary = New System.Windows.Forms.Button()
-        Me.cmdCancelAccountSummary = New System.Windows.Forms.Button()
-        Me.cmdCancelPositions = New System.Windows.Forms.Button()
-        Me.cmdGroups = New System.Windows.Forms.Button()
-        Me.cmdReqFundamentalData = New System.Windows.Forms.Button()
-        Me.cmdCancelFundamentalData = New System.Windows.Forms.Button()
-        Me.cmdReqPositionsMulti = New System.Windows.Forms.Button()
-        Me.cmdCancelPositionsMulti = New System.Windows.Forms.Button()
-        Me.cmdReqAccountUpdatesMulti = New System.Windows.Forms.Button()
-        Me.cmdCancelAccountUpdatesMulti = New System.Windows.Forms.Button()
-        Me.cmdReqSecDefOptParams = New System.Windows.Forms.Button()
-        Me.cmdFamilyCodes = New System.Windows.Forms.Button()
-        Me.cmdReqMatchingSymbols = New System.Windows.Forms.Button()
-        Me.cmdReqMktDepthExchanges = New System.Windows.Forms.Button()
-        Me.PauseAPIButton = New System.Windows.Forms.Button()
+    <System.Diagnostics.DebuggerStepThrough()>
+    Private Sub InitializeComponent()
+        Me.ReqHistoricalDataButton = New System.Windows.Forms.Button()
+        Me.FinancialAdvisorButton = New System.Windows.Forms.Button()
+        Me.ReqAcctsButton = New System.Windows.Forms.Button()
+        Me.ReqAllOpenOrdersButton = New System.Windows.Forms.Button()
+        Me.ReqAutoOpenOrdersButton = New System.Windows.Forms.Button()
+        Me.ServerLogLevelButton = New System.Windows.Forms.Button()
+        Me.ReqNewsButton = New System.Windows.Forms.Button()
+        Me.ReqAcctDataButton = New System.Windows.Forms.Button()
+        Me.ReqExecutionsButton = New System.Windows.Forms.Button()
+        Me.ClearFormButton = New TradeWright.Utilities.Themes.ThemedButton1()
+        Me.CancelMktDepthButton = New System.Windows.Forms.Button()
+        Me.PlaceOrderButton = New System.Windows.Forms.Button()
+        Me.CancelOrderButton = New System.Windows.Forms.Button()
+        Me.ExtendedOrderAtribsButton = New System.Windows.Forms.Button()
+        Me.ReqContractDataButton = New System.Windows.Forms.Button()
+        Me.ReqOpenOrdersButton = New System.Windows.Forms.Button()
+        Me.ConnectDisconnectButton = New TradeWright.Utilities.Themes.ThemedButton1()
+        Me.ExerciseOptionsButton = New System.Windows.Forms.Button()
+        Me.CancelHistDataButton = New System.Windows.Forms.Button()
+        Me.ScannerButton = New System.Windows.Forms.Button()
+        Me.ReqRealTimeBarsButton = New System.Windows.Forms.Button()
+        Me.CancelRealTimeBarsButton = New System.Windows.Forms.Button()
+        Me.ReqCurrentTimeButton = New System.Windows.Forms.Button()
+        Me.WhatIfButton = New System.Windows.Forms.Button()
+        Me.CalcImpliedVolatilityButton = New System.Windows.Forms.Button()
+        Me.CalcOptionPriceButton = New System.Windows.Forms.Button()
+        Me.CancelCalcImpliedVolatilityButton = New System.Windows.Forms.Button()
+        Me.CancelCalcOptionPriceButton = New System.Windows.Forms.Button()
+        Me.ReqGlobalCancelButton = New System.Windows.Forms.Button()
+        Me.ReqMarketDataTypeButton = New System.Windows.Forms.Button()
+        Me.ReqPositionsButton = New System.Windows.Forms.Button()
+        Me.ReqAccountSummaryButton = New System.Windows.Forms.Button()
+        Me.CancelAccountSummaryButton = New System.Windows.Forms.Button()
+        Me.CancelPositionsButton = New System.Windows.Forms.Button()
+        Me.GroupsButton = New System.Windows.Forms.Button()
+        Me.ReqFundamentalDataButton = New System.Windows.Forms.Button()
+        Me.CancelFundamentalDataButton = New System.Windows.Forms.Button()
+        Me.ReqPositionsMultiButton = New System.Windows.Forms.Button()
+        Me.CancelPositionsMultiButton = New System.Windows.Forms.Button()
+        Me.ReqAccountUpdatesMultiButton = New System.Windows.Forms.Button()
+        Me.CancelAccountUpdatesMultiButton = New System.Windows.Forms.Button()
+        Me.ReqSecDefOptParamsButton = New System.Windows.Forms.Button()
+        Me.FamilyCodesButton = New System.Windows.Forms.Button()
+        Me.ReqMatchingSymbolsButton = New System.Windows.Forms.Button()
+        Me.ReqMktDepthExchangesButton = New System.Windows.Forms.Button()
+        Me.PauseAPIButton = New TradeWright.Utilities.Themes.ThemedButton1()
+        Me.ReqTickByTickButton = New System.Windows.Forms.Button()
+        Me.ReqHistoricalTicksButton = New System.Windows.Forms.Button()
+        Me.ReqPnlSingleButton = New System.Windows.Forms.Button()
+        Me.ReqPnlButton = New System.Windows.Forms.Button()
+        Me.ReqHistogramDataButton = New System.Windows.Forms.Button()
+        Me.ReqHistoricalNewsButton = New System.Windows.Forms.Button()
+        Me.ReqSmartComponentsButton = New System.Windows.Forms.Button()
+        Me.CancelTickByTickButton = New System.Windows.Forms.Button()
+        Me.CancelPnlSingleButton = New System.Windows.Forms.Button()
+        Me.CancelPnlButton = New System.Windows.Forms.Button()
+        Me.ReqMarketRuleButton = New System.Windows.Forms.Button()
+        Me.ReqHeadTimestampButton = New System.Windows.Forms.Button()
+        Me.ReqNewsArticleButton = New System.Windows.Forms.Button()
+        Me.ReqNewsProvidersButton = New System.Windows.Forms.Button()
+        Me.ConnectionStatusLabel = New System.Windows.Forms.Label()
+        Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
+        Me.ButtonsPanel = New System.Windows.Forms.TableLayoutPanel()
+        Me.ReqMktDataButton = New System.Windows.Forms.Button()
+        Me.CancelMktDataButton = New System.Windows.Forms.Button()
+        Me.ReqMktDepthButton = New System.Windows.Forms.Button()
+        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
+        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+        Me.ServerResponsesText = New System.Windows.Forms.TextBox()
+        Me.ThemedLabel11 = New TradeWright.Utilities.Themes.ThemedLabel1()
+        Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
+        Me.MarketDataText = New System.Windows.Forms.TextBox()
+        Me.Label4 = New TradeWright.Utilities.Themes.ThemedLabel1()
+        Me.SplitContainer4 = New System.Windows.Forms.SplitContainer()
+        Me.TableLayoutPanel4 = New System.Windows.Forms.TableLayoutPanel()
+        Me.ErrorsText = New System.Windows.Forms.TextBox()
+        Me.Label2 = New TradeWright.Utilities.Themes.ThemedLabel1()
+        Me.TableLayoutPanel5 = New System.Windows.Forms.TableLayoutPanel()
+        Me.SocketLogText = New System.Windows.Forms.TextBox()
+        Me.Label1 = New TradeWright.Utilities.Themes.ThemedLabel1()
+        Me.TopPanel = New System.Windows.Forms.TableLayoutPanel()
+        Me.TopPanelCheckboxesSite = New System.Windows.Forms.TableLayoutPanel()
+        Me.UseQueueingCheck = New System.Windows.Forms.CheckBox()
+        Me.DisplaySocketDataCheck = New System.Windows.Forms.CheckBox()
+        Me.ClientIdText = New System.Windows.Forms.TextBox()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.PortText = New System.Windows.Forms.TextBox()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.ServerText = New System.Windows.Forms.TextBox()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.TableLayoutPanel6 = New System.Windows.Forms.TableLayoutPanel()
+        CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer1.Panel1.SuspendLayout()
+        Me.SplitContainer1.Panel2.SuspendLayout()
+        Me.SplitContainer1.SuspendLayout()
+        Me.ButtonsPanel.SuspendLayout()
+        CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer2.Panel1.SuspendLayout()
+        Me.SplitContainer2.Panel2.SuspendLayout()
+        Me.SplitContainer2.SuspendLayout()
+        CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer3.Panel1.SuspendLayout()
+        Me.SplitContainer3.Panel2.SuspendLayout()
+        Me.SplitContainer3.SuspendLayout()
+        Me.TableLayoutPanel2.SuspendLayout()
+        Me.TableLayoutPanel3.SuspendLayout()
+        CType(Me.SplitContainer4, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer4.Panel1.SuspendLayout()
+        Me.SplitContainer4.Panel2.SuspendLayout()
+        Me.SplitContainer4.SuspendLayout()
+        Me.TableLayoutPanel4.SuspendLayout()
+        Me.TableLayoutPanel5.SuspendLayout()
+        Me.TopPanel.SuspendLayout()
+        Me.TopPanelCheckboxesSite.SuspendLayout()
+        Me.TableLayoutPanel6.SuspendLayout()
         Me.SuspendLayout()
         '
-        'cmdReqHistoricalData
-        '
-        Me.cmdReqHistoricalData.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqHistoricalData.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqHistoricalData.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqHistoricalData.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqHistoricalData.Location = New System.Drawing.Point(544, 60)
-        Me.cmdReqHistoricalData.Name = "cmdReqHistoricalData"
-        Me.cmdReqHistoricalData.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqHistoricalData.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqHistoricalData.TabIndex = 6
-        Me.cmdReqHistoricalData.Text = "Historical Data..."
-        Me.cmdReqHistoricalData.UseVisualStyleBackColor = True
-        '
-        'cmdFinancialAdvisor
-        '
-        Me.cmdFinancialAdvisor.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdFinancialAdvisor.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdFinancialAdvisor.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdFinancialAdvisor.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdFinancialAdvisor.Location = New System.Drawing.Point(543, 437)
-        Me.cmdFinancialAdvisor.Name = "cmdFinancialAdvisor"
-        Me.cmdFinancialAdvisor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdFinancialAdvisor.Size = New System.Drawing.Size(134, 21)
-        Me.cmdFinancialAdvisor.TabIndex = 34
-        Me.cmdFinancialAdvisor.Text = "Financial Advisor"
-        Me.cmdFinancialAdvisor.UseVisualStyleBackColor = True
-        '
-        'cmdReqAccts
-        '
-        Me.cmdReqAccts.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqAccts.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqAccts.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqAccts.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqAccts.Location = New System.Drawing.Point(684, 410)
-        Me.cmdReqAccts.Name = "cmdReqAccts"
-        Me.cmdReqAccts.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqAccts.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqAccts.TabIndex = 33
-        Me.cmdReqAccts.Text = "Req Accounts"
-        Me.cmdReqAccts.UseVisualStyleBackColor = True
-        '
-        'cmdReqAllOpenOrders
-        '
-        Me.cmdReqAllOpenOrders.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqAllOpenOrders.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqAllOpenOrders.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqAllOpenOrders.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqAllOpenOrders.Location = New System.Drawing.Point(544, 329)
-        Me.cmdReqAllOpenOrders.Name = "cmdReqAllOpenOrders"
-        Me.cmdReqAllOpenOrders.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqAllOpenOrders.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqAllOpenOrders.TabIndex = 26
-        Me.cmdReqAllOpenOrders.Text = "Req All Open Orders"
-        Me.cmdReqAllOpenOrders.UseVisualStyleBackColor = True
-        '
-        'cmdReqAutoOpenOrders
-        '
-        Me.cmdReqAutoOpenOrders.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqAutoOpenOrders.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqAutoOpenOrders.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqAutoOpenOrders.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqAutoOpenOrders.Location = New System.Drawing.Point(684, 329)
-        Me.cmdReqAutoOpenOrders.Name = "cmdReqAutoOpenOrders"
-        Me.cmdReqAutoOpenOrders.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqAutoOpenOrders.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqAutoOpenOrders.TabIndex = 27
-        Me.cmdReqAutoOpenOrders.Text = "Req Auto Open Orders"
-        Me.cmdReqAutoOpenOrders.UseVisualStyleBackColor = True
-        '
-        'cmdServerLogLevel
-        '
-        Me.cmdServerLogLevel.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdServerLogLevel.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdServerLogLevel.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdServerLogLevel.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdServerLogLevel.Location = New System.Drawing.Point(544, 410)
-        Me.cmdServerLogLevel.Name = "cmdServerLogLevel"
-        Me.cmdServerLogLevel.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdServerLogLevel.Size = New System.Drawing.Size(134, 21)
-        Me.cmdServerLogLevel.TabIndex = 32
-        Me.cmdServerLogLevel.Text = "Log Configuration..."
-        Me.cmdServerLogLevel.UseVisualStyleBackColor = True
-        '
-        'cmdReqNews
-        '
-        Me.cmdReqNews.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqNews.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqNews.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqNews.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqNews.Location = New System.Drawing.Point(683, 383)
-        Me.cmdReqNews.Name = "cmdReqNews"
-        Me.cmdReqNews.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqNews.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqNews.TabIndex = 31
-        Me.cmdReqNews.Text = "Req News Bulletins..."
-        Me.cmdReqNews.UseVisualStyleBackColor = True
-        '
-        'cmdReqAcctData
-        '
-        Me.cmdReqAcctData.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqAcctData.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqAcctData.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqAcctData.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqAcctData.Location = New System.Drawing.Point(544, 356)
-        Me.cmdReqAcctData.Name = "cmdReqAcctData"
-        Me.cmdReqAcctData.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqAcctData.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqAcctData.TabIndex = 28
-        Me.cmdReqAcctData.Text = "Req Acct Data..."
-        Me.cmdReqAcctData.UseVisualStyleBackColor = True
-        '
-        'cmdReqExecutions
-        '
-        Me.cmdReqExecutions.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqExecutions.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqExecutions.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqExecutions.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqExecutions.Location = New System.Drawing.Point(684, 356)
-        Me.cmdReqExecutions.Name = "cmdReqExecutions"
-        Me.cmdReqExecutions.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqExecutions.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqExecutions.TabIndex = 29
-        Me.cmdReqExecutions.Text = "Req Executions..."
-        Me.cmdReqExecutions.UseVisualStyleBackColor = True
-        '
-        'cmdClearForm
-        '
-        Me.cmdClearForm.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdClearForm.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdClearForm.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdClearForm.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdClearForm.Location = New System.Drawing.Point(63, 639)
-        Me.cmdClearForm.Name = "cmdClearForm"
-        Me.cmdClearForm.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdClearForm.Size = New System.Drawing.Size(89, 25)
-        Me.cmdClearForm.TabIndex = 54
-        Me.cmdClearForm.Text = "Clear"
-        Me.cmdClearForm.UseVisualStyleBackColor = True
-        '
-        'cmdClose
-        '
-        Me.cmdClose.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdClose.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdClose.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdClose.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdClose.Location = New System.Drawing.Point(159, 639)
-        Me.cmdClose.Name = "cmdClose"
-        Me.cmdClose.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdClose.Size = New System.Drawing.Size(89, 25)
-        Me.cmdClose.TabIndex = 55
-        Me.cmdClose.Text = "Close"
-        Me.cmdClose.UseVisualStyleBackColor = True
-        '
-        'cmdDisconnect
-        '
-        Me.cmdDisconnect.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdDisconnect.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdDisconnect.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDisconnect.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdDisconnect.Location = New System.Drawing.Point(320, 4)
-        Me.cmdDisconnect.Name = "cmdDisconnect"
-        Me.cmdDisconnect.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdDisconnect.Size = New System.Drawing.Size(113, 25)
-        Me.cmdDisconnect.TabIndex = 1
-        Me.cmdDisconnect.Text = "Disconnect"
-        Me.cmdDisconnect.UseVisualStyleBackColor = True
-        '
-        'cmdReqMktData
-        '
-        Me.cmdReqMktData.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqMktData.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqMktData.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqMktData.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqMktData.Location = New System.Drawing.Point(544, 6)
-        Me.cmdReqMktData.Name = "cmdReqMktData"
-        Me.cmdReqMktData.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqMktData.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqMktData.TabIndex = 2
-        Me.cmdReqMktData.Text = "Req Mkt Data..."
-        Me.cmdReqMktData.UseVisualStyleBackColor = True
-        '
-        'cmdReqMktDepth
-        '
-        Me.cmdReqMktDepth.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqMktDepth.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqMktDepth.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqMktDepth.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqMktDepth.Location = New System.Drawing.Point(544, 33)
-        Me.cmdReqMktDepth.Name = "cmdReqMktDepth"
-        Me.cmdReqMktDepth.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqMktDepth.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqMktDepth.TabIndex = 4
-        Me.cmdReqMktDepth.Text = "Req Mkt Depth..."
-        Me.cmdReqMktDepth.UseVisualStyleBackColor = True
-        '
-        'cmdCancelMktDepth
-        '
-        Me.cmdCancelMktDepth.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdCancelMktDepth.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdCancelMktDepth.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancelMktDepth.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdCancelMktDepth.Location = New System.Drawing.Point(684, 33)
-        Me.cmdCancelMktDepth.Name = "cmdCancelMktDepth"
-        Me.cmdCancelMktDepth.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdCancelMktDepth.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelMktDepth.TabIndex = 5
-        Me.cmdCancelMktDepth.Text = "Cancel Mkt Depth..."
-        Me.cmdCancelMktDepth.UseVisualStyleBackColor = True
-        '
-        'cmdPlaceOrder
-        '
-        Me.cmdPlaceOrder.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdPlaceOrder.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdPlaceOrder.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdPlaceOrder.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdPlaceOrder.Location = New System.Drawing.Point(543, 248)
-        Me.cmdPlaceOrder.Name = "cmdPlaceOrder"
-        Me.cmdPlaceOrder.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdPlaceOrder.Size = New System.Drawing.Size(134, 21)
-        Me.cmdPlaceOrder.TabIndex = 20
-        Me.cmdPlaceOrder.Text = "Place Order..."
-        Me.cmdPlaceOrder.UseVisualStyleBackColor = True
-        '
-        'cmdCancelOrder
-        '
-        Me.cmdCancelOrder.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdCancelOrder.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdCancelOrder.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancelOrder.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdCancelOrder.Location = New System.Drawing.Point(684, 248)
-        Me.cmdCancelOrder.Name = "cmdCancelOrder"
-        Me.cmdCancelOrder.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdCancelOrder.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelOrder.TabIndex = 21
-        Me.cmdCancelOrder.Text = "Cancel Order..."
-        Me.cmdCancelOrder.UseVisualStyleBackColor = True
-        '
-        'cmdExtendedOrderAtribs
-        '
-        Me.cmdExtendedOrderAtribs.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdExtendedOrderAtribs.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdExtendedOrderAtribs.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdExtendedOrderAtribs.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdExtendedOrderAtribs.Location = New System.Drawing.Point(684, 275)
-        Me.cmdExtendedOrderAtribs.Name = "cmdExtendedOrderAtribs"
-        Me.cmdExtendedOrderAtribs.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdExtendedOrderAtribs.Size = New System.Drawing.Size(134, 21)
-        Me.cmdExtendedOrderAtribs.TabIndex = 23
-        Me.cmdExtendedOrderAtribs.Text = "Extended..."
-        Me.cmdExtendedOrderAtribs.UseVisualStyleBackColor = True
-        '
-        'cmdReqContractData
-        '
-        Me.cmdReqContractData.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqContractData.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqContractData.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqContractData.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqContractData.Location = New System.Drawing.Point(544, 302)
-        Me.cmdReqContractData.Name = "cmdReqContractData"
-        Me.cmdReqContractData.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqContractData.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqContractData.TabIndex = 24
-        Me.cmdReqContractData.Text = "Req Contract Data..."
-        Me.cmdReqContractData.UseVisualStyleBackColor = True
-        '
-        'cmdReqOpenOrders
-        '
-        Me.cmdReqOpenOrders.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqOpenOrders.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqOpenOrders.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqOpenOrders.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqOpenOrders.Location = New System.Drawing.Point(684, 302)
-        Me.cmdReqOpenOrders.Name = "cmdReqOpenOrders"
-        Me.cmdReqOpenOrders.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqOpenOrders.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqOpenOrders.TabIndex = 25
-        Me.cmdReqOpenOrders.Text = "Req Open Orders"
-        Me.cmdReqOpenOrders.UseVisualStyleBackColor = True
-        '
-        'cmdConnect
-        '
-        Me.cmdConnect.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdConnect.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdConnect.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdConnect.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdConnect.Location = New System.Drawing.Point(200, 4)
-        Me.cmdConnect.Name = "cmdConnect"
-        Me.cmdConnect.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdConnect.Size = New System.Drawing.Size(113, 25)
-        Me.cmdConnect.TabIndex = 0
-        Me.cmdConnect.Text = "Connect..."
-        Me.cmdConnect.UseVisualStyleBackColor = True
-        '
-        'lstErrors
-        '
-        Me.lstErrors.BackColor = System.Drawing.SystemColors.Window
-        Me.lstErrors.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.lstErrors.Cursor = System.Windows.Forms.Cursors.Default
-        Me.lstErrors.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lstErrors.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.lstErrors.HorizontalScrollbar = True
-        Me.lstErrors.ItemHeight = 14
-        Me.lstErrors.Location = New System.Drawing.Point(8, 447)
-        Me.lstErrors.Name = "lstErrors"
-        Me.lstErrors.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lstErrors.Size = New System.Drawing.Size(529, 168)
-        Me.lstErrors.TabIndex = 53
-        '
-        'lstServerResponses
-        '
-        Me.lstServerResponses.BackColor = System.Drawing.SystemColors.Window
-        Me.lstServerResponses.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.lstServerResponses.Cursor = System.Windows.Forms.Cursors.Default
-        Me.lstServerResponses.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lstServerResponses.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.lstServerResponses.HorizontalScrollbar = True
-        Me.lstServerResponses.ItemHeight = 14
-        Me.lstServerResponses.Location = New System.Drawing.Point(8, 248)
-        Me.lstServerResponses.Name = "lstServerResponses"
-        Me.lstServerResponses.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lstServerResponses.Size = New System.Drawing.Size(529, 168)
-        Me.lstServerResponses.TabIndex = 51
-        '
-        'lstMktData
-        '
-        Me.lstMktData.BackColor = System.Drawing.SystemColors.Window
-        Me.lstMktData.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.lstMktData.Cursor = System.Windows.Forms.Cursors.Default
-        Me.lstMktData.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lstMktData.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.lstMktData.HorizontalScrollbar = True
-        Me.lstMktData.ItemHeight = 14
-        Me.lstMktData.Location = New System.Drawing.Point(8, 49)
-        Me.lstMktData.Name = "lstMktData"
-        Me.lstMktData.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lstMktData.Size = New System.Drawing.Size(529, 168)
-        Me.lstMktData.TabIndex = 49
-        '
-        'Label3
-        '
-        Me.Label3.BackColor = System.Drawing.Color.Gainsboro
-        Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label3.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(8, 431)
-        Me.Label3.Name = "Label3"
-        Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label3.Size = New System.Drawing.Size(120, 17)
-        Me.Label3.TabIndex = 52
-        Me.Label3.Text = "Errors and Messages"
-        '
-        'Label2
-        '
-        Me.Label2.BackColor = System.Drawing.Color.Gainsboro
-        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label2.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(8, 232)
-        Me.Label2.Name = "Label2"
-        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label2.Size = New System.Drawing.Size(136, 17)
-        Me.Label2.TabIndex = 50
-        Me.Label2.Text = "TWS Server Responses"
-        '
-        'Label1
-        '
-        Me.Label1.BackColor = System.Drawing.Color.Gainsboro
-        Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label1.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(8, 33)
-        Me.Label1.Name = "Label1"
-        Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label1.Size = New System.Drawing.Size(144, 17)
-        Me.Label1.TabIndex = 48
-        Me.Label1.Text = "Market and Historical Data"
-        '
-        'cmdExerciseOptions
-        '
-        Me.cmdExerciseOptions.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdExerciseOptions.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdExerciseOptions.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdExerciseOptions.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdExerciseOptions.Location = New System.Drawing.Point(544, 275)
-        Me.cmdExerciseOptions.Name = "cmdExerciseOptions"
-        Me.cmdExerciseOptions.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdExerciseOptions.Size = New System.Drawing.Size(134, 21)
-        Me.cmdExerciseOptions.TabIndex = 22
-        Me.cmdExerciseOptions.Text = "Exercise Options..."
-        Me.cmdExerciseOptions.UseVisualStyleBackColor = True
-        '
-        'cmdCancelHistData
-        '
-        Me.cmdCancelHistData.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdCancelHistData.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdCancelHistData.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancelHistData.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdCancelHistData.Location = New System.Drawing.Point(684, 60)
-        Me.cmdCancelHistData.Name = "cmdCancelHistData"
-        Me.cmdCancelHistData.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdCancelHistData.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelHistData.TabIndex = 7
-        Me.cmdCancelHistData.Text = "Cancel Hist. Data..."
-        Me.cmdCancelHistData.UseVisualStyleBackColor = True
-        '
-        'cmdScanner
-        '
-        Me.cmdScanner.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdScanner.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdScanner.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdScanner.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdScanner.Location = New System.Drawing.Point(684, 140)
-        Me.cmdScanner.Name = "cmdScanner"
-        Me.cmdScanner.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdScanner.Size = New System.Drawing.Size(134, 21)
-        Me.cmdScanner.TabIndex = 13
-        Me.cmdScanner.Text = "Market Scanner..."
-        Me.cmdScanner.UseVisualStyleBackColor = True
-        '
-        'cmdReqRealTimeBars
-        '
-        Me.cmdReqRealTimeBars.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqRealTimeBars.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqRealTimeBars.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqRealTimeBars.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqRealTimeBars.Location = New System.Drawing.Point(544, 113)
-        Me.cmdReqRealTimeBars.Name = "cmdReqRealTimeBars"
-        Me.cmdReqRealTimeBars.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqRealTimeBars.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqRealTimeBars.TabIndex = 10
-        Me.cmdReqRealTimeBars.Text = "Real Time Bars"
-        Me.cmdReqRealTimeBars.UseVisualStyleBackColor = True
-        '
-        'cmdCancelRealTimeBars
-        '
-        Me.cmdCancelRealTimeBars.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdCancelRealTimeBars.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdCancelRealTimeBars.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancelRealTimeBars.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdCancelRealTimeBars.Location = New System.Drawing.Point(684, 113)
-        Me.cmdCancelRealTimeBars.Name = "cmdCancelRealTimeBars"
-        Me.cmdCancelRealTimeBars.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdCancelRealTimeBars.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelRealTimeBars.TabIndex = 11
-        Me.cmdCancelRealTimeBars.Text = "Canc Real Time Bars"
-        Me.cmdCancelRealTimeBars.UseVisualStyleBackColor = True
-        '
-        'cmdReqCurrentTime
-        '
-        Me.cmdReqCurrentTime.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdReqCurrentTime.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdReqCurrentTime.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdReqCurrentTime.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdReqCurrentTime.Location = New System.Drawing.Point(544, 140)
-        Me.cmdReqCurrentTime.Name = "cmdReqCurrentTime"
-        Me.cmdReqCurrentTime.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdReqCurrentTime.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqCurrentTime.TabIndex = 12
-        Me.cmdReqCurrentTime.Text = "Current Time"
-        Me.cmdReqCurrentTime.UseVisualStyleBackColor = True
-        '
-        'cmdWhatIf
-        '
-        Me.cmdWhatIf.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdWhatIf.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdWhatIf.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdWhatIf.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdWhatIf.Location = New System.Drawing.Point(544, 221)
-        Me.cmdWhatIf.Name = "cmdWhatIf"
-        Me.cmdWhatIf.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdWhatIf.Size = New System.Drawing.Size(134, 21)
-        Me.cmdWhatIf.TabIndex = 18
-        Me.cmdWhatIf.Text = "What If..."
-        Me.cmdWhatIf.UseVisualStyleBackColor = True
-        '
-        'cmdCalcImpliedVolatility
-        '
-        Me.cmdCalcImpliedVolatility.Location = New System.Drawing.Point(543, 167)
-        Me.cmdCalcImpliedVolatility.Name = "cmdCalcImpliedVolatility"
-        Me.cmdCalcImpliedVolatility.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCalcImpliedVolatility.TabIndex = 14
-        Me.cmdCalcImpliedVolatility.Text = "Calc Implied Volatility"
-        Me.cmdCalcImpliedVolatility.UseVisualStyleBackColor = True
-        '
-        'cmdCalcOptionPrice
-        '
-        Me.cmdCalcOptionPrice.Location = New System.Drawing.Point(543, 194)
-        Me.cmdCalcOptionPrice.Name = "cmdCalcOptionPrice"
-        Me.cmdCalcOptionPrice.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCalcOptionPrice.TabIndex = 16
-        Me.cmdCalcOptionPrice.Text = "Calc Option Price"
-        Me.cmdCalcOptionPrice.UseVisualStyleBackColor = True
-        '
-        'cmdCancelCalcImpliedVolatility
-        '
-        Me.cmdCancelCalcImpliedVolatility.Location = New System.Drawing.Point(684, 167)
-        Me.cmdCancelCalcImpliedVolatility.Name = "cmdCancelCalcImpliedVolatility"
-        Me.cmdCancelCalcImpliedVolatility.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelCalcImpliedVolatility.TabIndex = 15
-        Me.cmdCancelCalcImpliedVolatility.Text = "Cancel Calc Impl Vol"
-        Me.cmdCancelCalcImpliedVolatility.UseVisualStyleBackColor = True
-        '
-        'cmdCancelCalcOptionPrice
-        '
-        Me.cmdCancelCalcOptionPrice.Location = New System.Drawing.Point(684, 194)
-        Me.cmdCancelCalcOptionPrice.Name = "cmdCancelCalcOptionPrice"
-        Me.cmdCancelCalcOptionPrice.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelCalcOptionPrice.TabIndex = 17
-        Me.cmdCancelCalcOptionPrice.Text = "Cancel Calc Opt Price"
-        Me.cmdCancelCalcOptionPrice.UseVisualStyleBackColor = True
-        '
-        'cmdReqGlobalCancel
-        '
-        Me.cmdReqGlobalCancel.Location = New System.Drawing.Point(684, 437)
-        Me.cmdReqGlobalCancel.Name = "cmdReqGlobalCancel"
-        Me.cmdReqGlobalCancel.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqGlobalCancel.TabIndex = 35
-        Me.cmdReqGlobalCancel.Text = "Global Cancel"
-        Me.cmdReqGlobalCancel.UseVisualStyleBackColor = True
-        '
-        'cmdReqMarketDataType
-        '
-        Me.cmdReqMarketDataType.Location = New System.Drawing.Point(544, 464)
-        Me.cmdReqMarketDataType.Name = "cmdReqMarketDataType"
-        Me.cmdReqMarketDataType.Size = New System.Drawing.Size(134, 36)
-        Me.cmdReqMarketDataType.TabIndex = 36
-        Me.cmdReqMarketDataType.Text = "Req Mkt Data Type"
-        Me.cmdReqMarketDataType.UseVisualStyleBackColor = True
-        '
-        'cmdCancelMktData
-        '
-        Me.cmdCancelMktData.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdCancelMktData.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cmdCancelMktData.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancelMktData.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.cmdCancelMktData.Location = New System.Drawing.Point(684, 6)
-        Me.cmdCancelMktData.Name = "cmdCancelMktData"
-        Me.cmdCancelMktData.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cmdCancelMktData.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelMktData.TabIndex = 3
-        Me.cmdCancelMktData.Text = "Cancel Mkt Data..."
-        Me.cmdCancelMktData.UseVisualStyleBackColor = True
-        '
-        'cmdReqPositions
-        '
-        Me.cmdReqPositions.Location = New System.Drawing.Point(544, 506)
-        Me.cmdReqPositions.Name = "cmdReqPositions"
-        Me.cmdReqPositions.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqPositions.TabIndex = 38
-        Me.cmdReqPositions.Text = "Req Positions"
-        Me.cmdReqPositions.UseVisualStyleBackColor = True
-        '
-        'cmdReqAccountSummary
-        '
-        Me.cmdReqAccountSummary.Location = New System.Drawing.Point(544, 532)
-        Me.cmdReqAccountSummary.Name = "cmdReqAccountSummary"
-        Me.cmdReqAccountSummary.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqAccountSummary.TabIndex = 40
-        Me.cmdReqAccountSummary.Text = "Req Acct Summary"
-        Me.cmdReqAccountSummary.UseVisualStyleBackColor = True
-        '
-        'cmdCancelAccountSummary
-        '
-        Me.cmdCancelAccountSummary.Location = New System.Drawing.Point(683, 533)
-        Me.cmdCancelAccountSummary.Name = "cmdCancelAccountSummary"
-        Me.cmdCancelAccountSummary.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelAccountSummary.TabIndex = 41
-        Me.cmdCancelAccountSummary.Text = "Cancel Acct Summary"
-        Me.cmdCancelAccountSummary.UseVisualStyleBackColor = True
-        '
-        'cmdCancelPositions
-        '
-        Me.cmdCancelPositions.Location = New System.Drawing.Point(683, 506)
-        Me.cmdCancelPositions.Name = "cmdCancelPositions"
-        Me.cmdCancelPositions.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelPositions.TabIndex = 39
-        Me.cmdCancelPositions.Text = "Cancel Positions"
-        Me.cmdCancelPositions.UseVisualStyleBackColor = True
-        '
-        'cmdGroups
-        '
-        Me.cmdGroups.Location = New System.Drawing.Point(545, 560)
-        Me.cmdGroups.Name = "cmdGroups"
-        Me.cmdGroups.Size = New System.Drawing.Size(133, 21)
-        Me.cmdGroups.TabIndex = 42
-        Me.cmdGroups.Text = "Groups"
-        Me.cmdGroups.UseVisualStyleBackColor = True
-        '
-        'cmdReqFundamentalData
-        '
-        Me.cmdReqFundamentalData.Location = New System.Drawing.Point(545, 87)
-        Me.cmdReqFundamentalData.Name = "cmdReqFundamentalData"
-        Me.cmdReqFundamentalData.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqFundamentalData.TabIndex = 8
-        Me.cmdReqFundamentalData.Text = "Fundamental Data..."
-        Me.cmdReqFundamentalData.UseVisualStyleBackColor = True
-        '
-        'cmdCancelFundamentalData
-        '
-        Me.cmdCancelFundamentalData.Location = New System.Drawing.Point(684, 87)
-        Me.cmdCancelFundamentalData.Name = "cmdCancelFundamentalData"
-        Me.cmdCancelFundamentalData.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelFundamentalData.TabIndex = 9
-        Me.cmdCancelFundamentalData.Text = "Cancel Fund. Data..."
-        Me.cmdCancelFundamentalData.UseVisualStyleBackColor = True
-        '
-        'cmdReqPositionsMulti
-        '
-        Me.cmdReqPositionsMulti.Location = New System.Drawing.Point(544, 587)
-        Me.cmdReqPositionsMulti.Name = "cmdReqPositionsMulti"
-        Me.cmdReqPositionsMulti.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqPositionsMulti.TabIndex = 44
-        Me.cmdReqPositionsMulti.Text = "Req Positions Multi"
-        Me.cmdReqPositionsMulti.UseVisualStyleBackColor = True
-        '
-        'cmdCancelPositionsMulti
-        '
-        Me.cmdCancelPositionsMulti.Location = New System.Drawing.Point(683, 587)
-        Me.cmdCancelPositionsMulti.Name = "cmdCancelPositionsMulti"
-        Me.cmdCancelPositionsMulti.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelPositionsMulti.TabIndex = 45
-        Me.cmdCancelPositionsMulti.Text = "Cancel Positions Multi"
-        Me.cmdCancelPositionsMulti.UseVisualStyleBackColor = True
-        '
-        'cmdReqAccountUpdatesMulti
-        '
-        Me.cmdReqAccountUpdatesMulti.Location = New System.Drawing.Point(543, 614)
-        Me.cmdReqAccountUpdatesMulti.Name = "cmdReqAccountUpdatesMulti"
-        Me.cmdReqAccountUpdatesMulti.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqAccountUpdatesMulti.TabIndex = 46
-        Me.cmdReqAccountUpdatesMulti.Text = "Req Acct Upd Multi"
-        Me.cmdReqAccountUpdatesMulti.UseVisualStyleBackColor = True
-        '
-        'cmdCancelAccountUpdatesMulti
-        '
-        Me.cmdCancelAccountUpdatesMulti.Location = New System.Drawing.Point(683, 614)
-        Me.cmdCancelAccountUpdatesMulti.Name = "cmdCancelAccountUpdatesMulti"
-        Me.cmdCancelAccountUpdatesMulti.Size = New System.Drawing.Size(134, 21)
-        Me.cmdCancelAccountUpdatesMulti.TabIndex = 47
-        Me.cmdCancelAccountUpdatesMulti.Text = "Cancel Acct Upd Multi"
-        Me.cmdCancelAccountUpdatesMulti.UseVisualStyleBackColor = True
-        '
-        'cmdReqSecDefOptParams
-        '
-        Me.cmdReqSecDefOptParams.Location = New System.Drawing.Point(683, 464)
-        Me.cmdReqSecDefOptParams.Name = "cmdReqSecDefOptParams"
-        Me.cmdReqSecDefOptParams.Size = New System.Drawing.Size(134, 36)
-        Me.cmdReqSecDefOptParams.TabIndex = 37
-        Me.cmdReqSecDefOptParams.Text = "Req Sec Def Opt Params"
-        Me.cmdReqSecDefOptParams.UseVisualStyleBackColor = True
-        '
-        'cmdFamilyCodes
-        '
-        Me.cmdFamilyCodes.Location = New System.Drawing.Point(684, 221)
-        Me.cmdFamilyCodes.Name = "cmdFamilyCodes"
-        Me.cmdFamilyCodes.Size = New System.Drawing.Size(133, 21)
-        Me.cmdFamilyCodes.TabIndex = 19
-        Me.cmdFamilyCodes.Text = "Req Family Codes"
-        Me.cmdFamilyCodes.UseVisualStyleBackColor = True
-        '
-        'cmdReqMatchingSymbols
-        '
-        Me.cmdReqMatchingSymbols.Location = New System.Drawing.Point(684, 560)
-        Me.cmdReqMatchingSymbols.Name = "cmdReqMatchingSymbols"
-        Me.cmdReqMatchingSymbols.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqMatchingSymbols.TabIndex = 43
-        Me.cmdReqMatchingSymbols.Text = "Req Matching Symbols"
-        Me.cmdReqMatchingSymbols.UseVisualStyleBackColor = True
-        '
-        'cmdReqMktDepthExchanges
-        '
-        Me.cmdReqMktDepthExchanges.Location = New System.Drawing.Point(545, 641)
-        Me.cmdReqMktDepthExchanges.Name = "cmdReqMktDepthExchanges"
-        Me.cmdReqMktDepthExchanges.Size = New System.Drawing.Size(134, 21)
-        Me.cmdReqMktDepthExchanges.TabIndex = 48
-        Me.cmdReqMktDepthExchanges.Text = "Req Mkt Depth Exch"
-        Me.cmdReqMktDepthExchanges.UseVisualStyleBackColor = True
+        'ReqHistoricalDataButton
+        '
+        Me.ReqHistoricalDataButton.AutoSize = True
+        Me.ReqHistoricalDataButton.Location = New System.Drawing.Point(3, 65)
+        Me.ReqHistoricalDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHistoricalDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHistoricalDataButton.Name = "ReqHistoricalDataButton"
+        Me.ReqHistoricalDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqHistoricalDataButton.TabIndex = 4
+        Me.ReqHistoricalDataButton.Text = "Historical Data..."
+        '
+        'FinancialAdvisorButton
+        '
+        Me.FinancialAdvisorButton.AutoSize = True
+        Me.FinancialAdvisorButton.Location = New System.Drawing.Point(3, 499)
+        Me.FinancialAdvisorButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.FinancialAdvisorButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.FinancialAdvisorButton.Name = "FinancialAdvisorButton"
+        Me.FinancialAdvisorButton.Size = New System.Drawing.Size(133, 25)
+        Me.FinancialAdvisorButton.TabIndex = 31
+        Me.FinancialAdvisorButton.Text = "Financial Advisor"
+        '
+        'ReqAcctsButton
+        '
+        Me.ReqAcctsButton.AutoSize = True
+        Me.ReqAcctsButton.Location = New System.Drawing.Point(158, 468)
+        Me.ReqAcctsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAcctsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAcctsButton.Name = "ReqAcctsButton"
+        Me.ReqAcctsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqAcctsButton.TabIndex = 30
+        Me.ReqAcctsButton.Text = "Req Accounts"
+        '
+        'ReqAllOpenOrdersButton
+        '
+        Me.ReqAllOpenOrdersButton.AutoSize = True
+        Me.ReqAllOpenOrdersButton.Location = New System.Drawing.Point(3, 375)
+        Me.ReqAllOpenOrdersButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAllOpenOrdersButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAllOpenOrdersButton.Name = "ReqAllOpenOrdersButton"
+        Me.ReqAllOpenOrdersButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqAllOpenOrdersButton.TabIndex = 24
+        Me.ReqAllOpenOrdersButton.Text = "Req All Open Orders"
+        '
+        'ReqAutoOpenOrdersButton
+        '
+        Me.ReqAutoOpenOrdersButton.AutoSize = True
+        Me.ReqAutoOpenOrdersButton.Location = New System.Drawing.Point(158, 375)
+        Me.ReqAutoOpenOrdersButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAutoOpenOrdersButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAutoOpenOrdersButton.Name = "ReqAutoOpenOrdersButton"
+        Me.ReqAutoOpenOrdersButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqAutoOpenOrdersButton.TabIndex = 25
+        Me.ReqAutoOpenOrdersButton.Text = "Req Auto Open Orders"
+        '
+        'ServerLogLevelButton
+        '
+        Me.ServerLogLevelButton.AutoSize = True
+        Me.ServerLogLevelButton.Location = New System.Drawing.Point(3, 468)
+        Me.ServerLogLevelButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ServerLogLevelButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ServerLogLevelButton.Name = "ServerLogLevelButton"
+        Me.ServerLogLevelButton.Size = New System.Drawing.Size(133, 25)
+        Me.ServerLogLevelButton.TabIndex = 29
+        Me.ServerLogLevelButton.Text = "Log Configuration..."
+        '
+        'ReqNewsButton
+        '
+        Me.ReqNewsButton.AutoSize = True
+        Me.ReqNewsButton.Location = New System.Drawing.Point(158, 437)
+        Me.ReqNewsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqNewsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqNewsButton.Name = "ReqNewsButton"
+        Me.ReqNewsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqNewsButton.TabIndex = 28
+        Me.ReqNewsButton.Text = "Req News Bulletins..."
+        '
+        'ReqAcctDataButton
+        '
+        Me.ReqAcctDataButton.AutoSize = True
+        Me.ReqAcctDataButton.Location = New System.Drawing.Point(3, 406)
+        Me.ReqAcctDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAcctDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAcctDataButton.Name = "ReqAcctDataButton"
+        Me.ReqAcctDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqAcctDataButton.TabIndex = 26
+        Me.ReqAcctDataButton.Text = "Req Acct Data..."
+        '
+        'ReqExecutionsButton
+        '
+        Me.ReqExecutionsButton.AutoSize = True
+        Me.ReqExecutionsButton.Location = New System.Drawing.Point(158, 406)
+        Me.ReqExecutionsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqExecutionsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqExecutionsButton.Name = "ReqExecutionsButton"
+        Me.ReqExecutionsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqExecutionsButton.TabIndex = 27
+        Me.ReqExecutionsButton.Text = "Req Executions..."
+        '
+        'ClearFormButton
+        '
+        Me.ClearFormButton.AutoSize = True
+        Me.ClearFormButton.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ClearFormButton.Location = New System.Drawing.Point(696, 3)
+        Me.ClearFormButton.Name = "ClearFormButton"
+        Me.ClearFormButton.Size = New System.Drawing.Size(89, 35)
+        Me.ClearFormButton.TabIndex = 5
+        Me.ClearFormButton.Text = "Clear data"
+        '
+        'CancelMktDepthButton
+        '
+        Me.CancelMktDepthButton.AutoSize = True
+        Me.CancelMktDepthButton.Location = New System.Drawing.Point(158, 34)
+        Me.CancelMktDepthButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelMktDepthButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelMktDepthButton.Name = "CancelMktDepthButton"
+        Me.CancelMktDepthButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelMktDepthButton.TabIndex = 3
+        Me.CancelMktDepthButton.Text = "Cancel Mkt Depth..."
+        '
+        'PlaceOrderButton
+        '
+        Me.PlaceOrderButton.AutoSize = True
+        Me.PlaceOrderButton.Location = New System.Drawing.Point(3, 282)
+        Me.PlaceOrderButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.PlaceOrderButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.PlaceOrderButton.Name = "PlaceOrderButton"
+        Me.PlaceOrderButton.Size = New System.Drawing.Size(133, 25)
+        Me.PlaceOrderButton.TabIndex = 18
+        Me.PlaceOrderButton.Text = "Place Order..."
+        '
+        'CancelOrderButton
+        '
+        Me.CancelOrderButton.AutoSize = True
+        Me.CancelOrderButton.Location = New System.Drawing.Point(158, 282)
+        Me.CancelOrderButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelOrderButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelOrderButton.Name = "CancelOrderButton"
+        Me.CancelOrderButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelOrderButton.TabIndex = 19
+        Me.CancelOrderButton.Text = "Cancel Order..."
+        '
+        'ExtendedOrderAtribsButton
+        '
+        Me.ExtendedOrderAtribsButton.AutoSize = True
+        Me.ExtendedOrderAtribsButton.Location = New System.Drawing.Point(158, 313)
+        Me.ExtendedOrderAtribsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ExtendedOrderAtribsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ExtendedOrderAtribsButton.Name = "ExtendedOrderAtribsButton"
+        Me.ExtendedOrderAtribsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ExtendedOrderAtribsButton.TabIndex = 21
+        Me.ExtendedOrderAtribsButton.Text = "Extended..."
+        '
+        'ReqContractDataButton
+        '
+        Me.ReqContractDataButton.AutoSize = True
+        Me.ReqContractDataButton.Location = New System.Drawing.Point(3, 344)
+        Me.ReqContractDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqContractDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqContractDataButton.Name = "ReqContractDataButton"
+        Me.ReqContractDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqContractDataButton.TabIndex = 22
+        Me.ReqContractDataButton.Text = "Req Contract Data..."
+        '
+        'ReqOpenOrdersButton
+        '
+        Me.ReqOpenOrdersButton.AutoSize = True
+        Me.ReqOpenOrdersButton.Location = New System.Drawing.Point(158, 344)
+        Me.ReqOpenOrdersButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqOpenOrdersButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqOpenOrdersButton.Name = "ReqOpenOrdersButton"
+        Me.ReqOpenOrdersButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqOpenOrdersButton.TabIndex = 23
+        Me.ReqOpenOrdersButton.Text = "Req Open Orders"
+        '
+        'ConnectDisconnectButton
+        '
+        Me.ConnectDisconnectButton.AutoSize = True
+        Me.ConnectDisconnectButton.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ConnectDisconnectButton.Location = New System.Drawing.Point(3, 3)
+        Me.ConnectDisconnectButton.Name = "ConnectDisconnectButton"
+        Me.ConnectDisconnectButton.Size = New System.Drawing.Size(113, 35)
+        Me.ConnectDisconnectButton.TabIndex = 4
+        Me.ConnectDisconnectButton.Text = "#"
+        '
+        'ExerciseOptionsButton
+        '
+        Me.ExerciseOptionsButton.AutoSize = True
+        Me.ExerciseOptionsButton.Location = New System.Drawing.Point(3, 313)
+        Me.ExerciseOptionsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ExerciseOptionsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ExerciseOptionsButton.Name = "ExerciseOptionsButton"
+        Me.ExerciseOptionsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ExerciseOptionsButton.TabIndex = 20
+        Me.ExerciseOptionsButton.Text = "Exercise Options..."
+        '
+        'CancelHistDataButton
+        '
+        Me.CancelHistDataButton.AutoSize = True
+        Me.CancelHistDataButton.Location = New System.Drawing.Point(158, 65)
+        Me.CancelHistDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelHistDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelHistDataButton.Name = "CancelHistDataButton"
+        Me.CancelHistDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelHistDataButton.TabIndex = 5
+        Me.CancelHistDataButton.Text = "Cancel Hist. Data..."
+        '
+        'ScannerButton
+        '
+        Me.ScannerButton.AutoSize = True
+        Me.ScannerButton.Location = New System.Drawing.Point(158, 158)
+        Me.ScannerButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ScannerButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ScannerButton.Name = "ScannerButton"
+        Me.ScannerButton.Size = New System.Drawing.Size(133, 25)
+        Me.ScannerButton.TabIndex = 11
+        Me.ScannerButton.Text = "Market Scanner..."
+        '
+        'ReqRealTimeBarsButton
+        '
+        Me.ReqRealTimeBarsButton.AutoSize = True
+        Me.ReqRealTimeBarsButton.Location = New System.Drawing.Point(3, 127)
+        Me.ReqRealTimeBarsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqRealTimeBarsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqRealTimeBarsButton.Name = "ReqRealTimeBarsButton"
+        Me.ReqRealTimeBarsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqRealTimeBarsButton.TabIndex = 8
+        Me.ReqRealTimeBarsButton.Text = "Real Time Bars"
+        '
+        'CancelRealTimeBarsButton
+        '
+        Me.CancelRealTimeBarsButton.AutoSize = True
+        Me.CancelRealTimeBarsButton.Location = New System.Drawing.Point(158, 127)
+        Me.CancelRealTimeBarsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelRealTimeBarsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelRealTimeBarsButton.Name = "CancelRealTimeBarsButton"
+        Me.CancelRealTimeBarsButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelRealTimeBarsButton.TabIndex = 9
+        Me.CancelRealTimeBarsButton.Text = "Canc Real Time Bars"
+        '
+        'ReqCurrentTimeButton
+        '
+        Me.ReqCurrentTimeButton.AutoSize = True
+        Me.ReqCurrentTimeButton.Location = New System.Drawing.Point(3, 158)
+        Me.ReqCurrentTimeButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqCurrentTimeButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqCurrentTimeButton.Name = "ReqCurrentTimeButton"
+        Me.ReqCurrentTimeButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqCurrentTimeButton.TabIndex = 10
+        Me.ReqCurrentTimeButton.Text = "Current Time"
+        '
+        'WhatIfButton
+        '
+        Me.WhatIfButton.AutoSize = True
+        Me.WhatIfButton.Location = New System.Drawing.Point(3, 251)
+        Me.WhatIfButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.WhatIfButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.WhatIfButton.Name = "WhatIfButton"
+        Me.WhatIfButton.Size = New System.Drawing.Size(133, 25)
+        Me.WhatIfButton.TabIndex = 16
+        Me.WhatIfButton.Text = "What If..."
+        '
+        'CalcImpliedVolatilityButton
+        '
+        Me.CalcImpliedVolatilityButton.AutoSize = True
+        Me.CalcImpliedVolatilityButton.Location = New System.Drawing.Point(3, 189)
+        Me.CalcImpliedVolatilityButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CalcImpliedVolatilityButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CalcImpliedVolatilityButton.Name = "CalcImpliedVolatilityButton"
+        Me.CalcImpliedVolatilityButton.Size = New System.Drawing.Size(133, 25)
+        Me.CalcImpliedVolatilityButton.TabIndex = 12
+        Me.CalcImpliedVolatilityButton.Text = "Calc Implied Volatility"
+        '
+        'CalcOptionPriceButton
+        '
+        Me.CalcOptionPriceButton.AutoSize = True
+        Me.CalcOptionPriceButton.Location = New System.Drawing.Point(3, 220)
+        Me.CalcOptionPriceButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CalcOptionPriceButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CalcOptionPriceButton.Name = "CalcOptionPriceButton"
+        Me.CalcOptionPriceButton.Size = New System.Drawing.Size(133, 25)
+        Me.CalcOptionPriceButton.TabIndex = 14
+        Me.CalcOptionPriceButton.Text = "Calc Option Price"
+        '
+        'CancelCalcImpliedVolatilityButton
+        '
+        Me.CancelCalcImpliedVolatilityButton.AutoSize = True
+        Me.CancelCalcImpliedVolatilityButton.Location = New System.Drawing.Point(158, 189)
+        Me.CancelCalcImpliedVolatilityButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelCalcImpliedVolatilityButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelCalcImpliedVolatilityButton.Name = "CancelCalcImpliedVolatilityButton"
+        Me.CancelCalcImpliedVolatilityButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelCalcImpliedVolatilityButton.TabIndex = 13
+        Me.CancelCalcImpliedVolatilityButton.Text = "Cancel Calc Impl Vol"
+        '
+        'CancelCalcOptionPriceButton
+        '
+        Me.CancelCalcOptionPriceButton.AutoSize = True
+        Me.CancelCalcOptionPriceButton.Location = New System.Drawing.Point(158, 220)
+        Me.CancelCalcOptionPriceButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelCalcOptionPriceButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelCalcOptionPriceButton.Name = "CancelCalcOptionPriceButton"
+        Me.CancelCalcOptionPriceButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelCalcOptionPriceButton.TabIndex = 15
+        Me.CancelCalcOptionPriceButton.Text = "Cancel Calc Opt Price"
+        '
+        'ReqGlobalCancelButton
+        '
+        Me.ReqGlobalCancelButton.AutoSize = True
+        Me.ReqGlobalCancelButton.Location = New System.Drawing.Point(158, 499)
+        Me.ReqGlobalCancelButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqGlobalCancelButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqGlobalCancelButton.Name = "ReqGlobalCancelButton"
+        Me.ReqGlobalCancelButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqGlobalCancelButton.TabIndex = 32
+        Me.ReqGlobalCancelButton.Text = "Global Cancel"
+        '
+        'ReqMarketDataTypeButton
+        '
+        Me.ReqMarketDataTypeButton.AutoSize = True
+        Me.ReqMarketDataTypeButton.Location = New System.Drawing.Point(3, 530)
+        Me.ReqMarketDataTypeButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMarketDataTypeButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMarketDataTypeButton.Name = "ReqMarketDataTypeButton"
+        Me.ReqMarketDataTypeButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqMarketDataTypeButton.TabIndex = 33
+        Me.ReqMarketDataTypeButton.Text = "Req Mkt Data Type"
+        '
+        'ReqPositionsButton
+        '
+        Me.ReqPositionsButton.AutoSize = True
+        Me.ReqPositionsButton.Location = New System.Drawing.Point(3, 561)
+        Me.ReqPositionsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqPositionsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqPositionsButton.Name = "ReqPositionsButton"
+        Me.ReqPositionsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqPositionsButton.TabIndex = 35
+        Me.ReqPositionsButton.Text = "Req Positions"
+        '
+        'ReqAccountSummaryButton
+        '
+        Me.ReqAccountSummaryButton.AutoSize = True
+        Me.ReqAccountSummaryButton.Location = New System.Drawing.Point(3, 592)
+        Me.ReqAccountSummaryButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAccountSummaryButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAccountSummaryButton.Name = "ReqAccountSummaryButton"
+        Me.ReqAccountSummaryButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqAccountSummaryButton.TabIndex = 37
+        Me.ReqAccountSummaryButton.Text = "Req Acct Summary"
+        '
+        'CancelAccountSummaryButton
+        '
+        Me.CancelAccountSummaryButton.AutoSize = True
+        Me.CancelAccountSummaryButton.Location = New System.Drawing.Point(158, 592)
+        Me.CancelAccountSummaryButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelAccountSummaryButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelAccountSummaryButton.Name = "CancelAccountSummaryButton"
+        Me.CancelAccountSummaryButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelAccountSummaryButton.TabIndex = 38
+        Me.CancelAccountSummaryButton.Text = "Cancel Acct Summary"
+        '
+        'CancelPositionsButton
+        '
+        Me.CancelPositionsButton.AutoSize = True
+        Me.CancelPositionsButton.Location = New System.Drawing.Point(158, 561)
+        Me.CancelPositionsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelPositionsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelPositionsButton.Name = "CancelPositionsButton"
+        Me.CancelPositionsButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelPositionsButton.TabIndex = 36
+        Me.CancelPositionsButton.Text = "Cancel Positions"
+        '
+        'GroupsButton
+        '
+        Me.GroupsButton.AutoSize = True
+        Me.GroupsButton.Location = New System.Drawing.Point(3, 623)
+        Me.GroupsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.GroupsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.GroupsButton.Name = "GroupsButton"
+        Me.GroupsButton.Size = New System.Drawing.Size(133, 25)
+        Me.GroupsButton.TabIndex = 39
+        Me.GroupsButton.Text = "Groups"
+        '
+        'ReqFundamentalDataButton
+        '
+        Me.ReqFundamentalDataButton.AutoSize = True
+        Me.ReqFundamentalDataButton.Location = New System.Drawing.Point(3, 96)
+        Me.ReqFundamentalDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqFundamentalDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqFundamentalDataButton.Name = "ReqFundamentalDataButton"
+        Me.ReqFundamentalDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqFundamentalDataButton.TabIndex = 6
+        Me.ReqFundamentalDataButton.Text = "Fundamental Data..."
+        '
+        'CancelFundamentalDataButton
+        '
+        Me.CancelFundamentalDataButton.AutoSize = True
+        Me.CancelFundamentalDataButton.Location = New System.Drawing.Point(158, 96)
+        Me.CancelFundamentalDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelFundamentalDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelFundamentalDataButton.Name = "CancelFundamentalDataButton"
+        Me.CancelFundamentalDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelFundamentalDataButton.TabIndex = 7
+        Me.CancelFundamentalDataButton.Text = "Cancel Fund. Data..."
+        '
+        'ReqPositionsMultiButton
+        '
+        Me.ReqPositionsMultiButton.AutoSize = True
+        Me.ReqPositionsMultiButton.Location = New System.Drawing.Point(3, 654)
+        Me.ReqPositionsMultiButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqPositionsMultiButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqPositionsMultiButton.Name = "ReqPositionsMultiButton"
+        Me.ReqPositionsMultiButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqPositionsMultiButton.TabIndex = 41
+        Me.ReqPositionsMultiButton.Text = "Req Positions Multi"
+        '
+        'CancelPositionsMultiButton
+        '
+        Me.CancelPositionsMultiButton.AutoSize = True
+        Me.CancelPositionsMultiButton.Location = New System.Drawing.Point(158, 654)
+        Me.CancelPositionsMultiButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelPositionsMultiButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelPositionsMultiButton.Name = "CancelPositionsMultiButton"
+        Me.CancelPositionsMultiButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelPositionsMultiButton.TabIndex = 42
+        Me.CancelPositionsMultiButton.Text = "Cancel Positions Multi"
+        '
+        'ReqAccountUpdatesMultiButton
+        '
+        Me.ReqAccountUpdatesMultiButton.AutoSize = True
+        Me.ReqAccountUpdatesMultiButton.Location = New System.Drawing.Point(3, 685)
+        Me.ReqAccountUpdatesMultiButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAccountUpdatesMultiButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqAccountUpdatesMultiButton.Name = "ReqAccountUpdatesMultiButton"
+        Me.ReqAccountUpdatesMultiButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqAccountUpdatesMultiButton.TabIndex = 43
+        Me.ReqAccountUpdatesMultiButton.Text = "Req Acct Upd Multi"
+        '
+        'CancelAccountUpdatesMultiButton
+        '
+        Me.CancelAccountUpdatesMultiButton.AutoSize = True
+        Me.CancelAccountUpdatesMultiButton.Location = New System.Drawing.Point(158, 685)
+        Me.CancelAccountUpdatesMultiButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelAccountUpdatesMultiButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelAccountUpdatesMultiButton.Name = "CancelAccountUpdatesMultiButton"
+        Me.CancelAccountUpdatesMultiButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelAccountUpdatesMultiButton.TabIndex = 44
+        Me.CancelAccountUpdatesMultiButton.Text = "Cancel Acct Upd Multi"
+        '
+        'ReqSecDefOptParamsButton
+        '
+        Me.ReqSecDefOptParamsButton.AutoSize = True
+        Me.ReqSecDefOptParamsButton.Location = New System.Drawing.Point(158, 530)
+        Me.ReqSecDefOptParamsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqSecDefOptParamsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqSecDefOptParamsButton.Name = "ReqSecDefOptParamsButton"
+        Me.ReqSecDefOptParamsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqSecDefOptParamsButton.TabIndex = 34
+        Me.ReqSecDefOptParamsButton.Text = "Req Sec Def Opt"
+        '
+        'FamilyCodesButton
+        '
+        Me.FamilyCodesButton.AutoSize = True
+        Me.FamilyCodesButton.Location = New System.Drawing.Point(158, 251)
+        Me.FamilyCodesButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.FamilyCodesButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.FamilyCodesButton.Name = "FamilyCodesButton"
+        Me.FamilyCodesButton.Size = New System.Drawing.Size(133, 25)
+        Me.FamilyCodesButton.TabIndex = 17
+        Me.FamilyCodesButton.Text = "Req Family Codes"
+        '
+        'ReqMatchingSymbolsButton
+        '
+        Me.ReqMatchingSymbolsButton.AutoSize = True
+        Me.ReqMatchingSymbolsButton.Location = New System.Drawing.Point(158, 623)
+        Me.ReqMatchingSymbolsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMatchingSymbolsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMatchingSymbolsButton.Name = "ReqMatchingSymbolsButton"
+        Me.ReqMatchingSymbolsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqMatchingSymbolsButton.TabIndex = 40
+        Me.ReqMatchingSymbolsButton.Text = "Req Matching Symbols"
+        '
+        'ReqMktDepthExchangesButton
+        '
+        Me.ReqMktDepthExchangesButton.AutoSize = True
+        Me.ReqMktDepthExchangesButton.Location = New System.Drawing.Point(3, 716)
+        Me.ReqMktDepthExchangesButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMktDepthExchangesButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMktDepthExchangesButton.Name = "ReqMktDepthExchangesButton"
+        Me.ReqMktDepthExchangesButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqMktDepthExchangesButton.TabIndex = 45
+        Me.ReqMktDepthExchangesButton.Text = "Req Mkt Depth Exch"
         '
         'PauseAPIButton
         '
-        Me.PauseAPIButton.BackColor = System.Drawing.SystemColors.Control
-        Me.PauseAPIButton.Cursor = System.Windows.Forms.Cursors.Default
+        Me.PauseAPIButton.AutoSize = True
+        Me.PauseAPIButton.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PauseAPIButton.Enabled = False
-        Me.PauseAPIButton.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.PauseAPIButton.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.PauseAPIButton.Location = New System.Drawing.Point(320, 641)
+        Me.PauseAPIButton.Location = New System.Drawing.Point(791, 3)
         Me.PauseAPIButton.Name = "PauseAPIButton"
-        Me.PauseAPIButton.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.PauseAPIButton.Size = New System.Drawing.Size(89, 25)
-        Me.PauseAPIButton.TabIndex = 56
+        Me.PauseAPIButton.Size = New System.Drawing.Size(89, 35)
+        Me.PauseAPIButton.TabIndex = 6
         Me.PauseAPIButton.Text = "Pause API"
-        Me.PauseAPIButton.UseVisualStyleBackColor = True
+        '
+        'ReqTickByTickButton
+        '
+        Me.ReqTickByTickButton.AutoSize = True
+        Me.ReqTickByTickButton.Location = New System.Drawing.Point(3, 933)
+        Me.ReqTickByTickButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqTickByTickButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqTickByTickButton.Name = "ReqTickByTickButton"
+        Me.ReqTickByTickButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqTickByTickButton.TabIndex = 58
+        Me.ReqTickByTickButton.Text = "Req Tick-By-Tick"
+        '
+        'ReqHistoricalTicksButton
+        '
+        Me.ReqHistoricalTicksButton.AutoSize = True
+        Me.ReqHistoricalTicksButton.Location = New System.Drawing.Point(3, 902)
+        Me.ReqHistoricalTicksButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHistoricalTicksButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHistoricalTicksButton.Name = "ReqHistoricalTicksButton"
+        Me.ReqHistoricalTicksButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqHistoricalTicksButton.TabIndex = 57
+        Me.ReqHistoricalTicksButton.Text = "Req Historical Ticks"
+        '
+        'ReqPnlSingleButton
+        '
+        Me.ReqPnlSingleButton.AutoSize = True
+        Me.ReqPnlSingleButton.Location = New System.Drawing.Point(3, 871)
+        Me.ReqPnlSingleButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqPnlSingleButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqPnlSingleButton.Name = "ReqPnlSingleButton"
+        Me.ReqPnlSingleButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqPnlSingleButton.TabIndex = 55
+        Me.ReqPnlSingleButton.Text = "Req PnL Single..."
+        '
+        'ReqPnlButton
+        '
+        Me.ReqPnlButton.AutoSize = True
+        Me.ReqPnlButton.Location = New System.Drawing.Point(3, 840)
+        Me.ReqPnlButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqPnlButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqPnlButton.Name = "ReqPnlButton"
+        Me.ReqPnlButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqPnlButton.TabIndex = 53
+        Me.ReqPnlButton.Text = "Req PnL..."
+        '
+        'ReqHistogramDataButton
+        '
+        Me.ReqHistogramDataButton.AutoSize = True
+        Me.ReqHistogramDataButton.Location = New System.Drawing.Point(3, 809)
+        Me.ReqHistogramDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHistogramDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHistogramDataButton.Name = "ReqHistogramDataButton"
+        Me.ReqHistogramDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqHistogramDataButton.TabIndex = 51
+        Me.ReqHistogramDataButton.Text = "Req Histogram Data"
+        '
+        'ReqHistoricalNewsButton
+        '
+        Me.ReqHistoricalNewsButton.AutoSize = True
+        Me.ReqHistoricalNewsButton.Location = New System.Drawing.Point(3, 778)
+        Me.ReqHistoricalNewsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHistoricalNewsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHistoricalNewsButton.Name = "ReqHistoricalNewsButton"
+        Me.ReqHistoricalNewsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqHistoricalNewsButton.TabIndex = 49
+        Me.ReqHistoricalNewsButton.Text = "Req Historical News"
+        '
+        'ReqSmartComponentsButton
+        '
+        Me.ReqSmartComponentsButton.AutoSize = True
+        Me.ReqSmartComponentsButton.Location = New System.Drawing.Point(3, 747)
+        Me.ReqSmartComponentsButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqSmartComponentsButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqSmartComponentsButton.Name = "ReqSmartComponentsButton"
+        Me.ReqSmartComponentsButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqSmartComponentsButton.TabIndex = 47
+        Me.ReqSmartComponentsButton.Text = "Req Smart Components"
+        '
+        'CancelTickByTickButton
+        '
+        Me.CancelTickByTickButton.AutoSize = True
+        Me.CancelTickByTickButton.Location = New System.Drawing.Point(158, 933)
+        Me.CancelTickByTickButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelTickByTickButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelTickByTickButton.Name = "CancelTickByTickButton"
+        Me.CancelTickByTickButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelTickByTickButton.TabIndex = 59
+        Me.CancelTickByTickButton.Text = "Cancel Tick-By-Tick"
+        '
+        'CancelPnlSingleButton
+        '
+        Me.CancelPnlSingleButton.AutoSize = True
+        Me.CancelPnlSingleButton.Location = New System.Drawing.Point(158, 871)
+        Me.CancelPnlSingleButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelPnlSingleButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelPnlSingleButton.Name = "CancelPnlSingleButton"
+        Me.CancelPnlSingleButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelPnlSingleButton.TabIndex = 56
+        Me.CancelPnlSingleButton.Text = "Cancel PnL Single"
+        '
+        'CancelPnlButton
+        '
+        Me.CancelPnlButton.AutoSize = True
+        Me.CancelPnlButton.Location = New System.Drawing.Point(158, 840)
+        Me.CancelPnlButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelPnlButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelPnlButton.Name = "CancelPnlButton"
+        Me.CancelPnlButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelPnlButton.TabIndex = 54
+        Me.CancelPnlButton.Text = "Cancel PnL"
+        '
+        'ReqMarketRuleButton
+        '
+        Me.ReqMarketRuleButton.AutoSize = True
+        Me.ReqMarketRuleButton.Location = New System.Drawing.Point(158, 809)
+        Me.ReqMarketRuleButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMarketRuleButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMarketRuleButton.Name = "ReqMarketRuleButton"
+        Me.ReqMarketRuleButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqMarketRuleButton.TabIndex = 52
+        Me.ReqMarketRuleButton.Text = "Req Market Rule"
+        '
+        'ReqHeadTimestampButton
+        '
+        Me.ReqHeadTimestampButton.AutoSize = True
+        Me.ReqHeadTimestampButton.Location = New System.Drawing.Point(158, 778)
+        Me.ReqHeadTimestampButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHeadTimestampButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqHeadTimestampButton.Name = "ReqHeadTimestampButton"
+        Me.ReqHeadTimestampButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqHeadTimestampButton.TabIndex = 50
+        Me.ReqHeadTimestampButton.Text = "Req Head Time Stamp..."
+        '
+        'ReqNewsArticleButton
+        '
+        Me.ReqNewsArticleButton.AutoSize = True
+        Me.ReqNewsArticleButton.Location = New System.Drawing.Point(158, 747)
+        Me.ReqNewsArticleButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqNewsArticleButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqNewsArticleButton.Name = "ReqNewsArticleButton"
+        Me.ReqNewsArticleButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqNewsArticleButton.TabIndex = 48
+        Me.ReqNewsArticleButton.Text = "Req News Article"
+        '
+        'ReqNewsProvidersButton
+        '
+        Me.ReqNewsProvidersButton.AutoSize = True
+        Me.ReqNewsProvidersButton.Location = New System.Drawing.Point(158, 716)
+        Me.ReqNewsProvidersButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqNewsProvidersButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqNewsProvidersButton.Name = "ReqNewsProvidersButton"
+        Me.ReqNewsProvidersButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqNewsProvidersButton.TabIndex = 46
+        Me.ReqNewsProvidersButton.Text = "Req News Providers"
+        '
+        'ConnectionStatusLabel
+        '
+        Me.ConnectionStatusLabel.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.ConnectionStatusLabel.AutoSize = True
+        Me.ConnectionStatusLabel.BackColor = System.Drawing.Color.Transparent
+        Me.ConnectionStatusLabel.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ConnectionStatusLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(19, Byte), Integer), CType(CType(146, Byte), Integer), CType(CType(18, Byte), Integer))
+        Me.ConnectionStatusLabel.Location = New System.Drawing.Point(1066, 12)
+        Me.ConnectionStatusLabel.Name = "ConnectionStatusLabel"
+        Me.ConnectionStatusLabel.Size = New System.Drawing.Size(98, 17)
+        Me.ConnectionStatusLabel.TabIndex = 57
+        Me.ConnectionStatusLabel.Text = "Not connected"
+        Me.ConnectionStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'SplitContainer1
+        '
+        Me.SplitContainer1.BackColor = System.Drawing.Color.PowderBlue
+        Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
+        Me.SplitContainer1.IsSplitterFixed = True
+        Me.SplitContainer1.Location = New System.Drawing.Point(0, 41)
+        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(0)
+        Me.SplitContainer1.Name = "SplitContainer1"
+        '
+        'SplitContainer1.Panel1
+        '
+        Me.SplitContainer1.Panel1.Controls.Add(Me.ButtonsPanel)
+        '
+        'SplitContainer1.Panel2
+        '
+        Me.SplitContainer1.Panel2.Controls.Add(Me.SplitContainer2)
+        Me.SplitContainer1.Size = New System.Drawing.Size(1167, 839)
+        Me.SplitContainer1.SplitterDistance = 320
+        Me.SplitContainer1.TabIndex = 1
+        Me.SplitContainer1.TabStop = False
+        '
+        'ButtonsPanel
+        '
+        Me.ButtonsPanel.AutoScroll = True
+        Me.ButtonsPanel.ColumnCount = 4
+        Me.ButtonsPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.ButtonsPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 16.0!))
+        Me.ButtonsPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.ButtonsPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 26.0!))
+        Me.ButtonsPanel.Controls.Add(Me.ReqMktDataButton, 0, 0)
+        Me.ButtonsPanel.Controls.Add(Me.CancelMktDataButton, 2, 0)
+        Me.ButtonsPanel.Controls.Add(Me.ReqMktDepthButton, 0, 1)
+        Me.ButtonsPanel.Controls.Add(Me.CancelMktDepthButton, 2, 1)
+        Me.ButtonsPanel.Controls.Add(Me.ReqHistoricalDataButton, 0, 2)
+        Me.ButtonsPanel.Controls.Add(Me.CancelHistDataButton, 2, 2)
+        Me.ButtonsPanel.Controls.Add(Me.ReqFundamentalDataButton, 0, 3)
+        Me.ButtonsPanel.Controls.Add(Me.CancelFundamentalDataButton, 2, 3)
+        Me.ButtonsPanel.Controls.Add(Me.ReqRealTimeBarsButton, 0, 4)
+        Me.ButtonsPanel.Controls.Add(Me.CancelRealTimeBarsButton, 2, 4)
+        Me.ButtonsPanel.Controls.Add(Me.ReqCurrentTimeButton, 0, 5)
+        Me.ButtonsPanel.Controls.Add(Me.ScannerButton, 2, 5)
+        Me.ButtonsPanel.Controls.Add(Me.CalcImpliedVolatilityButton, 0, 6)
+        Me.ButtonsPanel.Controls.Add(Me.CancelCalcImpliedVolatilityButton, 2, 6)
+        Me.ButtonsPanel.Controls.Add(Me.CalcOptionPriceButton, 0, 7)
+        Me.ButtonsPanel.Controls.Add(Me.CancelCalcOptionPriceButton, 2, 7)
+        Me.ButtonsPanel.Controls.Add(Me.WhatIfButton, 0, 8)
+        Me.ButtonsPanel.Controls.Add(Me.FamilyCodesButton, 2, 8)
+        Me.ButtonsPanel.Controls.Add(Me.PlaceOrderButton, 0, 9)
+        Me.ButtonsPanel.Controls.Add(Me.CancelOrderButton, 2, 9)
+        Me.ButtonsPanel.Controls.Add(Me.ExerciseOptionsButton, 0, 10)
+        Me.ButtonsPanel.Controls.Add(Me.ExtendedOrderAtribsButton, 2, 10)
+        Me.ButtonsPanel.Controls.Add(Me.ReqContractDataButton, 0, 11)
+        Me.ButtonsPanel.Controls.Add(Me.ReqOpenOrdersButton, 2, 11)
+        Me.ButtonsPanel.Controls.Add(Me.ReqAllOpenOrdersButton, 0, 12)
+        Me.ButtonsPanel.Controls.Add(Me.ReqAutoOpenOrdersButton, 2, 12)
+        Me.ButtonsPanel.Controls.Add(Me.ReqAcctDataButton, 0, 13)
+        Me.ButtonsPanel.Controls.Add(Me.ReqExecutionsButton, 2, 13)
+        Me.ButtonsPanel.Controls.Add(Me.ReqNewsButton, 2, 14)
+        Me.ButtonsPanel.Controls.Add(Me.ServerLogLevelButton, 0, 15)
+        Me.ButtonsPanel.Controls.Add(Me.ReqAcctsButton, 2, 15)
+        Me.ButtonsPanel.Controls.Add(Me.FinancialAdvisorButton, 0, 16)
+        Me.ButtonsPanel.Controls.Add(Me.ReqGlobalCancelButton, 2, 16)
+        Me.ButtonsPanel.Controls.Add(Me.ReqMarketDataTypeButton, 0, 17)
+        Me.ButtonsPanel.Controls.Add(Me.ReqSecDefOptParamsButton, 2, 17)
+        Me.ButtonsPanel.Controls.Add(Me.ReqPositionsButton, 0, 18)
+        Me.ButtonsPanel.Controls.Add(Me.CancelPositionsButton, 2, 18)
+        Me.ButtonsPanel.Controls.Add(Me.ReqAccountSummaryButton, 0, 19)
+        Me.ButtonsPanel.Controls.Add(Me.CancelAccountSummaryButton, 2, 19)
+        Me.ButtonsPanel.Controls.Add(Me.GroupsButton, 0, 20)
+        Me.ButtonsPanel.Controls.Add(Me.ReqMatchingSymbolsButton, 2, 20)
+        Me.ButtonsPanel.Controls.Add(Me.ReqPositionsMultiButton, 0, 21)
+        Me.ButtonsPanel.Controls.Add(Me.CancelPositionsMultiButton, 2, 21)
+        Me.ButtonsPanel.Controls.Add(Me.ReqAccountUpdatesMultiButton, 0, 22)
+        Me.ButtonsPanel.Controls.Add(Me.CancelAccountUpdatesMultiButton, 2, 22)
+        Me.ButtonsPanel.Controls.Add(Me.ReqMktDepthExchangesButton, 0, 23)
+        Me.ButtonsPanel.Controls.Add(Me.ReqNewsProvidersButton, 2, 23)
+        Me.ButtonsPanel.Controls.Add(Me.ReqSmartComponentsButton, 0, 24)
+        Me.ButtonsPanel.Controls.Add(Me.ReqNewsArticleButton, 2, 24)
+        Me.ButtonsPanel.Controls.Add(Me.ReqHistoricalNewsButton, 0, 25)
+        Me.ButtonsPanel.Controls.Add(Me.ReqHeadTimestampButton, 2, 25)
+        Me.ButtonsPanel.Controls.Add(Me.ReqHistogramDataButton, 0, 26)
+        Me.ButtonsPanel.Controls.Add(Me.ReqMarketRuleButton, 2, 26)
+        Me.ButtonsPanel.Controls.Add(Me.ReqPnlButton, 0, 27)
+        Me.ButtonsPanel.Controls.Add(Me.CancelPnlButton, 2, 27)
+        Me.ButtonsPanel.Controls.Add(Me.ReqPnlSingleButton, 0, 28)
+        Me.ButtonsPanel.Controls.Add(Me.CancelPnlSingleButton, 2, 28)
+        Me.ButtonsPanel.Controls.Add(Me.ReqHistoricalTicksButton, 0, 29)
+        Me.ButtonsPanel.Controls.Add(Me.ReqTickByTickButton, 0, 30)
+        Me.ButtonsPanel.Controls.Add(Me.CancelTickByTickButton, 2, 30)
+        Me.ButtonsPanel.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ButtonsPanel.Location = New System.Drawing.Point(0, 0)
+        Me.ButtonsPanel.Margin = New System.Windows.Forms.Padding(0)
+        Me.ButtonsPanel.Name = "ButtonsPanel"
+        Me.ButtonsPanel.RowCount = 31
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.ButtonsPanel.Size = New System.Drawing.Size(320, 839)
+        Me.ButtonsPanel.TabIndex = 0
+        '
+        'ReqMktDataButton
+        '
+        Me.ReqMktDataButton.AutoSize = True
+        Me.ReqMktDataButton.Location = New System.Drawing.Point(3, 3)
+        Me.ReqMktDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMktDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMktDataButton.Name = "ReqMktDataButton"
+        Me.ReqMktDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqMktDataButton.TabIndex = 0
+        Me.ReqMktDataButton.Text = "Req Mkt Data..."
+        '
+        'CancelMktDataButton
+        '
+        Me.CancelMktDataButton.AutoSize = True
+        Me.CancelMktDataButton.Location = New System.Drawing.Point(158, 3)
+        Me.CancelMktDataButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.CancelMktDataButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.CancelMktDataButton.Name = "CancelMktDataButton"
+        Me.CancelMktDataButton.Size = New System.Drawing.Size(133, 25)
+        Me.CancelMktDataButton.TabIndex = 1
+        Me.CancelMktDataButton.Text = "Cancel Mkt Data..."
+        '
+        'ReqMktDepthButton
+        '
+        Me.ReqMktDepthButton.AutoSize = True
+        Me.ReqMktDepthButton.Location = New System.Drawing.Point(3, 34)
+        Me.ReqMktDepthButton.MaximumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMktDepthButton.MinimumSize = New System.Drawing.Size(133, 0)
+        Me.ReqMktDepthButton.Name = "ReqMktDepthButton"
+        Me.ReqMktDepthButton.Size = New System.Drawing.Size(133, 25)
+        Me.ReqMktDepthButton.TabIndex = 2
+        Me.ReqMktDepthButton.Text = "Req Mkt Depth..."
+        '
+        'SplitContainer2
+        '
+        Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer2.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer2.Name = "SplitContainer2"
+        Me.SplitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal
+        '
+        'SplitContainer2.Panel1
+        '
+        Me.SplitContainer2.Panel1.Controls.Add(Me.SplitContainer3)
+        '
+        'SplitContainer2.Panel2
+        '
+        Me.SplitContainer2.Panel2.Controls.Add(Me.SplitContainer4)
+        Me.SplitContainer2.Size = New System.Drawing.Size(843, 839)
+        Me.SplitContainer2.SplitterDistance = 552
+        Me.SplitContainer2.TabIndex = 0
+        '
+        'SplitContainer3
+        '
+        Me.SplitContainer3.BackColor = System.Drawing.Color.PowderBlue
+        Me.SplitContainer3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer3.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer3.Margin = New System.Windows.Forms.Padding(0)
+        Me.SplitContainer3.Name = "SplitContainer3"
+        '
+        'SplitContainer3.Panel1
+        '
+        Me.SplitContainer3.Panel1.Controls.Add(Me.TableLayoutPanel2)
+        '
+        'SplitContainer3.Panel2
+        '
+        Me.SplitContainer3.Panel2.Controls.Add(Me.TableLayoutPanel3)
+        Me.SplitContainer3.Size = New System.Drawing.Size(843, 552)
+        Me.SplitContainer3.SplitterDistance = 400
+        Me.SplitContainer3.TabIndex = 0
+        '
+        'TableLayoutPanel2
+        '
+        Me.TableLayoutPanel2.ColumnCount = 1
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.Controls.Add(Me.ServerResponsesText, 0, 1)
+        Me.TableLayoutPanel2.Controls.Add(Me.ThemedLabel11, 0, 0)
+        Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
+        Me.TableLayoutPanel2.RowCount = 2
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(400, 552)
+        Me.TableLayoutPanel2.TabIndex = 0
+        '
+        'ServerResponsesText
+        '
+        Me.ServerResponsesText.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ServerResponsesText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ServerResponsesText.Location = New System.Drawing.Point(0, 24)
+        Me.ServerResponsesText.Margin = New System.Windows.Forms.Padding(0)
+        Me.ServerResponsesText.Multiline = True
+        Me.ServerResponsesText.Name = "ServerResponsesText"
+        Me.ServerResponsesText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.ServerResponsesText.Size = New System.Drawing.Size(400, 528)
+        Me.ServerResponsesText.TabIndex = 1
+        '
+        'ThemedLabel11
+        '
+        Me.ThemedLabel11.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ThemedLabel11.AutoSize = True
+        Me.ThemedLabel11.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ThemedLabel11.Location = New System.Drawing.Point(0, 0)
+        Me.ThemedLabel11.Margin = New System.Windows.Forms.Padding(0)
+        Me.ThemedLabel11.Name = "ThemedLabel11"
+        Me.ThemedLabel11.Padding = New System.Windows.Forms.Padding(0, 0, 0, 3)
+        Me.ThemedLabel11.Size = New System.Drawing.Size(400, 24)
+        Me.ThemedLabel11.TabIndex = 0
+        Me.ThemedLabel11.Text = "TWS Server Responses"
+        Me.ThemedLabel11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'TableLayoutPanel3
+        '
+        Me.TableLayoutPanel3.ColumnCount = 1
+        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TableLayoutPanel3.Controls.Add(Me.MarketDataText, 0, 1)
+        Me.TableLayoutPanel3.Controls.Add(Me.Label4, 0, 0)
+        Me.TableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel3.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel3.Margin = New System.Windows.Forms.Padding(0)
+        Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
+        Me.TableLayoutPanel3.RowCount = 2
+        Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel3.Size = New System.Drawing.Size(439, 552)
+        Me.TableLayoutPanel3.TabIndex = 0
+        '
+        'MarketDataText
+        '
+        Me.MarketDataText.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.MarketDataText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.MarketDataText.Location = New System.Drawing.Point(0, 24)
+        Me.MarketDataText.Margin = New System.Windows.Forms.Padding(0)
+        Me.MarketDataText.Multiline = True
+        Me.MarketDataText.Name = "MarketDataText"
+        Me.MarketDataText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.MarketDataText.Size = New System.Drawing.Size(439, 528)
+        Me.MarketDataText.TabIndex = 1
+        '
+        'Label4
+        '
+        Me.Label4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label4.AutoSize = True
+        Me.Label4.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.Label4.Location = New System.Drawing.Point(0, 0)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(0)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Padding = New System.Windows.Forms.Padding(0, 0, 0, 3)
+        Me.Label4.Size = New System.Drawing.Size(439, 24)
+        Me.Label4.TabIndex = 0
+        Me.Label4.Text = "Market && Historical Data"
+        Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'SplitContainer4
+        '
+        Me.SplitContainer4.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer4.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer4.Name = "SplitContainer4"
+        '
+        'SplitContainer4.Panel1
+        '
+        Me.SplitContainer4.Panel1.Controls.Add(Me.TableLayoutPanel4)
+        '
+        'SplitContainer4.Panel2
+        '
+        Me.SplitContainer4.Panel2.Controls.Add(Me.TableLayoutPanel5)
+        Me.SplitContainer4.Size = New System.Drawing.Size(843, 283)
+        Me.SplitContainer4.SplitterDistance = 400
+        Me.SplitContainer4.TabIndex = 0
+        '
+        'TableLayoutPanel4
+        '
+        Me.TableLayoutPanel4.ColumnCount = 1
+        Me.TableLayoutPanel4.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel4.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TableLayoutPanel4.Controls.Add(Me.ErrorsText, 0, 1)
+        Me.TableLayoutPanel4.Controls.Add(Me.Label2, 0, 0)
+        Me.TableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel4.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel4.Name = "TableLayoutPanel4"
+        Me.TableLayoutPanel4.RowCount = 2
+        Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel4.Size = New System.Drawing.Size(400, 283)
+        Me.TableLayoutPanel4.TabIndex = 0
+        '
+        'ErrorsText
+        '
+        Me.ErrorsText.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ErrorsText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ErrorsText.Location = New System.Drawing.Point(0, 24)
+        Me.ErrorsText.Margin = New System.Windows.Forms.Padding(0)
+        Me.ErrorsText.Multiline = True
+        Me.ErrorsText.Name = "ErrorsText"
+        Me.ErrorsText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.ErrorsText.Size = New System.Drawing.Size(400, 259)
+        Me.ErrorsText.TabIndex = 1
+        '
+        'Label2
+        '
+        Me.Label2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.Label2.Location = New System.Drawing.Point(0, 0)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(0)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Padding = New System.Windows.Forms.Padding(0, 0, 0, 3)
+        Me.Label2.Size = New System.Drawing.Size(400, 24)
+        Me.Label2.TabIndex = 0
+        Me.Label2.Text = "Errors and Notifications"
+        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'TableLayoutPanel5
+        '
+        Me.TableLayoutPanel5.ColumnCount = 1
+        Me.TableLayoutPanel5.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel5.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TableLayoutPanel5.Controls.Add(Me.SocketLogText, 0, 1)
+        Me.TableLayoutPanel5.Controls.Add(Me.Label1, 0, 0)
+        Me.TableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel5.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel5.Name = "TableLayoutPanel5"
+        Me.TableLayoutPanel5.RowCount = 2
+        Me.TableLayoutPanel5.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel5.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel5.Size = New System.Drawing.Size(439, 283)
+        Me.TableLayoutPanel5.TabIndex = 0
+        '
+        'SocketLogText
+        '
+        Me.SocketLogText.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.SocketLogText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.SocketLogText.ForeColor = System.Drawing.Color.DimGray
+        Me.SocketLogText.Location = New System.Drawing.Point(0, 24)
+        Me.SocketLogText.Margin = New System.Windows.Forms.Padding(0)
+        Me.SocketLogText.Multiline = True
+        Me.SocketLogText.Name = "SocketLogText"
+        Me.SocketLogText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.SocketLogText.Size = New System.Drawing.Size(439, 259)
+        Me.SocketLogText.TabIndex = 1
+        '
+        'Label1
+        '
+        Me.Label1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.Label1.Location = New System.Drawing.Point(0, 0)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(0)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Padding = New System.Windows.Forms.Padding(0, 0, 0, 3)
+        Me.Label1.Size = New System.Drawing.Size(439, 24)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "Socket Messages"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'TopPanel
+        '
+        Me.TopPanel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TopPanel.AutoSize = True
+        Me.TopPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.TopPanel.BackColor = System.Drawing.Color.Gainsboro
+        Me.TopPanel.ColumnCount = 12
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150.0!))
+        Me.TopPanel.Controls.Add(Me.ConnectionStatusLabel, 11, 0)
+        Me.TopPanel.Controls.Add(Me.PauseAPIButton, 9, 0)
+        Me.TopPanel.Controls.Add(Me.ClearFormButton, 8, 0)
+        Me.TopPanel.Controls.Add(Me.TopPanelCheckboxesSite, 7, 0)
+        Me.TopPanel.Controls.Add(Me.ClientIdText, 6, 0)
+        Me.TopPanel.Controls.Add(Me.Label15, 5, 0)
+        Me.TopPanel.Controls.Add(Me.PortText, 4, 0)
+        Me.TopPanel.Controls.Add(Me.Label14, 3, 0)
+        Me.TopPanel.Controls.Add(Me.ServerText, 2, 0)
+        Me.TopPanel.Controls.Add(Me.Label13, 1, 0)
+        Me.TopPanel.Controls.Add(Me.ConnectDisconnectButton, 0, 0)
+        Me.TopPanel.Location = New System.Drawing.Point(0, 0)
+        Me.TopPanel.Margin = New System.Windows.Forms.Padding(0)
+        Me.TopPanel.Name = "TopPanel"
+        Me.TopPanel.RowCount = 1
+        Me.TopPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TopPanel.Size = New System.Drawing.Size(1167, 41)
+        Me.TopPanel.TabIndex = 0
+        '
+        'TopPanelCheckboxesSite
+        '
+        Me.TopPanelCheckboxesSite.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.TopPanelCheckboxesSite.AutoSize = True
+        Me.TopPanelCheckboxesSite.ColumnCount = 1
+        Me.TopPanelCheckboxesSite.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TopPanelCheckboxesSite.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TopPanelCheckboxesSite.Controls.Add(Me.UseQueueingCheck, 0, 1)
+        Me.TopPanelCheckboxesSite.Controls.Add(Me.DisplaySocketDataCheck, 0, 0)
+        Me.TopPanelCheckboxesSite.Location = New System.Drawing.Point(478, 1)
+        Me.TopPanelCheckboxesSite.Margin = New System.Windows.Forms.Padding(0)
+        Me.TopPanelCheckboxesSite.Name = "TopPanelCheckboxesSite"
+        Me.TopPanelCheckboxesSite.RowCount = 2
+        Me.TopPanelCheckboxesSite.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TopPanelCheckboxesSite.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TopPanelCheckboxesSite.Size = New System.Drawing.Size(215, 38)
+        Me.TopPanelCheckboxesSite.TabIndex = 3
+        '
+        'UseQueueingCheck
+        '
+        Me.UseQueueingCheck.AutoSize = True
+        Me.UseQueueingCheck.Location = New System.Drawing.Point(3, 19)
+        Me.UseQueueingCheck.Margin = New System.Windows.Forms.Padding(3, 0, 3, 0)
+        Me.UseQueueingCheck.Name = "UseQueueingCheck"
+        Me.UseQueueingCheck.Size = New System.Drawing.Size(209, 19)
+        Me.UseQueueingCheck.TabIndex = 1
+        Me.UseQueueingCheck.Text = "Use the Queueing callback handler"
+        Me.UseQueueingCheck.UseVisualStyleBackColor = True
+        '
+        'DisplaySocketDataCheck
+        '
+        Me.DisplaySocketDataCheck.AutoSize = True
+        Me.DisplaySocketDataCheck.Checked = True
+        Me.DisplaySocketDataCheck.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.DisplaySocketDataCheck.FlatAppearance.BorderSize = 0
+        Me.DisplaySocketDataCheck.Location = New System.Drawing.Point(3, 0)
+        Me.DisplaySocketDataCheck.Margin = New System.Windows.Forms.Padding(3, 0, 3, 0)
+        Me.DisplaySocketDataCheck.Name = "DisplaySocketDataCheck"
+        Me.DisplaySocketDataCheck.Size = New System.Drawing.Size(127, 19)
+        Me.DisplaySocketDataCheck.TabIndex = 0
+        Me.DisplaySocketDataCheck.Text = "Display socket data"
+        Me.DisplaySocketDataCheck.UseVisualStyleBackColor = False
+        '
+        'ClientIdText
+        '
+        Me.ClientIdText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.ClientIdText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ClientIdText.Location = New System.Drawing.Point(409, 12)
+        Me.ClientIdText.Name = "ClientIdText"
+        Me.ClientIdText.Size = New System.Drawing.Size(66, 16)
+        Me.ClientIdText.TabIndex = 2
+        Me.ClientIdText.Text = "123"
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label15.Location = New System.Drawing.Point(354, 0)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(49, 41)
+        Me.Label15.TabIndex = 62
+        Me.Label15.Text = "ClientID"
+        Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'PortText
+        '
+        Me.PortText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.PortText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.PortText.Location = New System.Drawing.Point(314, 12)
+        Me.PortText.Name = "PortText"
+        Me.PortText.Size = New System.Drawing.Size(34, 16)
+        Me.PortText.TabIndex = 1
+        Me.PortText.Text = "7496"
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label14.Location = New System.Drawing.Point(279, 0)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(29, 41)
+        Me.Label14.TabIndex = 61
+        Me.Label14.Text = "Port"
+        Me.Label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'ServerText
+        '
+        Me.ServerText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.ServerText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ServerText.Location = New System.Drawing.Point(188, 12)
+        Me.ServerText.Name = "ServerText"
+        Me.ServerText.Size = New System.Drawing.Size(85, 16)
+        Me.ServerText.TabIndex = 0
+        '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label13.Location = New System.Drawing.Point(122, 0)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(60, 41)
+        Me.Label13.TabIndex = 60
+        Me.Label13.Text = "API Server"
+        Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'TableLayoutPanel6
+        '
+        Me.TableLayoutPanel6.ColumnCount = 1
+        Me.TableLayoutPanel6.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel6.Controls.Add(Me.SplitContainer1, 0, 1)
+        Me.TableLayoutPanel6.Controls.Add(Me.TopPanel, 0, 0)
+        Me.TableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel6.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel6.Margin = New System.Windows.Forms.Padding(0)
+        Me.TableLayoutPanel6.Name = "TableLayoutPanel6"
+        Me.TableLayoutPanel6.RowCount = 2
+        Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TableLayoutPanel6.Size = New System.Drawing.Size(1167, 880)
+        Me.TableLayoutPanel6.TabIndex = 0
         '
         'MainForm
         '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
+        Me.AcceptButton = Me.ConnectDisconnectButton
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.Gainsboro
-        Me.ClientSize = New System.Drawing.Size(823, 683)
-        Me.Controls.Add(Me.PauseAPIButton)
-        Me.Controls.Add(Me.cmdReqMktDepthExchanges)
-        Me.Controls.Add(Me.cmdFamilyCodes)
-        Me.Controls.Add(Me.cmdReqMatchingSymbols)
-        Me.Controls.Add(Me.cmdReqSecDefOptParams)
-        Me.Controls.Add(Me.cmdCancelAccountUpdatesMulti)
-        Me.Controls.Add(Me.cmdReqAccountUpdatesMulti)
-        Me.Controls.Add(Me.cmdCancelPositionsMulti)
-        Me.Controls.Add(Me.cmdReqPositionsMulti)
-        Me.Controls.Add(Me.cmdCancelFundamentalData)
-        Me.Controls.Add(Me.cmdReqFundamentalData)
-        Me.Controls.Add(Me.cmdGroups)
-        Me.Controls.Add(Me.cmdCancelPositions)
-        Me.Controls.Add(Me.cmdCancelAccountSummary)
-        Me.Controls.Add(Me.cmdReqAccountSummary)
-        Me.Controls.Add(Me.cmdReqPositions)
-        Me.Controls.Add(Me.cmdReqMarketDataType)
-        Me.Controls.Add(Me.cmdReqGlobalCancel)
-        Me.Controls.Add(Me.cmdCancelCalcOptionPrice)
-        Me.Controls.Add(Me.cmdCancelCalcImpliedVolatility)
-        Me.Controls.Add(Me.cmdCalcOptionPrice)
-        Me.Controls.Add(Me.cmdCalcImpliedVolatility)
-        Me.Controls.Add(Me.cmdWhatIf)
-        Me.Controls.Add(Me.cmdReqCurrentTime)
-        Me.Controls.Add(Me.cmdCancelRealTimeBars)
-        Me.Controls.Add(Me.cmdReqRealTimeBars)
-        Me.Controls.Add(Me.cmdCancelHistData)
-        Me.Controls.Add(Me.cmdScanner)
-        Me.Controls.Add(Me.cmdExerciseOptions)
-        Me.Controls.Add(Me.cmdReqHistoricalData)
-        Me.Controls.Add(Me.cmdFinancialAdvisor)
-        Me.Controls.Add(Me.cmdReqAccts)
-        Me.Controls.Add(Me.cmdReqAllOpenOrders)
-        Me.Controls.Add(Me.cmdReqAutoOpenOrders)
-        Me.Controls.Add(Me.cmdServerLogLevel)
-        Me.Controls.Add(Me.cmdReqNews)
-        Me.Controls.Add(Me.cmdReqAcctData)
-        Me.Controls.Add(Me.cmdReqExecutions)
-        Me.Controls.Add(Me.cmdClearForm)
-        Me.Controls.Add(Me.cmdClose)
-        Me.Controls.Add(Me.cmdDisconnect)
-        Me.Controls.Add(Me.cmdReqMktData)
-        Me.Controls.Add(Me.cmdCancelMktData)
-        Me.Controls.Add(Me.cmdReqMktDepth)
-        Me.Controls.Add(Me.cmdCancelMktDepth)
-        Me.Controls.Add(Me.cmdPlaceOrder)
-        Me.Controls.Add(Me.cmdCancelOrder)
-        Me.Controls.Add(Me.cmdExtendedOrderAtribs)
-        Me.Controls.Add(Me.cmdReqContractData)
-        Me.Controls.Add(Me.cmdReqOpenOrders)
-        Me.Controls.Add(Me.cmdConnect)
-        Me.Controls.Add(Me.lstErrors)
-        Me.Controls.Add(Me.lstServerResponses)
-        Me.Controls.Add(Me.lstMktData)
-        Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label1)
+        Me.ClientSize = New System.Drawing.Size(1167, 880)
+        Me.Controls.Add(Me.TableLayoutPanel6)
         Me.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ForeColor = System.Drawing.Color.DimGray
         Me.Location = New System.Drawing.Point(348, 193)
-        Me.MaximizeBox = False
-        Me.MinimizeBox = False
         Me.Name = "MainForm"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "VB.NET Sample"
+        Me.SplitContainer1.Panel1.ResumeLayout(False)
+        Me.SplitContainer1.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer1.ResumeLayout(False)
+        Me.ButtonsPanel.ResumeLayout(False)
+        Me.ButtonsPanel.PerformLayout()
+        Me.SplitContainer2.Panel1.ResumeLayout(False)
+        Me.SplitContainer2.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer2.ResumeLayout(False)
+        Me.SplitContainer3.Panel1.ResumeLayout(False)
+        Me.SplitContainer3.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer3.ResumeLayout(False)
+        Me.TableLayoutPanel2.ResumeLayout(False)
+        Me.TableLayoutPanel2.PerformLayout()
+        Me.TableLayoutPanel3.ResumeLayout(False)
+        Me.TableLayoutPanel3.PerformLayout()
+        Me.SplitContainer4.Panel1.ResumeLayout(False)
+        Me.SplitContainer4.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer4, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer4.ResumeLayout(False)
+        Me.TableLayoutPanel4.ResumeLayout(False)
+        Me.TableLayoutPanel4.PerformLayout()
+        Me.TableLayoutPanel5.ResumeLayout(False)
+        Me.TableLayoutPanel5.PerformLayout()
+        Me.TopPanel.ResumeLayout(False)
+        Me.TopPanel.PerformLayout()
+        Me.TopPanelCheckboxesSite.ResumeLayout(False)
+        Me.TopPanelCheckboxesSite.PerformLayout()
+        Me.TableLayoutPanel6.ResumeLayout(False)
+        Me.TableLayoutPanel6.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
 #End Region
 
-#Region "Upgrade Support "
-    Private Shared m_vb6FormDefInstance As MainForm
-    Private Shared m_InitializingDefInstance As Boolean
-    Public Shared Property DefInstance() As MainForm
-        Get
-            If m_vb6FormDefInstance Is Nothing OrElse m_vb6FormDefInstance.IsDisposed Then
-                m_InitializingDefInstance = True
-                m_vb6FormDefInstance = New MainForm()
-                m_InitializingDefInstance = False
-            End If
-            DefInstance = m_vb6FormDefInstance
-        End Get
-        Set(value As MainForm)
-            m_vb6FormDefInstance = value
-        End Set
-    End Property
-#End Region
 
 #Region "Member variables"
 
-    Private WithEvents m_apiEvents As EventSource
-    Private m_CallbackHandler As QueueingCallbackHandler
-    Private m_useQueueing As Boolean
+    Private WithEvents ApiEvents As EventSource
+    Private mCallbackHandler As QueueingCallbackHandler
+    Private mUseQueueing As Boolean
 
-    Public m_api As IBAPI
-    Private m_apiPaused As Boolean
+    Private mConnectionState As ApiConnectionState
+
+    Private mApi As IBAPI
+    Private mApiPaused As Boolean
+    Private mClientId As Integer
 
     ' data members
-    Private m_contractInfo As Contract
-    Private m_orderInfo As Order
-    Private m_execFilter As ExecutionFilter
-    Private m_underComp As UnderComp
-    Private m_mktDataOptions As List(Of TagValue)
-    Private m_chartOptions As List(Of TagValue)
-    Private m_mktDepthOptions As List(Of TagValue)
-    Private m_realTimeBarsOptions As List(Of TagValue)
+    Private mExecFilter As ExecutionFilter
+    Private mMarketDataOptions As List(Of TagValue)
+    Private mChartOptions As List(Of TagValue)
+    Private mMarketDepthOptions As List(Of TagValue)
+    Private mRealTimeBarsOptions As List(Of TagValue)
 
-    Private m_dlgOrder As New dlgOrder
-    Private m_dlgConnect As New dlgConnect
-    Private m_dlgMktDepth As dlgMktDepth
-    Private m_dlgAcctData As New dlgAcctData
-    Private m_utils As New Utils
-    Private m_dlgNewsBulletins As New dlgNewsBulletins
-    Private m_dlgLogConfig As New dlgLogConfig
-    Private m_dlgFinancialAdvisor As New dlgFinancialAdvisor
-    Private m_dlgScanner As New dlgScanner
-    Private m_dlgGroups As New dlgGroups
+    Private mPnLForm As New FPnL
+    Private mOrderForm As New FOrder
+    Private mMarketDepthForm As FMarketDepth
+    Private mAccountDataForm As New FAcctData
+    Private mNewsBulletinsForm As New FNewsBulletins
+    Private mLogConfigForm As New FLogConfig
+    Private mFinancialAdvisorForm As New FFinancialAdvisor
+    Private mScannerForm As New FScanner
+    Private mGroupsForm As New FGroups
+    Private mAccountSummaryForm As New FAccountSummary
 
-    Private m_faAccount, faError As Boolean
-    Private m_faAcctsList As String
-    Private m_faGroupXML As String
-    Private m_faProfilesXML As String
-    Private m_faAliasesXML As String
-    Private m_faErrorCodes(5) As Integer
+    Private mFaAccount As Boolean
+    Private mFaError As Boolean
+    Private mFaAccountsList As String
+    Private mFaGroupXML As String
+    Private mFaProfilesXML As String
+    Private mFaAliasesXML As String
+    Private ReadOnly mFaErrorCodes As Integer() = {503, 504, 505, 522, 1100, 321}
+
+    Private mTransmit As Boolean = True
+
+    Private mNewsArticlePath As String
+
+    Private mTheme As Theme
+
+    Private mMarketDataText As TextboxDisplayManager
+    Private mSocketDataText As TextboxDisplayManager
+    Private mServerResponsesText As TextboxDisplayManager
+    Private mErrorsText As TextboxDisplayManager
+
+#End Region
+
+#Region "Constructor"
+
+    Public Sub New()
+        MyBase.New()
+        'This call is required by the Windows Form Designer.
+        InitializeComponent()
+
+        Application.EnableVisualStyles()
+
+        disableButtons()
+
+        mTheme = New AppTheme()
+        mTheme.ApplyTheme(Me.Controls)
+        mTheme.ApplyTheme(mOrderForm.Controls)
+        mTheme.ApplyTheme(mAccountDataForm.Controls)
+        mTheme.ApplyTheme(mPnLForm.Controls)
+        mTheme.ApplyTheme(mNewsBulletinsForm.Controls)
+        mTheme.ApplyTheme(mLogConfigForm.Controls)
+        mTheme.ApplyTheme(mFinancialAdvisorForm.Controls)
+        mTheme.ApplyTheme(mScannerForm.Controls)
+        mTheme.ApplyTheme(mGroupsForm.Controls)
+        mTheme.ApplyTheme(mAccountSummaryForm.Controls)
+
+        ' Override the theme for the top panel
+        TopPanel.ForeColor = Color.DimGray
+        TopPanelCheckboxesSite.ForeColor = Color.DimGray
+
+        ServerText.BackColor = Color.Gainsboro
+        ServerText.ForeColor = Color.DimGray
+        PortText.BackColor = Color.Gainsboro
+        PortText.ForeColor = Color.DimGray
+        ClientIdText.BackColor = Color.Gainsboro
+        ClientIdText.ForeColor = Color.DimGray
+
+    End Sub
 
 #End Region
 
 #Region "Form event handlers"
 
-    Private Sub Form_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
-        If m_api IsNot Nothing Then m_api.Disconnect("Form closed")
+    Protected Overrides Sub OnClosing(e As CancelEventArgs)
+        If mApi IsNot Nothing Then
+            mApi.Disconnect("Form closed")
+            mApi.Dispose()
+        End If
+        If mMarketDataText IsNot Nothing Then mMarketDataText.Dispose()
+        If mSocketDataText IsNot Nothing Then mSocketDataText.Dispose()
+        MyBase.OnClosing(e)
     End Sub
 
-    Private Sub Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        mMarketDataText = New TextboxDisplayManager(MarketDataText)
+        mSocketDataText = New TextboxDisplayManager(SocketLogText)
+        mServerResponsesText = New TextboxDisplayManager(ServerResponsesText)
+        mErrorsText = New TextboxDisplayManager(ErrorsText)
+
         Logging.DefaultLogLevel = LogLevel.HighDetail
+        ApplicationDataPathUser = Application.UserAppDataPath
         Logging.SetupDefaultLogging(True)
 
-        AddHandler System.AppDomain.CurrentDomain.UnhandledException,
+        IBAPI.EventLogger = New Logger(New FormattingLogger(""))
+        IBAPI.PerformanceLogger = New Logger(Logging.GetLogger("ibapi.perfdata"))
+
+        'Logging.AddLogListener("ibapi.socketdata", New SocketLogListener(SocketLogText))
+        IBAPI.SocketLogger = New Logger(Logging.GetLogger("ibapi.socketdata"))
+
+        AddHandler AppDomain.CurrentDomain.UnhandledException,
                     Sub(s, ex)
                         Logging.DefaultLogger.Log($"Unhandled exception:{Environment.NewLine}{ex.ExceptionObject.ToString()}", LogLevel.Severe)
                         Me.Dispose()
                     End Sub
 
-        m_utils.init(Me, m_dlgAcctData, m_dlgGroups)
-        m_dlgAcctData.init(m_utils)
-        m_dlgScanner.init(Me)
+        mScannerForm.Init(Me)
 
-        m_faErrorCodes(0) = 503
-        m_faErrorCodes(1) = 504
-        m_faErrorCodes(2) = 505
-        m_faErrorCodes(3) = 522
-        m_faErrorCodes(4) = 1100
-        m_faErrorCodes(5) = 321
+        mExecFilter = New ExecutionFilter
 
-        m_contractInfo = New Contract
-        m_orderInfo = New Order
-        m_execFilter = New ExecutionFilter
-        m_underComp = New UnderComp
+        ServerText.Focus()
 
+        MyBase.OnLoad(e)
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        setConnectionState(ApiConnectionState.NotConnected)
+        MyBase.OnShown(e)
     End Sub
 
 #End Region
@@ -1029,19 +1671,19 @@ Friend Class MainForm
 
     Public ReadOnly Property Api As IBAPI
         Get
-            Return m_api
+            Return mApi
         End Get
     End Property
 
     Public ReadOnly Property IsFAAccount() As Boolean
         Get
-            IsFAAccount = m_faAccount
+            IsFAAccount = mFaAccount
         End Get
     End Property
 
     Public ReadOnly Property FAManagedAccounts() As String
         Get
-            FAManagedAccounts = m_faAcctsList
+            FAManagedAccounts = mFaAccountsList
         End Get
     End Property
 
@@ -1052,119 +1694,86 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Connect this API client to the TWS instance
     '--------------------------------------------------------------------------------
-    Private Sub cmdConnect_Click(sender As Object, e As EventArgs) Handles cmdConnect.Click
-        ' assume this is a non Financial Advisor account. If it is the managedAccounts()
-        ' event will be fired.
-        m_faAccount = False
-
-        m_dlgConnect.ShowDialog()
-        If m_dlgConnect.ok Then
-            With m_dlgConnect
-                m_utils.addListItem(Utils.ListType.ServerResponses,
-                     "Connecting to Tws using clientId " & .clientId & " ...")
-
-                m_useQueueing = .UseQueueingCheck.Checked
-                m_api = New IBAPI(.hostIP, .port, .clientId)
-                m_apiEvents = New EventSource()
-                If m_useQueueing Then
-                    m_CallbackHandler = New QueueingCallbackHandler(m_apiEvents, WindowsFormsSynchronizationContext.Current)
-                    m_api.CallbackHandler = m_CallbackHandler
-                Else
-                    m_api.CallbackHandler = m_apiEvents
-                End If
-                Dim logger = New Logger(New FormattingLogger(""))
-                m_api.Logger = logger
-                m_api.SocketLogger = logger
-                m_api.PerformanceLogger = logger
-
-                m_api.Connect()
-            End With
+    Private Sub connectDisconnectButton_Click(sender As Object, e As EventArgs) Handles ConnectDisconnectButton.Click
+        If mConnectionState = ApiConnectionState.NotConnected Then
+            connectToTws()
+        Else
+            disconnectFromTWS()
         End If
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Disconnect this API client from the TWS instance
-    '--------------------------------------------------------------------------------
-    Private Sub cmdDisconnect_Click(sender As Object, e As EventArgs) Handles cmdDisconnect.Click
-        m_api.Disconnect("Closed by user")
-        m_api.Dispose()
-        PauseAPIButton.Enabled = False
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Pause or resume the flow of events from the API
     '--------------------------------------------------------------------------------
-    Private Sub PauseAPIButton_Click(sender As Object, e As EventArgs) Handles PauseAPIButton.Click
-        If m_apiPaused Then
+    Private Sub pauseAPIButton_Click(sender As Object, e As EventArgs) Handles PauseAPIButton.Click
+        If mApiPaused Then
             PauseAPIButton.Text = "Pause API"
-            m_apiPaused = False
-            m_CallbackHandler.Start()
+            mApiPaused = False
+            mCallbackHandler.Start()
         Else
             PauseAPIButton.Text = "Resume API"
-            m_apiPaused = True
-            m_CallbackHandler.Pause()
+            mApiPaused = True
+            mCallbackHandler.Pause()
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request market data for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqMktData_Click(sender As Object, e As EventArgs) Handles cmdReqMktData.Click
+    Private Sub reqMktDataButton_Click(sender As Object, e As EventArgs) Handles ReqMktDataButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.RequestMarketData,
-            m_contractInfo, m_orderInfo, m_underComp, m_mktDataOptions, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.RequestMarketData, mMarketDataOptions, Me)
 
-        m_dlgOrder.ShowDialog()
+        mOrderForm.ShowDialog()
 
-        m_mktDataOptions = m_dlgOrder.options
+        mMarketDataOptions = mOrderForm.Options
 
-        If m_dlgOrder.ok Then
-            m_api.RequestMarketData(m_dlgOrder.orderId, m_contractInfo,
-                    m_dlgOrder.genericTickTags, m_dlgOrder.snapshotMktData)
+        If mOrderForm.Ok Then
+            mApi.RequestMarketData(mOrderForm.RequestId, mOrderForm.ContractInfo,
+                    mOrderForm.GenericTickTags, mOrderForm.SnapshotMktData)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Cancel market data for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelMktData_Click(sender As Object, e As EventArgs) Handles cmdCancelMktData.Click
+    Private Sub cancelMktDataButton_Click(sender As Object, e As EventArgs) Handles CancelMktDataButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CancelMarketData,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CancelMarketData, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.CancelMarketData(m_dlgOrder.orderId)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.CancelMarketData(mOrderForm.RequestId)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request market depth for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqMktDepth_Click(sender As Object, e As EventArgs) Handles cmdReqMktDepth.Click
-        If m_dlgMktDepth IsNot Nothing Then
-            m_utils.addListItem(Utils.ListType.Errors, "Market depth is already being displayed")
+    Private Sub reqMktDepthButton_Click(sender As Object, e As EventArgs) Handles ReqMktDepthButton.Click
+        If mMarketDepthForm IsNot Nothing Then
+            mErrorsText.DisplayMessage("Market depth is already being displayed")
             Exit Sub
         End If
 
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.RequestMarketDepth,
-        m_contractInfo, m_orderInfo, m_underComp, m_mktDepthOptions, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.RequestMarketDepth, mMarketDepthOptions, Me)
 
-        m_dlgOrder.ShowDialog()
+        mOrderForm.ShowDialog()
 
-        m_mktDepthOptions = m_dlgOrder.options
+        mMarketDepthOptions = mOrderForm.Options
 
-        If m_dlgOrder.ok Then
-            m_dlgMktDepth = New dlgMktDepth
-            m_dlgMktDepth.init(m_dlgOrder.numRows, m_contractInfo)
-            AddHandler m_dlgMktDepth.FormClosing, Sub(s, ev)
-                                                      ' unsubscribe from mkt depth when the dialog is closed
-                                                      m_api.CancelMarketDepth(m_dlgOrder.orderId)
-                                                      m_dlgMktDepth = Nothing
-                                                  End Sub
-            m_api.RequestMarketDepth(m_dlgOrder.orderId, m_contractInfo, m_dlgOrder.numRows)
-            m_dlgMktDepth.Show(Me)
+        If mOrderForm.Ok Then
+            mMarketDepthForm = New FMarketDepth
+            mTheme.ApplyTheme(mMarketDepthForm.Controls)
+            mMarketDepthForm.Init(mOrderForm.NumRows, mOrderForm.ContractInfo)
+            AddHandler mMarketDepthForm.FormClosing, Sub(s, ev)
+                                                         ' unsubscribe from mkt depth when the dialog is closed
+                                                         mApi.CancelMarketDepth(mOrderForm.RequestId)
+                                                         mMarketDepthForm = Nothing
+                                                     End Sub
+            mApi.RequestMarketDepth(mOrderForm.RequestId, mOrderForm.ContractInfo, mOrderForm.NumRows)
+            mMarketDepthForm.Show(Me)
         End If
 
     End Sub
@@ -1172,17 +1781,15 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Cancel market depth for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelMktDepth_Click(sender As Object, e As EventArgs) Handles cmdCancelMktDepth.Click
+    Private Sub cancelMktDepthButton_Click(sender As Object, e As EventArgs) Handles CancelMktDepthButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CancelMarketDepth,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CancelMarketDepth, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.CancelMarketDepth(m_dlgOrder.orderId)
-            If m_dlgMktDepth IsNot Nothing Then
-                m_dlgMktDepth.Close()
-                m_dlgMktDepth = Nothing
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            If mMarketDepthForm IsNot Nothing Then
+                mMarketDepthForm.Close()
+                mMarketDepthForm = Nothing
             End If
         End If
     End Sub
@@ -1190,41 +1797,42 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Request historical market data for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqHistoricalData_Click(sender As Object, e As EventArgs) Handles cmdReqHistoricalData.Click
+    Private Sub reqHistoricalDataButton_Click(sender As Object, e As EventArgs) Handles ReqHistoricalDataButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.RequestHistoricalData,
-            m_contractInfo, m_orderInfo, m_underComp, m_chartOptions, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.RequestHistoricalData, mChartOptions, Me)
 
-        m_dlgOrder.ShowDialog()
+        mOrderForm.ShowDialog()
 
-        m_chartOptions = m_dlgOrder.options
+        mChartOptions = mOrderForm.Options
 
-        If m_dlgOrder.ok Then
-            Dim d = parseDateString(m_dlgOrder.histEndDateTime)
-            If d.ok Then
-                m_api.RequestHistoricalData(m_dlgOrder.orderId, New HistoricalDataRequest() With
-                                        {.Contract = m_contractInfo,
-                                        .EndDateTime = d.timestamp,
-                                        .TimeZone = d.timeZone,
-                                        .Duration = m_dlgOrder.histDuration,
-                                        .BarSizeSetting = m_dlgOrder.histBarSizeSetting,
-                                        .WhatToShow = m_dlgOrder.whatToShow})
-            End If
+        If mOrderForm.Ok Then
+            mApi.RequestHistoricalBars(mOrderForm.RequestId,
+                                        New HistoricalBarsRequest() With
+                                            {.Contract = mOrderForm.ContractInfo,
+                                            .EndDateTime = mOrderForm.HistEndDateTime,
+                                            .TimeZone = mOrderForm.HistEndTimezone,
+                                            .Duration = mOrderForm.HistDuration,
+                                            .BarSizeSetting = mOrderForm.HistBarSizeSetting,
+                                            .WhatToShow = mOrderForm.WhatToShow
+                                        },
+                                        mOrderForm.UseRTH,
+                                        mOrderForm.KeepUpToDate,
+                                        mChartOptions)
         End If
     End Sub
 
     Private Function parseDateString(value As String) As (ok As Boolean, timestamp As Date, timeZone As String)
-        Dim arr() = value.Split(" ")
+        Dim arr() = value.Split(" "c)
 
         If arr.Length = 3 Then
             Dim t As Date
-            If Date.TryParse(arr(0) & " " & arr(1), t) Then Return (True, t, arr(2))
+            If Date.TryParse($"{arr(0)} {arr(1)}", t) Then Return (True, t, arr(2))
             Return (False, Date.MinValue, String.Empty)
         End If
 
         If arr.Length = 2 Then
             Dim t As Date
-            If Date.TryParse(arr(0) & " " & arr(1), t) Then Return (True, t, String.Empty)
+            If Date.TryParse($"{arr(0)} {arr(1)}", t) Then Return (True, t, String.Empty)
             If Date.TryParse(arr(0), t) Then Return (True, t, arr(1))
             Return (False, Date.MinValue, String.Empty)
         End If
@@ -1241,59 +1849,55 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Cancel historical market data for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelHistData_Click(sender As Object, e As EventArgs) Handles cmdCancelHistData.Click
+    Private Sub cancelHistDataButton_Click(sender As Object, e As EventArgs) Handles CancelHistDataButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CancelHistoricalData,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CancelHistoricalData, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.CancelHistoricalData(m_dlgOrder.orderId)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.CancelHistoricalData(mOrderForm.RequestId)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request fundamental data for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqFundamentalData_Click(sender As Object, e As EventArgs) Handles cmdReqFundamentalData.Click
+    Private Sub reqFundamentalDataButton_Click(sender As Object, e As EventArgs) Handles ReqFundamentalDataButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.RequestFundamentalData,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
-        m_dlgOrder.ShowDialog()
+        mOrderForm.Init(FOrder.OrderFormMode.RequestFundamentalData, Nothing, Me)
+        mOrderForm.ShowDialog()
 
-        If m_dlgOrder.ok Then
-            m_api.RequestFundamentalData(m_dlgOrder.orderId, m_contractInfo, m_dlgOrder.whatToShow)
+        If mOrderForm.Ok Then
+            mApi.RequestFundamentalData(mOrderForm.RequestId, mOrderForm.ContractInfo, mOrderForm.WhatToShow)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Cancel fundamental data for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelFundamentalData_Click(sender As Object, e As EventArgs) Handles cmdCancelFundamentalData.Click
+    Private Sub cancelFundamentalDataButton_Click(sender As Object, e As EventArgs) Handles CancelFundamentalDataButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CancelFundamentalData,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CancelFundamentalData, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        m_api.CancelFundamentalData(m_dlgOrder.orderId)
+        mOrderForm.ShowDialog()
+        mApi.CancelFundamentalData(mOrderForm.RequestId)
 
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request real time bars for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqRealTimeBars_Click(sender As Object, e As EventArgs) Handles cmdReqRealTimeBars.Click
+    Private Sub reqRealTimeBarsButton_Click(sender As Object, e As EventArgs) Handles ReqRealTimeBarsButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.RequestRealtimeBars,
-            m_contractInfo, m_orderInfo, m_underComp, m_realTimeBarsOptions, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.RequestRealtimeBars, mRealTimeBarsOptions, Me)
 
-        m_dlgOrder.ShowDialog()
+        mOrderForm.ShowDialog()
 
-        m_realTimeBarsOptions = m_dlgOrder.options
+        mRealTimeBarsOptions = mOrderForm.Options
 
-        If m_dlgOrder.ok Then
-            m_api.RequestRealtimeBars(m_dlgOrder.orderId, m_contractInfo,
-                                        5, m_dlgOrder.whatToShow, m_dlgOrder.useRTH)
+        If mOrderForm.Ok Then
+            mApi.RequestRealtimeBars(mOrderForm.RequestId, mOrderForm.ContractInfo,
+                                        5, mOrderForm.WhatToShow, mOrderForm.UseRTH)
         End If
 
     End Sub
@@ -1301,85 +1905,81 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Cancel real time bars for a security
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelRealTimeBars_Click(sender As Object, e As EventArgs) Handles cmdCancelRealTimeBars.Click
+    Private Sub cancelRealTimeBarsButton_Click(sender As Object, e As EventArgs) Handles CancelRealTimeBarsButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CancelRealtimeBars,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CancelRealtimeBars, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.CancelRealtimeBars(m_dlgOrder.orderId)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.CancelRealtimeBars(mOrderForm.RequestId)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request current server time
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqCurrentTime_Click(sender As Object, e As EventArgs) Handles cmdReqCurrentTime.Click
-        m_api.RequestCurrentTime()
+    Private Sub reqCurrentTimeButton_Click(sender As Object, e As EventArgs) Handles ReqCurrentTimeButton.Click
+        mApi.RequestCurrentTime()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Perform market scans
     '--------------------------------------------------------------------------------
-    Private Sub cmdScanner_Click(sender As Object, e As EventArgs) Handles cmdScanner.Click
-        m_dlgScanner.ShowDialog()
+    Private Sub scannerButton_Click(sender As Object, e As EventArgs) Handles ScannerButton.Click
+        mScannerForm.ShowDialog()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Place a new or modify an existing order
     '--------------------------------------------------------------------------------
-    Private Sub cmdWhatIf_Click(sender As Object, e As EventArgs) Handles cmdWhatIf.Click
+    Private Sub whatIfButton_Click(sender As Object, e As EventArgs) Handles WhatIfButton.Click
         placeOrderImpl(True)
     End Sub
-    Private Sub cmdPlaceOrder_Click(sender As Object, e As EventArgs) Handles cmdPlaceOrder.Click
+    Private Sub placeOrderButton_Click(sender As Object, e As EventArgs) Handles PlaceOrderButton.Click
         placeOrderImpl(False)
     End Sub
     Private Sub placeOrderImpl(whatIf As Boolean)
 
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.PlaceOrder,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.PlaceOrder, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
+        mOrderForm.ShowDialog()
 
-        If m_dlgOrder.ok Then
+        If mOrderForm.Ok Then
 
-            Dim savedWhatIf = m_orderInfo.WhatIf()
-            m_orderInfo.WhatIf = whatIf
-            m_api.PlaceOrder(m_orderInfo, m_contractInfo)
-            m_orderInfo.WhatIf = savedWhatIf
+            Dim savedWhatIf = mOrderForm.OrderInfo.WhatIf()
+            mOrderForm.OrderInfo.WhatIf = whatIf
+
+            mApi.PlaceOrder(mOrderForm.OrderInfo, mOrderForm.ContractInfo, mTransmit, mOrderForm.SecIdType, mOrderForm.SecId)
+            mOrderForm.OrderInfo.WhatIf = savedWhatIf
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
-    ' Cancel an exisiting order
+    ' Cancel an existing order
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelOrder_Click(sender As Object, e As EventArgs) Handles cmdCancelOrder.Click
+    Private Sub cancelOrderButton_Click(sender As Object, e As EventArgs) Handles CancelOrderButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CancelOrder,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CancelOrder, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.CancelOrder(m_dlgOrder.orderId)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.CancelOrder(mOrderForm.OrderId)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Exercise options
     '--------------------------------------------------------------------------------
-    Private Sub cmdExerciseOptions_Click(sender As Object, e As EventArgs) Handles cmdExerciseOptions.Click
+    Private Sub exerciseOptionsButton_Click(sender As Object, e As EventArgs) Handles ExerciseOptionsButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.ExerciseOptions,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.ExerciseOptions, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            ' TODO: get account in a less convoluted way
-            m_api.ExerciseOptions(m_dlgOrder.orderId, m_contractInfo,
-                            m_dlgOrder.exerciseAction, m_dlgOrder.exerciseQuantity,
-                            m_orderInfo.Account, m_dlgOrder.exerciseOverride)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.ExerciseOptions(mOrderForm.RequestId, mOrderForm.ContractInfo,
+                            mOrderForm.ExerciseAction, mOrderForm.ExerciseQuantity,
+                            mOrderForm.OrderInfo.Account, mOrderForm.ExerciseOverride)
         End If
 
     End Sub
@@ -1387,67 +1987,69 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Sets the extended order attributes
     '--------------------------------------------------------------------------------
-    Private Sub cmdExtendedOrderAtribs_Click(sender As Object, e As EventArgs) Handles cmdExtendedOrderAtribs.Click
-        Dim dlgOrderAttribs As New dlgOrderAttribs
+    Private Sub extendedOrderAtribsButton_Click(sender As Object, e As EventArgs) Handles ExtendedOrderAtribsButton.Click
+        Dim fOrderAttribs As New FOrderAttribs
+        mTheme.ApplyTheme(fOrderAttribs.Controls)
 
-        dlgOrderAttribs.init(Me, m_orderInfo)
-        dlgOrderAttribs.ShowDialog()
+        fOrderAttribs.Init(Me, mOrderForm.OrderInfo, mTransmit)
+        fOrderAttribs.ShowDialog()
+        mTransmit = fOrderAttribs.Transmit
         ' nothing to do besides that
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request the details for a contract
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqContractData_Click(sender As Object, e As EventArgs) Handles cmdReqContractData.Click
+    Private Sub reqContractDataButton_Click(sender As Object, e As EventArgs) Handles ReqContractDataButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.RequestContractDetails,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.RequestContractDetails, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.RequestContractData(m_dlgOrder.orderId, m_contractInfo)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.RequestContractData(mOrderForm.RequestId, mOrderForm.ContractInfo)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request all the API open orders that were placed by this client. Note the
     ' clientID with a client id of 0 returns its, plus the TWS TWS open orders. Once
-    ' requested the TWS orders retain their API asociation.
+    ' requested the TWS orders retain their API association.
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqOpenOrders_Click(sender As Object, e As EventArgs) Handles cmdReqOpenOrders.Click
-        m_api.RequestOpenOrders()
+    Private Sub reqOpenOrdersButton_Click(sender As Object, e As EventArgs) Handles ReqOpenOrdersButton.Click
+        mApi.RequestOpenOrders()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request the list of all the current open orders (from API clients and TWS). Note
-    ' that no API order assoication is made.
+    ' that no API order association is made.
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqAllOpenOrders_Click(sender As Object, e As EventArgs) Handles cmdReqAllOpenOrders.Click
-        m_api.RequestAllOpenOrders()
+    Private Sub reqAllOpenOrdersButton_Click(sender As Object, e As EventArgs) Handles ReqAllOpenOrdersButton.Click
+        mApi.RequestAllOpenOrders()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request that all new TWS orders are automatically associated with this client.
     ' NOTE: This feature is only available for a client with client id of 0.
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqAutoOpenOrders_Click(sender As Object, e As EventArgs) Handles cmdReqAutoOpenOrders.Click
-        m_api.RequestAutoOpenOrders(True)
+    Private Sub reqAutoOpenOrdersButton_Click(sender As Object, e As EventArgs) Handles ReqAutoOpenOrdersButton.Click
+        mApi.RequestAutoOpenOrders(True)
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Requests account details
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqAcctData_Click(sender As Object, e As EventArgs) Handles cmdReqAcctData.Click
-        Dim dlg As New dlgAcctUpdates
+    Private Sub reqAcctDataButton_Click(sender As Object, e As EventArgs) Handles ReqAcctDataButton.Click
+        Dim f As New FAccountUpdates
+        mTheme.ApplyTheme(FAccountUpdates.Controls)
 
-        dlg.ShowDialog()
-        If (dlg.ok) Then
-            If dlg.subscribe Then
-                m_dlgAcctData.accountDownloadBegin(dlg.acctCode)
+        f.ShowDialog()
+        If (f.Ok) Then
+            If f.Subscribe Then
+                mAccountDataForm.AccountDownloadBegin(f.AcctCode)
             End If
-            m_api.RequestAccountData(CBool(dlg.subscribe), dlg.acctCode)
-            If CBool(dlg.subscribe) Then
-                m_dlgAcctData.ShowDialog()
+            mApi.RequestAccountData(CBool(f.Subscribe), f.AcctCode)
+            If CBool(f.Subscribe) Then
+                mAccountDataForm.ShowDialog()
             End If
         End If
     End Sub
@@ -1455,26 +2057,27 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Request all todays execution reports
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqExecutions_Click(sender As Object, e As EventArgs) Handles cmdReqExecutions.Click
-        Dim dlgExecFilter As New dlgExecFilter
+    Private Sub reqExecutionsButton_Click(sender As Object, e As EventArgs) Handles ReqExecutionsButton.Click
+        Dim fExecFilter As New FExecFilter
+        mTheme.ApplyTheme(fExecFilter.Controls)
 
-        dlgExecFilter.init(m_execFilter)
-        dlgExecFilter.ShowDialog()
-        If dlgExecFilter.ok Then
-            m_api.RequestExecutions(dlgExecFilter.reqId, m_execFilter)
+        fExecFilter.Init(mExecFilter)
+        fExecFilter.ShowDialog()
+        If fExecFilter.Ok Then
+            mApi.RequestExecutions(fExecFilter.ReqId, mExecFilter)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Requests to be notified for new IB news bulletins
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqNews_Click(sender As Object, e As EventArgs) Handles cmdReqNews.Click
-        m_dlgNewsBulletins.ShowDialog()
-        If m_dlgNewsBulletins.ok Then
-            If m_dlgNewsBulletins.subscribe = True Then
-                m_api.RequestNewsBulletins(m_dlgNewsBulletins.allMsgs)
+    Private Sub reqNewsButton_Click(sender As Object, e As EventArgs) Handles ReqNewsButton.Click
+        mNewsBulletinsForm.ShowDialog()
+        If mNewsBulletinsForm.Ok Then
+            If mNewsBulletinsForm.Subscribe = True Then
+                mApi.RequestNewsBulletins(mNewsBulletinsForm.AllMsgs)
             Else
-                m_api.CancelNewsBulletins()
+                mApi.CancelNewsBulletins()
             End If
         End If
     End Sub
@@ -1482,188 +2085,178 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Sets the TWS server logging level
     '--------------------------------------------------------------------------------
-    Private Sub cmdServerLogLevel_Click(sender As Object, e As EventArgs) Handles cmdServerLogLevel.Click
-        m_dlgLogConfig.ShowDialog()
-        If m_dlgLogConfig.ok Then
-            m_api.SetLogLevel(m_dlgLogConfig.serverLogLevel())
+    Private Sub serverLogLevelButton_Click(sender As Object, e As EventArgs) Handles ServerLogLevelButton.Click
+        mLogConfigForm.ShowDialog()
+        If mLogConfigForm.Ok Then
+            mApi.SetLogLevel(mLogConfigForm.ServerLogLevel())
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request managed accounts
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqAccts_Click(sender As Object, e As EventArgs) Handles cmdReqAccts.Click
-        m_api.RequestManagedAccounts()
+    Private Sub reqAcctsButton_Click(sender As Object, e As EventArgs) Handles ReqAcctsButton.Click
+        mApi.RequestManagedAccounts()
     End Sub
 
-    Private Sub cmdFinancialAdvisor_Click(sender As Object, e As EventArgs) Handles cmdFinancialAdvisor.Click
-        m_faGroupXML = ""
-        m_faProfilesXML = ""
-        m_faAliasesXML = ""
-        faError = False
-        m_api.RequestFinancialAdvisorData(Utils.FaMessageType.Aliases)
-        m_api.RequestFinancialAdvisorData(Utils.FaMessageType.Groups)
-        m_api.RequestFinancialAdvisorData(Utils.FaMessageType.Profiles)
+    Private Sub financialAdvisorButton_Click(sender As Object, e As EventArgs) Handles FinancialAdvisorButton.Click
+        mFaGroupXML = ""
+        mFaProfilesXML = ""
+        mFaAliasesXML = ""
+        mFaError = False
+        mApi.RequestFinancialAdvisorData(FinancialAdvisorDataType.AccountAliases)
+        mApi.RequestFinancialAdvisorData(FinancialAdvisorDataType.Groups)
+        mApi.RequestFinancialAdvisorData(FinancialAdvisorDataType.Profiles)
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Calculate Implied Volatility
     '--------------------------------------------------------------------------------
-    Private Sub cmdCalcImpliedVolatility_Click(sender As Object, e As EventArgs) Handles cmdCalcImpliedVolatility.Click
+    Private Sub calcImpliedVolatilityButton_Click(sender As Object, e As EventArgs) Handles CalcImpliedVolatilityButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CalculateImpliedVolatility,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CalculateImpliedVolatility, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
+        mOrderForm.ShowDialog()
 
-        If m_dlgOrder.ok Then
-            m_api.CalculateImpliedVolatility(m_dlgOrder.orderId, m_contractInfo, m_orderInfo.LmtPrice, m_orderInfo.AuxPrice)
+        If mOrderForm.Ok Then
+            mApi.CalculateImpliedVolatility(mOrderForm.RequestId, mOrderForm.ContractInfo, mOrderForm.OrderInfo.LmtPrice.Value, mOrderForm.OrderInfo.AuxPrice.Value)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Calculate Option Price
     '--------------------------------------------------------------------------------
-    Private Sub cmdCalcOptionPrice_Click(sender As Object, e As EventArgs) Handles cmdCalcOptionPrice.Click
+    Private Sub calcOptionPriceButton_Click(sender As Object, e As EventArgs) Handles CalcOptionPriceButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CalculateOptionPrice,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
-        m_dlgOrder.ShowDialog()
+        mOrderForm.Init(FOrder.OrderFormMode.CalculateOptionPrice, Nothing, Me)
+        mOrderForm.ShowDialog()
 
-        If m_dlgOrder.ok Then
+        If mOrderForm.Ok Then
 
-            m_api.CalculateOptionPrice(m_dlgOrder.orderId, m_contractInfo, m_orderInfo.LmtPrice, m_orderInfo.AuxPrice)
+            mApi.CalculateOptionPrice(mOrderForm.RequestId, mOrderForm.ContractInfo, mOrderForm.OrderInfo.LmtPrice.Value, mOrderForm.OrderInfo.AuxPrice.Value)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Cancel Calculate Implied Volatility
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelCalcImpliedVolatility_Click(sender As Object, e As EventArgs) Handles cmdCancelCalcImpliedVolatility.Click
+    Private Sub cancelCalcImpliedVolatilityButton_Click(sender As Object, e As EventArgs) Handles CancelCalcImpliedVolatilityButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CancelCalculateImpliedVolatility,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CancelCalculateImpliedVolatility, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.CancelCalculateImpliedVolatility(m_dlgOrder.orderId)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.CancelCalculateImpliedVolatility(mOrderForm.RequestId)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Cancel Calculate Option Price
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelCalcOptionPrice_Click(sender As Object, e As EventArgs) Handles cmdCancelCalcOptionPrice.Click
+    Private Sub cancelCalcOptionPriceButton_Click(sender As Object, e As EventArgs) Handles CancelCalcOptionPriceButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.CancelCalculateOptionPrice,
-   m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.CancelCalculateOptionPrice, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.CancelCalculateOptionPrice(m_dlgOrder.orderId)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.CancelCalculateOptionPrice(mOrderForm.RequestId)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request global cancel
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqGlobalCancel_Click(sender As Object, e As EventArgs) Handles cmdReqGlobalCancel.Click
-        m_api.RequestGlobalCancel()
+    Private Sub reqGlobalCancelButton_Click(sender As Object, e As EventArgs) Handles ReqGlobalCancelButton.Click
+        mApi.RequestGlobalCancel()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request market data type
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqMarketDataType_Click(sender As Object, e As EventArgs) Handles cmdReqMarketDataType.Click
+    Private Sub reqMarketDataTypeButton_Click(sender As Object, e As EventArgs) Handles ReqMarketDataTypeButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.RequestMarketDataType,
-            m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.RequestMarketDataType, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
-        If m_dlgOrder.ok Then
-            m_api.RequestMarketDataType(m_dlgOrder.marketDataType)
+        mOrderForm.ShowDialog()
+        If mOrderForm.Ok Then
+            mApi.RequestMarketDataType(mOrderForm.MarketDataType)
         End If
 
-        Select Case m_dlgOrder.marketDataType
-            Case dlgOrder.MarketDataTypes.Realtime
-                m_utils.addListItem(Utils.ListType.ServerResponses, "Frozen, Delayed and Delayed-Frozen market data types are disabled")
-            Case dlgOrder.MarketDataTypes.Frozen
-                m_utils.addListItem(Utils.ListType.ServerResponses, "Frozen market data type is enabled")
-            Case dlgOrder.MarketDataTypes.Delayed
-                m_utils.addListItem(Utils.ListType.ServerResponses, "Delayed market data type is enabled, Delayed-Frozen market data type is disabled")
-            Case dlgOrder.MarketDataTypes.DelayedFrozen
-                m_utils.addListItem(Utils.ListType.ServerResponses, "Delayed and Delayed-Frozen market data types are enabled")
+        Select Case mOrderForm.MarketDataType
+            Case MarketDataType.Realtime
+                mServerResponsesText.DisplayMessage("Frozen, Delayed and Delayed-Frozen market data types are disabled")
+            Case MarketDataType.Frozen
+                mServerResponsesText.DisplayMessage("Frozen market data type is enabled")
+            Case MarketDataType.Delayed
+                mServerResponsesText.DisplayMessage("Delayed market data type is enabled, Delayed-Frozen market data type is disabled")
+            Case MarketDataType.DelayedFrozen
+                mServerResponsesText.DisplayMessage("Delayed and Delayed-Frozen market data types are enabled")
             Case Else
-                m_utils.addListItem(Utils.ListType.Errors, "Unknown market data type")
+                mServerResponsesText.DisplayMessage("Unknown market data type")
         End Select
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request positions
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqPositions_Click(sender As Object, e As EventArgs) Handles cmdReqPositions.Click
-        m_api.RequestPositions()
+    Private Sub reqPositionsButton_Click(sender As Object, e As EventArgs) Handles ReqPositionsButton.Click
+        mApi.RequestPositions()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Cancel positions
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelPositions_Click(sender As Object, e As EventArgs) Handles cmdCancelPositions.Click
-        m_api.CancelPositions()
+    Private Sub cancelPositionsButton_Click(sender As Object, e As EventArgs) Handles CancelPositionsButton.Click
+        mApi.CancelPositions()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request account summary
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqAccountSummary_Click(sender As Object, e As EventArgs) Handles cmdReqAccountSummary.Click
-
-        Dim dlgAccountSummary As New dlgAccountSummary
-
+    Private Sub reqAccountSummaryButton_Click(sender As Object, e As EventArgs) Handles ReqAccountSummaryButton.Click
         ' Set the dialog state
-        dlgAccountSummary.init(dlgAccountSummary.Dlg_Type.REQUEST_ACCOUNT_SUMMARY)
-        dlgAccountSummary.ShowDialog()
+        mAccountSummaryForm.Init(FAccountSummary.Dlg_Type.REQUEST_ACCOUNT_SUMMARY)
+        mAccountSummaryForm.ShowDialog()
 
-        If dlgAccountSummary.ok Then
-            m_api.RequestAccountSummary(dlgAccountSummary.reqId, dlgAccountSummary.groupName, dlgAccountSummary.tags)
+        If mAccountSummaryForm.Ok Then
+            mApi.RequestAccountSummary(mAccountSummaryForm.ReqId, mAccountSummaryForm.GroupName, mAccountSummaryForm.Tags)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Cancel account summary
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelAccountSummary_Click(sender As Object, e As EventArgs) Handles cmdCancelAccountSummary.Click
-
-        Dim dlgAccountSummary As New dlgAccountSummary
-
+    Private Sub cancelAccountSummaryButton_Click(sender As Object, e As EventArgs) Handles CancelAccountSummaryButton.Click
         ' Set the dialog state
-        dlgAccountSummary.init(dlgAccountSummary.Dlg_Type.CANCEL_ACCOUNT_SUMMARY)
-        dlgAccountSummary.ShowDialog()
+        mAccountSummaryForm.Init(FAccountSummary.Dlg_Type.CANCEL_ACCOUNT_SUMMARY)
+        mAccountSummaryForm.ShowDialog()
 
-        If dlgAccountSummary.ok Then
-            m_api.CancelAccountSummary(dlgAccountSummary.reqId)
+        If mAccountSummaryForm.Ok Then
+            mApi.CancelAccountSummary(mAccountSummaryForm.ReqId)
         End If
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Open Groups dialog
     '--------------------------------------------------------------------------------
-    Private Sub cmdGroups_Click(sender As Object, e As EventArgs) Handles cmdGroups.Click
-        m_dlgGroups.init(m_utils, Me)
-        m_dlgGroups.ShowDialog()
+    Private Sub groupsButton_Click(sender As Object, e As EventArgs) Handles GroupsButton.Click
+        mGroupsForm.Init(Me)
+        mGroupsForm.ShowDialog()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Request Positions Multi
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqPositionsMulti_Click(sender As Object, e As EventArgs) Handles cmdReqPositionsMulti.Click
-        Dim dlgPositions As New dlgPositions
+    Private Sub reqPositionsMultiButton_Click(sender As Object, e As EventArgs) Handles ReqPositionsMultiButton.Click
+        Dim fPositions As New FPositions
+        mTheme.ApplyTheme(fPositions.Controls)
 
         ' Set the dialog state
-        dlgPositions.init(dlgPositions.DialogType.RequestPositionsMulti)
-        dlgPositions.ShowDialog()
+        fPositions.Init(FPositions.DialogType.RequestPositionsMulti)
+        fPositions.ShowDialog()
 
-        If dlgPositions.ok Then
-            m_api.RequestPositionsMulti(dlgPositions.id, dlgPositions.account, dlgPositions.modelCode)
+        If fPositions.Ok Then
+            mApi.RequestPositionsMulti(fPositions.Id, fPositions.Account, fPositions.ModelCode)
         End If
 
     End Sub
@@ -1671,15 +2264,16 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Cancel Positions Multi
     '--------------------------------------------------------------------------------
-    Private Sub cmdCancelPositionsMulti_Click(sender As Object, e As EventArgs) Handles cmdCancelPositionsMulti.Click
-        Dim dlgPositions As New dlgPositions
+    Private Sub cancelPositionsMultiButton_Click(sender As Object, e As EventArgs) Handles CancelPositionsMultiButton.Click
+        Dim fPositions As New FPositions
+        mTheme.ApplyTheme(fPositions.Controls)
 
         ' Set the dialog state
-        dlgPositions.init(dlgPositions.DialogType.CancelPositionsMulti)
-        dlgPositions.ShowDialog()
+        fPositions.Init(FPositions.DialogType.CancelPositionsMulti)
+        fPositions.ShowDialog()
 
-        If dlgPositions.ok Then
-            m_api.CancelPositionsMulti(dlgPositions.id)
+        If fPositions.Ok Then
+            mApi.CancelPositionsMulti(fPositions.Id)
         End If
 
 
@@ -1688,15 +2282,16 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Request Account Updates Multi
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqAccountUpdatesMulti_Click(sender As Object, e As EventArgs) Handles cmdReqAccountUpdatesMulti.Click
-        Dim dlgPositions As New dlgPositions
+    Private Sub reqAccountUpdatesMultiButton_Click(sender As Object, e As EventArgs) Handles ReqAccountUpdatesMultiButton.Click
+        Dim fPositions As New FPositions
+        mTheme.ApplyTheme(fPositions.Controls)
 
         ' Set the dialog state
-        dlgPositions.init(dlgPositions.DialogType.RequestAccountUpdatesMulti)
-        dlgPositions.ShowDialog()
+        fPositions.Init(FPositions.DialogType.RequestAccountUpdatesMulti)
+        fPositions.ShowDialog()
 
-        If dlgPositions.ok Then
-            m_api.RequestAccountDataMulti(dlgPositions.id, dlgPositions.account, dlgPositions.modelCode, dlgPositions.ledgerAndNLV)
+        If fPositions.Ok Then
+            mApi.RequestAccountDataMulti(fPositions.Id, fPositions.Account, fPositions.ModelCode, fPositions.LedgerAndNLV)
         End If
 
     End Sub
@@ -1704,15 +2299,16 @@ Friend Class MainForm
     ''--------------------------------------------------------------------------------
     '' Cancel Account Updates Multi
     ''--------------------------------------------------------------------------------
-    Private Sub cmdCancelAccountUpdatesMulti_Click(sender As Object, e As EventArgs) Handles cmdCancelAccountUpdatesMulti.Click
-        Dim dlgPositions As New dlgPositions
+    Private Sub cancelAccountUpdatesMultiButton_Click(sender As Object, e As EventArgs) Handles CancelAccountUpdatesMultiButton.Click
+        Dim fPositions As New FPositions
+        mTheme.ApplyTheme(fPositions.Controls)
 
         ' Set the dialog state
-        dlgPositions.init(dlgPositions.DialogType.CancelAccountUpdatesMulti)
-        dlgPositions.ShowDialog()
+        fPositions.Init(FPositions.DialogType.CancelAccountUpdatesMulti)
+        fPositions.ShowDialog()
 
-        If dlgPositions.ok Then
-            m_api.CancelAccountUpdatesMulti(dlgPositions.id)
+        If fPositions.Ok Then
+            mApi.CancelAccountUpdatesMulti(fPositions.Id)
         End If
 
     End Sub
@@ -1720,47 +2316,182 @@ Friend Class MainForm
     '--------------------------------------------------------------------------------
     ' Request Market Depth Exchanges
     '--------------------------------------------------------------------------------
-    Private Sub cmdReqMktDepthExchanges_Click(sender As Object, e As EventArgs) Handles cmdReqMktDepthExchanges.Click
-        m_api.RequestMarketDepthExchanges()
+    Private Sub reqMktDepthExchangesButton_Click(sender As Object, e As EventArgs) Handles ReqMktDepthExchangesButton.Click
+        mApi.RequestMarketDepthExchanges()
     End Sub
 
     '--------------------------------------------------------------------------------
     ' Clear the form display lists
     '--------------------------------------------------------------------------------
-    Private Sub cmdClearForm_Click(sender As Object, e As EventArgs) Handles cmdClearForm.Click
-        lstMktData.Items.Clear()
-        lstServerResponses.Items.Clear()
-        lstErrors.Items.Clear()
+    Private Sub clearFormButton_Click(sender As Object, e As EventArgs) Handles ClearFormButton.Click
+        mMarketDataText.Clear()
+        ServerResponsesText.Clear()
+        ErrorsText.Clear()
+        SocketLogText.Clear()
     End Sub
 
-    '--------------------------------------------------------------------------------
-    ' Shutdown the app
-    '--------------------------------------------------------------------------------
-    Private Sub cmdClose_Click(sender As Object, e As EventArgs) Handles cmdClose.Click
-        Me.Close()
-    End Sub
+    Private Sub reqSecDefOptParamsButton_Click(sender As Object, e As EventArgs) Handles ReqSecDefOptParamsButton.Click
+        Dim f = New FSecDefOptParamsReq()
+        mTheme.ApplyTheme(FSecDefOptParamsReq.Controls)
 
-    Private Sub cmdReqSecDefOptParams_Click(sender As Object, e As EventArgs) Handles cmdReqSecDefOptParams.Click
-        Dim dlg = New dlgSecDefOptParamsReq()
-
-        If dlg.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            m_api.RequestSecurityDefinitionOptionParams(dlg.reqId, dlg.symbol, dlg.exchange, SecurityTypes.Parse(dlg.secType), dlg.conId)
+        If f.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            mApi.RequestSecurityDefinitionOptionParams(f.ReqId, f.Symbol, f.Exchange, IBAPI.SecurityTypes.Parse(f.SecType), f.ConId)
         End If
     End Sub
 
-    Private Sub cmdFamilyCodes_Click(sender As Object, e As EventArgs) Handles cmdFamilyCodes.Click
-        m_api.RequestFamilyCodes()
+    Private Sub familyCodesButton_Click(sender As Object, e As EventArgs) Handles FamilyCodesButton.Click
+        mApi.RequestFamilyCodes()
     End Sub
 
-    Private Sub cmdReqMatchingSymbols_Click(sender As Object, e As EventArgs) Handles cmdReqMatchingSymbols.Click
+    Private Sub reqMatchingSymbolsButton_Click(sender As Object, e As EventArgs) Handles ReqMatchingSymbolsButton.Click
         ' Set the dialog state
-        m_dlgOrder.init(dlgOrder.DialogType.RequestMatchingSymbols,
-        m_contractInfo, m_orderInfo, m_underComp, Nothing, Me)
+        mOrderForm.Init(FOrder.OrderFormMode.RequestMatchingSymbols, Nothing, Me)
 
-        m_dlgOrder.ShowDialog()
+        mOrderForm.ShowDialog()
 
-        If m_dlgOrder.ok Then
-            m_api.RequestMatchingSymbols(m_dlgOrder.orderId, m_contractInfo.Symbol)
+        If mOrderForm.Ok Then
+            mApi.RequestMatchingSymbols(mOrderForm.RequestId, mOrderForm.ContractInfo.Symbol)
+        End If
+    End Sub
+
+    Private Sub reqNewsProvidersButton_Click(sender As Object, e As EventArgs) Handles ReqNewsProvidersButton.Click
+        mApi.RequestNewsProviders()
+    End Sub
+
+
+    Private Sub reqSmartComponentsButton_Click(sender As Object, e As EventArgs) Handles ReqSmartComponentsButton.Click
+
+    End Sub
+
+    '--------------------------------------------------------------------------------
+    ' Request News Article
+    '--------------------------------------------------------------------------------
+    Private Sub reqNewsArticleButton_Click(sender As Object, e As EventArgs) Handles ReqNewsArticleButton.Click
+        Static fNewsArticle As FNewsArticle
+        If fNewsArticle Is Nothing Then
+            fNewsArticle = New FNewsArticle
+            mTheme.ApplyTheme(fNewsArticle.Controls)
+        End If
+
+        ' Set the dialog state
+        fNewsArticle.Init()
+        fNewsArticle.ShowDialog()
+
+        If fNewsArticle.Ok Then
+            mNewsArticlePath = fNewsArticle.Path
+            mApi.RequestNewsArticle(fNewsArticle.RequestId, fNewsArticle.ProviderCode, fNewsArticle.ArticleId, fNewsArticle.Options)
+        End If
+    End Sub
+
+    '--------------------------------------------------------------------------------
+    ' Request Historical News
+    '--------------------------------------------------------------------------------
+    Private Sub reqHistoricalNewsButton_Click(sender As Object, e As EventArgs) Handles ReqHistoricalNewsButton.Click
+        Static fHistoricalNews As FHistoricalNews
+        If fHistoricalNews Is Nothing Then
+            fHistoricalNews = New FHistoricalNews
+            mTheme.ApplyTheme(fHistoricalNews.Controls)
+        End If
+
+        ' Set the dialog state
+        fHistoricalNews.Init()
+        fHistoricalNews.ShowDialog()
+
+        If fHistoricalNews.Ok Then
+            mApi.RequestHistoricalNews(fHistoricalNews.RequestId, fHistoricalNews.ConId, fHistoricalNews.ProviderCodes,
+                                    CDate(fHistoricalNews.StartDateTime), CDate(fHistoricalNews.EndDateTime), fHistoricalNews.TotalResults, fHistoricalNews.Options)
+        End If
+    End Sub
+
+    Private Sub reqMarketRuleButton_Click(sender As Object, e As EventArgs) Handles ReqMarketRuleButton.Click
+        Dim fMarketRule As New FMarketRule
+        mTheme.ApplyTheme(fMarketRule.Controls)
+
+        fMarketRule.Init()
+        fMarketRule.ShowDialog()
+
+        If fMarketRule.Ok Then
+            mApi.RequestMarketRule(fMarketRule.MarketRuleId)
+        End If
+    End Sub
+
+    Private Sub reqTickByTickButton_Click(sender As Object, e As EventArgs) Handles ReqTickByTickButton.Click
+        mOrderForm.Init(FOrder.OrderFormMode.RequestTickByTick, Nothing, Me)
+
+        If mOrderForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            mApi.RequestTickByTickData(mOrderForm.RequestId, mOrderForm.ContractInfo, mOrderForm.TickByTickDataType, mOrderForm.NumberOfTicks, mOrderForm.IgnoreSize)
+        End If
+    End Sub
+
+    Private Sub cancelTickByTickButton_Click(sender As Object, e As EventArgs) Handles CancelTickByTickButton.Click
+        mOrderForm.Init(FOrder.OrderFormMode.CancelTickByTick, Nothing, Me)
+
+        If mOrderForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            mApi.CancelTickByTickData(mOrderForm.RequestId)
+        End If
+    End Sub
+
+    Private Sub reqHeadTimestampButton_Click(sender As Object, e As EventArgs) Handles ReqHeadTimestampButton.Click
+        ' Set the dialog state
+        mOrderForm.Init(FOrder.OrderFormMode.RequestHistoricalData, mChartOptions, Me)
+
+        mOrderForm.ShowDialog()
+
+        mChartOptions = mOrderForm.Options
+
+        If mOrderForm.Ok Then
+
+            mApi.RequestHeadTimestamp(mOrderForm.RequestId, mOrderForm.ContractInfo,
+                mOrderForm.WhatToShow, mOrderForm.UseRTH)
+        End If
+    End Sub
+
+    Private Sub reqHistogramDataButton_Click(sender As Object, e As EventArgs) Handles ReqHistogramDataButton.Click
+        ' Set the dialog state
+        mOrderForm.Init(FOrder.OrderFormMode.RequestHistoricalData, mChartOptions, Me)
+
+        mOrderForm.ShowDialog()
+
+        mChartOptions = mOrderForm.Options
+
+        If mOrderForm.Ok Then
+
+            mApi.RequestHistogramData(mOrderForm.RequestId, mOrderForm.ContractInfo, mOrderForm.HistBarSizeSetting, mOrderForm.UseRTH)
+        End If
+    End Sub
+
+    Private Sub reqPnlButton_Click(sender As Object, e As EventArgs) Handles ReqPnlButton.Click
+        If mPnLForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            mApi.RequestPnL(mPnLForm.ReqId, mPnLForm.Account, mPnLForm.ModelCode)
+        End If
+    End Sub
+
+    Private Sub cancelPnlButton_Click(sender As Object, e As EventArgs) Handles CancelPnlButton.Click
+        mApi.CancelPnL(mPnLForm.ReqId)
+    End Sub
+
+    Private Sub reqPnlSingleButton_Click(sender As Object, e As EventArgs) Handles ReqPnlSingleButton.Click
+        If mPnLForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            mApi.RequestPnLSingle(mPnLForm.ReqId, mPnLForm.Account, mPnLForm.ModelCode, mPnLForm.ConId)
+        End If
+    End Sub
+
+    Private Sub cancelPnlSingleButton_Click(sender As Object, e As EventArgs) Handles CancelPnlSingleButton.Click
+        mApi.CancelPnLSingle(mPnLForm.ReqId)
+    End Sub
+
+    Private Sub reqHistoricalTicksButton_Click(sender As Object, e As EventArgs) Handles ReqHistoricalTicksButton.Click
+        mOrderForm.Init(FOrder.OrderFormMode.RequestHistoricalTicks, mMarketDataOptions, Me)
+
+        If mOrderForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            Dim r As New HistoricalTicksRequest With {.Contract = mOrderForm.ContractInfo,
+                .EndDateTime = mOrderForm.HistEndDateTime,
+                .EndTimezone = mOrderForm.HistEndTimezone,
+                .NumberOfTicks = mOrderForm.NumberOfTicks,
+                .StartDateTime = mOrderForm.HistStartDateTime,
+                .StartTimezone = mOrderForm.HistStartTimezone,
+                .WhatToShow = mOrderForm.WhatToShow}
+            mApi.RequestHistoricalTickData(mOrderForm.RequestId, r, mOrderForm.UseRTH, mOrderForm.IgnoreSize, mOrderForm.Options)
         End If
     End Sub
 
@@ -1768,1127 +2499,1073 @@ Friend Class MainForm
 
 #Region "API event handlers"
 
-    '--------------------------------------------------------------------------------
-    ' Notify the users of any API request processing errors and displays them in the
-    ' server responses listbox
-    '--------------------------------------------------------------------------------
-    Private Sub Api_ApiError(sender As Object, e As ApiErrorEventArgs) Handles m_apiEvents.ApiError
-        Dim msg = $" Error Code: {e.ErrorCode}; Error Msg: {e.Message}"
-        m_utils.addListItem(Utils.ListType.Errors, msg)
-
-        For Each errorCode In m_faErrorCodes
-            If e.ErrorCode = errorCode Then faError = True
-        Next
-    End Sub
-
-    Private Sub API_ApiEvent(sender As Object, e As ApiEventEventArgs) Handles m_apiEvents.ApiEvent
-        Dim msg = $" Event Code: {e.EventCode}; Event Msg: {e.EventMessage}"
-        m_utils.addListItem(Utils.ListType.Errors, msg)
-    End Sub
-
-    Private Sub API_Exception(sender As Object, e As ExceptionEventArgs) Handles m_apiEvents.Exception
-        Dim msg = $" Exception: {e.Exception.ToString}"
-        m_utils.addListItem(Utils.ListType.Errors, msg)
-    End Sub
-
-    Private Sub Api_MarketDataError(sender As Object, e As RequestErrorEventArgs) Handles m_apiEvents.MarketDataError
-        Dim msg = $" ID: {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}"
-        m_utils.addListItem(Utils.ListType.Errors, msg)
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Notification that the TWS-API connection state has changed.
-    '--------------------------------------------------------------------------------
-    Private Sub Api_ConnectionStateChange(sender As Object, e As ApiConnectionStateChangeEventArgs) Handles m_apiEvents.ConnectionStateChange
-        If e.State = ApiConnectionState.Connected Then
-            If (m_api.ServerVersion() > 0) Then
-                Dim msg = "Connected to Tws: server version " & m_api.ServerVersion()
-                m_utils.addListItem(Utils.ListType.ServerResponses, msg)
-
-                If m_useQueueing Then
-                    PauseAPIButton.Enabled = True
-                    PauseAPIButton.Text = "Pause API"
-                End If
-
-            End If
-        ElseIf e.State = ApiConnectionState.Failed Then
-            m_utils.addListItem(Utils.ListType.Errors, "Connection to Tws failed: " & e.Message)
-            PauseAPIButton.Enabled = False
-        ElseIf e.State = ApiConnectionState.NotConnected Then
-            m_utils.addListItem(Utils.ListType.Errors, "Connection to Tws has been closed")
-            PauseAPIButton.Enabled = False
-        End If
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Market data price tick event - triggered by the reqMktData() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_tickPrice(sender As Object, e As TickPriceEventArgs) Handles m_apiEvents.TickPrice
-        Dim mktDataStr = "id=" & e.TickerId & " " & m_utils.getField(e.Field) & "=" & e.Price & " size=" & e.Size
-        If (e.Attributes.CanAutoExecute) Then
-            mktDataStr = mktDataStr & " canAutoExecute"
-        Else
-            mktDataStr = mktDataStr & " noAutoExecute"
-        End If
-        If (e.Attributes.PastLimit) Then
-            mktDataStr = mktDataStr & " pastLimit"
-        Else
-            mktDataStr = mktDataStr & " noPastLimit"
-        End If
-
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Market data size tick event - triggered by the reqMktData() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_tickSize(sender As Object, e As TickSizeEventArgs) Handles m_apiEvents.TickSize
-        Dim mktDataStr = "id=" & e.TickerId & " " & m_utils.getField(e.Field) & "=" & e.Size
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Market data generic tick event - triggered by the reqMktData() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_tickGeneric(sender As Object, e As TickGenericEventArgs) Handles m_apiEvents.TickGeneric
-        Dim mktDataStr As String
-
-        mktDataStr = "id=" & e.TickerId & " " & m_utils.getField(e.TickType) & "=" & e.Value
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Market data string tick event - triggered by the reqMktData() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_tickString(sender As Object, e As TickStringEventArgs) Handles m_apiEvents.TickString
-        Dim mktDataStr = "id=" & e.TickerId & " " & m_utils.getField(e.TickType) & "=" & e.Value
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Market data EFP computation event - triggered by the reqMktData() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_tickEFP(sender As Object, e As TickEFPEventArgs) Handles m_apiEvents.TickEFP
-        Dim mktDataStr = "id=" & e.TickerId & " " & m_utils.getField(e.TickType) & ":" &
-             e.BasisPoints & " / " & e.FormattedBasisPoints &
-             " totalDividends=" & e.DividendsToLastTradeDate & " holdDays=" & e.HoldDays &
-             " futureLastTradeDate=" & e.FutureLastTradeDate & " dividendImpact=" & e.DividendImpact &
-             " dividendsToLastTradeDate=" & e.DividendsToLastTradeDate
-
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Market data option computation tick event - triggered by the reqMktData() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_tickOptionComputation(sender As Object, e As TickOptionComputationEventArgs) Handles m_apiEvents.TickOptionComputation
-        Dim volStr As String, deltaStr As String, gammaStr As String, vegaStr As String,
-            thetaStr As String, optPriceStr As String, pvDividendStr As String, undPriceStr As String
-
-        If e.ImpliedVolatility = Double.MaxValue Or e.ImpliedVolatility < 0 Then
-            volStr = "N/A"
-        Else
-            volStr = e.ImpliedVolatility
-        End If
-        If e.Delta = Double.MaxValue Or Math.Abs(e.Delta) > 1 Then
-            deltaStr = "N/A"
-        Else
-            deltaStr = e.Delta
-        End If
-        If e.Gamma = Double.MaxValue Or Math.Abs(e.Gamma) > 1 Then
-            gammaStr = "N/A"
-        Else
-            gammaStr = e.Gamma
-        End If
-        If e.Vega = Double.MaxValue Or Math.Abs(e.Vega) > 1 Then
-            vegaStr = "N/A"
-        Else
-            vegaStr = e.Vega
-        End If
-        If e.Theta = Double.MaxValue Or Math.Abs(e.Theta) > 1 Then
-            thetaStr = "N/A"
-        Else
-            thetaStr = e.Theta
-        End If
-        If e.OptPrice = Double.MaxValue Then
-            optPriceStr = "N/A"
-        Else
-            optPriceStr = e.OptPrice
-        End If
-        If e.PvDividend = Double.MaxValue Then
-            pvDividendStr = "N/A"
-        Else
-            pvDividendStr = e.PvDividend
-        End If
-        If e.UndPrice = Double.MaxValue Then
-            undPriceStr = "N/A"
-        Else
-            undPriceStr = e.UndPrice
-        End If
-        Dim mktDataStr = "id = " & e.TickerId & " " & m_utils.getField(e.Field) & " vol = " & volStr & " delta = " & deltaStr &
-            " gamma = " & gammaStr & " vega = " & vegaStr & " theta = " & thetaStr &
-            " optPrice = " & optPriceStr & " pvDividend = " & pvDividendStr & " undPrice = " & undPriceStr
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Market depth book entry - triggered by the reqMktDepth() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_updateMktDepth(sender As Object, e As MarketDepthUpdateEventArgs) Handles m_apiEvents.MarketDepthUpdate
-        m_dlgMktDepth.updateMktDepth(e.RequestId, e.Position, e.MarketMaker, e.Operation, e.Side, e.Price, e.Size)
-    End Sub
-
-    Private Sub API_MarketDepthError(sender As Object, e As RequestErrorEventArgs) Handles m_apiEvents.MarketDepthError
-        Dim msg = $" Id: {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}"
-        m_utils.addListItem(Utils.ListType.Errors, msg)
-    End Sub
-
-    Private Sub Api_ResetMarketDepth(sender As Object, e As MarketDepthRestEventArgs) Handles m_apiEvents.ResetMarketDepth
-        m_dlgMktDepth.clear()
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Historical data tick event - triggered by the reqHistoricalData() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_historicalData(sender As Object, e As HistoricalDataEventArgs) Handles m_apiEvents.HistoricalData
-        Dim mktDataStr = "id=" & e.RequestId & " date=" & e.Bar.TimeStamp & " open=" & e.Bar.OpenValue & " high=" & e.Bar.HighValue &
-                     " low=" & e.Bar.LowValue & " close=" & e.Bar.CloseValue & " volume=" & e.Bar.Volume &
-                     " barCount=" & e.Bar.TickVolume & " WAP=" & e.Bar.WAP
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Historical data end event - triggered by the reqHistoricalData() method after all historical data has been received
-    '--------------------------------------------------------------------------------
-    Private Sub Api_historicalDataEnd(sender As Object, e As HistoricalDataRequestEventArgs) Handles m_apiEvents.HistoricalDataEnd
-        Dim mktDataStr = "id=" & e.RequestId & " start=" & e.StartDate & " end=" & e.EndDate
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    Private Sub API_HistoricalDataError(sender As Object, e As RequestErrorEventArgs) Handles m_apiEvents.HistoricalDataError
-        Dim msg = $" Id: {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}"
-        m_utils.addListItem(Utils.ListType.Errors, msg)
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Real Time Bar event - triggered by the reqRealTimeBar() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_realtimeBar(sender As Object, e As RealtimeBarEventArgs) Handles m_apiEvents.RealtimeBar
-
-        Dim mktDataStr = "id=" & e.RequestId & " time=" & e.Bar.TimeStamp & " open=" & e.Bar.OpenValue & " high=" & e.Bar.HighValue &
-                     " low=" & e.Bar.LowValue & " close=" & e.Bar.CloseValue & " volume=" & e.Bar.Volume & " WAP=" & e.Bar.WAP & " count=" & e.Bar.TickVolume
-
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Fundamental Data event - triggered by the reqFundamentalData() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_fundamentalData(sender As Object, e As FundamentalDataEventArgs) Handles m_apiEvents.FundamentalData
-
-        With e
-            m_utils.addListItem(Utils.ListType.MarketData, "fund reqId=" & .RequestId & " len=" & Len(.Data))
-            m_utils.displayMultiline(Utils.ListType.MarketData, .Data)
-        End With
-
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Current Time event - triggered by the reqCurrentTime() methods
-    '--------------------------------------------------------------------------------
-    Private Sub Api_currentTime(sender As Object, e As CurrentTimeEventArgs) Handles m_apiEvents.CurrentTime
-        Dim offset = lstServerResponses.Items.Count
-        Dim displayString = "current time = " & e.ServerTimestamp
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, displayString)
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Market Scanner related events
-    '--------------------------------------------------------------------------------
-    Private Sub Api_scannerParameters(sender As Object, e As ScannerParametersEventArgs) Handles m_apiEvents.ScannerParameters
-        Dim xmlDoc = ProduceXMLDoc()
-        xmlDoc.LoadXml(e.XmlData)
-        Dim node1 = getRootNode(xmlDoc)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "SCANNER PARAMETERS " & node1.Name & " document.")
-        node1 = node1.SelectSingleNode("InstrumentList")
-        Dim name1 = parseNode(node1.FirstChild, "name")
-        Dim theType1 = parseNode(node1.FirstChild, "type")
-        Dim name2 = parseNode(node1.FirstChild.NextSibling, "name")
-        Dim theType2 = parseNode(node1.FirstChild.NextSibling, "type")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "InstrumentList starts with (" & name1 & "," & theType1 & ") " & "followed by (" & name2 & "," & theType2 & ")")
-        m_utils.displayMultiline(Utils.ListType.ServerResponses, (e.XmlData))
-    End Sub
-
-    Private Sub Api_scannerData(sender As Object, e As ScannerDataEventArgs) Handles m_apiEvents.ScannerData
-        Dim contractDetails = e.ContractDetails
-
-        Dim contract = contractDetails.Summary
-
-        Dim mktDataStr = "id=" & e.RequestId & " rank=" & e.Rank & " conId=" & contract.ConId &
-                     " symbol=" & contract.Symbol & " secType=" & contract.SecType & " currency=" & contract.CurrencyCode &
-                     " localSymbol=" & contract.LocalSymbol & " marketName=" & contractDetails.MarketName &
-                     " tradingClass=" & contract.TradingClass & " distance=" & e.Distance &
-                     " benchmark=" & e.Benchmark & " projection=" & e.Projection &
-                     " legsStr=" & e.LegsStr
-        m_utils.addListItem(Utils.ListType.MarketData, mktDataStr)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-    Private Sub Api_scannerDataEnd(sender As Object, e As RequestEndEventArgs) Handles m_apiEvents.ScannerDataEnd
-        Dim str = "id=" & e.RequestId & " =============== end ==============="
-        m_utils.addListItem(Utils.ListType.MarketData, str)
-
-        ' move into view
-        lstMktData.TopIndex = lstMktData.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Notification of an updates order status - triggered by an order state change.
-    '--------------------------------------------------------------------------------
-    Private Sub Api_orderStatus(sender As Object, e As OrderStatusEventArgs) Handles m_apiEvents.OrderStatus
-        Dim offset = lstServerResponses.Items.Count
-        Dim msg = "order status: orderId=" & e.OrderId & " client id=" & e.ClientId & " permId=" & e.PermId &
-              " status=" & e.Status & " filled=" & e.Filled & " remaining=" & e.Remaining &
-              " avgFillPrice=" & e.AvgFillPrice & " lastFillPrice=" & e.LastFillPrice &
-              " parentId=" & e.ParentId & " whyHeld=" & e.WhyHeld
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, msg)
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' The details for a requested contract - triggered by the reqContractDetailsEx method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_contractDetails(sender As Object, e As ContractDetailsEventArgs) Handles m_apiEvents.ContractDetails
-        Dim offset = lstServerResponses.Items.Count
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId = " & e.RequestId & " ===================================")
-
-        Dim contract = e.ContractDetails.Summary
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Contract Details Begin ----")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Contract:")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  conId = " & contract.ConId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  symbol = " & contract.Symbol)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  secType = " & SecurityTypes.ToInternalString(contract.SecType))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  lastTradeDate = " & contract.Expiry)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  strike = " & contract.Strike)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  right = " & contract.OptRight)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  multiplier = " & contract.Multiplier)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  exchange = " & contract.Exchange)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  primaryExchange = " & contract.PrimaryExch)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  currency = " & contract.CurrencyCode)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  localSymbol = " & contract.LocalSymbol)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  tradingClass = " & contract.TradingClass)
-
-        Dim contractDetails = e.ContractDetails
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Details:")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  marketName = " & contractDetails.MarketName)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  minTick = " & contractDetails.MinTick)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  priceMagnifier = " & contractDetails.PriceMagnifier)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  orderTypes = " & contractDetails.OrderTypes)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  validExchanges = " & contractDetails.ValidExchanges)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  underConId = " & contractDetails.UnderConId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  longName = " & contractDetails.LongName)
-
-        If (contract.SecType <> SecurityType.Bond) Then
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  contractMonth = " & contractDetails.ContractMonth)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  industry = " & contractDetails.Industry)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  category = " & contractDetails.Category)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  subcategory = " & contractDetails.Subcategory)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  timeZoneId = " & contractDetails.TimeZoneId)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  tradingHours = " & contractDetails.TradingHours)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  liquidHours = " & contractDetails.LiquidHours)
-        End If
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  evRule = " & contractDetails.EvRule)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  evMultiplier = " & contractDetails.EvMultiplier)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  mdSizeMultiplier = " & contractDetails.MDSizeMultiplier)
-
-        If (contract.SecType = SecurityType.Bond) Then
-
-            m_utils.addListItem(Utils.ListType.ServerResponses, "Bond Details:")
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  cusip = " & contractDetails.Cusip)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  ratings = " & contractDetails.Ratings)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  descAppend = " & contractDetails.DescAppend)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  bondType = " & contractDetails.BondType)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  couponType = " & contractDetails.CouponType)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  callable = " & contractDetails.Callable)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  putable = " & contractDetails.Putable)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  coupon = " & contractDetails.Coupon)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  convertible = " & contractDetails.Convertible)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  maturity = " & contractDetails.Maturity)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  issueDate = " & contractDetails.IssueDate)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  nextOptionDate = " & contractDetails.NextOptionDate)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  nextOptionType = " & contractDetails.NextOptionType)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  nextOptionPartial = " & contractDetails.NextOptionPartial)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  notes = " & contractDetails.Notes)
-
-
-        End If
-
-        ' CUSIP/ISIN/etc.
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  secIdList={")
-        Dim secIdList = contractDetails.SecIdList
-        If (Not secIdList Is Nothing) Then
-            For Each param In secIdList
-                m_utils.addListItem(Utils.ListType.ServerResponses, "    " & param.Tag & "=" & param.Value)
-            Next
-        End If
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  }")
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Contract Details End ----")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-    End Sub
-
-    Private Sub Api_contractDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles m_apiEvents.ContractDetailsEnd
-        Dim offset = lstServerResponses.Items.Count
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId = " & e.RequestId & " =============== end ===============")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-    End Sub
-
-    Private Sub API_ContractDetailsError(sender As Object, e As RequestErrorEventArgs) Handles m_apiEvents.ContractDetailsError
-        Dim msg = $" Id: {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}"
-        m_utils.addListItem(Utils.ListType.Errors, msg)
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Returns the details for an open order - triggered by the reqOpenOrders() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_openOrder(sender As Object, e As OpenOrderEventArgs) Handles m_apiEvents.OpenOrder
-        m_utils.addListItem(Utils.ListType.ServerResponses, "OpenOrderEx called, orderId=" & e.OrderId)
-
-        Dim order = e.Order
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Order:")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  orderId=" & order.OrderId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  clientId=" & order.ClientID)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  permId=" & order.PermId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  action=" & OrderActions.ToExternalString(order.Action))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  quantity=" & order.TotalQuantity)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  orderType=" & OrderTypes.ToExternalString(order.OrderType))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  lmtPrice=" & NullableDoubleToString(order.LmtPrice))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  auxPrice=" & NullableDoubleToString(order.AuxPrice))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  cashQty=" & NullableDoubleToString(order.CashQty))
-
-        Dim contract = e.Contract
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Contract:")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  conId=" & contract.ConId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  symbol=" & contract.Symbol)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  secType=" & SecurityTypes.ToExternalString(contract.SecType))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  lastTradeDate=" & contract.Expiry)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  strike=" & contract.Strike)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  right=" & OptionRights.ToExternalString(contract.OptRight))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  multiplier=" & contract.Multiplier)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  exchange=" & contract.Exchange)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  primaryExchange=" & contract.PrimaryExch)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  currency=" & contract.CurrencyCode)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  localSymbol=" & contract.LocalSymbol)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  tradingClass=" & contract.TradingClass)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  comboLegsDescrip=" & contract.ComboLegsDescription)
-
-        ' combo legs
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  comboLegs={")
-
-        If contract.ComboLegs IsNot Nothing Then
-            Dim comboLegsCount = contract.ComboLegs.Count
-
-            Dim orderComboLegsCount = 0
-            If order.OrderComboLegs IsNot Nothing Then
-                orderComboLegsCount = order.OrderComboLegs.Length
-            End If
-
-            Dim i = 0
-            For Each comboLeg In contract.ComboLegs
-                Dim orderComboLegPriceStr = ""
-
-                If comboLegsCount = orderComboLegsCount Then
-                    Dim orderComboLeg = order.OrderComboLegs(i)
-                    orderComboLegPriceStr = " price=" & NullableDoubleToString(orderComboLeg.Price)
-                End If
-
-                m_utils.addListItem(Utils.ListType.ServerResponses,
-                                    "    leg " & (i + 1) &
-                                    ": conId=" & comboLeg.ConId & " ratio=" & comboLeg.Ratio & " action=" & comboLeg.Action &
-                                    " exchange = " & comboLeg.Exchange & " openClose=" & comboLeg.OpenClose &
-                                    " shortSaleSlot=" & comboLeg.ShortSaleSlot & " designatedLocation=" & comboLeg.DesignatedLocation &
-                                    " exemptCode=" & comboLeg.ExemptCode & orderComboLegPriceStr)
-                i += 1
-            Next
-        End If
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  }")
-
-        Dim underComp = contract.UnderComp
-
-        If (Not underComp Is Nothing) Then
-            With underComp
-                m_utils.addListItem(Utils.ListType.ServerResponses, "  underComp.conId=" & .ConId)
-                m_utils.addListItem(Utils.ListType.ServerResponses, "  underComp.delta=" & .Delta)
-                m_utils.addListItem(Utils.ListType.ServerResponses, "  underComp.delta=" & .Price)
-            End With
-        End If
-
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Order (extended):")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  timeInForce=" & OrderTIFs.ToExternalString(order.Tif))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  ocaGroup=" & order.OcaGroup)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  ocaType=" & OcaTypes.ToExternalString(order.OcaType))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  orderRef=" & order.OrderRef)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  transmit=" & order.Transmit)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  parentId=" & order.ParentId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  blockOrder=" & order.BlockOrder)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  sweepToFill=" & order.SweepToFill)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  displaySize=" & order.DisplaySize)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  triggerMethod=" & TriggerMethods.ToExternalString(order.TriggerMethod))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  outsideRth=" & order.OutsideRth)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  hidden=" & order.Hidden)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  goodAfterTime=" & order.GoodAfterTime)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  goodTillDate=" & order.GoodTillDate)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  overridePercentageConstraints=" & order.OverridePercentageConstraints)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  rule80A=" & order.Rule80A)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  allOrNone=" & order.AllOrNone)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  minQty=" & NullableIntegerToString(order.MinQty))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  percentOffset=" & NullableDoubleToString(order.PercentOffset))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  trailStopPrice=" & NullableDoubleToString(order.TrailStopPrice))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  trailingPercent=" & NullableDoubleToString(order.TrailingPercent))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  whatIf=" & order.WhatIf)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  notHeld=" & order.NotHeld)
-
-        ' Financial advisors only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  faGroup=" & order.FaGroup)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  faProfile=" & order.FaProfile)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  faMethod=" & order.FaMethod)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  faPercentage=" & order.FaPercentage)
-
-        ' Clearing info
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  account=" & order.Account)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  modelCode=" & order.ModelCode)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  settlingFirm=" & order.SettlingFirm)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  clearingAccount=" & order.ClearingAccount)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  clearingIntent=" & order.ClearingIntent)
-
-        ' Institutional orders only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  openClose=" & order.OpenClose)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  origin=" & order.Origin)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  shortSaleSlot=" & order.ShortSaleSlot)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  designatedLocation=" & order.DesignatedLocation)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  exemptCode=" & order.ExemptCode)
-
-        ' SMART routing only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  discretionaryAmt=" & order.DiscretionaryAmt)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  eTradeOnly=" & order.ETradeOnly)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  firmQuoteOnly=" & order.FirmQuoteOnly)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  nbboPriceCap=" & NullableDoubleToString(order.NbboPriceCap))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  optOutSmartRouting=" & order.OptOutSmartRouting)
-
-        ' BOX or VOL orders only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  auctionStrategy=" & order.AuctionStrategy)
-
-        ' BOX order only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  startingPrice=" & NullableDoubleToString(order.StartingPrice))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  stockRefPrice=" & NullableDoubleToString(order.StockRefPrice))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  delta=" & NullableDoubleToString(order.Delta))
-
-        ' pegged to stock or VOL orders
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  stockRangeLower=" & NullableDoubleToString(order.StockRangeLower))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  stockRangeUpper=" & NullableDoubleToString(order.StockRangeUpper))
-
-        ' VOLATILITY orders only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  volatility=" & NullableDoubleToString(order.Volatility))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  volatilityType=" & order.VolatilityType)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  continuousUpdate=" & order.ContinuousUpdate)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  referencePriceType=" & order.ReferencePriceType)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralOrderType=" & order.DeltaNeutralOrderType)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralAuxPrice=" & NullableDoubleToString(order.DeltaNeutralAuxPrice))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralConId=" & order.DeltaNeutralConId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralSettlingFirm=" & order.DeltaNeutralSettlingFirm)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralClearingAccount=" & order.DeltaNeutralClearingAccount)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralClearingIntent=" & order.DeltaNeutralClearingIntent)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralOpenClose=" & order.DeltaNeutralOpenClose)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralShortSale=" & order.DeltaNeutralShortSale)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralShortSaleSlot=" & order.DeltaNeutralShortSaleSlot)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  deltaNeutralDesignatedlocation=" & order.DeltaNeutralDesignatedLocation)
-
-        ' COMBO orders only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  basisPoints=" & NullableDoubleToString(order.BasisPoints))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  basisPointsType=" & NullableIntegerToString(order.BasisPointsType))
-
-        ' SCALE orders only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scaleInitLevelSize=" & NullableIntegerToString(order.ScaleInitLevelSize))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scaleSubsLevelSize=" & NullableIntegerToString(order.ScaleSubsLevelSize))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scalePriceIncrement=" & NullableDoubleToString(order.ScalePriceIncrement))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scalePriceAdjustValue=" & NullableDoubleToString(order.ScalePriceAdjustValue))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scalePriceAdjustInterval=" & NullableIntegerToString(order.ScalePriceAdjustInterval))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scaleProfitOffset=" & NullableDoubleToString(order.ScaleProfitOffset))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scaleAutoReset=" & order.ScaleAutoReset)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scaleInitPosition=" & NullableIntegerToString(order.ScaleInitPosition))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scaleInitFillQty=" & NullableIntegerToString(order.ScaleInitFillQty))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  scaleRandomPercent=" & NullableIntegerToString(order.ScaleRandomPercent))
-
-        ' HEDGE orders only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  hedgeType=" & order.HedgeType)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  hedgeParam=" & order.HedgeParam)
-
-        ' Solicited orders only
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  solicited=" & order.Solicited)
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  randomize size=" & order.RandomizeSize)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  randomize price=" & order.RandomizePrice)
-
-        ' ALGO orders only
-        Dim algoStrategy = order.AlgoStrategy
-        If (algoStrategy <> "") Then
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  algoStrategy=" & algoStrategy)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  algoParams={")
-            If (order.AlgoParams IsNot Nothing) Then
-                For Each param In order.AlgoParams
-                    m_utils.addListItem(Utils.ListType.ServerResponses, "    " & param.Tag & "=" & param.Value)
-                Next
-            End If
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  }")
-        End If
-
-        ' Smart combo routing params
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  smartComboRoutingParams={")
-        If (order.SmartComboRoutingParams IsNot Nothing) Then
-            For Each param In order.SmartComboRoutingParams
-                m_utils.addListItem(Utils.ListType.ServerResponses, "    " & param.Tag & "=" & param.Value)
-            Next
-        End If
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  }")
-
-        Dim orderState = e.OrderState
-        m_utils.addListItem(Utils.ListType.ServerResponses, "OrderState:")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  status=" & orderState.Status)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  initMargin=" & NullableDoubleToString(orderState.InitMargin))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  maintMargin=" & NullableDoubleToString(orderState.MaintMargin))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  equityWithLoan=" & NullableDoubleToString(orderState.EquityWithLoan))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  commission=" & NullableDoubleToString(orderState.Commission))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  minCommission=" & NullableDoubleToString(orderState.MinCommission))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  maxCommission=" & NullableDoubleToString(orderState.MaxCommission))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  comissionCurrency=" & orderState.CommissionCurrency)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "  warningText=" & orderState.WarningText)
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "===============================")
-
-    End Sub
-
-    Private Sub Api_openOrderEnd(sender As Object, e As EventArgs) Handles m_apiEvents.OpenOrderEnd
-        m_utils.addListItem(Utils.ListType.ServerResponses, "============= end =============")
-
-        ' move into view
-        lstServerResponses.TopIndex = lstServerResponses.Items.Count - 1
-    End Sub
-
-    Private Sub API_OrderError(sender As Object, e As RequestErrorEventArgs) Handles m_apiEvents.OrderError
-        Dim msg = $" Id: {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}"
-        m_utils.addListItem(Utils.ListType.Errors, msg)
-    End Sub
-
-    Private Sub Api_deltaNeutralValidation(sender As Object, e As DeltaNeutralValidationEventArgs) Handles m_apiEvents.DeltaNeutralValidation
-        m_utils.addListItem(Utils.ListType.ServerResponses, "deltaNeutralValidation called, reqId=" & e.RequestId)
-
-        Dim underComp = e.UnderComp
-
-        If (underComp IsNot Nothing) Then
-            With underComp
-                m_utils.addListItem(Utils.ListType.ServerResponses, "  underComp.conId=" & .ConId)
-                m_utils.addListItem(Utils.ListType.ServerResponses, "  underComp.delta=" & .Delta)
-                m_utils.addListItem(Utils.ListType.ServerResponses, "  underComp.delta=" & .Price)
-            End With
-        End If
-    End Sub
-
-    Private Sub Api_tickSnapshotEnd(sender As Object, e As RequestEndEventArgs) Handles m_apiEvents.TickSnapshotEnd
-        m_utils.addListItem(Utils.ListType.MarketData, "id=" & e.RequestId & " =============== end ===============")
-
-        ' move into view
-        lstServerResponses.TopIndex = lstServerResponses.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Notification of an updated/new portfolio position - triggered by the reqAcctUpdates() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_updatePortfolio(sender As Object, e As UpdatePortfolioEventArgs) Handles m_apiEvents.UpdatePortfolio
-        m_dlgAcctData.updatePortfolio(e.Contract, e.Position, e.MarketPrice, e.MarketValue, e.AverageCost, e.UnrealisedPNL, e.RealisedPNL, e.AccountName)
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Notification of a server time update - triggered by the reqAcctUpdates() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_updateAccountTime(sender As Object, e As UpdateAccountTimeEventArgs) Handles m_apiEvents.UpdateAccountTime
-        m_dlgAcctData.updateAccountTime(e.AccountTimestamp)
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Notification of an account proprty update - triggered by the reqAcctUpdates() method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_updateAccountValue(sender As Object, e As UpdateAccountValueEventArgs) Handles m_apiEvents.UpdateAccountValue
-        m_dlgAcctData.updateAccountValue(e.Key, e.Value, e.Currency, e.AccountName)
-    End Sub
-
-    Private Sub Api_accountDownloadEnd(sender As Object, e As AccountDownloadEndEventArgs) Handles m_apiEvents.AccountDownloadEnd
+#Region "Account Events"
+    Private Sub _AccountDownloadEnd(sender As Object, e As AccountDownloadEndEventArgs) Handles ApiEvents.AccountDownloadEnd
         Dim accountName = e.Account
-        m_dlgAcctData.accountDownloadEnd(accountName)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Account Download End:" & accountName)
+        mAccountDataForm.AccountDownloadEnd(accountName)
+        mServerResponsesText.DisplayMessage($"Account Download End: {accountName}")
     End Sub
 
-    '--------------------------------------------------------------------------------
-    ' An order execution report. This event is triggered by the explicit request for
-    ' execution reports reqExecutionDetials(), and also by order state changes method
-    '--------------------------------------------------------------------------------
-    Private Sub Api_execDetails(sender As Object, e As ExecutionDetailsEventArgs) Handles m_apiEvents.ExecutionDetails
-        Dim offset = lstServerResponses.Items.Count
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Execution Details begin ----")
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId = " & e.ReqId)
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Contract:")
-        With e.Contract
-
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  conId=" & .ConId)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  symbol=" & .Symbol)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  secType=" & .SecType)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  lastTradeDate=" & .Expiry)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  strike=" & .Strike)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  right=" & .OptRight)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  multiplier=" & .Multiplier)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  exchange=" & .Exchange)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  primaryExchange=" & .PrimaryExch)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  currency=" & .CurrencyCode)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  localSymbol=" & .LocalSymbol)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  tradingClass=" & .TradingClass)
-
-        End With
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Execution:")
-        With e.Execution
-
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  execId = " & .ExecId)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  orderId = " & .OrderId)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  clientId = " & .ClientID)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  permId = " & .PermId)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  time = " & .Time)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  acctNumber = " & .AcctNumber)
-            'm_utils.addListItem(Utils.ListType.ServerResponses, "  modelCode = " & .ModelCode)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  exchange = " & .Exchange)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  side = " & .Side)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  shares = " & .Shares)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  price = " & .Price)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  liquidation = " & .Liquidation)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  cumQty = " & .CumQty)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  avgPrice = " & .AvgPrice)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  orderRef = " & .OrderRef)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  evRule = " & .EvRule)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  evMultiplier = " & .EvMultiplier)
-
-        End With
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Execution Details End ----")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
+    Private Sub _AccountSummary(sender As Object, e As AccountSummaryEventArgs) Handles ApiEvents.AccountSummary
+        mServerResponsesText.DisplayMessage(" ---- Account Summary ----")
+        mServerResponsesText.DisplayMessage($"reqId={e.RequestId}")
+        mServerResponsesText.DisplayMessage($"account={e.Account}")
+        mServerResponsesText.DisplayMessage($"tag={e.Tag}")
+        mServerResponsesText.DisplayMessage($"value={e.Value}")
+        mServerResponsesText.DisplayMessage($"currency={e.Currency}")
+        mServerResponsesText.DisplayMessage(" ---- Account Summary End ----")
     End Sub
 
-    Private Sub Api_execDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles m_apiEvents.ExecutionDetailsEnd
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId = " & e.RequestId & " =============== end ===============")
-
-        ' move into view
-        lstServerResponses.TopIndex = lstServerResponses.Items.Count - 1
+    Private Sub _AccountSummaryEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.AccountSummaryEnd
+        mServerResponsesText.DisplayMessage($"AccountSummary({e.RequestId}) =============== end ===============")
     End Sub
 
-    '--------------------------------------------------------------------------------
-    ' Notification of a new IB news bulletin
-    '--------------------------------------------------------------------------------
-    Private Sub Api_updateNewsBulletin(sender As Object, e As NewsBulletinEventArgs) Handles m_apiEvents.NewsBulletin
-        Dim dlg As New dlgServerResponse
-        dlg.Text = "IB News Bulletin"
-        dlg.lblMsg.Text = " MsgId=" & e.MsgId & " :: MsgType=" & e.MsgType & " :: Origin=" & e.OrigExchange & " :: Message=" & e.Message
-        dlg.Show()
+    Private Sub _AccountUpdateMulti(sender As Object, e As AccountUpdateMultiEventArgs) Handles ApiEvents.AccountUpdateMulti
+        mServerResponsesText.DisplayMessage($"reqId={e.ReqId} account={e.Account} modelCode={e.ModelCode} key={e.Key} value={e.Value} currency={e.Currency}")
     End Sub
 
-    '--------------------------------------------------------------------------------
-    ' Notification of the FA managed accounts (comma delimited list of account codes)
-    '--------------------------------------------------------------------------------
-    Private Sub Api_managedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles m_apiEvents.ManagedAccounts
-        m_faAcctsList = String.Join(Of String)(",", e.ManagedAccounts)
-        Dim msg = "Connected : The list of managed accounts are : [" & m_faAcctsList & "]"
-        m_utils.addListItem(Utils.ListType.ServerResponses, msg)
-
-        m_faAccount = True
+    Private Sub _AccountUpdateMultiEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.AccountUpdateMultiEnd
+        mServerResponsesText.DisplayMessage($"reqId={e.RequestId} ==== Account Update Multi End ==== ")
     End Sub
 
-    Private Sub Api_receiveFA(sender As Object, e As AdvisorDataEventArgs) Handles m_apiEvents.AdvisorData
-        Dim fname = m_utils.faMsgTypeName(e.FaDataType)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "FA: " & fname & "=" & e.Data)
+    Private Sub _AdvisorData(sender As Object, e As AdvisorDataEventArgs) Handles ApiEvents.AdvisorData
+        mServerResponsesText.DisplayMessage($"FA {FaMsgTypeName(e.FaDataType)}={e.Data}")
         Select Case e.FaDataType
-            Case Utils.FaMessageType.Groups
-                m_faGroupXML = e.Data
-            Case Utils.FaMessageType.Profiles
-                m_faProfilesXML = e.Data
-            Case Utils.FaMessageType.Aliases
-                m_faAliasesXML = e.Data
+            Case FinancialAdvisorDataType.Groups
+                mFaGroupXML = e.Data
+            Case FinancialAdvisorDataType.Profiles
+                mFaProfilesXML = e.Data
+            Case FinancialAdvisorDataType.AccountAliases
+                mFaAliasesXML = e.Data
         End Select
 
-        If faError = False And m_faGroupXML <> "" And m_faProfilesXML <> "" And m_faAliasesXML <> "" Then
+        If mFaError = False And mFaGroupXML <> "" And mFaProfilesXML <> "" And mFaAliasesXML <> "" Then
 
-            m_dlgFinancialAdvisor.init(m_utils, m_faGroupXML, m_faProfilesXML, m_faAliasesXML)
-            m_dlgFinancialAdvisor.ShowDialog()
-            If m_dlgFinancialAdvisor.ok Then
-                m_api.ReplaceFA(Utils.FaMessageType.Groups, m_dlgFinancialAdvisor.groupsXML)
-                m_api.ReplaceFA(Utils.FaMessageType.Profiles, m_dlgFinancialAdvisor.profilesXML)
-                m_api.ReplaceFA(Utils.FaMessageType.Aliases, m_dlgFinancialAdvisor.aliasesXML)
+            mFinancialAdvisorForm.Init(mFaGroupXML, mFaProfilesXML, mFaAliasesXML)
+            mFinancialAdvisorForm.ShowDialog()
+            If mFinancialAdvisorForm.Ok Then
+                mApi.ReplaceFA(FinancialAdvisorDataType.Groups, mFinancialAdvisorForm.GroupsXML)
+                mApi.ReplaceFA(FinancialAdvisorDataType.Profiles, mFinancialAdvisorForm.ProfilesXML)
+                mApi.ReplaceFA(FinancialAdvisorDataType.AccountAliases, mFinancialAdvisorForm.AliasesXML)
             End If
 
         End If
 
     End Sub
 
-    '--------------------------------------------------------------------------------
-    ' Market Data Type
-    '--------------------------------------------------------------------------------
-    Private Sub Api_marketDataType(sender As Object, e As MarketDataTypeEventArgs) Handles m_apiEvents.MarketDataType
-        Dim msg = "id=" & e.RequestId & " marketDataType=" & [Enum].GetName(GetType(dlgOrder.MarketDataTypes), e.MarketDataType)
-        m_utils.addListItem(Utils.ListType.MarketData, msg)
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Commission Report
-    '--------------------------------------------------------------------------------
-    Private Sub Api_commissionReport(sender As Object, e As CommissionReportEventArgs) Handles m_apiEvents.CommissionReport
-        Dim offset = lstServerResponses.Items.Count
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Commission Report ----")
-
-        With e.CommissionReport
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  execId=" & .ExecId)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  commission=" & NullableDoubleToString(.Commission))
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  currency=" & .CurrencyCode)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  realizedPNL=" & NullableDoubleToString(.RealizedPNL))
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  yield=" & NullableDoubleToString(.Yield))
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  yieldRedemptionDate=" & NullableIntegerToString(.YieldRedemptionDate))
-
-        End With
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Commission Report End ----")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-    End Sub
-
-
-    '--------------------------------------------------------------------------------
-    ' Position
-    '--------------------------------------------------------------------------------
-    Private Sub Api_position(sender As Object, e As PositionEventArgs) Handles m_apiEvents.Position
-        Dim offset = lstServerResponses.Items.Count
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Position ----")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "account=" & e.Account)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Contract:")
-
-        With e.Contract
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  conId=" & .ConId)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  symbol=" & .Symbol)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  secType=" & .SecType)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  lastTradeDate=" & .Expiry)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  strike=" & .Strike)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  right=" & .OptRight)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  multiplier=" & .Multiplier)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  exchange=" & .Exchange)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  primaryExchange=" & .PrimaryExch)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  currency=" & .CurrencyCode)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  localSymbol=" & .LocalSymbol)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  tradingClass=" & .TradingClass)
-        End With
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "position=" & NullableIntegerToString(e.Position))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "avgCost=" & NullableDoubleToString(e.AverageCost))
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Position End ----")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Position End
-    '--------------------------------------------------------------------------------
-    Private Sub Api_positionEnd(sender As Object, e As EventArgs) Handles m_apiEvents.PositionEnd
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ==== Position End ==== ")
-
-        ' move into view
-        lstServerResponses.TopIndex = lstServerResponses.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Account Summary
-    '--------------------------------------------------------------------------------
-    Private Sub Api_accountSummary(sender As Object, e As AccountSummaryEventArgs) Handles m_apiEvents.AccountSummary
-        Dim offset = lstServerResponses.Items.Count
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Account Summary ----")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId=" & e.RequestId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "account=" & e.Account)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "tag=" & e.Tag)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "value=" & e.Value)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "currency=" & e.Currency)
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Account Summary End ----")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Account Summary End
-    '--------------------------------------------------------------------------------
-    Private Sub Api_accountSummaryEnd(sender As Object, e As RequestEndEventArgs) Handles m_apiEvents.AccountSummaryEnd
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId = " & e.RequestId & " =============== end ===============")
-
-        ' move into view
-        lstServerResponses.TopIndex = lstServerResponses.Items.Count - 1
-
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Display Group List
-    '--------------------------------------------------------------------------------
-    Private Sub Api_displayGroupList(sender As Object, e As DisplayGroupListEventArgs) Handles m_apiEvents.DisplayGroupList
-        m_dlgGroups.displayGroupList(e.RequestId, e.Groups)
-    End Sub
-
-    Private Sub Api_displayGroupUpdated(sender As Object, e As DisplayGroupUpdatedEventArgs) Handles m_apiEvents.DisplayGroupUpdated
-        m_dlgGroups.displayGroupUpdated(e.RequestId, e.ContractInfo)
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Position Multi
-    '--------------------------------------------------------------------------------
-    Private Sub Api_positionMulti(sender As Object, e As PositionMultiEventArgs) Handles m_apiEvents.PositionMulti
-        Dim offset = lstServerResponses.Items.Count
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Position Multi ----")
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId=" & e.ReqId)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "account=" & e.Account)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "modelCode=" & e.ModelCode)
-        m_utils.addListItem(Utils.ListType.ServerResponses, "Contract:")
-
-        With e.Contract
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  conId=" & .ConId)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  symbol=" & .Symbol)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  secType=" & .SecType)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  lastTradeDate=" & .Expiry)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  strike=" & .Strike)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  right=" & .OptRight)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  multiplier=" & .Multiplier)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  exchange=" & .Exchange)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  primaryExchange=" & .PrimaryExch)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  currency=" & .CurrencyCode)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  localSymbol=" & .LocalSymbol)
-            m_utils.addListItem(Utils.ListType.ServerResponses, "  tradingClass=" & .TradingClass)
-        End With
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "position=" & NullableIntegerToString(e.Position))
-        m_utils.addListItem(Utils.ListType.ServerResponses, "avgCost=" & NullableDoubleToString(e.AverageCost))
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Position Multi End ----")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Position Multi End
-    '--------------------------------------------------------------------------------
-    Private Sub Api_positionMultiEnd(sender As Object, e As RequestEndEventArgs) Handles m_apiEvents.PositionMultiEnd
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId=" & e.RequestId & " ==== Position Multi End ==== ")
-
-        ' move into view
-        lstServerResponses.TopIndex = lstServerResponses.Items.Count - 1
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Account Update Multi
-    '--------------------------------------------------------------------------------
-    Private Sub Api_accountUpdateMulti(sender As Object, e As AccountUpdateMultiEventArgs) Handles m_apiEvents.AccountUpdateMulti
-        Dim offset = lstServerResponses.Items.Count
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId=" & e.ReqId & " account=" & e.Account & " modelCode=" & e.ModelCode & " key=" & e.Key & " value=" & e.Value & " currency=" & e.Currency)
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
-    End Sub
-
-    '--------------------------------------------------------------------------------
-    ' Account Update Multi End
-    '--------------------------------------------------------------------------------
-    Private Sub Api_accountUpdateMultiEnd(sender As Object, e As RequestEndEventArgs) Handles m_apiEvents.AccountUpdateMultiEnd
-        m_utils.addListItem(Utils.ListType.ServerResponses, "reqId=" & e.RequestId & " ==== Account Update Multi End ==== ")
-
-        ' move into view
-        lstServerResponses.TopIndex = lstServerResponses.Items.Count - 1
-    End Sub
-
-    Private Sub Api_SecurityDefinitionOptionParameter(sender As Object, e As SecurityDefinitionOptionParameterEventArgs) Handles m_apiEvents.SecurityDefinitionOptionParameter
-        Dim displayString = String.Format("reqId: {0}, exchange {1}, underlyingConId: {2}, tradingClass: {3}, multiplier: {4}, expirations: {5}, strikes: {6}",
-            e.RequestId,
-            e.Exchange,
-            e.UnderlyingConId,
-            e.TradingClass,
-            e.Multiplier,
-            String.Join(",", e.Expirations),
-            String.Join(", ", e.Strikes))
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, displayString)
-
-        ' move into view
-        lstServerResponses.TopIndex = lstServerResponses.Items.Count - 1
-    End Sub
-
-    Private Sub Api_FamilyCodes(sender As Object, e As FamilyCodesEventArgs) Handles m_apiEvents.FamilyCodes
-        Dim offset = lstServerResponses.Items.Count
-
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ==== Family Codes Begin (total=" & e.FamilyCodes.Count & ") ====")
+    Private Sub _FamilyCodes(sender As Object, e As FamilyCodesEventArgs) Handles ApiEvents.FamilyCodes
+        mServerResponsesText.DisplayMessage(" ==== Family Codes Begin (total={e.FamilyCodes.Count}) ====")
         Dim count = 0
         For Each familyCode As FamilyCode In e.FamilyCodes
-            m_utils.addListItem(Utils.ListType.ServerResponses, "Family Code (" & count & ") - accountID=" & familyCode.AccountID & " familyCode=" & familyCode.FamilyCode)
+            mServerResponsesText.DisplayMessage($"Family Code ({count}) - accountID={familyCode.AccountID} familyCode={familyCode.FamilyCode}")
             count += 1
         Next
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ==== Family Codes End (total=" & e.FamilyCodes.Count & ") ====")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
+        mServerResponsesText.DisplayMessage($" ==== Family Codes End (total={e.FamilyCodes.Count}) ====")
     End Sub
 
-    Private Sub Api_SymbolSamples(sender As Object, e As SymbolSamplesEventArgs) Handles m_apiEvents.SymbolSamples
-        Dim offset = lstServerResponses.Items.Count
+    Private Sub _ManagedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles ApiEvents.ManagedAccounts
+        mFaAccountsList = String.Join(Of String)(",", e.ManagedAccounts)
+        mServerResponsesText.DisplayMessage($"The managed accounts are: {mFaAccountsList}")
+        mFaAccount = True
+    End Sub
 
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ==== Symbol Samples (total=" & e.ContractDescriptions.Count & ") reqId=" & e.RequestId & " ====")
+    Private Sub _PnL(sender As Object, e As PnLEventArgs) Handles ApiEvents.PnL
+        mServerResponsesText.DisplayMessage($"PnL, req id: {e.RequestId}, Daily PnL: {e.DailyPnL}, Unrealized PnL: {e.UnrealizedPnL}, Realized PnL: {e.RealizedPnL}")
+    End Sub
+
+    Private Sub _PnLSingle(sender As Object, e As PnLSingleEventArgs) Handles ApiEvents.PnLSingle
+        mServerResponsesText.DisplayMessage($"PnL Single, req id: {e.RequestId}, Pos:{e.Position}, Daily PnL: {e.PnL}, Unrealized PnL: {e.UnrealizedPnL}, Realized PnL: {e.RealizedPnL}, Value: {e.Value}")
+    End Sub
+
+    Private Sub _Position(sender As Object, e As PositionEventArgs) Handles ApiEvents.Position
+        mServerResponsesText.DisplayMessage(" ---- Position ----")
+        mServerResponsesText.DisplayMessage($"account={e.Account}")
+        mServerResponsesText.DisplayMessage("Contract")
+
+        With e.Contract
+            mServerResponsesText.DisplayMessage($"  conId={ .ConId}")
+            mServerResponsesText.DisplayMessage($"  symbol={ .Symbol}")
+            mServerResponsesText.DisplayMessage($"  secType={ .SecType}")
+            mServerResponsesText.DisplayMessage($"  lastTradeDate={ .Expiry}")
+            mServerResponsesText.DisplayMessage($"  strike={ .Strike}")
+            mServerResponsesText.DisplayMessage($"  right={ .OptRight}")
+            mServerResponsesText.DisplayMessage($"  multiplier={ .Multiplier}")
+            mServerResponsesText.DisplayMessage($"  exchange={ .Exchange}")
+            mServerResponsesText.DisplayMessage($"  primaryExchange={ .PrimaryExch}")
+            mServerResponsesText.DisplayMessage($"  currency={ .CurrencyCode}")
+            mServerResponsesText.DisplayMessage($"  localSymbol={ .LocalSymbol}")
+            mServerResponsesText.DisplayMessage($"  tradingClass={ .TradingClass}")
+        End With
+
+        mServerResponsesText.DisplayMessage($"position={IBAPI.NullableToString(e.Position)}")
+        mServerResponsesText.DisplayMessage($"avgCost={IBAPI.NullableToString(e.AverageCost)}")
+        mServerResponsesText.DisplayMessage(" ---- Position End ----")
+    End Sub
+
+    Private Sub _PositionEnd(sender As Object, e As EventArgs) Handles ApiEvents.PositionEnd
+        mServerResponsesText.DisplayMessage(" ==== Position End ==== ")
+    End Sub
+
+    Private Sub _PositionMulti(sender As Object, e As PositionMultiEventArgs) Handles ApiEvents.PositionMulti
+        mServerResponsesText.DisplayMessage(" ---- Position Multi ----")
+        mServerResponsesText.DisplayMessage($"reqId={e.ReqId}")
+        mServerResponsesText.DisplayMessage($"account={e.Account}")
+        mServerResponsesText.DisplayMessage($"modelCode={e.ModelCode}")
+        mServerResponsesText.DisplayMessage("Contract")
+
+        With e.Contract
+            mServerResponsesText.DisplayMessage($"  conId={ .ConId}")
+            mServerResponsesText.DisplayMessage($"  symbol={ .Symbol}")
+            mServerResponsesText.DisplayMessage($"  secType={ .SecType}")
+            mServerResponsesText.DisplayMessage($"  lastTradeDate={ .Expiry}")
+            mServerResponsesText.DisplayMessage($"  strike={ .Strike}")
+            mServerResponsesText.DisplayMessage($"  right={ .OptRight}")
+            mServerResponsesText.DisplayMessage($"  multiplier={ .Multiplier}")
+            mServerResponsesText.DisplayMessage($"  exchange={ .Exchange}")
+            mServerResponsesText.DisplayMessage($"  primaryExchange={ .PrimaryExch}")
+            mServerResponsesText.DisplayMessage($"  currency={ .CurrencyCode}")
+            mServerResponsesText.DisplayMessage($"  localSymbol={ .LocalSymbol}")
+            mServerResponsesText.DisplayMessage($"  tradingClass={ .TradingClass}")
+        End With
+
+        mServerResponsesText.DisplayMessage($"position={IBAPI.NullableToString(e.Position)}")
+        mServerResponsesText.DisplayMessage($"avgCost={IBAPI.NullableToString(e.AverageCost)}")
+        mServerResponsesText.DisplayMessage(" ---- Position Multi End ----")
+    End Sub
+
+    Private Sub _PositionMultiEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.PositionMultiEnd
+        mServerResponsesText.DisplayMessage("reqId={e.RequestId} ==== Position Multi End ==== ")
+    End Sub
+
+    Private Sub _SoftDollarTiers(sender As Object, e As SoftDollarTiersEventArgs) Handles ApiEvents.SoftDollarTiers
+        mServerResponsesText.DisplayMessage(" ==== Soft Dollar Tiers Begin ====")
+        e.Tiers.ForEach(Sub(t) mServerResponsesText.DisplayMessage($"DisplayName={t.DisplayName}, Name={t.Name}, Value={t.Value}"))
+        mServerResponsesText.DisplayMessage(" ==== Soft Dollar Tiers End ====")
+    End Sub
+
+    Private Sub _UpdateAccountTime(sender As Object, e As UpdateAccountTimeEventArgs) Handles ApiEvents.UpdateAccountTime
+        mAccountDataForm.UpdateAccountTime(e.AccountTimestamp)
+    End Sub
+
+    Private Sub _UpdateAccountValue(sender As Object, e As UpdateAccountValueEventArgs) Handles ApiEvents.UpdateAccountValue
+        mAccountDataForm.UpdateAccountValue(e.Key, e.Value, e.Currency, e.AccountName)
+    End Sub
+
+    Private Sub _UpdatePortfolio(sender As Object, e As UpdatePortfolioEventArgs) Handles ApiEvents.UpdatePortfolio
+        mAccountDataForm.UpdatePortfolio(e.Contract, e.Position, e.MarketPrice, e.MarketValue, e.AverageCost, e.UnrealizedPNL, e.RealizedPNL, e.AccountName)
+    End Sub
+
+#End Region
+
+#Region "Connection Status Events"
+
+    Private Sub _ConnectionStateChange(sender As Object, e As ApiConnectionStateChangeEventArgs) Handles ApiEvents.ConnectionStateChange
+        If e.State = ApiConnectionState.Connected Then
+            If mApi.ServerVersion() <= 0 Then Throw New InvalidOperationException("Not server version returned")
+
+            setConnectionState(ApiConnectionState.Connected)
+
+            mClientId = e.ClientId
+            Dim msg = $"Connected to Tws: server version {mApi.ServerVersion}"
+            mServerResponsesText.DisplayMessage(msg)
+
+            If mUseQueueing Then
+                PauseAPIButton.Enabled = True
+                PauseAPIButton.Text = "Pause API"
+            End If
+        ElseIf e.State = ApiConnectionState.Failed Then
+            setConnectionState(ApiConnectionState.Failed)
+            mServerResponsesText.DisplayMessage($"Connection to Tws failed: {e.Message}")
+            PauseAPIButton.Enabled = False
+        ElseIf e.State = ApiConnectionState.NotConnected Then
+            setConnectionState(ApiConnectionState.NotConnected)
+            mServerResponsesText.DisplayMessage("Connection to Tws has been closed")
+            PauseAPIButton.Enabled = False
+        End If
+    End Sub
+
+    Private Sub _CurrentTime(sender As Object, e As CurrentTimeEventArgs) Handles ApiEvents.CurrentTime
+        mServerResponsesText.DisplayMessage($"Current server time = {e.ServerTimestamp}")
+    End Sub
+
+    Private Sub _IBServerConnectionStateChange(sender As Object, e As IBServerConnectionStateChangeEventArgs) Handles ApiEvents.IBServerConnectionStateChanged
+        Select Case e.State
+            Case IBServerConnectionState.Connected
+                mServerResponsesText.DisplayMessage($"IB Server connection restored: timestamp={e.Timestamp.ToString("yyyyMMdd-HH:mm:ss")} message={e.Message} date lost={e.DataLost}")
+            Case IBServerConnectionState.Disconnected
+                mServerResponsesText.DisplayMessage($"IB Server connection closed: timestamp={e.Timestamp.ToString("yyyyMMdd-HH:mm:ss")} message={e.Message}")
+        End Select
+    End Sub
+
+#End Region
+
+#Region "Contract Events"
+
+    Private Sub _ContractDetails(sender As Object, e As ContractDetailsEventArgs) Handles ApiEvents.ContractDetails
+        Dim c = e.ContractDetails.Summary
+        Dim cd = e.ContractDetails
+        mServerResponsesText.DisplayMessage(
+$"---- Contract Details Begin ----
+Contract
+    conId = {c.ConId}
+    symbol = {c.Symbol}
+    secType = {IBAPI.SecurityTypes.ToInternalString(c.SecType)}
+    lastTradeDate = {c.Expiry}
+    strike = {c.Strike}
+    Right = {c.OptRight}
+    multiplier = {c.Multiplier}
+    exchange = {c.Exchange}
+    primaryExchange = {c.PrimaryExch}
+    Currency = {c.CurrencyCode}
+    localSymbol = {c.LocalSymbol}
+    tradingClass = {c.TradingClass}
+
+Details
+    marketName = {cd.MarketName}
+    minTick = {cd.MinTick}
+    priceMagnifier = {cd.PriceMagnifier}
+    OrderTypes = {cd.OrderTypes}
+    validExchanges = {cd.ValidExchanges}
+    underConId = {cd.UnderConId}
+    longName = {cd.LongName}")
+
+        If (c.SecType <> SecurityType.Bond) Then mServerResponsesText.DisplayMessage(
+ $"    contractMonth = {cd.ContractMonth}
+    industry = {cd.Industry}
+    category = {cd.Category}
+    subcategory = {cd.Subcategory}
+    timeZoneId = {cd.TimeZoneId}
+    tradingHours = {cd.TradingHours}
+    liquidHours = {cd.LiquidHours}")
+
+        mServerResponsesText.DisplayMessage(
+$"    evRule = {cd.EvRule}
+    evMultiplier = {cd.EvMultiplier}
+    mdSizeMultiplier = {cd.MDSizeMultiplier}
+    aggGroup = {cd.AggGroup}
+    underSymbol = {cd.UnderSymbol}
+    underSecType = {cd.UnderSecType}
+    marketRuleIds = {cd.MarketRuleIds}
+    realExpirationDate = {cd.RealExpirationDate}
+    lastTradeTime = {cd.LastTradeTime}")
+
+        If (c.SecType = SecurityType.Bond) Then mServerResponsesText.DisplayMessage(
+$"Bond Details
+    cusip = {cd.Cusip}
+    ratings = {cd.Ratings}
+    descAppend = {cd.DescAppend}
+    bondType = {cd.BondType}
+    couponType = {cd.CouponType}
+    callable = {cd.Callable}
+    putable = {cd.Putable}
+    coupon = {cd.Coupon}
+    convertible = {cd.Convertible}
+    maturity = {cd.Maturity}
+    issueDate = {cd.IssueDate}
+    nextOptionDate = {cd.NextOptionDate}
+    nextOptionType = {cd.NextOptionType}
+    nextOptionPartial = {cd.NextOptionPartial}
+    notes = {cd.Notes}"
+    )
+
+        ' CUSIP/ISIN/etc.
+        mServerResponsesText.DisplayMessage(
+$"  secIdList=({cd.SecIdList?.ToString})
+---- Contract Details End ----")
+    End Sub
+
+    Private Sub _ContractDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.ContractDetailsEnd
+        mServerResponsesText.DisplayMessage($"ContractDetails({e.RequestId}) =============== end ===============")
+    End Sub
+
+    Private Sub _ContractDetailsError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.ContractDetailsError
+        mServerResponsesText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+    End Sub
+
+    Private Sub _MarketRule(sender As Object, e As MarketRuleEventArgs) Handles ApiEvents.MarketRule
+        mServerResponsesText.DisplayMessage($" ==== Market Rule Begin (marketRuleId={e.MarketRuleId}) ====")
+        e.PriceIncrements.ForEach(Sub(p) mServerResponsesText.DisplayMessage($"LowEdge={p.LowEdge}, Increment={p.Increment}"))
+        mServerResponsesText.DisplayMessage($" ==== Market Rule End (marketRuleId={e.MarketRuleId}) ====")
+    End Sub
+
+    Private Sub _SecurityDefinitionOptionParameter(sender As Object, e As SecurityDefinitionOptionParameterEventArgs) Handles ApiEvents.SecurityDefinitionOptionParameter
+        mServerResponsesText.DisplayMessage($"reqId {e.RequestId}, exchange {e.Exchange}, underlyingConId: {e.UnderlyingConId}, tradingClass: {e.TradingClass}, multiplier: {e.Multiplier}, expirations: {String.Join(",", e.Expirations)}, strikes: {String.Join(",", e.Strikes)}")
+    End Sub
+
+    Private Sub _SecurityDefinitionOptionParameterEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.SecurityDefinitionOptionParameterEnd
+        mServerResponsesText.DisplayMessage($" ==== Security Definition Option Parameter End (requestId={e.RequestId}) ====")
+    End Sub
+
+    Private Sub _SymbolSamples(sender As Object, e As SymbolSamplesEventArgs) Handles ApiEvents.SymbolSamples
+        mServerResponsesText.DisplayMessage($" ==== Symbol Samples (total={e.ContractDescriptions.Count}) reqId={e.RequestId} ====")
         Dim count As Integer = 0
         For Each cd As ContractDescription In e.ContractDescriptions
-            m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Contract Description (" & count & ") ----")
+            mServerResponsesText.DisplayMessage($" ---- Contract Description ({count}) ----")
             With cd.Contract
-                m_utils.addListItem(Utils.ListType.ServerResponses, "conId=" & .ConId)
-                m_utils.addListItem(Utils.ListType.ServerResponses, "symbol=" & .Symbol)
-                m_utils.addListItem(Utils.ListType.ServerResponses, "secType=" & .SecType)
-                m_utils.addListItem(Utils.ListType.ServerResponses, "primExch=" & .PrimaryExch)
-                m_utils.addListItem(Utils.ListType.ServerResponses, "currency=" & .CurrencyCode)
+                mServerResponsesText.DisplayMessage($"conId={ .ConId}")
+                mServerResponsesText.DisplayMessage($"symbol={ .Symbol}")
+                mServerResponsesText.DisplayMessage($"secType={ .SecType}")
+                mServerResponsesText.DisplayMessage($"primExch={ .PrimaryExch}")
+                mServerResponsesText.DisplayMessage($"currency={ .CurrencyCode}")
             End With
 
             Dim displayString = "derivative secTypes="
             For Each derivativeSecType As String In cd.DerivativeSecTypes
                 displayString += (derivativeSecType & " ")
             Next
-            m_utils.addListItem(Utils.ListType.ServerResponses, displayString)
-            m_utils.addListItem(Utils.ListType.ServerResponses, " ---- Contract Description End (" & count & ") ----")
+            mServerResponsesText.DisplayMessage(displayString)
+            mServerResponsesText.DisplayMessage(" ---- Contract Description End ({count}) ----")
             count += 1
         Next
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ==== Symbol Samples End (total=" & e.ContractDescriptions.Count & ") reqId=" & e.RequestId & " ====")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
+        mServerResponsesText.DisplayMessage(" ==== Symbol Samples End (total={e.ContractDescriptions.Count}) reqId={e.RequestId} ====")
     End Sub
 
-    Private Sub Api_MktDepthExchanges(sender As Object, e As MarketDepthExchangesEventArgs) Handles m_apiEvents.MarketDepthExchanges
-        Dim offset As Long
-        offset = lstServerResponses.Items.Count
+#End Region
 
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ==== Market Depth Exchanges Begin (total=" & e.Descriptions.Count & ") ====")
+#Region "IDisplayGroup Events"
+
+    Private Sub _DisplayGroupList(sender As Object, e As DisplayGroupListEventArgs) Handles ApiEvents.DisplayGroupList
+        mGroupsForm.DisplayGroupList(e.RequestId, e.Groups)
+    End Sub
+
+    Private Sub _DisplayGroupUpdated(sender As Object, e As DisplayGroupUpdatedEventArgs) Handles ApiEvents.DisplayGroupUpdated
+        mGroupsForm.DisplayGroupUpdated(e.RequestId, e.ContractInfo)
+    End Sub
+
+#End Region
+
+#Region "Error and Notification Events"
+
+    Private Sub _ApiError(sender As Object, e As ApiErrorEventArgs) Handles ApiEvents.ApiError
+        mServerResponsesText.DisplayMessage($"Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+        For Each errorCode In mFaErrorCodes
+            If e.ErrorCode = errorCode Then mFaError = True
+        Next
+    End Sub
+
+    Private Sub _ApiEvent(sender As Object, e As ApiEventEventArgs) Handles ApiEvents.ApiEvent
+        mServerResponsesText.DisplayMessage($"Event Code: {e.EventCode}; Event Msg: {e.EventMessage}")
+    End Sub
+
+    Private Sub _Exception(sender As Object, e As ExceptionEventArgs) Handles ApiEvents.Exception
+        mServerResponsesText.DisplayMessage($"Exception: {e.Exception.ToString}")
+    End Sub
+
+#End Region
+
+#Region "IFundamentalData Events"
+
+    Private Sub _FundamentalData(sender As Object, e As FundamentalDataEventArgs) Handles ApiEvents.FundamentalData
+        mMarketDataText.DisplayMessage($"fund reqId={e.RequestId} len={Len(e.Data)}")
+        mMarketDataText.DisplayMessage(e.Data)
+    End Sub
+
+#End Region
+
+#Region "Historical Data Events"
+
+    Private Sub _HeadTimestamp(sender As Object, e As HeadTimestampEventArgs) Handles ApiEvents.HeadTimestamp
+        mServerResponsesText.DisplayMessage($"Head time stamp: request id - {e.RequestId}, time stamp - {e.Timestamp}")
+    End Sub
+
+    Private Sub _HistogramData(sender As Object, e As HistogramDataEventArgs) Handles ApiEvents.HistogramData
+        Dim sb = New System.Text.StringBuilder
+        sb.AppendLine($"Histogram data. Request Id: {e.RequestId}, data size: {e.HistData.Count}")
+        e.HistData.ForEach(Sub(i) sb.AppendLine($"{vbTab}Price: {i.Price}, Size: {i.Size}"))
+        mServerResponsesText.DisplayMessage(sb.ToString())
+    End Sub
+
+    Private Sub _HistoricalBar(sender As Object, e As HistoricalBarEventArgs) Handles ApiEvents.HistoricalBar
+        mMarketDataText.DisplayMessage($"id={e.RequestId} date={e.Bar.TimeStamp.ToString("yyyyMMdd-HH:mm:ss")} open={e.Bar.OpenValue} high={e.Bar.HighValue} " &
+                     $"low={e.Bar.LowValue} close={e.Bar.CloseValue} volume={e.Bar.Volume} " &
+                     $"barCount={e.Bar.TickVolume} WAP={e.Bar.WAP}")
+    End Sub
+
+    Private Sub _HistoricalBarError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.HistoricalBarError
+        mServerResponsesText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+    End Sub
+
+    Private Sub _HistoricalBarsEnd(sender As Object, e As HistoricalBarsRequestEventArgs) Handles ApiEvents.HistoricalBarsEnd
+        mMarketDataText.DisplayMessage($"Historical Bars Start. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}")
+    End Sub
+
+    Private Sub _HistoricalBarsStart(sender As Object, e As HistoricalBarsRequestEventArgs) Handles ApiEvents.HistoricalBarsStart
+        mMarketDataText.DisplayMessage($"Historical Bars End. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}")
+    End Sub
+
+    Private Sub _HistoricalBidAsk(sender As Object, e As HistoricalBidAskEventArgs) Handles ApiEvents.HistoricalBidAsk
+        mMarketDataText.DisplayMessage($"Historical Tick Bid/Ask. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price Bid: {e.BidPrice}, Price Ask: {e.AskPrice}, Size Bid: {e.BidSize}, Size Ask: {e.AskSize}, Attributes: {e.Attributes}")
+    End Sub
+
+    Private Sub _HistoricalBidAsksEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalBidAsksEnd
+        mMarketDataText.DisplayMessage($"Historical Tick Bid/Ask End. Request Id: {e.RequestId}")
+    End Sub
+
+    Private Sub _HistoricalMidpoint(sender As Object, e As HistoricalMidpointEventArgs) Handles ApiEvents.HistoricalMidpoint
+        mMarketDataText.DisplayMessage($"Historical Tick Midpoint. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}")
+    End Sub
+
+    Private Sub _HistoricalMidpointsEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalMidpointsEnd
+        mMarketDataText.DisplayMessage($"Historical Tick Midpoint End. Request Id: {e.RequestId}")
+    End Sub
+
+    Private Sub _HistoricalTrade(sender As Object, e As HistoricalTradeEventArgs) Handles ApiEvents.HistoricalTrade
+        mMarketDataText.DisplayMessage($"Historical Tick Trade. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Last Tick Attributes: {e.Attributes}")
+    End Sub
+
+    Private Sub _HistoricalTradesEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalTradesEnd
+        mMarketDataText.DisplayMessage($"Historical Tick Trade End. Request Id: {e.RequestId}")
+    End Sub
+
+#End Region
+
+#Region "Market Data Events"
+
+    Private Sub _MarketDataError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.MarketDataError
+        mServerResponsesText.DisplayMessage($"ID: {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+    End Sub
+
+    Private Sub _MarketDataType(sender As Object, e As MarketDataTypeEventArgs) Handles ApiEvents.MarketDataType
+        mMarketDataText.DisplayMessage($"id={e.RequestId} MarketDataType={[Enum].GetName(GetType(MarketDataType), e.MarketDataType)}")
+    End Sub
+
+    Private Sub _RealtimeBar(sender As Object, e As RealtimeBarEventArgs) Handles ApiEvents.RealtimeBar
+        mMarketDataText.DisplayMessage($"id={e.RequestId} time={e.Bar.TimeStamp.ToString("yyyyMMdd-HH:mm:ss")} open={e.Bar.OpenValue} high={e.Bar.HighValue} " &
+                        $"low={e.Bar.LowValue} close={e.Bar.CloseValue} volume={e.Bar.Volume} WAP={e.Bar.WAP} " &
+                        $"count={e.Bar.TickVolume}")
+    End Sub
+
+    Private Sub _RerouteMarketData(sender As Object, e As RerouteDataEventArgs) Handles ApiEvents.RerouteMarketData
+        mServerResponsesText.DisplayMessage($"Re-route market data request. Req Id: {e.RequestId}, Con Id: {e.ConId}, Exchange: {e.Exchange}")
+    End Sub
+
+    Private Sub _SmartComponents(sender As Object, e As SmartComponentsEventArgs) Handles ApiEvents.SmartComponents
+        mServerResponsesText.DisplayMessage(" ---- Smart Components Begin ----")
+
+        For Each item In e.Dict
+            mServerResponsesText.DisplayMessage($"bitNumber={item.Key}")
+            mServerResponsesText.DisplayMessage($"Exchange={item.Value.Key}")
+            mServerResponsesText.DisplayMessage($"Exchange letter={item.Value.Value}")
+        Next
+
+        mServerResponsesText.DisplayMessage(" ---- Smart Components End ----")
+    End Sub
+
+    Private Sub _TickByTickAllLast(sender As Object, e As TickByTickAllLastEventArgs) Handles ApiEvents.TickByTickAllLast
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, DataType: {IBAPI.TickByTickDataTypes.ToExternalString(e.DataType)}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Attributes: {e.Attributes}")
+        mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
+    End Sub
+
+    Private Sub _TickByTickBidAsk(sender As Object, e As TickByTickBidAskEventArgs) Handles ApiEvents.TickByTickBidAsk
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: BidAsk, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, BidPrice: {e.BidPrice}, AskPrice: {e.AskPrice}, BidSize: {e.BidSize}, AskSize: {e.AskSize}, Attributes: {e.Attributes}")
+        mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
+    End Sub
+
+    Private Sub _TickByTickMidPoint(sender As Object, e As TickByTickMidPointEventArgs) Handles ApiEvents.TickByTickMidPoint
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: MidPoint, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, MidPoint: {e.MidPoint}")
+        mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
+    End Sub
+
+    Private Sub _TickEFP(sender As Object, e As TickEFPEventArgs) Handles ApiEvents.TickEFP
+        mMarketDataText.DisplayMessage($"
+{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.TickType)}:{e.BasisPoints} / {e.FormattedBasisPoints}
+    totalDividends = {e.DividendsToLastTradeDate} holdDays={e.HoldDays}
+    futureLastTradeDate = {e.FutureLastTradeDate} dividendImpact={e.DividendImpact}
+    dividendsToLastTradeDate = {e.DividendsToLastTradeDate}")
+    End Sub
+
+    Private Sub _TickGeneric(sender As Object, e As TickGenericEventArgs) Handles ApiEvents.TickGeneric
+        mMarketDataText.DisplayMessage($"{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.TickType)}={e.Value}")
+    End Sub
+
+    Private Sub _TickOptionComputation(sender As Object, e As TickOptionComputationEventArgs) Handles ApiEvents.TickOptionComputation
+        mMarketDataText.DisplayMessage($"
+{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.Field)} vol={IBAPI.NullableToString(e.ImpliedVolatility)} 
+    delta={IBAPI.NullableToString(e.Delta)} gamma={IBAPI.NullableToString(e.Gamma)} 
+    vega={IBAPI.NullableToString(e.Vega)} theta={IBAPI.NullableToString(e.Theta) }
+    optPrice={IBAPI.NullableToString(e.OptPrice)} pvDividend={IBAPI.NullableToString(e.PvDividend)}
+    undPrice={IBAPI.NullableToString(e.UndPrice)}")
+    End Sub
+
+    Private Sub _TickPrice(sender As Object, e As TickPriceEventArgs) Handles ApiEvents.TickPrice
+        mMarketDataText.DisplayMessage($"{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.Field)}={e.Price} size={e.Size} {e.Attributes.ToString}")
+    End Sub
+
+    Private Sub _TickRequestParams(sender As Object, e As TickRequestParamsEventArgs) Handles ApiEvents.TickRequestParams
+        mServerResponsesText.DisplayMessage($"
+---- Tick Req Params Begin ----
+    tickerId={e.TickerId}
+    minTick={e.MinTick}
+    bboExchange={e.BBOExchange}
+    snapshotPermissions={e.SnapshotPermissions}
+---- Tick Req Params End ----")
+    End Sub
+
+    Private Sub _TickSize(sender As Object, e As TickSizeEventArgs) Handles ApiEvents.TickSize
+        mMarketDataText.DisplayMessage($"{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.Field)}={e.Size}")
+    End Sub
+
+    Private Sub _TickSnapshotEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.TickSnapshotEnd
+        mMarketDataText.DisplayMessage($"TickSnapshot({e.RequestId}) =============== end ===============")
+    End Sub
+
+    Private Sub _TickString(sender As Object, e As TickStringEventArgs) Handles ApiEvents.TickString
+        mMarketDataText.DisplayMessage($"{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.TickType)}={e.Value}")
+    End Sub
+
+#End Region
+
+#Region "Market Depth Events"
+
+    Private Sub _MarketDepthError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.MarketDepthError
+        mServerResponsesText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+    End Sub
+
+    Private Sub _MktDepthExchanges(sender As Object, e As MarketDepthExchangesEventArgs) Handles ApiEvents.MarketDepthExchanges
+        mServerResponsesText.DisplayMessage($" ==== Market Depth Exchanges Begin (total={e.Descriptions.Count}) ====")
         Dim count As Integer = 0
         For Each depthMktDataDescription As DepthMktDataDescription In e.Descriptions
-            m_utils.addListItem(Utils.ListType.ServerResponses, "Depth Market Data Description (" & count & ") - exchange=" & depthMktDataDescription.Exchange & " secType=" & depthMktDataDescription.SecType & " serviceType=" & depthMktDataDescription.ServiceDataType)
+            mServerResponsesText.DisplayMessage($"Depth Market Data Description ({count}) - exchange={depthMktDataDescription.Exchange} secType={depthMktDataDescription.SecType} serviceType={depthMktDataDescription.ServiceDataType}")
             count += 1
         Next
-        m_utils.addListItem(Utils.ListType.ServerResponses, " ==== Market Depth Exchanges End (total=" & e.Descriptions.Count & ") ====")
-
-        ' move into view
-        lstServerResponses.TopIndex = offset
+        mServerResponsesText.DisplayMessage(" ==== Market Depth Exchanges End (total={e.Descriptions.Count}) ====")
     End Sub
+
+    Private Sub _RerouteDepthData(sender As Object, e As RerouteDataEventArgs) Handles ApiEvents.RerouteDepthData
+        mServerResponsesText.DisplayMessage($"Re-route market depth request. Req Id: {e.RequestId}, Con Id: {e.ConId}, Exchange: {e.Exchange}")
+    End Sub
+
+    Private Sub _ResetMarketDepth(sender As Object, e As MarketDepthRestEventArgs) Handles ApiEvents.ResetMarketDepth
+        mMarketDepthForm.Clear()
+    End Sub
+
+    Private Sub _UpdateMktDepth(sender As Object, e As MarketDepthUpdateEventArgs) Handles ApiEvents.MarketDepthUpdate
+        mMarketDepthForm.UpdateMktDepth(e.RequestId, e.Position, e.MarketMaker, e.Operation, e.Side, e.Price, e.Size)
+    End Sub
+
+#End Region
+
+#Region "News Events"
+
+    Private Sub _HistoricalNews(sender As Object, e As HistoricalNewsEventArgs) Handles ApiEvents.HistoricalNews
+        mServerResponsesText.DisplayMessage(
+$"---- Historical News Begin ----
+    requestId={e.RequestId}
+    time={e.Time}
+    providerCode={e.ProviderCode}
+    articleId={e.ArticleId}
+    headline={e.Headline}
+---- Historical News End ----")
+    End Sub
+
+    Private Sub _HistoricalNewsEnd(sender As Object, e As HistoricalNewsEndEventArgs) Handles ApiEvents.HistoricalNewsEnd
+        Dim hasMoreStr = If(e.HasMore, "> has more ...", "")
+        mServerResponsesText.DisplayMessage($"requestId = {e.RequestId} ===== Historical News End ==== {hasMoreStr}")
+    End Sub
+
+    Private Sub _NewsArticle(sender As Object, e As NewsArticleEventArgs) Handles ApiEvents.NewsArticle
+        mServerResponsesText.DisplayMessage($" ==== News Article Begin requestId={e.RequestId} ====")
+        mServerResponsesText.DisplayMessage($" Article Type {e.Type}")
+        mServerResponsesText.DisplayMessage(" Article Text ")
+        If e.Type = 0 Then
+            mServerResponsesText.DisplayMessage(e.Text)
+        ElseIf e.Type = 1 Then
+            Dim bytes() As Byte
+            bytes = System.Convert.FromBase64String(e.Text)
+            System.IO.File.WriteAllBytes(mNewsArticlePath, bytes)
+            mServerResponsesText.DisplayMessage("Binary/pdf article was saved to " + mNewsArticlePath)
+        End If
+        mServerResponsesText.DisplayMessage(" ==== News Article End requestId={e.RequestId} ====")
+    End Sub
+
+    Private Sub _NewsBulletin(sender As Object, e As NewsBulletinEventArgs) Handles ApiEvents.NewsBulletin
+        Dim f As New FServerResponse With {
+            .Text = "IB News Bulletin"
+        }
+        mTheme.ApplyTheme(f.Controls)
+
+        f.MsgLabel.Text = $" MsgId={e.MsgId}  MsgType = {e.MsgType} : Origin = {e.OrigExchange} : Message = {e.Message}"
+        f.Show()
+    End Sub
+
+    Private Sub _NewsProviders(sender As Object, e As NewsProvidersEventArgs) Handles ApiEvents.NewsProviders
+        mServerResponsesText.DisplayMessage($" ==== News Providers Begin (total={e.Providers.Count}) ====")
+        Dim count As Integer = 0
+        For Each newsProvider As NewsProvider In e.Providers
+            mServerResponsesText.DisplayMessage($"News Provider ({count}) - code={newsProvider.ProviderCode} name={newsProvider.ProviderName}")
+            count += 1
+        Next
+        mServerResponsesText.DisplayMessage($" ==== News Providers End (total={e.Providers.Count}) ====")
+    End Sub
+
+    Private Sub _TickNews(sender As Object, e As TickNewsEventArgs) Handles ApiEvents.TickNews
+        mServerResponsesText.DisplayMessage(
+$"---- Tick News Begin ----
+    tickerId={e.TickerId}
+    timeStamp={e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss zzz")}
+    providerCode={e.ProviderCode}
+    articleId={e.ArticleId}
+    headline={e.Headline}
+    extraData={e.ExtraData}
+---- Tick News End ----")
+    End Sub
+
+#End Region
+
+#Region "Order Events"
+
+    Private Sub _CommissionReport(sender As Object, e As CommissionReportEventArgs) Handles ApiEvents.CommissionReport
+        mServerResponsesText.DisplayMessage(" ---- Commission Report ----")
+
+        With e.CommissionReport
+            mServerResponsesText.DisplayMessage($"
+  execId={ .ExecId}
+  commission={IBAPI.NullableToString(.Commission)}
+  currency={ .CurrencyCode}
+  realizedPNL={IBAPI.NullableToString(.RealizedPNL)}
+  yield={IBAPI.NullableToString(.Yield)}
+  yieldRedemptionDate={IBAPI.NullableToString(.YieldRedemptionDate)}")
+
+        End With
+
+        mServerResponsesText.DisplayMessage(" ---- Commission Report End ----")
+    End Sub
+
+    Private Sub _DeltaNeutralValidation(sender As Object, e As DeltaNeutralValidationEventArgs) Handles ApiEvents.DeltaNeutralValidation
+        mServerResponsesText.DisplayMessage($"deltaNeutralValidation called, reqId={e.RequestId}")
+
+        Dim underComp = e.DeltaNeutralContract
+
+        If (underComp IsNot Nothing) Then
+            With underComp
+                mServerResponsesText.DisplayMessage($"
+  underComp.conId={ .ConId}
+  underComp.delta={ .Delta}
+  underComp.delta={ .Price}")
+            End With
+        End If
+    End Sub
+
+    Private Sub _ExecDetails(sender As Object, e As ExecutionDetailsEventArgs) Handles ApiEvents.ExecutionDetails
+        mServerResponsesText.DisplayMessage(" ---- Execution Details begin ----")
+        mServerResponsesText.DisplayMessage($"reqId = {e.ReqId}")
+
+        mServerResponsesText.DisplayMessage("Contract")
+        With e.Contract
+
+            mServerResponsesText.DisplayMessage($"
+  conId={ .ConId}
+  symbol={ .Symbol}
+  secType={ .SecType}
+  lastTradeDate={ .Expiry}
+  strike={ .Strike}
+  right={ .OptRight}
+  multiplier={ .Multiplier}
+  exchange={ .Exchange}
+  primaryExchange={ .PrimaryExch}
+  currency={ .CurrencyCode}
+  localSymbol={ .LocalSymbol}
+  tradingClass={ .TradingClass}")
+
+        End With
+
+        mServerResponsesText.DisplayMessage("Execution")
+        With e.Execution
+
+            mServerResponsesText.DisplayMessage($"
+  execId = { .ExecId}
+  orderId = { .OrderId}
+  clientId = { .ClientID}
+  permId = { .PermId}
+  time = { .Time}
+  acctNumber = { .AcctNumber}
+  modelCode = { .ModelCode}
+  exchange = { .Exchange}
+  side = { .Side}
+  shares = { .Shares}
+  price = { .Price}
+  liquidation = { .Liquidation}
+  cumQty = { .CumQty}
+  avgPrice = { .AvgPrice}
+  orderRef = { .OrderRef}
+  evRule = { .EvRule}
+  evMultiplier = { .EvMultiplier}
+  lastLiquidity = { .LastLiquidity.ToString()}")
+
+        End With
+
+        mServerResponsesText.DisplayMessage(" ---- Execution Details End ----")
+    End Sub
+
+    Private Sub _ExecDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.ExecutionDetailsEnd
+        mServerResponsesText.DisplayMessage($"ExecDetails({e.RequestId}) =============== end ===============")
+    End Sub
+
+    Private Sub _OpenOrder(sender As Object, e As OpenOrderEventArgs) Handles ApiEvents.OpenOrder
+        Dim o = e.Order
+        Dim c = e.Contract
+        Dim s = e.OrderState
+
+        mServerResponsesText.DisplayMessage($"==== Order Details Begin ====
+Order
+    orderId = {o.OrderId}
+    clientId ={o.ClientID}
+    permId = {o.PermId}
+    Action ={IBAPI.OrderActions.ToExternalString(o.Action)}
+    quantity = {o.TotalQuantity}
+    OrderType ={IBAPI.OrderTypes.ToExternalString(o.OrderType)}
+    lmtPrice = {IBAPI.NullableToString(o.LmtPrice)}
+    auxPrice ={IBAPI.NullableToString(o.AuxPrice)}
+    cashQty={IBAPI.NullableToString(o.CashQty)}
+
+Contract
+    conId={c.ConId}
+    symbol={c.Symbol}
+    secType={IBAPI.SecurityTypes.ToExternalString(c.SecType)}
+    lastTradeDate={c.Expiry}
+    strike={c.Strike}
+    right={IBAPI.OptionRights.ToExternalString(c.OptRight)}
+    multiplier={c.Multiplier}
+    exchange={c.Exchange}
+    primaryExchange={c.PrimaryExch}
+    currency={c.CurrencyCode}
+    localSymbol={c.LocalSymbol}
+    tradingClass={c.TradingClass}
+    comboLegsDescrip={c.ComboLegsDescription}
+
+comboLegs={{
+    {comboLegsToString(o, c)}
+    }}
+
+    deltaNeutralContract.conId=={ c.DeltaNeutralContract?.ConId}
+    deltaNeutralContract.delta={ c.DeltaNeutralContract?.Delta}
+    deltaNeutralContract.price={ c.DeltaNeutralContract?.Price}
+
+Order (extended)
+    timeInForce={IBAPI.OrderTIFs.ToExternalString(o.Tif)}
+    ocaGroup={o.OcaGroup}
+    ocaType={IBAPI.OcaTypes.ToExternalString(o.OcaType)}
+    orderRef={o.OrderRef}
+    parentId={o.ParentId}
+    blockOrder={o.BlockOrder}
+    sweepToFill={o.SweepToFill}
+    displaySize={o.DisplaySize}
+    triggerMethod={IBAPI.TriggerMethods.ToExternalString(o.TriggerMethod)}
+    outsideRth={o.OutsideRth}
+    hidden={o.Hidden}
+    goodAfterTime={o.GoodAfterTime}
+    goodTillDate={o.GoodTillDate}
+    overridePercentageConstraints={o.OverridePercentageConstraints}
+    rule80A={o.Rule80A}
+    allOrNone={o.AllOrNone}
+    minQty={IBAPI.NullableToString(o.MinQty)}
+    percentOffset={IBAPI.NullableToString(o.PercentOffset)}
+    trailStopPrice={IBAPI.NullableToString(o.TrailStopPrice)}
+    trailingPercent={IBAPI.NullableToString(o.TrailingPercent)}
+    whatIf={o.WhatIf}
+    notHeld={o.NotHeld}
+
+Financial advisors
+    faGroup={o.FaGroup}
+    faProfile = {o.FaProfile}
+    faMethod = {o.FaMethod}
+    faPercentage = {o.FaPercentage}
+
+Clearing info
+    account = {o.Account}
+    modelCode = {o.ModelCode}
+    settlingFirm = {o.SettlingFirm}
+    clearingAccount = {o.ClearingAccount}
+    clearingIntent = {o.ClearingIntent}
+
+Institutional orders
+    openClose = {o.OpenClose}
+    origin = {o.Origin}
+    shortSaleSlot = {o.ShortSaleSlot}
+    designatedLocation = {o.DesignatedLocation}
+    exemptCode = {o.ExemptCode}
+
+SMART routing
+    discretionaryAmt = {o.DiscretionaryAmt}
+    eTradeOnly = {o.ETradeOnly}
+    firmQuoteOnly = {o.FirmQuoteOnly}
+    nbboPriceCap = {IBAPI.NullableToString(o.NbboPriceCap)}
+    optOutSmartRouting = {o.OptOutSmartRouting}
+
+BOX or VOL orders
+    AuctionStrategy = {o.AuctionStrategy}
+
+BOX order 
+    startingPrice = {IBAPI.NullableToString(o.StartingPrice)}
+    stockRefPrice = {IBAPI.NullableToString(o.StockRefPrice)}
+    delta = {IBAPI.NullableToString(o.Delta)}
+
+Pegged to stock or VOL 
+    stockRangeLower = {IBAPI.NullableToString(o.StockRangeLower)}
+    stockRangeUpper = {IBAPI.NullableToString(o.StockRangeUpper)}
+
+VOLATILITY orders
+    volatility = {IBAPI.NullableToString(o.Volatility)}
+    volatilityType = {o.VolatilityType}
+    continuousUpdate = {o.ContinuousUpdate}
+    referencePriceType = {o.ReferencePriceType}
+    deltaNeutralOrderType = {o.DeltaNeutralOrderType}
+    deltaNeutralAuxPrice = {IBAPI.NullableToString(o.DeltaNeutralAuxPrice)}
+    deltaNeutralConId = {o.DeltaNeutralConId}
+    deltaNeutralSettlingFirm = {o.DeltaNeutralSettlingFirm}
+    deltaNeutralClearingAccount = {o.DeltaNeutralClearingAccount}
+    deltaNeutralClearingIntent = {o.DeltaNeutralClearingIntent}
+    deltaNeutralOpenClose = {o.DeltaNeutralOpenClose}
+    deltaNeutralShortSale = {o.DeltaNeutralShortSale}
+    deltaNeutralShortSaleSlot = {o.DeltaNeutralShortSaleSlot}
+    deltaNeutralDesignatedlocation = {o.DeltaNeutralDesignatedLocation}
+
+COMBO orders 
+    basisPoints = {IBAPI.NullableToString(o.BasisPoints)}
+    basisPointsType = {IBAPI.NullableToString(o.BasisPointsType)}
+
+SCALE orders only
+    scaleInitLevelSize = {IBAPI.NullableToString(o.ScaleInitLevelSize)}
+    scaleSubsLevelSize = {IBAPI.NullableToString(o.ScaleSubsLevelSize)}
+    scalePriceIncrement = {IBAPI.NullableToString(o.ScalePriceIncrement)}
+    scalePriceAdjustValue = {IBAPI.NullableToString(o.ScalePriceAdjustValue)}
+    scalePriceAdjustInterval = {IBAPI.NullableToString(o.ScalePriceAdjustInterval)}
+    scaleProfitOffset = {IBAPI.NullableToString(o.ScaleProfitOffset)}
+    scaleAutoReset = {o.ScaleAutoReset}
+    scaleInitPosition = {IBAPI.NullableToString(o.ScaleInitPosition)}
+    scaleInitFillQty = {IBAPI.NullableToString(o.ScaleInitFillQty)}
+    scaleRandomPercent = {o.ScaleRandomPercent}
+
+HEDGE orders only
+    HedgeType = {o.HedgeType}
+    hedgeParam = {o.HedgeParam}
+
+Solicited orders only
+    solicited = {o.Solicited}
+
+    Randomize Size = {o.RandomizeSize}
+    Randomize price = {o.RandomizePrice}
+
+ALGO orders
+    algoStrategy={o.AlgoStrategy}
+    algoParams={{
+            {o.AlgoParams?.ToString}
+  }}
+
+Smart combo routing params
+    smartComboRoutingParams={{
+        {o.SmartComboRoutingParams?.ToString}
+    }}
+
+OrderState
+    status={s.Status}
+    initMarginBefore={IBAPI.NullableToString(s.InitMarginBefore)}
+    maintMarginBefore={IBAPI.NullableToString(s.MaintMarginBefore)}
+    equityWithLoanBefore={IBAPI.NullableToString(s.EquityWithLoanBefore)}
+    initMarginChange={IBAPI.NullableToString(s.InitMarginChange)}
+    maintMarginChange={IBAPI.NullableToString(s.MaintMarginChange)}
+    equityWithLoanChange={IBAPI.NullableToString(s.EquityWithLoanChange)}
+    initMargin=After{IBAPI.NullableToString(s.InitMarginAfter)}
+    maintMargin=After{IBAPI.NullableToString(s.MaintMarginAfter)}
+    equityWithLoan=After{IBAPI.NullableToString(s.EquityWithLoanAfter)}
+    commission={IBAPI.NullableToString(s.Commission)}
+    minCommission={IBAPI.NullableToString(s.MinCommission)}
+    maxCommission={IBAPI.NullableToString(s.MaxCommission)}
+    commissionCurrency={s.CommissionCurrency}
+    warningText={s.WarningText}
+
+==== Order Details End ====")
+
+    End Sub
+
+    Private Sub _OpenOrderEnd(sender As Object, e As EventArgs) Handles ApiEvents.OpenOrderEnd
+        mServerResponsesText.DisplayMessage($"Request(All)OpenOrders ============= end =============")
+    End Sub
+
+    Private Sub _OrderError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.OrderError
+        mServerResponsesText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+    End Sub
+
+    Private Sub _OrderStatus(sender As Object, e As OrderStatusEventArgs) Handles ApiEvents.OrderStatus
+        mServerResponsesText.DisplayMessage(
+$"Order status 
+    orderId = {e.OrderId} 
+    client id={e.ClientId} 
+    permId={e.PermId}
+    status={e.Status} 
+    filled={e.Filled} 
+    remaining={e.Remaining}
+    avgFillPrice={e.AvgFillPrice} 
+    lastFillPrice={e.LastFillPrice}
+    parentId={e.ParentId} 
+    whyHeld={e.WhyHeld} 
+    mktCapPrice={e.MarketCapPrice}
+    ")
+    End Sub
+
+
+
+#End Region
+
+#Region "Performance Data Events"
+
+    Private Sub ApiEvents_PerformanceStatsUpdate(sender As Object, e As PerformanceStatsUpdateEventArgs) Handles ApiEvents.PerformanceStatsUpdate
+        mServerResponsesText.DisplayMessage($"Socket message statistics:{vbCrLf}{e.Statistics}")
+    End Sub
+
+#End Region
+
+#Region "Scanner Data Events"
+
+
+    Private Sub _ScannerData(sender As Object, e As ScannerDataEventArgs) Handles ApiEvents.ScannerData
+        Dim contractDetails = e.ContractDetails
+        Dim contract = contractDetails.Summary
+
+        mMarketDataText.DisplayMessage(
+$"id={e.RequestId} rank={e.Rank} conId={contract.ConId} 
+ symbol={contract.Symbol} secType={contract.SecType} currency={contract.CurrencyCode}
+ localSymbol={contract.LocalSymbol} marketName={contractDetails.MarketName}
+ tradingClass={contract.TradingClass} distance={e.Distance}
+ benchmark={e.Benchmark} projection={e.Projection}
+ legsStr={e.LegsStr}")
+    End Sub
+
+    Private Sub _ScannerDataEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.ScannerDataEnd
+        mMarketDataText.DisplayMessage($"ScannerDataEnd ({e.RequestId}) =============== end ===============")
+    End Sub
+
+    Private Sub _ScannerParameters(sender As Object, e As ScannerParametersEventArgs) Handles ApiEvents.ScannerParameters
+        Dim xmlDoc = New XmlDocument
+        xmlDoc.LoadXml(e.XmlData)
+        Dim node1 = getRootNode(xmlDoc)
+        mServerResponsesText.DisplayMessage($"SCANNER PARAMETERS {node1.Name} document.")
+        node1 = node1.SelectSingleNode("InstrumentList")
+        Dim name1 = parseNode(node1.FirstChild, "name")
+        Dim theType1 = parseNode(node1.FirstChild, "type")
+        Dim name2 = parseNode(node1.FirstChild.NextSibling, "name")
+        Dim theType2 = parseNode(node1.FirstChild.NextSibling, "type")
+        mServerResponsesText.DisplayMessage($"InstrumentList starts with ({name1},{theType1}) followed by ({name2},{theType2})")
+        mServerResponsesText.DisplayMessage(e.XmlData)
+    End Sub
+
+#End Region
+
+#Region "Socket Data Events"
+
+    Private Sub _SocketInputData(sender As Object, e As SocketDataEventArgs) Handles ApiEvents.SocketInputData
+        If Not DisplaySocketDataCheck.Checked Then Return
+        mSocketDataText.DisplayMessage($"{Now.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.Data}")
+    End Sub
+
+    Private Sub _SocketInputMessage(sender As Object, e As ApiMessageEventArgs) Handles ApiEvents.SocketInputMessage
+        If Not DisplaySocketDataCheck.Checked Then Return
+        mSocketDataText.DisplayMessage($"{Now.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.Message}")
+    End Sub
+
+    Private Sub _SocketOutputData(sender As Object, e As SocketDataEventArgs) Handles ApiEvents.SocketOutputData
+        If Not DisplaySocketDataCheck.Checked Then Return
+        mSocketDataText.DisplayMessage($"{Now.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.Data}")
+    End Sub
+
+    Private Sub _SocketOutputMessage(sender As Object, e As ApiMessageEventArgs) Handles ApiEvents.SocketOutputMessage
+        If Not DisplaySocketDataCheck.Checked Then Return
+        mSocketDataText.DisplayMessage($"{Now.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.Message}")
+    End Sub
+
+#End Region
 
 #End Region
 
 #Region "Helper methods"
 
-    Private Function PopulateXMLDoc(xmlDoc As XmlDocument, rootName As String) As XmlElement
-
-        ' this application doesn't need the Processing instruction
-        ' Dim node As IXMLDOMNode
-        ' Set node = xmlDoc.createProcessingInstruction("xml", "version='1.0'")
-        ' xmlDoc.appendChild node
-        ' Set node = Nothing
-
-        Dim rootNode = xmlDoc.CreateElement(rootName)
-        xmlDoc.AppendChild(rootNode)
-        AppendNewLineAndTab(xmlDoc, rootNode)
-        PopulateXMLDoc = rootNode
-    End Function
-
-    Private Sub AppendNewLineAndTab(xmlDoc As XmlDocument, node As XmlNode)
-        node.AppendChild(xmlDoc.CreateTextNode(vbNewLine + vbTab))
-    End Sub
-
-    Private Sub AppendNewLine(xmlDoc As XmlDocument, node As XmlNode)
-        node.AppendChild(xmlDoc.CreateTextNode(vbNewLine))
-    End Sub
-
-    Private Sub SetElemAttr(xmlDoc As XmlDocument,
-                           elem As XmlElement,
-                           attrName As String,
-                           attrValue As String)
-        Dim attr = xmlDoc.CreateAttribute(attrName)
-        attr.Value = attrValue
-        elem.SetAttributeNode(attr)
-        attr = Nothing
-    End Sub
-
-    Private Function AddNodeToXMLDoc(xmlDoc As XmlDocument,
-                                    node As XmlElement, nodeName As String,
+    Private Function addNodeToXMLDoc(xmlDoc As XmlDocument,
+                                    node As XmlElement,
+                                    nodeName As String,
                                     nodeValue As String) As XmlNode
         Dim newNode = xmlDoc.CreateElement(nodeName)
-        If nodeValue <> Nothing Then
+        If String.IsNullOrEmpty(nodeValue) Then
             newNode.InnerText = nodeValue
         End If
         node.AppendChild(newNode)
-        AddNodeToXMLDoc = newNode
+        Return newNode
     End Function
 
-    Private Function ProduceXMLDoc() As XmlDocument
-        Dim xmlDoc = New XmlDocument
-        ' xmlDoc.async = False
-        ' xmlDoc.validateOnParse = False
-        ' xmlDoc.resolveExternals = False
-        ProduceXMLDoc = xmlDoc
+    Private Sub appendNewLineAndTab(xmlDoc As XmlDocument, node As XmlNode)
+        node.AppendChild(xmlDoc.CreateTextNode(vbNewLine + vbTab))
+    End Sub
+
+    Private Shared Function comboLegsToString(o As Order, c As Contract) As String
+        If c.ComboLegs Is Nothing Then Return ""
+
+        Dim s = ""
+        Dim i = 0
+        For Each comboLeg In c.ComboLegs
+            Dim priceStr = ""
+
+            If c.ComboLegs.Count = If(o.OrderComboLegs?.Length, 0) Then
+                priceStr = $" price={IBAPI.NullableToString(o.OrderComboLegs(i).Price)}"
+            End If
+
+            s &= $"
+    leg {(i + 1)}
+        conId={comboLeg.ConId} ratio={comboLeg.Ratio} action={comboLeg.Action}
+        exchange={comboLeg.Exchange} openClose={comboLeg.OpenClose}
+        shortSaleSlot={comboLeg.ShortSaleSlot} designatedLocation={comboLeg.DesignatedLocation}
+        exemptCode={comboLeg.ExemptCode}{priceStr}"
+            i += 1
+        Next
+        Return s
     End Function
+
+    Private Sub connectToTws()
+        ' assume this is a non Financial Advisor account. If it is the managedAccounts()
+        ' event will be fired.
+        mFaAccount = False
+
+        mServerResponsesText.DisplayMessage($"Connecting to Tws using clientId {ClientIdText.Text} ...")
+        setConnectionState(ApiConnectionState.Connecting)
+        ' this ensures the state changes are visible: otherwise the synchronous connection mechanism
+        ' blocks them until it's finished
+        TopPanel.Refresh()
+
+        mApi = New IBAPI(ServerText.Text,
+                             CInt(PortText.Text),
+                             CInt(ClientIdText.Text),
+                             generateSocketDataEvents:=DisplaySocketDataCheck.Checked)
+
+        ApiEvents = New EventSource()
+
+        mUseQueueing = UseQueueingCheck.Checked
+        If mUseQueueing Then
+            mCallbackHandler = New QueueingCallbackHandler(ApiEvents, WindowsFormsSynchronizationContext.Current)
+            mApi.CallbackHandler = mCallbackHandler
+        Else
+            mApi.CallbackHandler = ApiEvents
+        End If
+
+        mApi.Connect()
+    End Sub
+
+    Private Sub disableButtons()
+        For Each control As Control In ButtonsPanel.Controls
+            control.Enabled = False
+        Next
+    End Sub
+
+    Private Sub disconnectFromTWS()
+        setConnectionState(ApiConnectionState.NotConnected)
+        mApi.Disconnect("Closed by user")
+        mApi.Dispose()
+        mApi = Nothing
+        PauseAPIButton.Enabled = False
+    End Sub
+
+    Private Sub enableButtons()
+        For Each control As Control In ButtonsPanel.Controls
+            control.Enabled = True
+        Next
+    End Sub
 
     Private Function findNode(xmlDoc As XmlDocument, nodeName As String, withName As String, withValue As String) As XmlNode
         Dim node1 = getRootNode(xmlDoc)
@@ -2897,26 +3574,9 @@ Friend Class MainForm
         Return node2
     End Function
 
-    Private Function removeNode(xmlDoc As XmlDocument, nodeName As String, withName As String, withValue As String) As XmlNode
-        Dim node2 = findNode(xmlDoc, nodeName, withName, withValue)
-        If node2 IsNot Nothing Then
-            getRootNode(xmlDoc).RemoveChild(node2)
-        End If
-        Return node2
-    End Function
-
-    Private Function getRootNode(xmlDoc As XmlDocument) As XmlNode
-        Return xmlDoc.SelectSingleNode("/*")
-    End Function
-
     Private Function getNode(node As XmlNode,
                                nodeName As String) As XmlNode
-        getNode = node.SelectSingleNode(nodeName)
-    End Function
-
-    Private Function getNodeList(node As XmlNode,
-                               nodeName As String) As XmlNodeList
-        getNodeList = node.SelectNodes(nodeName)
+        Return node.SelectSingleNode(nodeName)
     End Function
 
     Private Function getNodeFromList(nodeList As XmlNodeList, name As String, value As String) As XmlNode
@@ -2930,10 +3590,57 @@ Friend Class MainForm
         Return Nothing
     End Function
 
+    Private Function getNodeList(node As XmlNode,
+                               nodeName As String) As XmlNodeList
+        Return node.SelectNodes(nodeName)
+    End Function
+
+    Private Function getRootNode(xmlDoc As XmlDocument) As XmlNode
+        Return xmlDoc.SelectSingleNode("/*")
+    End Function
+
     Private Function parseNode(node As XmlNode,
                                nodeName As String) As String
         Return node.SelectSingleNode(nodeName).InnerText
     End Function
+
+    Private Sub setConnectionState(state As ApiConnectionState)
+        mConnectionState = state
+        Select Case mConnectionState
+            Case ApiConnectionState.NotConnected
+                TopPanel.BackColor = Color.MistyRose
+                TopPanelCheckboxesSite.BackColor = Color.MistyRose
+                ConnectionStatusLabel.Text = "Not connected"
+                ConnectionStatusLabel.ForeColor = Color.Red
+                ConnectDisconnectButton.Enabled = True
+                ConnectDisconnectButton.Text = "Connect"
+                disableButtons()
+            Case ApiConnectionState.Connecting
+                TopPanel.BackColor = Color.FromArgb(251, 227, 80)
+                TopPanelCheckboxesSite.BackColor = Color.FromArgb(251, 227, 80)
+                ConnectionStatusLabel.Text = "Connecting..."
+                ConnectionStatusLabel.ForeColor = Color.FromArgb(255, 178, 82)
+                ConnectDisconnectButton.Enabled = False
+            Case ApiConnectionState.Connected
+                TopPanel.BackColor = Color.FromArgb(179, 230, 179)
+                TopPanelCheckboxesSite.BackColor = Color.FromArgb(179, 230, 179)
+                ConnectionStatusLabel.Text = "Connected"
+                ConnectionStatusLabel.ForeColor = Color.FromArgb(19, 146, 18)
+                ConnectDisconnectButton.Enabled = True
+                ConnectDisconnectButton.Text = "Disconnect"
+                enableButtons()
+        End Select
+    End Sub
+
+    Private Sub setElemAttr(xmlDoc As XmlDocument,
+                           elem As XmlElement,
+                           attrName As String,
+                           attrValue As String)
+        Dim attr = xmlDoc.CreateAttribute(attrName)
+        attr.Value = attrValue
+        elem.SetAttributeNode(attr)
+        attr = Nothing
+    End Sub
 
 #End Region
 

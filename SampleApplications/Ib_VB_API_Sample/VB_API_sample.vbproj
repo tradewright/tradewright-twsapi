@@ -97,14 +97,122 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
+    </Reference>
+    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.ValueTuple.4.4.0-preview1-25305-02\lib\net461\System.ValueTuple.dll</HintPath>
+    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.InteropServices.4.3.0\lib\net462\System.Runtime.InteropServices.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
@@ -112,20 +220,26 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <Reference Include="TradeWright.CommandLineUtils">
-      <HintPath>..\Dependencies\TradeWright.CommandLineUtils.dll</HintPath>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="TradeWright.IBAPI973, Version=9.73.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\TradeWright.IBAPI.9.73.2\lib\netstandard2.0\TradeWright.IBAPI973.dll</HintPath>
+    <Reference Include="TradeWright.CommandLine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TradeWright.CommandLine.1.0.0\lib\netstandard1.0\TradeWright.CommandLine.dll</HintPath>
     </Reference>
-    <Reference Include="TradeWright.IOUtils">
-      <HintPath>..\Dependencies\TradeWright.IOUtils.dll</HintPath>
+    <Reference Include="TradeWright.DataStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TradeWright.DataStorage.1.0.0\lib\netstandard1.3\TradeWright.DataStorage.dll</HintPath>
     </Reference>
-    <Reference Include="TradeWright.LoggingUtils">
-      <HintPath>..\Dependencies\TradeWright.LoggingUtils.dll</HintPath>
+    <Reference Include="TradeWright.IBAPI973, Version=9.73.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TradeWright.IBAPI.9.73.7\lib\netstandard2.0\TradeWright.IBAPI973.dll</HintPath>
     </Reference>
-    <Reference Include="TradeWright.TimeUtils">
-      <HintPath>..\Dependencies\TradeWright.TimeUtils.dll</HintPath>
+    <Reference Include="TradeWright.Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TradeWright.Logging.1.0.0\lib\netstandard2.0\TradeWright.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="TradeWright.Time, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TradeWright.Time.1.0.0\lib\netstandard1.0\TradeWright.Time.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -137,46 +251,68 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dlgSecDefOptParamsReq.vb">
+    <Compile Include="AppTheme.vb" />
+    <Compile Include="FDeltaNeutralContract.Designer.vb">
+      <DependentUpon>FDeltaNeutralContract.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FDeltaNeutralContract.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgAdjustStop.Designer.vb">
-      <DependentUpon>dlgAdjustStop.vb</DependentUpon>
-    </Compile>
-    <Compile Include="dlgAdjustStop.vb">
+    <Compile Include="FHistoricalNews.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgAlgoParams.Designer.vb">
-      <DependentUpon>dlgAlgoParams.vb</DependentUpon>
-    </Compile>
-    <Compile Include="dlgAlgoParams.vb">
+    <Compile Include="FMarketRule.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgCondition.Designer.vb">
-      <DependentUpon>dlgCondition.vb</DependentUpon>
-    </Compile>
-    <Compile Include="dlgCondition.vb">
+    <Compile Include="FNewsArticle.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgConditions.Designer.vb">
-      <DependentUpon>dlgConditions.vb</DependentUpon>
+    <Compile Include="FPnL.Designer.vb">
+      <DependentUpon>FPnL.vb</DependentUpon>
     </Compile>
-    <Compile Include="dlgConditions.vb">
+    <Compile Include="FPnL.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgPegBench.Designer.vb">
-      <DependentUpon>dlgPegBench.vb</DependentUpon>
-    </Compile>
-    <Compile Include="dlgPegBench.vb">
+    <Compile Include="FSecDefOptParamsReq.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgSmartComboRoutingParams.Designer.vb">
-      <DependentUpon>dlgSmartComboRoutingParams.vb</DependentUpon>
+    <Compile Include="FAdjustStop.Designer.vb">
+      <DependentUpon>FAdjustStop.vb</DependentUpon>
     </Compile>
-    <Compile Include="dlgSmartComboRoutingParams.vb">
+    <Compile Include="FAdjustStop.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgPositions.vb">
+    <Compile Include="FAlgoParams.Designer.vb">
+      <DependentUpon>FAlgoParams.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FAlgoParams.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FCondition.Designer.vb">
+      <DependentUpon>FCondition.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FCondition.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FConditions.Designer.vb">
+      <DependentUpon>FConditions.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FConditions.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FPegBench.Designer.vb">
+      <DependentUpon>FPegBench.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FPegBench.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FOptions.Designer.vb">
+      <DependentUpon>FOptions.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FOptions.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FPositions.vb">
       <SubType>Form</SubType>
     </Compile>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -184,170 +320,170 @@
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Qaz.resx">
+      <DependentUpon>Qaz.vb</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="dlgAccountSummary.vb">
+    <Compile Include="FAccountSummary.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgGroups.Designer.vb">
-      <DependentUpon>dlgGroups.vb</DependentUpon>
+    <Compile Include="FGroups.Designer.vb">
+      <DependentUpon>FGroups.vb</DependentUpon>
     </Compile>
-    <Compile Include="dlgGroups.vb">
+    <Compile Include="FGroups.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgAcctData.vb">
+    <Compile Include="FAcctData.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgAcctUpdates.vb">
+    <Compile Include="FAccountUpdates.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgComboOrderLegs.vb">
+    <Compile Include="FComboOrderLegs.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgConnect.vb">
+    <Compile Include="FExecFilter.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgExecFilter.vb">
+    <Compile Include="FFinancialAdvisor.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgFinancialAdvisor.vb">
+    <Compile Include="FLogConfig.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgLogConfig.vb">
+    <Compile Include="FMarketDepth.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgMktDepth.vb">
+    <Compile Include="FNewsBulletins.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgNewsBulletins.vb">
+    <Compile Include="FOrder.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgOrder.vb">
+    <Compile Include="FOrderAttribs.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgOrderAttribs.vb">
+    <Compile Include="FScanner.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgScanner.vb">
+    <Compile Include="FServerResponse.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgServerResponse.vb">
+    <Compile Include="FSharesAllocation.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgSharesAlloc.vb">
+    <Compile Include="FSmartComponents.designer.vb">
+      <DependentUpon>FSmartComponents.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FSmartComponents.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dlgUnderComp.Designer.vb">
-      <DependentUpon>dlgUnderComp.vb</DependentUpon>
-    </Compile>
-    <Compile Include="dlgUnderComp.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Logger.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Logger.vb" />
+    <Compile Include="Qaz.Designer.vb">
+      <DependentUpon>Qaz.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Qaz.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SocketLogListener.vb" />
+    <Compile Include="TextboxDisplayManager.vb" />
     <Compile Include="Utils.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="dlgSecDefOptParamsReq.resX">
-      <DependentUpon>dlgSecDefOptParamsReq.vb</DependentUpon>
+    <EmbeddedResource Include="FSecDefOptParamsReq.resX">
+      <DependentUpon>FSecDefOptParamsReq.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgPositions.resX">
-      <DependentUpon>dlgPositions.vb</DependentUpon>
+    <EmbeddedResource Include="FPositions.resX">
+      <DependentUpon>FPositions.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgAccountSummary.resX">
-      <DependentUpon>dlgAccountSummary.vb</DependentUpon>
+    <EmbeddedResource Include="FAccountSummary.resX">
+      <DependentUpon>FAccountSummary.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgAdjustStop.resx">
-      <DependentUpon>dlgAdjustStop.vb</DependentUpon>
+    <EmbeddedResource Include="FAdjustStop.resx">
+      <DependentUpon>FAdjustStop.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgAlgoParams.resX">
-      <DependentUpon>dlgAlgoParams.vb</DependentUpon>
+    <EmbeddedResource Include="FAlgoParams.resX">
+      <DependentUpon>FAlgoParams.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgCondition.resx">
-      <DependentUpon>dlgCondition.vb</DependentUpon>
+    <EmbeddedResource Include="FCondition.resx">
+      <DependentUpon>FCondition.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgConditions.resx">
-      <DependentUpon>dlgConditions.vb</DependentUpon>
+    <EmbeddedResource Include="FConditions.resx">
+      <DependentUpon>FConditions.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgGroups.resX">
+    <EmbeddedResource Include="FGroups.resX">
       <SubType>Designer</SubType>
-      <DependentUpon>dlgGroups.vb</DependentUpon>
+      <DependentUpon>FGroups.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgAcctData.resX">
-      <DependentUpon>dlgAcctData.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="dlgAcctUpdates.resX">
-      <DependentUpon>dlgAcctUpdates.vb</DependentUpon>
+    <EmbeddedResource Include="FAcctData.resX">
+      <DependentUpon>FAcctData.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgComboOrderLegs.resX">
-      <DependentUpon>dlgComboOrderLegs.vb</DependentUpon>
+    <EmbeddedResource Include="FAccountUpdates.resX">
+      <DependentUpon>FAccountUpdates.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgConnect.resX">
-      <DependentUpon>dlgConnect.vb</DependentUpon>
+    <EmbeddedResource Include="FComboOrderLegs.resX">
+      <DependentUpon>FComboOrderLegs.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgExecFilter.resX">
-      <DependentUpon>dlgExecFilter.vb</DependentUpon>
+    <EmbeddedResource Include="FExecFilter.resX">
+      <DependentUpon>FExecFilter.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgFinancialAdvisor.resX">
-      <DependentUpon>dlgFinancialAdvisor.vb</DependentUpon>
+    <EmbeddedResource Include="FFinancialAdvisor.resX">
+      <DependentUpon>FFinancialAdvisor.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgLogConfig.resX">
-      <DependentUpon>dlgLogConfig.vb</DependentUpon>
+    <EmbeddedResource Include="FLogConfig.resX">
+      <DependentUpon>FLogConfig.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgMktDepth.resX">
-      <DependentUpon>dlgMktDepth.vb</DependentUpon>
+    <EmbeddedResource Include="FMarketDepth.resX">
+      <DependentUpon>FMarketDepth.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgNewsBulletins.resX">
-      <DependentUpon>dlgNewsBulletins.vb</DependentUpon>
+    <EmbeddedResource Include="FNewsBulletins.resX">
+      <DependentUpon>FNewsBulletins.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgOrder.resX">
-      <DependentUpon>dlgOrder.vb</DependentUpon>
+    <EmbeddedResource Include="FOrder.resX">
+      <DependentUpon>FOrder.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgOrderAttribs.resX">
-      <DependentUpon>dlgOrderAttribs.vb</DependentUpon>
+    <EmbeddedResource Include="FOrderAttribs.resX">
+      <DependentUpon>FOrderAttribs.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgPegBench.resx">
-      <DependentUpon>dlgPegBench.vb</DependentUpon>
+    <EmbeddedResource Include="FPegBench.resx">
+      <DependentUpon>FPegBench.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgScanner.resX">
-      <DependentUpon>dlgScanner.vb</DependentUpon>
+    <EmbeddedResource Include="FScanner.resX">
+      <DependentUpon>FScanner.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgServerResponse.resX">
-      <DependentUpon>dlgServerResponse.vb</DependentUpon>
+    <EmbeddedResource Include="FServerResponse.resX">
+      <DependentUpon>FServerResponse.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgSharesAlloc.resX">
-      <DependentUpon>dlgSharesAlloc.vb</DependentUpon>
+    <EmbeddedResource Include="FSharesAllocation.resX">
+      <DependentUpon>FSharesAllocation.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="dlgSmartComboRoutingParams.resX">
-      <DependentUpon>dlgSmartComboRoutingParams.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="dlgUnderComp.resX">
-      <SubType>Designer</SubType>
-      <DependentUpon>dlgUnderComp.vb</DependentUpon>
+    <EmbeddedResource Include="FOptions.resX">
+      <DependentUpon>FOptions.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resX">
       <DependentUpon>MainForm.vb</DependentUpon>
@@ -356,7 +492,12 @@
     <None Include="app.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\tradewright-common.net\src\Themes\Themes.vbproj">
+      <Project>{4db00d88-a4e1-4038-b49d-fa523167d43f}</Project>
+      <Name>Themes</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
