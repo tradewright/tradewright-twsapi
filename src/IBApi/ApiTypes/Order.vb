@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -53,12 +53,6 @@ Public Class Order
     ' Constants
     '@================================================================================
 
-    Private Const ModuleName As String = NameOf(Order)
-
-    '@================================================================================
-    ' Member variables
-    '@================================================================================
-
     Private Const Customer As Short = 0
     Private Const Firm As Short = 1
     Private Const OptUnknown As String = "?"
@@ -71,6 +65,10 @@ Public Class Order
     Private Const AuctionMatch As Short = 1
     Private Const AuctionImprovement As Short = 2
     Private Const AuctionTransparent As Short = 3
+
+    '@================================================================================
+    ' Member variables
+    '@================================================================================
 
     ' main Order fields
     Public Property OrderId As Integer

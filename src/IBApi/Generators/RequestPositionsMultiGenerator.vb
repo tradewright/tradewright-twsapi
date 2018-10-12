@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2017 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@ Friend Class RequestPositionsMultiGenerator
         lWriter.AddElement(account, "Account")
         lWriter.AddElement(modelCode, "Model Code")
 
-       lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
+        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class
