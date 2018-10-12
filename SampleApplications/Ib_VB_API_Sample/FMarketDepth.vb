@@ -469,7 +469,7 @@ Friend Class FMarketDepth
                     .Size = size
                 End With
             Case DOMOperation.Delete
-                model.RemoveAt(rowId)
+                If rowId < model.Count Then model.RemoveAt(rowId)
         End Select
 
         ' recalc only the average cost and cumulative sizes that could have changed
@@ -477,10 +477,9 @@ Friend Class FMarketDepth
     End Sub
 
     Private Sub updateList(model As List(Of ModelEntry), bookEntries As DataGridView, baseRow As Integer)
-        bookEntries.Update()
         Dim totalPrice = 0.0
         Dim cumSize = 0
-        If baseRow > 0 Then
+        If baseRow > 0 And baseRow < model.Count Then
             Dim entry = model(baseRow - 1)
             cumSize = model(baseRow - 1).CumSize
             totalPrice = model(baseRow - 1).TotalPrice
