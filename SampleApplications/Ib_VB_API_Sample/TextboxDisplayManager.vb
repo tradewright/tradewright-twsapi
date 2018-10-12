@@ -4,15 +4,17 @@
     Private Const TimerInterval As Integer = 100
     Private mSb As New System.Text.StringBuilder()
     Private mTextBox As TextBoxBase
-    Private WithEvents Timer As New Timer
+    Private WithEvents Timer As New System.Timers.Timer(TimerInterval)
 
     Friend Sub New(textBox As TextBoxBase)
         mTextBox = textBox
-        Timer.Interval = TimerInterval
+        Timer.SynchronizingObject = mTextBox
     End Sub
 
     Friend Sub Clear()
         mTextBox.Clear()
+        mSb.Clear()
+        Timer.Stop()
     End Sub
 
     Friend Sub DisplayMessage(message As String)
@@ -22,7 +24,7 @@
         If Not Timer.Enabled Then Timer.Start()
     End Sub
 
-    Private Sub mTimer_Tick(sender As Object, e As EventArgs) Handles Timer.Tick
+    Private Sub mTimer_Tick(sender As Object, e As EventArgs) Handles Timer.Elapsed
         mTextBox.AppendText(mSb.ToString())
         mSb.Clear()
         Timer.Stop()
