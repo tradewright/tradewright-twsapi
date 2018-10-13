@@ -64,7 +64,6 @@ Friend Class PerformanceStatsRecorder
     Private mPerformanceStats(ApiSocketInMsgType.Max) As StatisticsEntry
 
     Private WithEvents TimerSecond As Timer
-    Private WithEvents TimerPeriod As Timer
 
     Private mEventConsumers As ApiEventConsumers
 
@@ -104,24 +103,23 @@ Friend Class PerformanceStatsRecorder
                 .LastPeriodCount += .LastSecondCount
                 .LastPeriodTime += .LastSecondTime
                 If .LastSecondCount > .MaxSecondCount Then .MaxSecondCount = .LastSecondCount
-                .TotalCount = .LastSecondCount
-                .TotalTime = .LastSecondTime
+                .TotalCount += .LastSecondCount
+                .TotalTime += .LastSecondTime
                 .LastSecondCount = 0
                 .LastSecondTime = 0
             End With
         Next
+        If System.DateTime.Now.Second = 0 Then generateStats()
     End Sub
 
     Friend Sub StartRecording()
         initialise()
-        createPerformanceLoggers()
+        createPerformanceTimer()
     End Sub
 
     Friend Sub StopRecording()
         TimerSecond?.Dispose()
         TimerSecond = Nothing
-        TimerPeriod?.Dispose()
-        TimerPeriod = Nothing
     End Sub
 
     Friend Sub UpdateMessageTypeStats(pMessageId As ApiSocketInMsgType, pEt As Long)
@@ -137,26 +135,20 @@ Friend Class PerformanceStatsRecorder
     ' Helper Functions
     '@================================================================================
 
-    Private Sub createPerformanceLoggers()
+    Private Sub createPerformanceTimer()
         If TimerSecond Is Nothing Then
-            TimerSecond = New Timer(Sub(o)
-                                        AccumulateStats()
-                                    End Sub,
-                                                Nothing,
-                                                New TimeSpan(0, 0, 0, 0, 1000 - System.DateTime.Now.Millisecond),
-                                                New TimeSpan(0, 0, 0, 0, 1000))
-
-            TimerPeriod = New Timer(Sub(o)
-                                        generateStats()
-                                    End Sub,
-                                                Nothing,
-                                                New TimeSpan(0, 0, 0, 59 - System.DateTime.Now.Second, 1000 - System.DateTime.Now.Millisecond),
-                                                New TimeSpan(0, 0, 1, 0, 0))
+            TimerSecond = New Timer(Sub(o) AccumulateStats(),
+                                    Nothing,
+                                    New TimeSpan(0, 0, 0, 0, 1000 - System.DateTime.Now.Millisecond),
+                                    New TimeSpan(0, 0, 0, 0, 1000))
         End If
     End Sub
 
     Private Sub generateStats()
-        Dim lSb = New System.Text.StringBuilder("Message type          Last  Last avg    Total  Total avg Max/sec   Longest  Shortest" & vbCrLf)
+        Static sSb As System.Text.StringBuilder = New System.Text.StringBuilder()
+        Static sHeader As String = $"Message type          Last  Last avg    Total  Total avg Max/sec   Longest  Shortest{vbCrLf}"
+
+        sSb.Append(sHeader)
         For i = 0 To ApiSocketInMsgType.Max
             With mPerformanceStats(i)
                 .LastPeriodCount = .LastPeriodCount + .LastSecondCount
@@ -165,22 +157,22 @@ Friend Class PerformanceStatsRecorder
                 .TotalTime = .TotalTime + .LastSecondTime
 
                 If .TotalCount <> 0 Then
-                    lSb.Append($"{IBAPI.ApiSocketInMsgTypes.ToExternalString(DirectCast(i, ApiSocketInMsgType)),-20}")
-                    lSb.Append($"{ .LastPeriodCount,6:####0}")
+                    sSb.Append($"{IBAPI.ApiSocketInMsgTypes.ToExternalString(DirectCast(i, ApiSocketInMsgType)),-20}")
+                    sSb.Append($"{ .LastPeriodCount,6:####0}")
                     If .LastPeriodCount <> 0 Then
-                        lSb.Append($"{ .LastPeriodTime / .LastPeriodCount,10:######0.0}")
+                        sSb.Append($"{ .LastPeriodTime / .LastPeriodCount,10:######0.0}")
                     Else
-                        lSb.Append("       0.0")
+                        sSb.Append("       0.0")
                     End If
-                    lSb.Append($"{ .TotalCount,9:#######0}")
+                    sSb.Append($"{ .TotalCount,9:#######0}")
                     If .TotalCount <> 0 Then
-                        lSb.Append($"{ .TotalTime / .TotalCount,11:######0.0}")
+                        sSb.Append($"{ .TotalTime / .TotalCount,11:######0.0}")
                     Else
-                        lSb.Append("        0.0")
+                        sSb.Append("        0.0")
                     End If
-                    lSb.Append($"{ .MaxSecondCount,8:###0}")
-                    lSb.Append($"{ .LongestTime,10:######0.0}")
-                    lSb.AppendLine($"{ .ShortestTime,10:######0.0}")
+                    sSb.Append($"{ .MaxSecondCount,8:###0}")
+                    sSb.Append($"{ .LongestTime,10:######0.0}")
+                    sSb.AppendLine($"{ .ShortestTime,10:######0.0}")
                 End If
 
                 .LastPeriodCount = 0
@@ -191,8 +183,9 @@ Friend Class PerformanceStatsRecorder
             End With
         Next
 
-        Dim s = lSb.ToString
-        IBAPI.PerformanceLogger.Log("Socket message statistics:" & vbCrLf & s)
+        Dim s = sSb.ToString
+        sSb.Clear()
+        IBAPI.PerformanceLogger.Log($"Socket message statistics:{vbCrLf}{s}")
         mEventConsumers.PerformanceDataConsumer?.NotifyPerformanceStats(New PerformanceStatsUpdateEventArgs(s))
     End Sub
 
@@ -211,7 +204,6 @@ Friend Class PerformanceStatsRecorder
     Protected Overridable Sub Dispose(disposing As Boolean)
         If Not mDisposedValue Then
             If disposing Then
-                TimerPeriod.Dispose()
                 TimerSecond.Dispose()
             End If
 

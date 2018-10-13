@@ -493,7 +493,7 @@ Public Class IBAPI
                                                     End If
                                                 End Sub
 
-        generateSocketDataEvents = If(SocketLogger?.IsLoggable(ILogger.LogLevel.Detail), generateSocketDataEvents)
+        generateSocketDataEvents = If(SocketLogger?.IsLoggable(ILogger.LogLevel.Detail), True, generateSocketDataEvents)
         mConnectionManager = New ApiConnectionManager(mServer, mPort, Me.ClientID, mUseV100Plus, mRegistry, mEventConsumers, generateSocketDataEvents)
         mInMessageHandler = New InputMessageHandler(mEventConsumers, mRegistry, generateSocketDataEvents)
     End Sub
@@ -523,8 +523,7 @@ Public Class IBAPI
             Return _EventLogger
         End Get
         Set
-            _EventLogger = Value
-            If _EventLogger Is Nothing Then _EventLogger = New NullLogger
+            _EventLogger = If(Value, New NullLogger)
         End Set
     End Property
 
@@ -533,8 +532,7 @@ Public Class IBAPI
             Return _PerformanceLogger
         End Get
         Set
-            If Value Is Nothing Then Value = New NullLogger
-            _PerformanceLogger = Value
+            _PerformanceLogger = If(Value, New NullLogger)
         End Set
     End Property
 
@@ -543,8 +541,7 @@ Public Class IBAPI
             Return _SocketLogger
         End Get
         Set
-            _SocketLogger = Value
-            If _SocketLogger Is Nothing Then _SocketLogger = New NullLogger
+            _SocketLogger = If(Value, New NullLogger)
         End Set
     End Property
 
