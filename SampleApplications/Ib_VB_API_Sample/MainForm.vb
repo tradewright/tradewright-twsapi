@@ -1136,6 +1136,7 @@ Friend Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ServerResponsesText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ServerResponsesText.Font = New System.Drawing.Font("Lucida Console", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ServerResponsesText.Location = New System.Drawing.Point(0, 24)
         Me.ServerResponsesText.Margin = New System.Windows.Forms.Padding(0)
         Me.ServerResponsesText.Multiline = True
@@ -1182,6 +1183,7 @@ Friend Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.MarketDataText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.MarketDataText.Font = New System.Drawing.Font("Lucida Console", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MarketDataText.Location = New System.Drawing.Point(0, 24)
         Me.MarketDataText.Margin = New System.Windows.Forms.Padding(0)
         Me.MarketDataText.Multiline = True
@@ -1244,6 +1246,7 @@ Friend Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ErrorsText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ErrorsText.Font = New System.Drawing.Font("Lucida Console", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ErrorsText.Location = New System.Drawing.Point(0, 24)
         Me.ErrorsText.Margin = New System.Windows.Forms.Padding(0)
         Me.ErrorsText.Multiline = True
@@ -1289,6 +1292,7 @@ Friend Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SocketLogText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.SocketLogText.Font = New System.Drawing.Font("Lucida Console", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.SocketLogText.ForeColor = System.Drawing.Color.DimGray
         Me.SocketLogText.Location = New System.Drawing.Point(0, 24)
         Me.SocketLogText.Margin = New System.Windows.Forms.Padding(0)
@@ -1635,14 +1639,13 @@ Friend Class MainForm
         mServerResponsesText = New TextboxDisplayManager(ServerResponsesText)
         mErrorsText = New TextboxDisplayManager(ErrorsText)
 
-        Logging.DefaultLogLevel = LogLevel.HighDetail
+        Logging.DefaultLogLevel = LogLevel.Normal
         ApplicationDataPathUser = Application.UserAppDataPath
         Logging.SetupDefaultLogging(True)
 
-        IBAPI.EventLogger = New Logger(New FormattingLogger(""))
+        IBAPI.EventLogger = New Logger(New FormattingLogger("ibapi"))
         IBAPI.PerformanceLogger = New Logger(Logging.GetLogger("ibapi.perfdata"))
 
-        'Logging.AddLogListener("ibapi.socketdata", New SocketLogListener(SocketLogText))
         IBAPI.SocketLogger = New Logger(Logging.GetLogger("ibapi.socketdata"))
 
         AddHandler AppDomain.CurrentDomain.UnhandledException,
@@ -2779,7 +2782,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _ContractDetailsError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.ContractDetailsError
-        mServerResponsesText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+        mErrorsText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
     End Sub
 
     Private Sub _MarketRule(sender As Object, e As MarketRuleEventArgs) Handles ApiEvents.MarketRule
@@ -2837,7 +2840,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
 #Region "Error and Notification Events"
 
     Private Sub _ApiError(sender As Object, e As ApiErrorEventArgs) Handles ApiEvents.ApiError
-        mServerResponsesText.DisplayMessage($"Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+        mErrorsText.DisplayMessage($"Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
         For Each errorCode In mFaErrorCodes
             If e.ErrorCode = errorCode Then mFaError = True
         Next
@@ -2848,7 +2851,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _Exception(sender As Object, e As ExceptionEventArgs) Handles ApiEvents.Exception
-        mServerResponsesText.DisplayMessage($"Exception: {e.Exception.ToString}")
+        mErrorsText.DisplayMessage($"Exception: {e.Exception.ToString}")
     End Sub
 
 #End Region
@@ -2882,15 +2885,15 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _HistoricalBarError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.HistoricalBarError
-        mServerResponsesText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+        mErrorsText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
     End Sub
 
     Private Sub _HistoricalBarsEnd(sender As Object, e As HistoricalBarsRequestEventArgs) Handles ApiEvents.HistoricalBarsEnd
-        mMarketDataText.DisplayMessage($"Historical Bars Start. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}")
+        mMarketDataText.DisplayMessage($"Historical Bars End. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}")
     End Sub
 
     Private Sub _HistoricalBarsStart(sender As Object, e As HistoricalBarsRequestEventArgs) Handles ApiEvents.HistoricalBarsStart
-        mMarketDataText.DisplayMessage($"Historical Bars End. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}")
+        mMarketDataText.DisplayMessage($"Historical Bars Start. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}")
     End Sub
 
     Private Sub _HistoricalBidAsk(sender As Object, e As HistoricalBidAskEventArgs) Handles ApiEvents.HistoricalBidAsk
@@ -2922,7 +2925,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
 #Region "Market Data Events"
 
     Private Sub _MarketDataError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.MarketDataError
-        mServerResponsesText.DisplayMessage($"ID: {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+        mErrorsText.DisplayMessage($"ID: {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
     End Sub
 
     Private Sub _MarketDataType(sender As Object, e As MarketDataTypeEventArgs) Handles ApiEvents.MarketDataType
@@ -3018,7 +3021,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
 #Region "Market Depth Events"
 
     Private Sub _MarketDepthError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.MarketDepthError
-        mServerResponsesText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+        mErrorsText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
     End Sub
 
     Private Sub _MktDepthExchanges(sender As Object, e As MarketDepthExchangesEventArgs) Handles ApiEvents.MarketDepthExchanges
@@ -3383,7 +3386,7 @@ OrderState
     End Sub
 
     Private Sub _OrderError(sender As Object, e As RequestErrorEventArgs) Handles ApiEvents.OrderError
-        mServerResponsesText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
+        mErrorsText.DisplayMessage($" Id {e.RequestId}; Error Code: {e.ErrorCode}; Error Msg: {e.Message}")
     End Sub
 
     Private Sub _OrderStatus(sender As Object, e As OrderStatusEventArgs) Handles ApiEvents.OrderStatus
@@ -3409,7 +3412,7 @@ $"Order status
 
 #Region "Performance Data Events"
 
-    Private Sub ApiEvents_PerformanceStatsUpdate(sender As Object, e As PerformanceStatsUpdateEventArgs) Handles ApiEvents.PerformanceStatsUpdate
+    Private Sub _PerformanceStatsUpdate(sender As Object, e As PerformanceStatsUpdateEventArgs) Handles ApiEvents.PerformanceStatsUpdate
         mServerResponsesText.DisplayMessage($"Socket message statistics:{vbCrLf}{e.Statistics}")
     End Sub
 
