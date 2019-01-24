@@ -11,9 +11,9 @@ It is currently broadly equivalent in functionality to the 9.73 version of
 the IBKR implementation as of June 2017, and will be updated to be fully 
 equivalent to the latest version in due course.
 
-At present it is targetted at .Net 4.6. The intention is to retarget it for 
-.Net Standard 2.0, which will enable it to be used with .Net implementations
-on other platforms (eg Windows universal apps, Linux and macOS).
+It is targetted at .Net Standard 2.0, which enables it to be used with .Net 
+implementations on other platforms (eg Windows universal apps, Linux and macOS).
+However it has not yet been tested on platforms other than Windows Desktop.
 
 ## Overview
 
@@ -23,6 +23,8 @@ application. Not only does this not involve any additional thread creation, but
 it also means that all API callbacks or events happen on the program's main 
 thread, so that synchronisation issues are non-existent (unless the program 
 needs to use other threads for its own purposes).
+
+The API can also be used in command-line applications.
 
 API callbacks can be delivered in several ways:
 
