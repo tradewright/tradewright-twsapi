@@ -146,7 +146,7 @@ Friend Class PerformanceStatsRecorder
 
     Private Sub generateStats()
         Static sSb As System.Text.StringBuilder = New System.Text.StringBuilder()
-        Static sHeader As String = $"Message type          Last  Last avg    Total  Total avg Max/sec   Longest  Shortest{vbCrLf}"
+        Static sHeader As String = $"Message type           Last  Last avg    Total  Total avg Max/sec   Longest  Shortest{vbCrLf}"
 
         sSb.Append(sHeader)
         For i = 0 To ApiSocketInMsgType.Max
@@ -157,7 +157,7 @@ Friend Class PerformanceStatsRecorder
                 .TotalTime = .TotalTime + .LastSecondTime
 
                 If .TotalCount <> 0 Then
-                    sSb.Append($"{IBAPI.ApiSocketInMsgTypes.ToExternalString(DirectCast(i, ApiSocketInMsgType)),-20}")
+                    sSb.Append($"{IBAPI.ApiSocketInMsgTypes.ToExternalString(DirectCast(i, ApiSocketInMsgType)),-22}")
                     sSb.Append($"{ .LastPeriodCount,6:####0}")
                     If .LastPeriodCount <> 0 Then
                         sSb.Append($"{ .LastPeriodTime / .LastPeriodCount,10:######0.0}")
