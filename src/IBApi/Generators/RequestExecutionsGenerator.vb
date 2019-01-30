@@ -66,9 +66,8 @@ Friend Class RequestExecutionsGenerator
 
             With theFilter
                 lWriter.AddElement(.ClientID, "Client id")
-                lWriter.AddElement("", "Client id")
                 lWriter.AddElement(.AccountCode, "Account code")
-                lWriter.AddElement(CStr(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd-hh:mm:ss}", "")), "Fill Time")
+                lWriter.AddElement(CStr(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd-HH:mm:ss}", "")), "Fill Time")
                 lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
                 lWriter.AddElement(IBAPI.SecurityTypes.ToInternalString(.SecType), "Sec type")
                 lWriter.AddElement(.Exchange, "Exchange")
