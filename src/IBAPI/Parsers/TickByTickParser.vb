@@ -58,7 +58,7 @@ Friend NotInheritable Class TickByTickParser
                 LogSocketInputMessage(ModuleName, "ParseAsync")
 
                 Try
-                    _EventConsumers.MarketDataConsumer?.NotifyTickByTickAllLast(New TickByTickAllLastEventArgs(tickerId, dataType, time, price, size, attributes, exchange, specialConditions))
+                    _EventConsumers.MarketDataConsumer?.NotifyTickByTickAllLast(New TickByTickAllLastEventArgs(timestamp, tickerId, dataType, time, price, size, attributes, exchange, specialConditions))
                     Return True
                 Catch e As Exception
                     Throw New ApiApplicationException("NotifyTickByTickAllLast", e)
@@ -81,7 +81,7 @@ Friend NotInheritable Class TickByTickParser
                 LogSocketInputMessage(ModuleName, "ParseAsync")
 
                 Try
-                    _EventConsumers.MarketDataConsumer?.NotifyTickByTickBidAsk(New TickByTickBidAskEventArgs(tickerId, time, bidPrice, askPrice, bidSize, askSize, attributes))
+                    _EventConsumers.MarketDataConsumer?.NotifyTickByTickBidAsk(New TickByTickBidAskEventArgs(timestamp, tickerId, time, bidPrice, askPrice, bidSize, askSize, attributes))
                     Return True
                 Catch e As Exception
                     Throw New ApiApplicationException("NotifyTickByTickBidAsk", e)
@@ -93,7 +93,7 @@ Friend NotInheritable Class TickByTickParser
                 LogSocketInputMessage(ModuleName, "ParseAsync")
 
                 Try
-                    _EventConsumers.MarketDataConsumer?.NotifyTickByTickMidPoint(New TickByTickMidPointEventArgs(tickerId, time, midPoint))
+                    _EventConsumers.MarketDataConsumer?.NotifyTickByTickMidPoint(New TickByTickMidPointEventArgs(timestamp, tickerId, time, midPoint))
                     Return True
                 Catch e As Exception
                     Throw New ApiApplicationException("NotifyTickByTickMidPoint", e)

@@ -35,9 +35,9 @@ Public Class TickByTickBidAskEventArgs
     Public ReadOnly Property AskSize As Integer
     Public ReadOnly Property Attributes As TickAttributes
 
-    Public Sub New(requestId As Integer, time As Date, bidPrice As Double, askPrice As Double, bidSize As Integer, askSize As Integer, attributes As TickAttributes)
+    Public Sub New(timestamp As DateTime, requestId As Integer, time As Date, bidPrice As Double, askPrice As Double, bidSize As Integer, askSize As Integer, attributes As TickAttributes)
         MyBase.New()
-        Me._Timestamp = Timestamp
+        Me._Timestamp = timestamp
         Me.RequestId = requestId
         Me.Time = time
         Me.BidPrice = bidPrice

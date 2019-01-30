@@ -31,9 +31,9 @@ Public Class TickByTickMidPointEventArgs
     Public ReadOnly Property Time As Date
     Public ReadOnly Property MidPoint As Double
 
-    Public Sub New(requestId As Integer, time As Date, midPoint As Double)
+    Public Sub New(timestamp As DateTime, requestId As Integer, time As Date, midPoint As Double)
         MyBase.New()
-        Me._Timestamp = Timestamp
+        Me._Timestamp = timestamp
         Me.RequestId = requestId
         Me.Time = time
         Me.MidPoint = midPoint
