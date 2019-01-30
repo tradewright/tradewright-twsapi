@@ -101,7 +101,6 @@ Friend NotInheritable Class ErrorParser
 
             Case 1102
                 ' connectivity between Tws and IB has been restored without loss of data
-                ' Now need to reassociate Order ids with Tws
 
                 mLostConnectionToIb = False
 
