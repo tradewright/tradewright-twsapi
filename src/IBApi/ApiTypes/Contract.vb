@@ -74,8 +74,6 @@ Public Class Contract
     ' than one country (eg try IBM in Tws)
     Public Property PrimaryExch As String
 
-    ' Public Property IncludeExpired As Boolean ' can not be set to true for orders.
-
     ' COMBOS
     Public Property ComboLegsDescription As String ' received in open Order version 14 and up for all combos
     Public ReadOnly Property ComboLegs As New ComboLegs
