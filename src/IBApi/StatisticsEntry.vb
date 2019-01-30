@@ -24,107 +24,105 @@
 
 #End Region
 
-Imports TradeWright.IBAPI
-
 Public Class StatisticsEntry
-    Private _messageId As ApiSocketInMsgType
-    Private _lastSecondCount As Integer
-    Private _lastSecondTime As Long
-    Private _lastPeriodCount As Integer
-    Private _lastPeriodTime As Long
-    Private _totalCount As Integer
-    Private _totalTime As Long
-    Private _maxSecondCount As Integer
-    Private _longestTime As Single
-    Private _shortestTime As Single
+    Private mMessageId As ApiSocketInMsgType
+    Private mLastSecondCount As Integer
+    Private mLastSecondTime As Long
+    Private mLastPeriodCount As Integer
+    Private mLastPeriodTime As Long
+    Private mTotalCount As Integer
+    Private mTotalTime As Long
+    Private mMaxSecondCount As Integer
+    Private mLongestTime As Single
+    Private mShortestTime As Single
 
     Public Property MessageId As ApiSocketInMsgType
         Get
-            Return _messageId
+            Return mMessageId
         End Get
         Friend Set
-            _messageId = Value
+            mMessageId = Value
         End Set
     End Property
 
     Public Property LastSecondCount As Integer
         Get
-            Return _lastSecondCount
+            Return mLastSecondCount
         End Get
         Friend Set
-            _lastSecondCount = Value
+            mLastSecondCount = Value
         End Set
     End Property
 
     Public Property LastSecondTime As Long
         Get
-            Return _lastSecondTime
+            Return mLastSecondTime
         End Get
         Friend Set
-            _lastSecondTime = Value
+            mLastSecondTime = Value
         End Set
     End Property
 
     Public Property LastPeriodCount As Integer
         Get
-            Return _lastPeriodCount
+            Return mLastPeriodCount
         End Get
         Friend Set
-            _lastPeriodCount = Value
+            mLastPeriodCount = Value
         End Set
     End Property
 
     Public Property LastPeriodTime As Long
         Get
-            Return _lastPeriodTime
+            Return mLastPeriodTime
         End Get
         Friend Set
-            _lastPeriodTime = Value
+            mLastPeriodTime = Value
         End Set
     End Property
 
     Public Property TotalCount As Integer
         Get
-            Return _totalCount
+            Return mTotalCount
         End Get
         Friend Set
-            _totalCount = Value
+            mTotalCount = Value
         End Set
     End Property
 
     Public Property TotalTime As Long
         Get
-            Return _totalTime
+            Return mTotalTime
         End Get
         Friend Set
-            _totalTime = Value
+            mTotalTime = Value
         End Set
     End Property
 
     Public Property MaxSecondCount As Integer
         Get
-            Return _maxSecondCount
+            Return mMaxSecondCount
         End Get
         Friend Set
-            _maxSecondCount = Value
+            mMaxSecondCount = Value
         End Set
     End Property
 
     Public Property LongestTime As Single
         Get
-            Return _longestTime
+            Return mLongestTime
         End Get
         Friend Set
-            _longestTime = Value
+            mLongestTime = Value
         End Set
     End Property
 
     Public Property ShortestTime As Single
         Get
-            Return _shortestTime
+            Return mShortestTime
         End Get
         Friend Set
-            _shortestTime = Value
+            mShortestTime = Value
         End Set
     End Property
 End Class
