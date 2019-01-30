@@ -46,7 +46,7 @@ Friend NotInheritable Class PortfolioValueParser
         If pVersion >= 7 Then
             lContract.Multiplier = Await _Reader.GetIntAsync("Multiplier")
             If lContract.Multiplier = 0 Then lContract.Multiplier = 1
-            lContract.PrimaryExch = Await _Reader.GetStringAsync("Primary exchg")
+            lContract.Exchange = Await _Reader.GetStringAsync("Exchange")
         End If
 
         lContract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
@@ -54,7 +54,7 @@ Friend NotInheritable Class PortfolioValueParser
         If pVersion >= 2 Then lContract.LocalSymbol = Await _Reader.GetStringAsync("Local Symbol")
         If pVersion >= 8 Then lContract.TradingClass = Await _Reader.GetStringAsync("Trading Class")
 
-        Dim lPosition = If(ServerVersion = ApiServerVersion.FRACTIONAL_POSITIONS, Await _Reader.GetDoubleAsync("POSITION"), Await _Reader.GetIntAsync("POSITION"))
+        Dim lPosition = If(ServerVersion >= ApiServerVersion.FRACTIONAL_POSITIONS, Await _Reader.GetDoubleAsync("POSITION"), Await _Reader.GetIntAsync("POSITION"))
         Dim lMarketPrice = Await _Reader.GetDoubleAsync("Market price")
         Dim lMarketValue = Await _Reader.GetDoubleAsync("Market Value")
         Dim lAverageCost As Double
