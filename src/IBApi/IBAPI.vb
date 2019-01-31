@@ -244,6 +244,7 @@ Public Class IBAPI
 
     Public Shared OptionRights As New ExtendedEnum(Of System.Enum, OptionRight)({
             ("", OptionRight.None, EnumNameType.Internal),
+            ("0", OptionRight.None, EnumNameType.Alias),    ' PortfolioValue messages seem to use this 
             ("*None*", OptionRight.None, EnumNameType.NonAliasExternal),
             ("?", OptionRight.None, EnumNameType.External),
             ("Call", OptionRight.Call, EnumNameType.External),
