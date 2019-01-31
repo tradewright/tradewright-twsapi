@@ -52,12 +52,13 @@ Friend Class RequestHistoricalBarsGenerator
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
-        IBAPI.EventLogger.Log("Requesting historical data for: {UCase(pRequest.Contract.LocalSymbol)}; id={lTwsId}; barsize={pRequest.BarSizeSetting}; endTime={pRequest.EndDateTime}; duration={pRequest.Duration}", ModuleName, ProcName)
+        Dim lTwsId = IdManager.GetTwsId(pRequestId, IdType.HistoricalData)
+        IBAPI.EventLogger.Log($"Requesting historical data for: {pRequest.Contract.LocalSymbol.ToUpper()}; id={lTwsId}; barsize={pRequest.BarSizeSetting}; endTime={pRequest.EndDateTime}; duration={pRequest.Duration}", ModuleName, ProcName)
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestHistoricalBars)
         If ServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(IdManager.GetTwsId(pRequestId, IdType.HistoricalData), "Request id")
+        lWriter.AddElement(lTwsId, "Request id")
         lWriter.AddElement(pRequest.Contract, "Contract")
 
         lWriter.AddElement(If(IBAPI.IsContractExpirable(pRequest.Contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
