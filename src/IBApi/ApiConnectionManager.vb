@@ -188,7 +188,7 @@ Friend Class ApiConnectionManager
 
             If Not isValidServerVersion() Then
                 Dim e = New ApiException(ErrorCodes.TwsOutOfDate, "TWS is out of date and needs to be upgraded")
-                IBAPI.EventLogger.Log("An exception occurred:" & vbCrLf & e.ToString(), ModuleName, ProcName, ILogger.LogLevel.Severe)
+                IBAPI.EventLogger.Log($"An exception occurred:{vbCrLf}{e.ToString()}", ModuleName, ProcName, ILogger.LogLevel.Severe)
                 mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
                 Return False
             End If
