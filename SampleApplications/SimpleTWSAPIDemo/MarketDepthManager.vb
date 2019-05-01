@@ -90,7 +90,7 @@ Friend Class MarketDepthManager
                     .Size = size
                 End With
             Case DOMOperation.Delete
-                model.RemoveAt(rowId)
+                If rowId < model.Count Then model.RemoveAt(rowId)
         End Select
 
         ' recalc only the average cost and cumulative sizes that could have changed
@@ -100,7 +100,7 @@ Friend Class MarketDepthManager
     Private Sub updateList(model As List(Of ModelEntry), bookEntries As DataGridView, baseRow As Integer)
         Dim totalPrice = 0.0
         Dim cumSize = 0
-        If baseRow > 0 Then
+        If baseRow > 0 And baseRow < model.Count Then
             Dim entry = model(baseRow - 1)
             cumSize = model(baseRow - 1).CumSize
             totalPrice = model(baseRow - 1).TotalPrice
@@ -116,12 +116,7 @@ Friend Class MarketDepthManager
                 Dim avgPrice = totalPrice / cumSize
 
                 If i > (bookEntries.Rows.Count - 1) Then bookEntries.Rows.Add()
-                Dim row = bookEntries.Rows(i)
-                row.Cells(Cell.MarketMaker).Value = .MarketMaker
-                row.Cells(Cell.Price).Value = .Price
-                row.Cells(Cell.Size).Value = .Size
-                row.Cells(Cell.CumSize).Value = cumSize
-                row.Cells(Cell.AvgPrice).Value = avgPrice
+                bookEntries.Rows(i).SetValues(.MarketMaker, .Price, .Size, cumSize, avgPrice)
             End With
         Next
     End Sub

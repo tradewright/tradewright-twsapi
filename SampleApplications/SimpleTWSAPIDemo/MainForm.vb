@@ -28,6 +28,7 @@ Option Strict On
 Option Infer On
 
 Imports TradeWright.IBAPI
+Imports TradeWright.Utilities.DataStorage
 Imports TradeWright.Utilities.Logging
 
 Public Class MainForm
@@ -132,9 +133,13 @@ Public Class MainForm
         ' 
         ' %APPDATA%\Local\TradeWright Software Systems\SimpleTWSAPIDemo\1.0.0.0\Logfile.Log
 
+        ApplicationDataPathUser = Application.UserAppDataPath
         Logging.SetupDefaultLogging()
 
         logMessage($"Logfile is {Logging.DefaultLogFileName}")
+
+        IBAPI.EventLogger = New Logger(New FormattingLogger(""))
+        IBAPI.PerformanceLogger = New Logger(Logging.GetLogger("ibapi.perfdata"))
 
         ' set up the unhandled exception handler. Any exceptions not handled
         ' within the code will be caught here: log the exception and shut
@@ -189,10 +194,7 @@ Public Class MainForm
 
         mApi = New IBAPI(ServerTextBox.Text, CInt(PortTextBox.Text), CInt(ClientIdTextBox.Text))
         ApiEv = mApi.EventSource
-        Dim logger = New ApiLogger(New FormattingLogger(""))
-        mApi.Logger = logger
-        mApi.SocketLogger = logger
-        mApi.PerformanceLogger = logger
+        Dim logger = New Logger(New FormattingLogger(""))
 
         mApi.Connect()
     End Sub
@@ -285,7 +287,7 @@ Public Class MainForm
 
     Private Sub startMarketDepthButton_Click(sender As System.Object, e As System.EventArgs) Handles StartMarketDepthButton.Click
         mDepthMgr.Initialise(20)
-        startMarketDepth(createContract(SecurityTypes.Parse(SecTypeDepthCombo.Text.ToUpper),
+        startMarketDepth(createContract(IBAPI.SecurityTypes.Parse(SecTypeDepthCombo.Text.ToUpper),
                                         LocalSymbolDepthText.Text.ToUpper,
                                         ExchangeDepthCombo.Text,
                                         CurrencyDepthCombo.Text))
@@ -294,7 +296,7 @@ Public Class MainForm
     End Sub
 
     Private Sub startTickerButton_Click(sender As System.Object, e As System.EventArgs) Handles StartTickerButton.Click
-        startTicker(createContract(SecurityTypes.Parse(SecTypeTickerCombo.Text.ToUpper),
+        startTicker(createContract(IBAPI.SecurityTypes.Parse(SecTypeTickerCombo.Text.ToUpper),
                                    LocalSymbolTickerText.Text.ToUpper,
                                    ExchangeTickerCombo.Text,
                                    CurrencyTickerCombo.Text))
@@ -466,7 +468,7 @@ Public Class MainForm
     End Function
 
     Private Function contractToString(contract As Contract) As String
-        Return $"secType={SecurityTypes.ToExternalString(contract.SecType)}; localSymbol={contract.LocalSymbol}; exchange={contract.Exchange}; currency={contract.CurrencyCode}"
+        Return $"secType={IBAPI.SecurityTypes.ToExternalString(contract.SecType)}; localSymbol={contract.LocalSymbol}; exchange={contract.Exchange}; currency={contract.CurrencyCode}"
     End Function
 
     Private Function createContract(secType As SecurityType, localSymbol As String, exchange As String, currency As String) As Contract
@@ -487,8 +489,7 @@ Public Class MainForm
             .OrderType = orderType,
             .TotalQuantity = quantity,
             .LmtPrice = limitPrice,
-            .AuxPrice = triggerPrice,
-            .Transmit = True
+            .AuxPrice = triggerPrice
         }
     End Function
 
@@ -502,9 +503,9 @@ Public Class MainForm
     End Sub
 
     Private Sub generateAndPlaceOrder(action As OrderAction)
-        Dim contract = createContract(SecurityTypes.Parse(SectypeOrderCombo.Text), LocalSymbolOrderText.Text.ToUpper, ExchangeOrderCombo.Text, CurrencyOrderCombo.Text)
-        Dim order = createOrder(action, OrderTypes.Parse(OrderTypeCombo.Text), Integer.Parse(QuantityText.Text), Double.Parse(LimitPriceText.Text), Double.Parse(TriggerPriceText.Text))
-        mApi.PlaceOrder(order, contract)
+        Dim contract = createContract(IBAPI.SecurityTypes.Parse(SectypeOrderCombo.Text), LocalSymbolOrderText.Text.ToUpper, ExchangeOrderCombo.Text, CurrencyOrderCombo.Text)
+        Dim order = createOrder(action, IBAPI.OrderTypes.Parse(OrderTypeCombo.Text), Integer.Parse(QuantityText.Text), Double.Parse(LimitPriceText.Text), Double.Parse(TriggerPriceText.Text))
+        mApi.PlaceOrder(order, contract, True)
 
         recordOrder(contract, order, New OrderState() With {.Status = OrderStatusCreated})
     End Sub
@@ -614,7 +615,7 @@ Public Class MainForm
         Dim gridRow = actOrder.GridRow
         showOrderValue(gridRow, OrderColumnId, CStr(orderId))
         showOrderValue(gridRow, OrderColumnLocalSymbol, actOrder.Contract.LocalSymbol)
-        showOrderValue(gridRow, OrderColumnAction, OrderActions.ToExternalString(actOrder.Order.Action))
+        showOrderValue(gridRow, OrderColumnAction, IBAPI.OrderActions.ToExternalString(actOrder.Order.Action))
         showOrderValue(gridRow, OrderColumnQuantity, CStr(actOrder.Order.TotalQuantity))
         showOrderValue(gridRow, OrderColumnStatus, actOrder.State.Status)
     End Sub
