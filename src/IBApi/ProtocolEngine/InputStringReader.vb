@@ -134,7 +134,7 @@ Friend NotInheritable Class InputStringReader
         If mCurrIndex >= mDataLength Then Await appendDataAsync()
 
         Dim firstIndex = mCurrIndex
-        If getByte() = 0 Then Return Nothing
+        If getByte() = 0 Then Return String.Empty
 
         Do
             If mCurrIndex >= mDataLength Then Await appendDataAsync()
