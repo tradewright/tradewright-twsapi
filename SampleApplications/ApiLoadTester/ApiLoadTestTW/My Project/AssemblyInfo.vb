@@ -37,8 +37,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("ApiLoadTestControllerTW")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("ApiLoadTestControllerTW")> 
-<Assembly: AssemblyCopyright("Copyright ©  2017")> 
+<Assembly: AssemblyProduct("ApiLoadTestControllerTW")>
+<Assembly: AssemblyCopyright("Copyright ©  2019")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

@@ -156,7 +156,7 @@ Public Class ApiLoadTestIB
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub DeltaNeutralValidation(reqId As Integer, underComp As UnderComp) Implements EWrapper.deltaNeutralValidation
+    Public Sub deltaNeutralValidation(reqId As Integer, deltaNeutralContract As DeltaNeutralContract) Implements EWrapper.deltaNeutralValidation
         mUI.IncrementTotalTicks()
     End Sub
 
@@ -216,7 +216,7 @@ Public Class ApiLoadTestIB
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub OrderStatus(orderId As Integer, status As String, filled As Double, remaining As Double, avgFillPrice As Double, permId As Integer, parentId As Integer, lastFillPrice As Double, clientId As Integer, whyHeld As String) Implements EWrapper.orderStatus
+    Public Sub orderStatus(orderId As Integer, status As String, filled As Double, remaining As Double, avgFillPrice As Double, permId As Integer, parentId As Integer, lastFillPrice As Double, clientId As Integer, whyHeld As String, mktCapPrice As Double) Implements EWrapper.orderStatus
         mUI.IncrementTotalTicks()
     End Sub
 
@@ -424,11 +424,39 @@ Public Class ApiLoadTestIB
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub pnl(reqId As Integer, dailyPnL As Double, unrealizedPnL As Double) Implements EWrapper.pnl
+    Public Sub pnl(reqId As Integer, dailyPnL As Double, unrealizedPnL As Double, realizedPnL As Double) Implements EWrapper.pnl
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub pnlSingle(reqId As Integer, pos As Integer, dailyPnL As Double, unrealizedPnL As Double, value As Double) Implements EWrapper.pnlSingle
+    Public Sub pnlSingle(reqId As Integer, pos As Integer, dailyPnL As Double, unrealizedPnL As Double, realizedPnL As Double, value As Double) Implements EWrapper.pnlSingle
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub historicalTicks(reqId As Integer, ticks() As HistoricalTick, done As Boolean) Implements EWrapper.historicalTicks
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub historicalTicksBidAsk(reqId As Integer, ticks() As HistoricalTickBidAsk, done As Boolean) Implements EWrapper.historicalTicksBidAsk
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub historicalTicksLast(reqId As Integer, ticks() As HistoricalTickLast, done As Boolean) Implements EWrapper.historicalTicksLast
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub tickByTickAllLast(reqId As Integer, tickType As Integer, time As Long, price As Double, size As Integer, tickAttriblast As TickAttribLast, exchange As String, specialConditions As String) Implements EWrapper.tickByTickAllLast
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub tickByTickBidAsk(reqId As Integer, time As Long, bidPrice As Double, askPrice As Double, bidSize As Integer, askSize As Integer, tickAttribBidAsk As TickAttribBidAsk) Implements EWrapper.tickByTickBidAsk
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub tickByTickMidPoint(reqId As Integer, time As Long, midPoint As Double) Implements EWrapper.tickByTickMidPoint
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub orderBound(orderId As Long, apiClientId As Integer, apiOrderId As Integer) Implements EWrapper.orderBound
         mUI.IncrementTotalTicks()
     End Sub
 

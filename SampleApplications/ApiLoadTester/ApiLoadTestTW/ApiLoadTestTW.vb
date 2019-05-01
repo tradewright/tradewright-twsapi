@@ -94,7 +94,7 @@ Public Class ApiLoadTestTW
                                  marketDepth As Boolean) As Integer Implements IApiLoadTestController.StartTicker
         Dim contract = New Contract() With {
             .Symbol = symbol,
-            .SecType = SecurityTypes.Parse(secType),
+            .SecType = IBAPI.SecurityTypes.Parse(secType),
             .Expiry = expiry,
             .Exchange = exchange,
             .CurrencyCode = currencyCode,
@@ -265,11 +265,11 @@ Public Class ApiLoadTestTW
         mUI.IncrementTotalTicks()
     End Sub
 
-    Private Sub historicalData(sender As Object, e As HistoricalDataEventArgs) Handles ApiEventSource.HistoricalData
+    Private Sub historicalBar(sender As Object, e As HistoricalBarEventArgs) Handles ApiEventSource.HistoricalBar
         mUI.IncrementTotalTicks()
     End Sub
 
-    Private Sub historicalDataEnd(sender As Object, e As HistoricalDataRequestEventArgs) Handles ApiEventSource.HistoricalDataEnd
+    Private Sub historicalBarsEnd(sender As Object, e As HistoricalBarsRequestEventArgs) Handles ApiEventSource.HistoricalBarsEnd
         mUI.IncrementTotalTicks()
     End Sub
 
