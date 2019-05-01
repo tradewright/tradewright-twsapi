@@ -152,7 +152,7 @@ Friend Class FLogConfig
     ' ===============================================================================
     Public ReadOnly Property ServerLogLevel() As ApiLogLevel
         Get
-            Return IBAPI.ApiLogLevels.Parse(ServerLogLevelCombo.SelectedItem)
+            Return IBAPI.ApiLogLevels.Parse(ServerLogLevelCombo.SelectedItem, True)
         End Get
     End Property
 

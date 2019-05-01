@@ -190,7 +190,7 @@ Public Class FCondition
 
         priceCondition.ConId = CInt(priceConId.Text)
         priceCondition.Exchange = priceConExch.Text
-        priceCondition.TriggerMethod = IBAPI.TriggerMethods.Parse(priceMethod.Text)
+        priceCondition.TriggerMethod = IBAPI.TriggerMethods.Parse(priceMethod.Text, True)
         priceCondition.Price = CDbl(price.Text)
     End Sub
 

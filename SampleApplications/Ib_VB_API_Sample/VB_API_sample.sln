@@ -4,8 +4,6 @@ VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VB_API_sample", "VB_API_sample.vbproj", "{8725B2B6-906C-49CE-A1E3-61060F4549E3}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Themes", "..\..\..\tradewright-common.net\src\Themes\Themes.vbproj", "{4DB00D88-A4E1-4038-B49D-FA523167D43F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,14 +18,6 @@ Global
 		{8725B2B6-906C-49CE-A1E3-61060F4549E3}.Release|Any CPU.ActiveCfg = Release|x86
 		{8725B2B6-906C-49CE-A1E3-61060F4549E3}.Release|Any CPU.Build.0 = Release|x86
 		{8725B2B6-906C-49CE-A1E3-61060F4549E3}.Release|x64.ActiveCfg = Release|x86
-		{4DB00D88-A4E1-4038-B49D-FA523167D43F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4DB00D88-A4E1-4038-B49D-FA523167D43F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4DB00D88-A4E1-4038-B49D-FA523167D43F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4DB00D88-A4E1-4038-B49D-FA523167D43F}.Debug|x64.Build.0 = Debug|Any CPU
-		{4DB00D88-A4E1-4038-B49D-FA523167D43F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4DB00D88-A4E1-4038-B49D-FA523167D43F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4DB00D88-A4E1-4038-B49D-FA523167D43F}.Release|x64.ActiveCfg = Release|Any CPU
-		{4DB00D88-A4E1-4038-B49D-FA523167D43F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

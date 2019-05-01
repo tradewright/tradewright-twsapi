@@ -22,9 +22,9 @@ Friend Class FOrder
     'Required by the Windows Form Designer
     Private mComponents As System.ComponentModel.IContainer
     Public WithEvents WhatToShowText As System.Windows.Forms.TextBox
-    Public WithEvents Frame1 As TradeWright.Utilities.Themes.TitledGroupBox
-    Public WithEvents CancelItButton As TradeWright.Utilities.Themes.ThemedButton1
-    Public WithEvents OkButton As TradeWright.Utilities.Themes.ThemedButton1
+    Public WithEvents Frame1 As TradeWright.UI.Themes.TitledGroupBox
+    Public WithEvents CancelItButton As TradeWright.UI.Themes.ThemedButton1
+    Public WithEvents OkButton As TradeWright.UI.Themes.ThemedButton1
     Public WithEvents MultiplierText As System.Windows.Forms.TextBox
     Public WithEvents PrimaryExchangeText As System.Windows.Forms.TextBox
     Public WithEvents RightText As System.Windows.Forms.TextBox
@@ -35,19 +35,19 @@ Friend Class FOrder
     Public WithEvents ExpiryText As System.Windows.Forms.TextBox
     Public WithEvents SecTypeText As System.Windows.Forms.TextBox
     Public WithEvents SymbolText As System.Windows.Forms.TextBox
-    Public WithEvents TickerDescFrame As TradeWright.Utilities.Themes.TitledGroupBox
+    Public WithEvents TickerDescFrame As TradeWright.UI.Themes.TitledGroupBox
     Public WithEvents ReqIdText As System.Windows.Forms.TextBox
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
-    Public WithEvents GroupBox1 As TradeWright.Utilities.Themes.TitledGroupBox
+    Public WithEvents GroupBox1 As TradeWright.UI.Themes.TitledGroupBox
     Public WithEvents DurationText As System.Windows.Forms.TextBox
     Public WithEvents BarSizeSettingText As System.Windows.Forms.TextBox
     Public WithEvents EndDateTimeText As System.Windows.Forms.TextBox
-    Public WithEvents GroupBox2 As TradeWright.Utilities.Themes.TitledGroupBox
+    Public WithEvents GroupBox2 As TradeWright.UI.Themes.TitledGroupBox
     Public WithEvents ExerciseActionText As System.Windows.Forms.TextBox
     Public WithEvents ExerciseQuantityText As System.Windows.Forms.TextBox
-    Public WithEvents GroupBox4 As TradeWright.Utilities.Themes.TitledGroupBox
+    Public WithEvents GroupBox4 As TradeWright.UI.Themes.TitledGroupBox
     Public WithEvents GenericTickTagsText As System.Windows.Forms.TextBox
     Public WithEvents NumRowsText As System.Windows.Forms.TextBox
     Public WithEvents Label24 As System.Windows.Forms.Label
@@ -90,13 +90,13 @@ Friend Class FOrder
     Public WithEvents GATText As System.Windows.Forms.TextBox
     Public WithEvents DeltaNeutralContractButton As System.Windows.Forms.Button
     Public WithEvents AlgoParamsButton As System.Windows.Forms.Button
-    Public WithEvents OrderDescFrame As TradeWright.Utilities.Themes.TitledGroupBox
+    Public WithEvents OrderDescFrame As TradeWright.UI.Themes.TitledGroupBox
     Friend WithEvents SecIdText As System.Windows.Forms.TextBox
     Friend WithEvents SecIdTypeText As System.Windows.Forms.TextBox
     Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents Label6 As System.Windows.Forms.Label
     Public WithEvents MarketDataTypeLabel As System.Windows.Forms.Label
-    Public WithEvents MarketDataTypeFrame As TradeWright.Utilities.Themes.TitledGroupBox
+    Public WithEvents MarketDataTypeFrame As TradeWright.UI.Themes.TitledGroupBox
     Friend WithEvents MarketDataTypeCombo As System.Windows.Forms.ComboBox
     Public WithEvents SmartComboRoutingParamsButton As System.Windows.Forms.Button
     Public WithEvents TradingClassText As System.Windows.Forms.TextBox
@@ -123,10 +123,10 @@ Friend Class FOrder
     Public WithEvents Label17 As Label
     Public WithEvents OrderIdText As TextBox
     Public WithEvents Label21 As Label
-    Friend WithEvents GroupBox5 As TradeWright.Utilities.Themes.TitledGroupBox
+    Friend WithEvents GroupBox5 As TradeWright.UI.Themes.TitledGroupBox
     Public WithEvents CashQtyLabel As System.Windows.Forms.Label
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.Frame1 = New TradeWright.Utilities.Themes.TitledGroupBox()
+        Me.Frame1 = New TradeWright.UI.Themes.TitledGroupBox()
         Me.EndTimezoneText = New System.Windows.Forms.TextBox()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.StartTimezoneText = New System.Windows.Forms.TextBox()
@@ -148,9 +148,9 @@ Friend Class FOrder
         Me.DurationText = New System.Windows.Forms.TextBox()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.Label25 = New System.Windows.Forms.Label()
-        Me.CancelItButton = New TradeWright.Utilities.Themes.ThemedButton1()
-        Me.OkButton = New TradeWright.Utilities.Themes.ThemedButton1()
-        Me.TickerDescFrame = New TradeWright.Utilities.Themes.TitledGroupBox()
+        Me.CancelItButton = New TradeWright.UI.Themes.ThemedButton1()
+        Me.OkButton = New TradeWright.UI.Themes.ThemedButton1()
+        Me.TickerDescFrame = New TradeWright.UI.Themes.TitledGroupBox()
         Me.IncludeExpiredCheck = New System.Windows.Forms.CheckBox()
         Me.TradingClassText = New System.Windows.Forms.TextBox()
         Me.Label8 = New System.Windows.Forms.Label()
@@ -181,11 +181,11 @@ Friend Class FOrder
         Me.Label57 = New System.Windows.Forms.Label()
         Me.Label58 = New System.Windows.Forms.Label()
         Me.ReqIdText = New System.Windows.Forms.TextBox()
-        Me.GroupBox1 = New TradeWright.Utilities.Themes.TitledGroupBox()
+        Me.GroupBox1 = New TradeWright.UI.Themes.TitledGroupBox()
         Me.SnapshotMktDataCheck = New System.Windows.Forms.CheckBox()
         Me.GenericTickTagsText = New System.Windows.Forms.TextBox()
         Me.Label22 = New System.Windows.Forms.Label()
-        Me.GroupBox2 = New TradeWright.Utilities.Themes.TitledGroupBox()
+        Me.GroupBox2 = New TradeWright.UI.Themes.TitledGroupBox()
         Me.ExerciseOverrideCheck = New System.Windows.Forms.CheckBox()
         Me.ExerciseQuantityText = New System.Windows.Forms.TextBox()
         Me.Label35 = New System.Windows.Forms.Label()
@@ -194,7 +194,7 @@ Friend Class FOrder
         Me.Label21 = New System.Windows.Forms.Label()
         Me.OrderIdText = New System.Windows.Forms.TextBox()
         Me.Label38 = New System.Windows.Forms.Label()
-        Me.GroupBox4 = New TradeWright.Utilities.Themes.TitledGroupBox()
+        Me.GroupBox4 = New TradeWright.UI.Themes.TitledGroupBox()
         Me.NumRowsText = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label27 = New System.Windows.Forms.Label()
@@ -215,7 +215,7 @@ Friend Class FOrder
         Me.GATText = New System.Windows.Forms.TextBox()
         Me.DeltaNeutralContractButton = New System.Windows.Forms.Button()
         Me.AlgoParamsButton = New System.Windows.Forms.Button()
-        Me.OrderDescFrame = New TradeWright.Utilities.Themes.TitledGroupBox()
+        Me.OrderDescFrame = New TradeWright.UI.Themes.TitledGroupBox()
         Me.CashQtyText = New System.Windows.Forms.TextBox()
         Me.CashQtyLabel = New System.Windows.Forms.Label()
         Me.PegBenchButton = New System.Windows.Forms.Button()
@@ -224,9 +224,9 @@ Friend Class FOrder
         Me.OptionsButton = New System.Windows.Forms.Button()
         Me.SmartComboRoutingParamsButton = New System.Windows.Forms.Button()
         Me.MarketDataTypeLabel = New System.Windows.Forms.Label()
-        Me.MarketDataTypeFrame = New TradeWright.Utilities.Themes.TitledGroupBox()
+        Me.MarketDataTypeFrame = New TradeWright.UI.Themes.TitledGroupBox()
         Me.MarketDataTypeCombo = New System.Windows.Forms.ComboBox()
-        Me.GroupBox5 = New TradeWright.Utilities.Themes.TitledGroupBox()
+        Me.GroupBox5 = New TradeWright.UI.Themes.TitledGroupBox()
         Me.Frame1.SuspendLayout()
         Me.TickerDescFrame.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -1295,6 +1295,7 @@ Friend Class FOrder
 
     End Sub
 #End Region
+
     ' Enums
     Friend Enum OrderFormMode
         RequestMarketData = 1
@@ -1366,11 +1367,17 @@ Friend Class FOrder
     Private mOptionsFormTitle As String
     Private mOptions As List(Of TagValue)
 
+    Private mErrorsText As TextboxDisplayManager
+
     Public Sub New()
         MyBase.New()
         'This call is required by the Windows Form Designer.
-        initializeComponent()
+        InitializeComponent()
         initialize()
+    End Sub
+
+    Public Sub Initialise(errorsText As TextboxDisplayManager)
+        mErrorsText = errorsText
     End Sub
 
     ' ========================================================
@@ -1543,7 +1550,7 @@ Friend Class FOrder
 
     Public ReadOnly Property Ok() As Boolean
         Get
-            Return DialogResult = Windows.Forms.DialogResult.OK
+            Return DialogResult = DialogResult.OK
         End Get
     End Property
 
@@ -1603,13 +1610,22 @@ Friend Class FOrder
     End Sub
 
     Private Sub oKButton_Click(sender As Object, e As EventArgs) Handles OkButton.Click
+        DialogResult = DialogResult.OK
+
         ' Move UI data into member fields
         ContractInfo.ConId = CInt(ConIdText.Text)
         ContractInfo.Symbol = SymbolText.Text.ToUpper
-        ContractInfo.SecType = IBAPI.SecurityTypes.Parse(SecTypeText.Text, ignoreCase:=True)
+
+        If Not IBAPI.SecurityTypes.TryParse(SecTypeText.Text, ContractInfo.SecType, ignoreCase:=True) Then
+            mErrorsText.DisplayMessage($"Invalid sec type - must be one of {String.Join(", ", IBAPI.SecurityTypes.ExternalNames)}")
+            DialogResult = DialogResult.No
+        End If
         ContractInfo.Expiry = ExpiryText.Text
         ContractInfo.Strike = CDbl(StrikeText.Text)
-        ContractInfo.OptRight = IBAPI.OptionRights.Parse(RightText.Text, ignoreCase:=True)
+        If Not IBAPI.OptionRights.TryParse(RightText.Text, ContractInfo.OptRight, ignoreCase:=True) Then
+            mErrorsText.DisplayMessage($"Invalid option right - must be one of {String.Join(", ", IBAPI.OptionRights.ExternalNames)}")
+            DialogResult = DialogResult.No
+        End If
         ContractInfo.Multiplier = If(MultiplierText.Text = "", 1, CInt(MultiplierText.Text))
         ContractInfo.Exchange = ExchangeText.Text.ToUpper
         ContractInfo.PrimaryExch = PrimaryExchangeText.Text.ToUpper
@@ -1618,9 +1634,15 @@ Friend Class FOrder
         ContractInfo.TradingClass = TradingClassText.Text.ToUpper
 
         OrderInfo.OrderId = CInt(OrderIdText.Text)
-        OrderInfo.Action = IBAPI.OrderActions.Parse(ActionText.Text, ignoreCase:=True)
+        If Not IBAPI.OrderActions.TryParse(ActionText.Text, OrderInfo.Action, ignoreCase:=True) Then
+            mErrorsText.DisplayMessage($"Invalid order action - must be one of {String.Join(", ", IBAPI.OrderActions.ExternalNames)}")
+            DialogResult = DialogResult.No
+        End If
         OrderInfo.TotalQuantity = CDbl(QuantityText.Text)
-        OrderInfo.OrderType = IBAPI.OrderTypes.Parse(OrderTypeText.Text, ignoreCase:=True)
+        If Not IBAPI.OrderTypes.TryParse(OrderTypeText.Text, OrderInfo.OrderType, ignoreCase:=True) Then
+            mErrorsText.DisplayMessage($"Invalid order type - must be one of {String.Join(", ", IBAPI.OrderTypes.ExternalNames)}")
+            DialogResult = DialogResult.No
+        End If
         OrderInfo.LmtPrice = dval(LimitPriceText.Text)
         OrderInfo.AuxPrice = dval(AuxPriceText.Text)
         OrderInfo.CashQty = dval(CashQtyText.Text)
@@ -1635,12 +1657,11 @@ Friend Class FOrder
 
         mMarketDataType = MarketDataTypeCombo.SelectedIndex + 1
 
-        DialogResult = Windows.Forms.DialogResult.OK
         Hide()
     End Sub
 
     Private Sub cancelButton_Click(sender As Object, e As EventArgs) Handles CancelItButton.Click
-        DialogResult = Windows.Forms.DialogResult.Cancel
+        DialogResult = DialogResult.Cancel
         Hide()
     End Sub
 

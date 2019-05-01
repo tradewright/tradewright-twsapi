@@ -11,7 +11,7 @@ Friend Class FExecFilter
     Public Sub New()
         MyBase.New()
         'This call is required by the Windows Form Designer.
-        initializeComponent()
+        InitializeComponent()
     End Sub
     'Form overrides dispose to clean up the component list.
     Protected Overloads Overrides Sub Dispose(Disposing As Boolean)
@@ -360,6 +360,7 @@ Friend Class FExecFilter
 
     End Sub
 #End Region
+
     ' ========================================================
     ' Member variables
     ' ========================================================
@@ -399,7 +400,7 @@ Friend Class FExecFilter
 
             ClientIdText.Text = .ClientID
             AcctCodeText.Text = .AccountCode
-            TimeText.Text = .Time
+            TimeText.Text = If(.Time = Date.MaxValue, "", CStr(.Time))
             SymbolText.Text = .Symbol
             SecTypeText.Text = IBAPI.SecurityTypes.ToExternalString(.SecType)
             ExchangeText.Text = .Exchange
@@ -419,11 +420,11 @@ Friend Class FExecFilter
 
             .ClientID = Text2Int(ClientIdText.Text)
             .AccountCode = AcctCodeText.Text
-            .Time = TimeText.Text
+            .Time = If(TimeText.Text = "", Date.MaxValue, CDate(TimeText.Text))
             .Symbol = SymbolText.Text
-            .SecType = IBAPI.SecurityTypes.Parse(SecTypeText.Text)
+            .SecType = IBAPI.SecurityTypes.Parse(SecTypeText.Text, True)
             .Exchange = ExchangeText.Text
-            .Action = IBAPI.OrderActions.Parse(ActionText.Text)
+            .Action = IBAPI.OrderActions.Parse(ActionText.Text, True)
 
         End With
 

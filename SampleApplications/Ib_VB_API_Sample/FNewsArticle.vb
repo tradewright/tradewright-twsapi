@@ -361,7 +361,7 @@ Friend Class FNewsArticle
     Private Sub selectFolderDialogButton_Click(sender As Object, e As EventArgs) Handles SelectFolderDialogButton.Click
         Dim f As New FolderBrowserDialog With {.SelectedPath = ReqNewsArticlePathText.Text}
 
-        If f.ShowDialog <> Windows.Forms.DialogResult.OK Then
+        If f.ShowDialog <> DialogResult.OK Then
             Return
         End If
 

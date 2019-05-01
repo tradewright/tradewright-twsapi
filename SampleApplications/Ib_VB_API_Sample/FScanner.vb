@@ -960,7 +960,7 @@ Friend Class FScanner
 
     Private Sub subscribeButton_Click(sender As Object, e As EventArgs) Handles SubscribeButton.Click
         populateSubscription()
-        mMainWnd.Api.RequestScannerSubscription(mId, mSubscription)      ', mScannerSubscriptionOptions)
+        mMainWnd.Api.RequestScannerSubscription(mId, mSubscription, mOptions, mFilterOptions)
         Hide()
     End Sub
 

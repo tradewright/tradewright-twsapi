@@ -64,48 +64,48 @@ Friend Class FGroups
     ''--------------------------------------------------------------------------------
     '' subscribe to group events
     ''--------------------------------------------------------------------------------
-    'private sub SubscribeToGroupEventsButton_Click(sender As System.Object, e As System.EventArgs) Handles SubscribeToGroupEventsButton.Click
+    Private Sub SubscribeToGroupEventsButton_Click(sender As System.Object, e As System.EventArgs) Handles SubscribeToGroupEventsButton.Click
 
-    '    Dim groupId = CInt(comboDisplayGroups.Text)
+        Dim groupId = CInt(comboDisplayGroups.Text)
 
-    '    Dim reqId = CInt(textId.Text)
+        Dim reqId = CInt(textId.Text)
 
-    '    mGroupMessagesText.DisplayMessage("Subscribing to group events (reqId=" & reqId & " groupId=" & groupId & ") ...")
+        mGroupMessagesText.DisplayMessage("Subscribing to group events (reqId=" & reqId & " groupId=" & groupId & ") ...")
 
-    '    ' enable this after removing of temp code
-    '    mMainWnd.Api.subscribeToGroupEvents(reqId, groupId)
+        ' enable this after removing of temp code
+        mMainWnd.Api.SubscribeToGroupEvents(reqId, groupId)
 
-    'End Sub
+    End Sub
 
     ''--------------------------------------------------------------------------------
     '' unsubscribe from group events
     ''--------------------------------------------------------------------------------
-    'private sub unsubscribeFromGroupEventsButton_Click(sender As System.Object, e As System.EventArgs) Handles UnsubscribeFromGroupEventsButton.Click
+    Private Sub unsubscribeFromGroupEventsButton_Click(sender As System.Object, e As System.EventArgs) Handles UnsubscribeFromGroupEventsButton.Click
 
-    '    Dim reqId = CInt(textId.Text)
+        Dim reqId = CInt(textId.Text)
 
-    '    mGroupMessagesText.DisplayMessage("Unsubscribing from group events (reqId=" & reqId & ") ...")
+        mGroupMessagesText.DisplayMessage("Unsubscribing from group events (reqId=" & reqId & ") ...")
 
-    '    mMainWnd.Api.unsubscribeFromGroupEvents(reqId)
+        mMainWnd.Api.UnsubscribeFromGroupEvents(reqId)
 
-    'End Sub
+    End Sub
 
     ''--------------------------------------------------------------------------------
     '' update display group
     ''--------------------------------------------------------------------------------
-    'private sub updateDisplayGroupButton_Click(sender As System.Object, e As System.EventArgs) Handles UpdateDisplayGroupButton.Click
-    '    Dim contractInfo = textContractInfo.Text
-    '    Dim reqId = CInt(textId.Text)
+    Private Sub updateDisplayGroupButton_Click(sender As System.Object, e As System.EventArgs) Handles UpdateDisplayGroupButton.Click
+        Dim contractInfo = textContractInfo.Text
+        Dim reqId = CInt(textId.Text)
 
-    '    If (contractInfo.Length > 0) Then
+        If (contractInfo.Length > 0) Then
 
-    '        mGroupMessagesText.DisplayMessage("Updating display group (reqId=" & reqId & " contractInfo=" & contractInfo & ") ...")
+            mGroupMessagesText.DisplayMessage("Updating display group (reqId=" & reqId & " contractInfo=" & contractInfo & ") ...")
 
-    '        mMainWnd.Api.updateDisplayGroup(reqId, contractInfo)
+            mMainWnd.Api.UpdateDisplayGroup(reqId, contractInfo)
 
-    '    End If
+        End If
 
-    'End Sub
+    End Sub
 
     '================================================================================
     ' Events

@@ -3,20 +3,17 @@
 Friend Class SocketLogListener
     Implements ILogListener
 
-    Private WithEvents Logger As TradeWright.Utilities.Logging.Logger
-
     Private mLogText As TextBox
 
     Friend Sub New(logText As TextBox)
         mLogText = logText
     End Sub
 
-    Public Sub ILogListener_Initialise(logger As TradeWright.Utilities.Logging.Logger, synchronized As Boolean) Implements ILogListener.Initialise
-        Me.Logger = logger
+    Public Sub ILogListener_Initialise(infoType As String, synchronized As Boolean) Implements ILogListener.Initialise
     End Sub
 
-    Private Sub logRecord(sender As Object, e As LogRecordEventArgs) Handles Logger.LogRecord
-        mLogText.AppendText($"{e.LogRecord.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.LogRecord.Data.ToString}{Environment.NewLine}")
+    Private Sub logRecord(logRecord As LogRecord) Implements ILogListener.LogRecord
+        mLogText.AppendText($"{logRecord.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  {logRecord.Data.ToString}{Environment.NewLine}")
     End Sub
 
 #Region "IDisposable Support"

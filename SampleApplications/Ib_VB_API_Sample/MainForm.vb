@@ -10,7 +10,7 @@ Imports System.Collections.Generic
 Imports TradeWright.IBAPI
 Imports TradeWright.Utilities.DataStorage
 Imports TradeWright.Utilities.Logging
-Imports TradeWright.Utilities.Themes
+Imports TradeWright.UI.Themes
 Imports System.ComponentModel
 
 Friend Class MainForm
@@ -36,14 +36,14 @@ Friend Class MainForm
     Public WithEvents ReqNewsButton As System.Windows.Forms.Button
     Public WithEvents ReqAcctDataButton As System.Windows.Forms.Button
     Public WithEvents ReqExecutionsButton As System.Windows.Forms.Button
-    Public WithEvents ClearFormButton As TradeWright.Utilities.Themes.ThemedButton1
+    Public WithEvents ClearFormButton As TradeWright.UI.Themes.ThemedButton1
     Public WithEvents CancelMktDepthButton As System.Windows.Forms.Button
     Public WithEvents PlaceOrderButton As System.Windows.Forms.Button
     Public WithEvents CancelOrderButton As System.Windows.Forms.Button
     Public WithEvents ExtendedOrderAtribsButton As System.Windows.Forms.Button
     Public WithEvents ReqContractDataButton As System.Windows.Forms.Button
     Public WithEvents ReqOpenOrdersButton As System.Windows.Forms.Button
-    Public WithEvents ConnectDisconnectButton As TradeWright.Utilities.Themes.ThemedButton1
+    Public WithEvents ConnectDisconnectButton As TradeWright.UI.Themes.ThemedButton1
     Public WithEvents ReqAcctsButton As System.Windows.Forms.Button
     Public WithEvents ExerciseOptionsButton As System.Windows.Forms.Button
     Public WithEvents CancelHistDataButton As System.Windows.Forms.Button
@@ -72,7 +72,6 @@ Friend Class MainForm
     Friend WithEvents FamilyCodesButton As System.Windows.Forms.Button
     Friend WithEvents ReqMatchingSymbolsButton As System.Windows.Forms.Button
     Friend WithEvents ReqMktDepthExchangesButton As System.Windows.Forms.Button
-    Public WithEvents PauseAPIButton As TradeWright.Utilities.Themes.ThemedButton1
     Friend WithEvents ReqTickByTickButton As Button
     Friend WithEvents ReqHistoricalTicksButton As Button
     Friend WithEvents ReqPnlSingleButton As Button
@@ -91,10 +90,6 @@ Friend Class MainForm
     Friend WithEvents SplitContainer3 As SplitContainer
     Private WithEvents ConnectionStatusLabel As Label
     Friend WithEvents SplitContainer4 As SplitContainer
-    Private WithEvents ClientIdText As TextBox
-    Private WithEvents Label15 As New System.Windows.Forms.Label()
-    Private WithEvents PortText As TextBox
-    Private WithEvents Label14 As Label
     Private WithEvents Label13 As Label
     Friend WithEvents DisplaySocketDataCheck As CheckBox
     Friend WithEvents UseQueueingCheck As CheckBox
@@ -116,9 +111,18 @@ Friend Class MainForm
     Friend WithEvents TableLayoutPanel5 As TableLayoutPanel
     Friend WithEvents TableLayoutPanel6 As TableLayoutPanel
     Friend WithEvents TopPanel As TableLayoutPanel
-    Friend WithEvents ServerText As TextBox
     Friend WithEvents TopPanelCheckboxesSite As TableLayoutPanel
     Friend WithEvents SplitContainer2 As SplitContainer
+    Friend WithEvents ApiDetailsPanel As TableLayoutPanel
+    Private WithEvents Label15 As Label
+    Private WithEvents Label14 As Label
+    Private WithEvents ClientIdText As TextBox
+    Friend WithEvents ServerText As TextBox
+    Private WithEvents PortText As TextBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents DisplayApiMessageStatisticsCheck As CheckBox
+    Friend WithEvents DisplaySocketMessagesCheck As CheckBox
+    Public WithEvents PauseAPIButton As ThemedButton1
     Public WithEvents ScannerButton As System.Windows.Forms.Button
 
     'NOTE: The following procedure is required by the Windows Form Designer
@@ -135,14 +139,14 @@ Friend Class MainForm
         Me.ReqNewsButton = New System.Windows.Forms.Button()
         Me.ReqAcctDataButton = New System.Windows.Forms.Button()
         Me.ReqExecutionsButton = New System.Windows.Forms.Button()
-        Me.ClearFormButton = New TradeWright.Utilities.Themes.ThemedButton1()
+        Me.ClearFormButton = New TradeWright.UI.Themes.ThemedButton1()
         Me.CancelMktDepthButton = New System.Windows.Forms.Button()
         Me.PlaceOrderButton = New System.Windows.Forms.Button()
         Me.CancelOrderButton = New System.Windows.Forms.Button()
         Me.ExtendedOrderAtribsButton = New System.Windows.Forms.Button()
         Me.ReqContractDataButton = New System.Windows.Forms.Button()
         Me.ReqOpenOrdersButton = New System.Windows.Forms.Button()
-        Me.ConnectDisconnectButton = New TradeWright.Utilities.Themes.ThemedButton1()
+        Me.ConnectDisconnectButton = New TradeWright.UI.Themes.ThemedButton1()
         Me.ExerciseOptionsButton = New System.Windows.Forms.Button()
         Me.CancelHistDataButton = New System.Windows.Forms.Button()
         Me.ScannerButton = New System.Windows.Forms.Button()
@@ -171,7 +175,6 @@ Friend Class MainForm
         Me.FamilyCodesButton = New System.Windows.Forms.Button()
         Me.ReqMatchingSymbolsButton = New System.Windows.Forms.Button()
         Me.ReqMktDepthExchangesButton = New System.Windows.Forms.Button()
-        Me.PauseAPIButton = New TradeWright.Utilities.Themes.ThemedButton1()
         Me.ReqTickByTickButton = New System.Windows.Forms.Button()
         Me.ReqHistoricalTicksButton = New System.Windows.Forms.Button()
         Me.ReqPnlSingleButton = New System.Windows.Forms.Button()
@@ -196,27 +199,32 @@ Friend Class MainForm
         Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.ServerResponsesText = New System.Windows.Forms.TextBox()
-        Me.ThemedLabel11 = New TradeWright.Utilities.Themes.ThemedLabel1()
+        Me.ThemedLabel11 = New TradeWright.UI.Themes.ThemedLabel1()
         Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
         Me.MarketDataText = New System.Windows.Forms.TextBox()
-        Me.Label4 = New TradeWright.Utilities.Themes.ThemedLabel1()
+        Me.Label4 = New TradeWright.UI.Themes.ThemedLabel1()
         Me.SplitContainer4 = New System.Windows.Forms.SplitContainer()
         Me.TableLayoutPanel4 = New System.Windows.Forms.TableLayoutPanel()
         Me.ErrorsText = New System.Windows.Forms.TextBox()
-        Me.Label2 = New TradeWright.Utilities.Themes.ThemedLabel1()
+        Me.Label2 = New TradeWright.UI.Themes.ThemedLabel1()
         Me.TableLayoutPanel5 = New System.Windows.Forms.TableLayoutPanel()
         Me.SocketLogText = New System.Windows.Forms.TextBox()
-        Me.Label1 = New TradeWright.Utilities.Themes.ThemedLabel1()
+        Me.Label1 = New TradeWright.UI.Themes.ThemedLabel1()
         Me.TopPanel = New System.Windows.Forms.TableLayoutPanel()
+        Me.PauseAPIButton = New TradeWright.UI.Themes.ThemedButton1()
         Me.TopPanelCheckboxesSite = New System.Windows.Forms.TableLayoutPanel()
+        Me.DisplayApiMessageStatisticsCheck = New System.Windows.Forms.CheckBox()
+        Me.DisplaySocketMessagesCheck = New System.Windows.Forms.CheckBox()
         Me.UseQueueingCheck = New System.Windows.Forms.CheckBox()
         Me.DisplaySocketDataCheck = New System.Windows.Forms.CheckBox()
-        Me.ClientIdText = New System.Windows.Forms.TextBox()
-        Me.Label15 = New System.Windows.Forms.Label()
-        Me.PortText = New System.Windows.Forms.TextBox()
-        Me.Label14 = New System.Windows.Forms.Label()
-        Me.ServerText = New System.Windows.Forms.TextBox()
         Me.Label13 = New System.Windows.Forms.Label()
+        Me.ApiDetailsPanel = New System.Windows.Forms.TableLayoutPanel()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.ClientIdText = New System.Windows.Forms.TextBox()
+        Me.ServerText = New System.Windows.Forms.TextBox()
+        Me.PortText = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.TableLayoutPanel6 = New System.Windows.Forms.TableLayoutPanel()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -241,6 +249,7 @@ Friend Class MainForm
         Me.TableLayoutPanel5.SuspendLayout()
         Me.TopPanel.SuspendLayout()
         Me.TopPanelCheckboxesSite.SuspendLayout()
+        Me.ApiDetailsPanel.SuspendLayout()
         Me.TableLayoutPanel6.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -347,9 +356,9 @@ Friend Class MainForm
         '
         Me.ClearFormButton.AutoSize = True
         Me.ClearFormButton.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ClearFormButton.Location = New System.Drawing.Point(696, 3)
+        Me.ClearFormButton.Location = New System.Drawing.Point(556, 3)
         Me.ClearFormButton.Name = "ClearFormButton"
-        Me.ClearFormButton.Size = New System.Drawing.Size(89, 35)
+        Me.ClearFormButton.Size = New System.Drawing.Size(89, 70)
         Me.ClearFormButton.TabIndex = 5
         Me.ClearFormButton.Text = "Clear data"
         '
@@ -425,8 +434,8 @@ Friend Class MainForm
         Me.ConnectDisconnectButton.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ConnectDisconnectButton.Location = New System.Drawing.Point(3, 3)
         Me.ConnectDisconnectButton.Name = "ConnectDisconnectButton"
-        Me.ConnectDisconnectButton.Size = New System.Drawing.Size(113, 35)
-        Me.ConnectDisconnectButton.TabIndex = 4
+        Me.ConnectDisconnectButton.Size = New System.Drawing.Size(113, 70)
+        Me.ConnectDisconnectButton.TabIndex = 1
         Me.ConnectDisconnectButton.Text = "#"
         '
         'ExerciseOptionsButton
@@ -737,17 +746,6 @@ Friend Class MainForm
         Me.ReqMktDepthExchangesButton.TabIndex = 45
         Me.ReqMktDepthExchangesButton.Text = "Req Mkt Depth Exch"
         '
-        'PauseAPIButton
-        '
-        Me.PauseAPIButton.AutoSize = True
-        Me.PauseAPIButton.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.PauseAPIButton.Enabled = False
-        Me.PauseAPIButton.Location = New System.Drawing.Point(791, 3)
-        Me.PauseAPIButton.Name = "PauseAPIButton"
-        Me.PauseAPIButton.Size = New System.Drawing.Size(89, 35)
-        Me.PauseAPIButton.TabIndex = 6
-        Me.PauseAPIButton.Text = "Pause API"
-        '
         'ReqTickByTickButton
         '
         Me.ReqTickByTickButton.AutoSize = True
@@ -909,7 +907,7 @@ Friend Class MainForm
         Me.ConnectionStatusLabel.BackColor = System.Drawing.Color.Transparent
         Me.ConnectionStatusLabel.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ConnectionStatusLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(19, Byte), Integer), CType(CType(146, Byte), Integer), CType(CType(18, Byte), Integer))
-        Me.ConnectionStatusLabel.Location = New System.Drawing.Point(1066, 12)
+        Me.ConnectionStatusLabel.Location = New System.Drawing.Point(1163, 29)
         Me.ConnectionStatusLabel.Name = "ConnectionStatusLabel"
         Me.ConnectionStatusLabel.Size = New System.Drawing.Size(98, 17)
         Me.ConnectionStatusLabel.TabIndex = 57
@@ -922,7 +920,7 @@ Friend Class MainForm
         Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
         Me.SplitContainer1.IsSplitterFixed = True
-        Me.SplitContainer1.Location = New System.Drawing.Point(0, 41)
+        Me.SplitContainer1.Location = New System.Drawing.Point(0, 76)
         Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(0)
         Me.SplitContainer1.Name = "SplitContainer1"
         '
@@ -933,7 +931,7 @@ Friend Class MainForm
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.SplitContainer2)
-        Me.SplitContainer1.Size = New System.Drawing.Size(1167, 839)
+        Me.SplitContainer1.Size = New System.Drawing.Size(1264, 909)
         Me.SplitContainer1.SplitterDistance = 320
         Me.SplitContainer1.TabIndex = 1
         Me.SplitContainer1.TabStop = False
@@ -1042,7 +1040,7 @@ Friend Class MainForm
         Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.ButtonsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.ButtonsPanel.Size = New System.Drawing.Size(320, 839)
+        Me.ButtonsPanel.Size = New System.Drawing.Size(320, 909)
         Me.ButtonsPanel.TabIndex = 0
         '
         'ReqMktDataButton
@@ -1092,8 +1090,8 @@ Friend Class MainForm
         'SplitContainer2.Panel2
         '
         Me.SplitContainer2.Panel2.Controls.Add(Me.SplitContainer4)
-        Me.SplitContainer2.Size = New System.Drawing.Size(843, 839)
-        Me.SplitContainer2.SplitterDistance = 552
+        Me.SplitContainer2.Size = New System.Drawing.Size(940, 909)
+        Me.SplitContainer2.SplitterDistance = 598
         Me.SplitContainer2.TabIndex = 0
         '
         'SplitContainer3
@@ -1111,8 +1109,8 @@ Friend Class MainForm
         'SplitContainer3.Panel2
         '
         Me.SplitContainer3.Panel2.Controls.Add(Me.TableLayoutPanel3)
-        Me.SplitContainer3.Size = New System.Drawing.Size(843, 552)
-        Me.SplitContainer3.SplitterDistance = 400
+        Me.SplitContainer3.Size = New System.Drawing.Size(940, 598)
+        Me.SplitContainer3.SplitterDistance = 446
         Me.SplitContainer3.TabIndex = 0
         '
         'TableLayoutPanel2
@@ -1127,7 +1125,7 @@ Friend Class MainForm
         Me.TableLayoutPanel2.RowCount = 2
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(400, 552)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(446, 598)
         Me.TableLayoutPanel2.TabIndex = 0
         '
         'ServerResponsesText
@@ -1142,7 +1140,7 @@ Friend Class MainForm
         Me.ServerResponsesText.Multiline = True
         Me.ServerResponsesText.Name = "ServerResponsesText"
         Me.ServerResponsesText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.ServerResponsesText.Size = New System.Drawing.Size(400, 528)
+        Me.ServerResponsesText.Size = New System.Drawing.Size(446, 574)
         Me.ServerResponsesText.TabIndex = 1
         '
         'ThemedLabel11
@@ -1155,7 +1153,7 @@ Friend Class MainForm
         Me.ThemedLabel11.Margin = New System.Windows.Forms.Padding(0)
         Me.ThemedLabel11.Name = "ThemedLabel11"
         Me.ThemedLabel11.Padding = New System.Windows.Forms.Padding(0, 0, 0, 3)
-        Me.ThemedLabel11.Size = New System.Drawing.Size(400, 24)
+        Me.ThemedLabel11.Size = New System.Drawing.Size(446, 24)
         Me.ThemedLabel11.TabIndex = 0
         Me.ThemedLabel11.Text = "TWS Server Responses"
         Me.ThemedLabel11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1174,7 +1172,7 @@ Friend Class MainForm
         Me.TableLayoutPanel3.RowCount = 2
         Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel3.Size = New System.Drawing.Size(439, 552)
+        Me.TableLayoutPanel3.Size = New System.Drawing.Size(490, 598)
         Me.TableLayoutPanel3.TabIndex = 0
         '
         'MarketDataText
@@ -1189,7 +1187,7 @@ Friend Class MainForm
         Me.MarketDataText.Multiline = True
         Me.MarketDataText.Name = "MarketDataText"
         Me.MarketDataText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.MarketDataText.Size = New System.Drawing.Size(439, 528)
+        Me.MarketDataText.Size = New System.Drawing.Size(490, 574)
         Me.MarketDataText.TabIndex = 1
         '
         'Label4
@@ -1202,7 +1200,7 @@ Friend Class MainForm
         Me.Label4.Margin = New System.Windows.Forms.Padding(0)
         Me.Label4.Name = "Label4"
         Me.Label4.Padding = New System.Windows.Forms.Padding(0, 0, 0, 3)
-        Me.Label4.Size = New System.Drawing.Size(439, 24)
+        Me.Label4.Size = New System.Drawing.Size(490, 24)
         Me.Label4.TabIndex = 0
         Me.Label4.Text = "Market && Historical Data"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1220,8 +1218,8 @@ Friend Class MainForm
         'SplitContainer4.Panel2
         '
         Me.SplitContainer4.Panel2.Controls.Add(Me.TableLayoutPanel5)
-        Me.SplitContainer4.Size = New System.Drawing.Size(843, 283)
-        Me.SplitContainer4.SplitterDistance = 400
+        Me.SplitContainer4.Size = New System.Drawing.Size(940, 307)
+        Me.SplitContainer4.SplitterDistance = 404
         Me.SplitContainer4.TabIndex = 0
         '
         'TableLayoutPanel4
@@ -1237,7 +1235,7 @@ Friend Class MainForm
         Me.TableLayoutPanel4.RowCount = 2
         Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel4.Size = New System.Drawing.Size(400, 283)
+        Me.TableLayoutPanel4.Size = New System.Drawing.Size(404, 307)
         Me.TableLayoutPanel4.TabIndex = 0
         '
         'ErrorsText
@@ -1252,7 +1250,7 @@ Friend Class MainForm
         Me.ErrorsText.Multiline = True
         Me.ErrorsText.Name = "ErrorsText"
         Me.ErrorsText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.ErrorsText.Size = New System.Drawing.Size(400, 259)
+        Me.ErrorsText.Size = New System.Drawing.Size(404, 283)
         Me.ErrorsText.TabIndex = 1
         '
         'Label2
@@ -1265,7 +1263,7 @@ Friend Class MainForm
         Me.Label2.Margin = New System.Windows.Forms.Padding(0)
         Me.Label2.Name = "Label2"
         Me.Label2.Padding = New System.Windows.Forms.Padding(0, 0, 0, 3)
-        Me.Label2.Size = New System.Drawing.Size(400, 24)
+        Me.Label2.Size = New System.Drawing.Size(404, 24)
         Me.Label2.TabIndex = 0
         Me.Label2.Text = "Errors and Notifications"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1283,7 +1281,7 @@ Friend Class MainForm
         Me.TableLayoutPanel5.RowCount = 2
         Me.TableLayoutPanel5.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel5.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel5.Size = New System.Drawing.Size(439, 283)
+        Me.TableLayoutPanel5.Size = New System.Drawing.Size(532, 307)
         Me.TableLayoutPanel5.TabIndex = 0
         '
         'SocketLogText
@@ -1299,7 +1297,7 @@ Friend Class MainForm
         Me.SocketLogText.Multiline = True
         Me.SocketLogText.Name = "SocketLogText"
         Me.SocketLogText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.SocketLogText.Size = New System.Drawing.Size(439, 259)
+        Me.SocketLogText.Size = New System.Drawing.Size(532, 283)
         Me.SocketLogText.TabIndex = 1
         '
         'Label1
@@ -1312,7 +1310,7 @@ Friend Class MainForm
         Me.Label1.Margin = New System.Windows.Forms.Padding(0)
         Me.Label1.Name = "Label1"
         Me.Label1.Padding = New System.Windows.Forms.Padding(0, 0, 0, 3)
-        Me.Label1.Size = New System.Drawing.Size(439, 24)
+        Me.Label1.Size = New System.Drawing.Size(532, 24)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Socket Messages"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1324,64 +1322,101 @@ Friend Class MainForm
         Me.TopPanel.AutoSize = True
         Me.TopPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.TopPanel.BackColor = System.Drawing.Color.Gainsboro
-        Me.TopPanel.ColumnCount = 12
+        Me.TopPanel.ColumnCount = 8
         Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150.0!))
         Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150.0!))
-        Me.TopPanel.Controls.Add(Me.ConnectionStatusLabel, 11, 0)
-        Me.TopPanel.Controls.Add(Me.PauseAPIButton, 9, 0)
-        Me.TopPanel.Controls.Add(Me.ClearFormButton, 8, 0)
-        Me.TopPanel.Controls.Add(Me.TopPanelCheckboxesSite, 7, 0)
-        Me.TopPanel.Controls.Add(Me.ClientIdText, 6, 0)
-        Me.TopPanel.Controls.Add(Me.Label15, 5, 0)
-        Me.TopPanel.Controls.Add(Me.PortText, 4, 0)
-        Me.TopPanel.Controls.Add(Me.Label14, 3, 0)
-        Me.TopPanel.Controls.Add(Me.ServerText, 2, 0)
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TopPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TopPanel.Controls.Add(Me.ConnectionStatusLabel, 7, 0)
+        Me.TopPanel.Controls.Add(Me.PauseAPIButton, 5, 0)
+        Me.TopPanel.Controls.Add(Me.ClearFormButton, 4, 0)
+        Me.TopPanel.Controls.Add(Me.TopPanelCheckboxesSite, 3, 0)
         Me.TopPanel.Controls.Add(Me.Label13, 1, 0)
         Me.TopPanel.Controls.Add(Me.ConnectDisconnectButton, 0, 0)
+        Me.TopPanel.Controls.Add(Me.ApiDetailsPanel, 2, 0)
         Me.TopPanel.Location = New System.Drawing.Point(0, 0)
         Me.TopPanel.Margin = New System.Windows.Forms.Padding(0)
         Me.TopPanel.Name = "TopPanel"
         Me.TopPanel.RowCount = 1
         Me.TopPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TopPanel.Size = New System.Drawing.Size(1167, 41)
+        Me.TopPanel.Size = New System.Drawing.Size(1264, 76)
         Me.TopPanel.TabIndex = 0
+        '
+        'PauseAPIButton
+        '
+        Me.PauseAPIButton.AutoSize = True
+        Me.PauseAPIButton.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.PauseAPIButton.Enabled = False
+        Me.PauseAPIButton.Location = New System.Drawing.Point(651, 3)
+        Me.PauseAPIButton.Name = "PauseAPIButton"
+        Me.PauseAPIButton.Size = New System.Drawing.Size(89, 70)
+        Me.PauseAPIButton.TabIndex = 6
+        Me.PauseAPIButton.Text = "Pause API"
         '
         'TopPanelCheckboxesSite
         '
-        Me.TopPanelCheckboxesSite.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.TopPanelCheckboxesSite.AutoSize = True
         Me.TopPanelCheckboxesSite.ColumnCount = 1
         Me.TopPanelCheckboxesSite.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TopPanelCheckboxesSite.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-        Me.TopPanelCheckboxesSite.Controls.Add(Me.UseQueueingCheck, 0, 1)
+        Me.TopPanelCheckboxesSite.Controls.Add(Me.DisplayApiMessageStatisticsCheck, 0, 2)
+        Me.TopPanelCheckboxesSite.Controls.Add(Me.DisplaySocketMessagesCheck, 0, 1)
+        Me.TopPanelCheckboxesSite.Controls.Add(Me.UseQueueingCheck, 0, 3)
         Me.TopPanelCheckboxesSite.Controls.Add(Me.DisplaySocketDataCheck, 0, 0)
-        Me.TopPanelCheckboxesSite.Location = New System.Drawing.Point(478, 1)
+        Me.TopPanelCheckboxesSite.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TopPanelCheckboxesSite.Location = New System.Drawing.Point(338, 0)
         Me.TopPanelCheckboxesSite.Margin = New System.Windows.Forms.Padding(0)
         Me.TopPanelCheckboxesSite.Name = "TopPanelCheckboxesSite"
-        Me.TopPanelCheckboxesSite.RowCount = 2
+        Me.TopPanelCheckboxesSite.RowCount = 4
         Me.TopPanelCheckboxesSite.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TopPanelCheckboxesSite.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TopPanelCheckboxesSite.Size = New System.Drawing.Size(215, 38)
+        Me.TopPanelCheckboxesSite.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TopPanelCheckboxesSite.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TopPanelCheckboxesSite.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.TopPanelCheckboxesSite.Size = New System.Drawing.Size(215, 76)
         Me.TopPanelCheckboxesSite.TabIndex = 3
+        '
+        'DisplayApiMessageStatisticsCheck
+        '
+        Me.DisplayApiMessageStatisticsCheck.AutoSize = True
+        Me.DisplayApiMessageStatisticsCheck.FlatAppearance.BorderSize = 0
+        Me.DisplayApiMessageStatisticsCheck.Location = New System.Drawing.Point(3, 38)
+        Me.DisplayApiMessageStatisticsCheck.Margin = New System.Windows.Forms.Padding(3, 0, 3, 0)
+        Me.DisplayApiMessageStatisticsCheck.Name = "DisplayApiMessageStatisticsCheck"
+        Me.DisplayApiMessageStatisticsCheck.Size = New System.Drawing.Size(149, 19)
+        Me.DisplayApiMessageStatisticsCheck.TabIndex = 2
+        Me.DisplayApiMessageStatisticsCheck.Text = "Display socket statistics"
+        Me.DisplayApiMessageStatisticsCheck.UseVisualStyleBackColor = False
+        '
+        'DisplaySocketMessagesCheck
+        '
+        Me.DisplaySocketMessagesCheck.AutoSize = True
+        Me.DisplaySocketMessagesCheck.Checked = True
+        Me.DisplaySocketMessagesCheck.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.DisplaySocketMessagesCheck.FlatAppearance.BorderSize = 0
+        Me.DisplaySocketMessagesCheck.Location = New System.Drawing.Point(3, 19)
+        Me.DisplaySocketMessagesCheck.Margin = New System.Windows.Forms.Padding(3, 0, 3, 0)
+        Me.DisplaySocketMessagesCheck.Name = "DisplaySocketMessagesCheck"
+        Me.DisplaySocketMessagesCheck.Size = New System.Drawing.Size(155, 19)
+        Me.DisplaySocketMessagesCheck.TabIndex = 1
+        Me.DisplaySocketMessagesCheck.Text = "Display socket messages"
+        Me.DisplaySocketMessagesCheck.UseVisualStyleBackColor = False
         '
         'UseQueueingCheck
         '
         Me.UseQueueingCheck.AutoSize = True
-        Me.UseQueueingCheck.Location = New System.Drawing.Point(3, 19)
+        Me.UseQueueingCheck.Location = New System.Drawing.Point(3, 57)
         Me.UseQueueingCheck.Margin = New System.Windows.Forms.Padding(3, 0, 3, 0)
         Me.UseQueueingCheck.Name = "UseQueueingCheck"
         Me.UseQueueingCheck.Size = New System.Drawing.Size(209, 19)
-        Me.UseQueueingCheck.TabIndex = 1
+        Me.UseQueueingCheck.TabIndex = 3
         Me.UseQueueingCheck.Text = "Use the Queueing callback handler"
         Me.UseQueueingCheck.UseVisualStyleBackColor = True
         '
@@ -1394,61 +1429,10 @@ Friend Class MainForm
         Me.DisplaySocketDataCheck.Location = New System.Drawing.Point(3, 0)
         Me.DisplaySocketDataCheck.Margin = New System.Windows.Forms.Padding(3, 0, 3, 0)
         Me.DisplaySocketDataCheck.Name = "DisplaySocketDataCheck"
-        Me.DisplaySocketDataCheck.Size = New System.Drawing.Size(127, 19)
+        Me.DisplaySocketDataCheck.Size = New System.Drawing.Size(149, 19)
         Me.DisplaySocketDataCheck.TabIndex = 0
-        Me.DisplaySocketDataCheck.Text = "Display socket data"
+        Me.DisplaySocketDataCheck.Text = "Display socket raw data"
         Me.DisplaySocketDataCheck.UseVisualStyleBackColor = False
-        '
-        'ClientIdText
-        '
-        Me.ClientIdText.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.ClientIdText.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ClientIdText.Location = New System.Drawing.Point(409, 12)
-        Me.ClientIdText.Name = "ClientIdText"
-        Me.ClientIdText.Size = New System.Drawing.Size(66, 16)
-        Me.ClientIdText.TabIndex = 2
-        Me.ClientIdText.Text = "123"
-        '
-        'Label15
-        '
-        Me.Label15.AutoSize = True
-        Me.Label15.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label15.Location = New System.Drawing.Point(354, 0)
-        Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(49, 41)
-        Me.Label15.TabIndex = 62
-        Me.Label15.Text = "ClientID"
-        Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'PortText
-        '
-        Me.PortText.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.PortText.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.PortText.Location = New System.Drawing.Point(314, 12)
-        Me.PortText.Name = "PortText"
-        Me.PortText.Size = New System.Drawing.Size(34, 16)
-        Me.PortText.TabIndex = 1
-        Me.PortText.Text = "7496"
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label14.Location = New System.Drawing.Point(279, 0)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(29, 41)
-        Me.Label14.TabIndex = 61
-        Me.Label14.Text = "Port"
-        Me.Label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'ServerText
-        '
-        Me.ServerText.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.ServerText.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ServerText.Location = New System.Drawing.Point(188, 12)
-        Me.ServerText.Name = "ServerText"
-        Me.ServerText.Size = New System.Drawing.Size(85, 16)
-        Me.ServerText.TabIndex = 0
         '
         'Label13
         '
@@ -1456,10 +1440,93 @@ Friend Class MainForm
         Me.Label13.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Label13.Location = New System.Drawing.Point(122, 0)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(60, 41)
+        Me.Label13.Size = New System.Drawing.Size(63, 76)
         Me.Label13.TabIndex = 60
-        Me.Label13.Text = "API Server"
+        Me.Label13.Text = "API Details"
         Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'ApiDetailsPanel
+        '
+        Me.ApiDetailsPanel.ColumnCount = 2
+        Me.ApiDetailsPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
+        Me.ApiDetailsPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.0!))
+        Me.ApiDetailsPanel.Controls.Add(Me.Label15, 0, 2)
+        Me.ApiDetailsPanel.Controls.Add(Me.Label14, 0, 1)
+        Me.ApiDetailsPanel.Controls.Add(Me.ClientIdText, 1, 2)
+        Me.ApiDetailsPanel.Controls.Add(Me.ServerText, 1, 0)
+        Me.ApiDetailsPanel.Controls.Add(Me.PortText, 1, 1)
+        Me.ApiDetailsPanel.Controls.Add(Me.Label3, 0, 0)
+        Me.ApiDetailsPanel.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ApiDetailsPanel.Location = New System.Drawing.Point(191, 3)
+        Me.ApiDetailsPanel.Name = "ApiDetailsPanel"
+        Me.ApiDetailsPanel.RowCount = 3
+        Me.ApiDetailsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.0!))
+        Me.ApiDetailsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.0!))
+        Me.ApiDetailsPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 34.0!))
+        Me.ApiDetailsPanel.Size = New System.Drawing.Size(144, 70)
+        Me.ApiDetailsPanel.TabIndex = 0
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label15.Location = New System.Drawing.Point(3, 46)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(51, 24)
+        Me.Label15.TabIndex = 63
+        Me.Label15.Text = "ClientID"
+        Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label14.Location = New System.Drawing.Point(3, 23)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(51, 23)
+        Me.Label14.TabIndex = 62
+        Me.Label14.Text = "Port"
+        Me.Label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'ClientIdText
+        '
+        Me.ClientIdText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.ClientIdText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ClientIdText.Location = New System.Drawing.Point(60, 50)
+        Me.ClientIdText.Name = "ClientIdText"
+        Me.ClientIdText.Size = New System.Drawing.Size(66, 16)
+        Me.ClientIdText.TabIndex = 2
+        Me.ClientIdText.Text = "123"
+        '
+        'ServerText
+        '
+        Me.ServerText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.ServerText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ServerText.Location = New System.Drawing.Point(60, 3)
+        Me.ServerText.Name = "ServerText"
+        Me.ServerText.Size = New System.Drawing.Size(81, 16)
+        Me.ServerText.TabIndex = 0
+        '
+        'PortText
+        '
+        Me.PortText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.PortText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.PortText.Location = New System.Drawing.Point(60, 26)
+        Me.PortText.Name = "PortText"
+        Me.PortText.Size = New System.Drawing.Size(34, 16)
+        Me.PortText.TabIndex = 1
+        Me.PortText.Text = "7496"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label3.Location = New System.Drawing.Point(3, 0)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(51, 23)
+        Me.Label3.TabIndex = 5
+        Me.Label3.Text = "Server"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'TableLayoutPanel6
         '
@@ -1475,7 +1542,7 @@ Friend Class MainForm
         Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-        Me.TableLayoutPanel6.Size = New System.Drawing.Size(1167, 880)
+        Me.TableLayoutPanel6.Size = New System.Drawing.Size(1264, 985)
         Me.TableLayoutPanel6.TabIndex = 0
         '
         'MainForm
@@ -1484,7 +1551,7 @@ Friend Class MainForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.Gainsboro
-        Me.ClientSize = New System.Drawing.Size(1167, 880)
+        Me.ClientSize = New System.Drawing.Size(1264, 985)
         Me.Controls.Add(Me.TableLayoutPanel6)
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1524,6 +1591,8 @@ Friend Class MainForm
         Me.TopPanel.PerformLayout()
         Me.TopPanelCheckboxesSite.ResumeLayout(False)
         Me.TopPanelCheckboxesSite.PerformLayout()
+        Me.ApiDetailsPanel.ResumeLayout(False)
+        Me.ApiDetailsPanel.PerformLayout()
         Me.TableLayoutPanel6.ResumeLayout(False)
         Me.TableLayoutPanel6.PerformLayout()
         Me.ResumeLayout(False)
@@ -1544,7 +1613,11 @@ Friend Class MainForm
     Private mApiPaused As Boolean
     Private mClientId As Integer
 
-    ' data members
+    Private mMarketDataText As TextboxDisplayManager
+    Private mSocketDataText As TextboxDisplayManager
+    Private mServerResponsesText As TextboxDisplayManager
+    Private mErrorsText As TextboxDisplayManager
+
     Private mExecFilter As ExecutionFilter
     Private mMarketDataOptions As List(Of TagValue)
     Private mChartOptions As List(Of TagValue)
@@ -1552,9 +1625,10 @@ Friend Class MainForm
     Private mRealTimeBarsOptions As List(Of TagValue)
 
     Private mPnLForm As New FPnL
-    Private mOrderForm As New FOrder
+    Private mOrderForm As New FOrder()
     Private mMarketDepthForm As FMarketDepth
     Private mAccountDataForm As New FAcctData
+    Private mAccountUpdatesForm As New FAccountUpdates
     Private mNewsBulletinsForm As New FNewsBulletins
     Private mLogConfigForm As New FLogConfig
     Private mFinancialAdvisorForm As New FFinancialAdvisor
@@ -1576,11 +1650,6 @@ Friend Class MainForm
 
     Private mTheme As Theme
 
-    Private mMarketDataText As TextboxDisplayManager
-    Private mSocketDataText As TextboxDisplayManager
-    Private mServerResponsesText As TextboxDisplayManager
-    Private mErrorsText As TextboxDisplayManager
-
 #End Region
 
 #Region "Constructor"
@@ -1598,6 +1667,7 @@ Friend Class MainForm
         mTheme.ApplyTheme(Me.Controls)
         mTheme.ApplyTheme(mOrderForm.Controls)
         mTheme.ApplyTheme(mAccountDataForm.Controls)
+        mTheme.ApplyTheme(mAccountUpdatesForm.Controls)
         mTheme.ApplyTheme(mPnLForm.Controls)
         mTheme.ApplyTheme(mNewsBulletinsForm.Controls)
         mTheme.ApplyTheme(mLogConfigForm.Controls)
@@ -1639,11 +1709,13 @@ Friend Class MainForm
         mServerResponsesText = New TextboxDisplayManager(ServerResponsesText)
         mErrorsText = New TextboxDisplayManager(ErrorsText)
 
-        Logging.DefaultLogLevel = LogLevel.Normal
-        ApplicationDataPathUser = Application.UserAppDataPath
-        Logging.SetupDefaultLogging(True)
+        mOrderForm.Initialise(mErrorsText)
 
-        IBAPI.EventLogger = New Logger(New FormattingLogger("ibapi"))
+        Logging.DefaultLogLevel = LogLevel.Detail
+        ApplicationDataPathUser = Application.UserAppDataPath
+        Logging.SetupDefaultLogging(synchronized:=True)
+
+        IBAPI.EventLogger = New Logger(New FormattingLogger("ibapi", NameOf(IBAPI)))
         IBAPI.PerformanceLogger = New Logger(Logging.GetLogger("ibapi.perfdata"))
 
         IBAPI.SocketLogger = New Logger(Logging.GetLogger("ibapi.socketdata"))
@@ -2009,7 +2081,7 @@ Friend Class MainForm
 
         mOrderForm.ShowDialog()
         If mOrderForm.Ok Then
-            mApi.RequestContractData(mOrderForm.RequestId, mOrderForm.ContractInfo)
+            mApi.RequestContractData(mOrderForm.RequestId, mOrderForm.ContractInfo, mOrderForm.IncludeExpiredContracts)
         End If
     End Sub
 
@@ -2042,18 +2114,11 @@ Friend Class MainForm
     ' Requests account details
     '--------------------------------------------------------------------------------
     Private Sub reqAcctDataButton_Click(sender As Object, e As EventArgs) Handles ReqAcctDataButton.Click
-        Dim f As New FAccountUpdates
-        mTheme.ApplyTheme(FAccountUpdates.Controls)
-
-        f.ShowDialog()
-        If (f.Ok) Then
-            If f.Subscribe Then
-                mAccountDataForm.AccountDownloadBegin(f.AcctCode)
-            End If
-            mApi.RequestAccountData(CBool(f.Subscribe), f.AcctCode)
-            If CBool(f.Subscribe) Then
-                mAccountDataForm.ShowDialog()
-            End If
+        mAccountUpdatesForm.ShowDialog()
+        If (mAccountUpdatesForm.DialogResult = DialogResult.OK) Then
+            mAccountDataForm.AccountDownloadBegin(mAccountUpdatesForm.AccountCode, Sub() mApi.RequestAccountData(False, mAccountUpdatesForm.AccountCode))
+            mApi.RequestAccountData(True, mAccountUpdatesForm.AccountCode)
+            If Not mAccountDataForm.Visible Then mAccountDataForm.Show(Me)
         End If
     End Sub
 
@@ -2337,8 +2402,8 @@ Friend Class MainForm
         Dim f = New FSecDefOptParamsReq()
         mTheme.ApplyTheme(FSecDefOptParamsReq.Controls)
 
-        If f.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            mApi.RequestSecurityDefinitionOptionParams(f.ReqId, f.Symbol, f.Exchange, IBAPI.SecurityTypes.Parse(f.SecType), f.ConId)
+        If f.ShowDialog() = DialogResult.OK Then
+            mApi.RequestSecurityDefinitionOptionParams(f.ReqId, f.Symbol, f.Exchange, IBAPI.SecurityTypes.Parse(f.SecType, True), f.ConId)
         End If
     End Sub
 
@@ -2421,7 +2486,7 @@ Friend Class MainForm
     Private Sub reqTickByTickButton_Click(sender As Object, e As EventArgs) Handles ReqTickByTickButton.Click
         mOrderForm.Init(FOrder.OrderFormMode.RequestTickByTick, Nothing, Me)
 
-        If mOrderForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+        If mOrderForm.ShowDialog() = DialogResult.OK Then
             mApi.RequestTickByTickData(mOrderForm.RequestId, mOrderForm.ContractInfo, mOrderForm.TickByTickDataType, mOrderForm.NumberOfTicks, mOrderForm.IgnoreSize)
         End If
     End Sub
@@ -2429,7 +2494,7 @@ Friend Class MainForm
     Private Sub cancelTickByTickButton_Click(sender As Object, e As EventArgs) Handles CancelTickByTickButton.Click
         mOrderForm.Init(FOrder.OrderFormMode.CancelTickByTick, Nothing, Me)
 
-        If mOrderForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+        If mOrderForm.ShowDialog() = DialogResult.OK Then
             mApi.CancelTickByTickData(mOrderForm.RequestId)
         End If
     End Sub
@@ -2464,7 +2529,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub reqPnlButton_Click(sender As Object, e As EventArgs) Handles ReqPnlButton.Click
-        If mPnLForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+        If mPnLForm.ShowDialog() = DialogResult.OK Then
             mApi.RequestPnL(mPnLForm.ReqId, mPnLForm.Account, mPnLForm.ModelCode)
         End If
     End Sub
@@ -2474,7 +2539,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub reqPnlSingleButton_Click(sender As Object, e As EventArgs) Handles ReqPnlSingleButton.Click
-        If mPnLForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+        If mPnLForm.ShowDialog() = DialogResult.OK Then
             mApi.RequestPnLSingle(mPnLForm.ReqId, mPnLForm.Account, mPnLForm.ModelCode, mPnLForm.ConId)
         End If
     End Sub
@@ -2486,7 +2551,7 @@ Friend Class MainForm
     Private Sub reqHistoricalTicksButton_Click(sender As Object, e As EventArgs) Handles ReqHistoricalTicksButton.Click
         mOrderForm.Init(FOrder.OrderFormMode.RequestHistoricalTicks, mMarketDataOptions, Me)
 
-        If mOrderForm.ShowDialog() = Windows.Forms.DialogResult.OK Then
+        If mOrderForm.ShowDialog() = DialogResult.OK Then
             Dim r As New HistoricalTicksRequest With {.Contract = mOrderForm.ContractInfo,
                 .EndDateTime = mOrderForm.HistEndDateTime,
                 .EndTimezone = mOrderForm.HistEndTimezone,
@@ -2510,13 +2575,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub _AccountSummary(sender As Object, e As AccountSummaryEventArgs) Handles ApiEvents.AccountSummary
-        mServerResponsesText.DisplayMessage(" ---- Account Summary ----")
-        mServerResponsesText.DisplayMessage($"reqId={e.RequestId}")
-        mServerResponsesText.DisplayMessage($"account={e.Account}")
-        mServerResponsesText.DisplayMessage($"tag={e.Tag}")
-        mServerResponsesText.DisplayMessage($"value={e.Value}")
-        mServerResponsesText.DisplayMessage($"currency={e.Currency}")
-        mServerResponsesText.DisplayMessage(" ---- Account Summary End ----")
+        mServerResponsesText.DisplayMessage($"reqId={e.RequestId} account={e.Account} tag={e.Tag} value={e.Value} currency={e.Currency}")
     End Sub
 
     Private Sub _AccountSummaryEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.AccountSummaryEnd
@@ -2528,11 +2587,11 @@ Friend Class MainForm
     End Sub
 
     Private Sub _AccountUpdateMultiEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.AccountUpdateMultiEnd
-        mServerResponsesText.DisplayMessage($"reqId={e.RequestId} ==== Account Update Multi End ==== ")
+        mServerResponsesText.DisplayMessage($"==== Account Update Multi End reqId={e.RequestId} ==== ", e.Timestamp)
     End Sub
 
     Private Sub _AdvisorData(sender As Object, e As AdvisorDataEventArgs) Handles ApiEvents.AdvisorData
-        mServerResponsesText.DisplayMessage($"FA {FaMsgTypeName(e.FaDataType)}={e.Data}")
+        mServerResponsesText.DisplayMessage($"FA {FaMsgTypeName(e.FaDataType)}={e.Data}", e.Timestamp)
         Select Case e.FaDataType
             Case FinancialAdvisorDataType.Groups
                 mFaGroupXML = e.Data
@@ -2557,10 +2616,10 @@ Friend Class MainForm
     End Sub
 
     Private Sub _FamilyCodes(sender As Object, e As FamilyCodesEventArgs) Handles ApiEvents.FamilyCodes
-        mServerResponsesText.DisplayMessage(" ==== Family Codes Begin (total={e.FamilyCodes.Count}) ====")
+        mServerResponsesText.DisplayMessage(" ==== Family Codes Begin (total={e.FamilyCodes.Count}) ====", e.Timestamp)
         Dim count = 0
         For Each familyCode As FamilyCode In e.FamilyCodes
-            mServerResponsesText.DisplayMessage($"Family Code ({count}) - accountID={familyCode.AccountID} familyCode={familyCode.FamilyCode}")
+            mServerResponsesText.DisplayMessage($"Family Code ({count}): accountID={familyCode.AccountID} familyCode={familyCode.FamilyCode}")
             count += 1
         Next
         mServerResponsesText.DisplayMessage($" ==== Family Codes End (total={e.FamilyCodes.Count}) ====")
@@ -2568,20 +2627,20 @@ Friend Class MainForm
 
     Private Sub _ManagedAccounts(sender As Object, e As ManagedAccountsEventArgs) Handles ApiEvents.ManagedAccounts
         mFaAccountsList = String.Join(Of String)(",", e.ManagedAccounts)
-        mServerResponsesText.DisplayMessage($"The managed accounts are: {mFaAccountsList}")
+        mServerResponsesText.DisplayMessage($"Managed accounts: {mFaAccountsList}", e.Timestamp)
         mFaAccount = True
     End Sub
 
     Private Sub _PnL(sender As Object, e As PnLEventArgs) Handles ApiEvents.PnL
-        mServerResponsesText.DisplayMessage($"PnL, req id: {e.RequestId}, Daily PnL: {e.DailyPnL}, Unrealized PnL: {e.UnrealizedPnL}, Realized PnL: {e.RealizedPnL}")
+        mServerResponsesText.DisplayMessage($"PnL: req id={e.RequestId} DailyPnL={e.DailyPnL} UnrealizedPnL={e.UnrealizedPnL} RealizedPnL={e.RealizedPnL}", e.Timestamp)
     End Sub
 
     Private Sub _PnLSingle(sender As Object, e As PnLSingleEventArgs) Handles ApiEvents.PnLSingle
-        mServerResponsesText.DisplayMessage($"PnL Single, req id: {e.RequestId}, Pos:{e.Position}, Daily PnL: {e.PnL}, Unrealized PnL: {e.UnrealizedPnL}, Realized PnL: {e.RealizedPnL}, Value: {e.Value}")
+        mServerResponsesText.DisplayMessage($"PnL Single: req id: {e.RequestId}, Pos:{e.Position}, Daily PnL: {e.PnL}, Unrealized PnL: {e.UnrealizedPnL}, Realized PnL: {e.RealizedPnL}, Value: {e.Value}", e.Timestamp)
     End Sub
 
     Private Sub _Position(sender As Object, e As PositionEventArgs) Handles ApiEvents.Position
-        mServerResponsesText.DisplayMessage(" ---- Position ----")
+        mServerResponsesText.DisplayMessage(" ---- Position ----", e.Timestamp)
         mServerResponsesText.DisplayMessage($"account={e.Account}")
         mServerResponsesText.DisplayMessage("Contract")
 
@@ -2610,7 +2669,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub _PositionMulti(sender As Object, e As PositionMultiEventArgs) Handles ApiEvents.PositionMulti
-        mServerResponsesText.DisplayMessage(" ---- Position Multi ----")
+        mServerResponsesText.DisplayMessage(" ---- Position Multi ----", e.Timestamp)
         mServerResponsesText.DisplayMessage($"reqId={e.ReqId}")
         mServerResponsesText.DisplayMessage($"account={e.Account}")
         mServerResponsesText.DisplayMessage($"modelCode={e.ModelCode}")
@@ -2641,7 +2700,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub _SoftDollarTiers(sender As Object, e As SoftDollarTiersEventArgs) Handles ApiEvents.SoftDollarTiers
-        mServerResponsesText.DisplayMessage(" ==== Soft Dollar Tiers Begin ====")
+        mServerResponsesText.DisplayMessage(" ==== Soft Dollar Tiers Begin ====", e.Timestamp)
         e.Tiers.ForEach(Sub(t) mServerResponsesText.DisplayMessage($"DisplayName={t.DisplayName}, Name={t.Name}, Value={t.Value}"))
         mServerResponsesText.DisplayMessage(" ==== Soft Dollar Tiers End ====")
     End Sub
@@ -2669,8 +2728,7 @@ Friend Class MainForm
             setConnectionState(ApiConnectionState.Connected)
 
             mClientId = e.ClientId
-            Dim msg = $"Connected to Tws: server version {mApi.ServerVersion}"
-            mServerResponsesText.DisplayMessage(msg)
+            mServerResponsesText.DisplayMessage($"Connected to Tws: server version {mApi.ServerVersion}", e.Timestamp)
 
             If mUseQueueing Then
                 PauseAPIButton.Enabled = True
@@ -2678,25 +2736,25 @@ Friend Class MainForm
             End If
         ElseIf e.State = ApiConnectionState.Failed Then
             setConnectionState(ApiConnectionState.Failed)
-            mServerResponsesText.DisplayMessage($"Connection to Tws failed: {e.Message}")
+            mServerResponsesText.DisplayMessage($"Connection to Tws failed: {e.Message}", e.Timestamp)
             PauseAPIButton.Enabled = False
         ElseIf e.State = ApiConnectionState.NotConnected Then
             setConnectionState(ApiConnectionState.NotConnected)
-            mServerResponsesText.DisplayMessage("Connection to Tws has been closed")
+            mServerResponsesText.DisplayMessage("Connection to Tws has been closed", e.Timestamp)
             PauseAPIButton.Enabled = False
         End If
     End Sub
 
     Private Sub _CurrentTime(sender As Object, e As CurrentTimeEventArgs) Handles ApiEvents.CurrentTime
-        mServerResponsesText.DisplayMessage($"Current server time = {e.ServerTimestamp}")
+        mServerResponsesText.DisplayMessage($"Current server time = {e.ServerTimestamp}", e.Timestamp)
     End Sub
 
     Private Sub _IBServerConnectionStateChange(sender As Object, e As IBServerConnectionStateChangeEventArgs) Handles ApiEvents.IBServerConnectionStateChanged
         Select Case e.State
             Case IBServerConnectionState.Connected
-                mServerResponsesText.DisplayMessage($"IB Server connection restored: timestamp={e.Timestamp.ToString("yyyyMMdd-HH:mm:ss")} message={e.Message} date lost={e.DataLost}")
+                mServerResponsesText.DisplayMessage($"IB Server connection restored: message = {e.Message} date lost={e.DataLost}", e.Timestamp)
             Case IBServerConnectionState.Disconnected
-                mServerResponsesText.DisplayMessage($"IB Server connection closed: timestamp={e.Timestamp.ToString("yyyyMMdd-HH:mm:ss")} message={e.Message}")
+                mServerResponsesText.DisplayMessage($"IB Server connection closed: message={e.Message}", e.Timestamp)
         End Select
     End Sub
 
@@ -2738,8 +2796,8 @@ Details
     category = {cd.Category}
     subcategory = {cd.Subcategory}
     timeZoneId = {cd.TimeZoneId}
-    tradingHours = {cd.TradingHours}
-    liquidHours = {cd.LiquidHours}")
+    tradingHours = {vbCrLf}        {String.Join(vbCrLf & "        ", cd.TradingHours.Split(";"c))}
+    liquidHours = {vbCrLf}        {String.Join(vbCrLf & "        ", cd.LiquidHours.Split(";"c))}")
 
         mServerResponsesText.DisplayMessage(
 $"    evRule = {cd.EvRule}
@@ -2768,8 +2826,7 @@ $"Bond Details
     nextOptionDate = {cd.NextOptionDate}
     nextOptionType = {cd.NextOptionType}
     nextOptionPartial = {cd.NextOptionPartial}
-    notes = {cd.Notes}"
-    )
+    notes = {cd.Notes}", e.Timestamp)
 
         ' CUSIP/ISIN/etc.
         mServerResponsesText.DisplayMessage(
@@ -2786,13 +2843,13 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _MarketRule(sender As Object, e As MarketRuleEventArgs) Handles ApiEvents.MarketRule
-        mServerResponsesText.DisplayMessage($" ==== Market Rule Begin (marketRuleId={e.MarketRuleId}) ====")
+        mServerResponsesText.DisplayMessage($" ==== Market Rule Begin (marketRuleId={e.MarketRuleId}) ====", e.Timestamp)
         e.PriceIncrements.ForEach(Sub(p) mServerResponsesText.DisplayMessage($"LowEdge={p.LowEdge}, Increment={p.Increment}"))
         mServerResponsesText.DisplayMessage($" ==== Market Rule End (marketRuleId={e.MarketRuleId}) ====")
     End Sub
 
     Private Sub _SecurityDefinitionOptionParameter(sender As Object, e As SecurityDefinitionOptionParameterEventArgs) Handles ApiEvents.SecurityDefinitionOptionParameter
-        mServerResponsesText.DisplayMessage($"reqId {e.RequestId}, exchange {e.Exchange}, underlyingConId: {e.UnderlyingConId}, tradingClass: {e.TradingClass}, multiplier: {e.Multiplier}, expirations: {String.Join(",", e.Expirations)}, strikes: {String.Join(",", e.Strikes)}")
+        mServerResponsesText.DisplayMessage($"reqId {e.RequestId}, exchange {e.Exchange}, underlyingConId: {e.UnderlyingConId}, tradingClass: {e.TradingClass}, multiplier: {e.Multiplier}, expirations: {String.Join(",", e.Expirations)}, strikes: {String.Join(",", e.Strikes)}", e.Timestamp)
     End Sub
 
     Private Sub _SecurityDefinitionOptionParameterEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.SecurityDefinitionOptionParameterEnd
@@ -2800,10 +2857,10 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _SymbolSamples(sender As Object, e As SymbolSamplesEventArgs) Handles ApiEvents.SymbolSamples
-        mServerResponsesText.DisplayMessage($" ==== Symbol Samples (total={e.ContractDescriptions.Count}) reqId={e.RequestId} ====")
+        mServerResponsesText.DisplayMessage($" ==== Symbol Samples (total={e.ContractDescriptions.Count}) reqId={e.RequestId} ====", e.Timestamp)
         Dim count As Integer = 0
         For Each cd As ContractDescription In e.ContractDescriptions
-            mServerResponsesText.DisplayMessage($" ---- Contract Description ({count}) ----")
+            mServerResponsesText.DisplayMessage($" ---- Contract Description ({count}) ----", e.Timestamp)
             With cd.Contract
                 mServerResponsesText.DisplayMessage($"conId={ .ConId}")
                 mServerResponsesText.DisplayMessage($"symbol={ .Symbol}")
@@ -2847,7 +2904,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _ApiEvent(sender As Object, e As ApiEventEventArgs) Handles ApiEvents.ApiEvent
-        mServerResponsesText.DisplayMessage($"Event Code: {e.EventCode}; Event Msg: {e.EventMessage}")
+        mServerResponsesText.DisplayMessage($"Event Code: {e.EventCode}; Event Msg: {e.EventMessage}", e.Timestamp)
     End Sub
 
     Private Sub _Exception(sender As Object, e As ExceptionEventArgs) Handles ApiEvents.Exception
@@ -2868,14 +2925,14 @@ $"  secIdList=({cd.SecIdList?.ToString})
 #Region "Historical Data Events"
 
     Private Sub _HeadTimestamp(sender As Object, e As HeadTimestampEventArgs) Handles ApiEvents.HeadTimestamp
-        mServerResponsesText.DisplayMessage($"Head time stamp: request id - {e.RequestId}, time stamp - {e.Timestamp}")
+        mServerResponsesText.DisplayMessage($"Head time stamp: request id - {e.RequestId}, time stamp - {e.HeadTimestamp}", e.Timestamp)
     End Sub
 
     Private Sub _HistogramData(sender As Object, e As HistogramDataEventArgs) Handles ApiEvents.HistogramData
         Dim sb = New System.Text.StringBuilder
         sb.AppendLine($"Histogram data. Request Id: {e.RequestId}, data size: {e.HistData.Count}")
         e.HistData.ForEach(Sub(i) sb.AppendLine($"{vbTab}Price: {i.Price}, Size: {i.Size}"))
-        mServerResponsesText.DisplayMessage(sb.ToString())
+        mServerResponsesText.DisplayMessage(sb.ToString(), e.Timestamp)
     End Sub
 
     Private Sub _HistoricalBar(sender As Object, e As HistoricalBarEventArgs) Handles ApiEvents.HistoricalBar
@@ -2893,11 +2950,11 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _HistoricalBarsStart(sender As Object, e As HistoricalBarsRequestEventArgs) Handles ApiEvents.HistoricalBarsStart
-        mMarketDataText.DisplayMessage($"Historical Bars Start. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}")
+        mMarketDataText.DisplayMessage($"Historical Bars Start. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalBidAsk(sender As Object, e As HistoricalBidAskEventArgs) Handles ApiEvents.HistoricalBidAsk
-        mMarketDataText.DisplayMessage($"Historical Tick Bid/Ask. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price Bid: {e.BidPrice}, Price Ask: {e.AskPrice}, Size Bid: {e.BidSize}, Size Ask: {e.AskSize}, Attributes: {e.Attributes}")
+        mMarketDataText.DisplayMessage($"Historical Tick Bid/Ask. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price Bid: {e.BidPrice}, Price Ask: {e.AskPrice}, Size Bid: {e.BidSize}, Size Ask: {e.AskSize}, Attributes: {e.Attributes}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalBidAsksEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalBidAsksEnd
@@ -2905,7 +2962,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _HistoricalMidpoint(sender As Object, e As HistoricalMidpointEventArgs) Handles ApiEvents.HistoricalMidpoint
-        mMarketDataText.DisplayMessage($"Historical Tick Midpoint. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}")
+        mMarketDataText.DisplayMessage($"Historical Tick Midpoint. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalMidpointsEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalMidpointsEnd
@@ -2913,11 +2970,11 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _HistoricalTrade(sender As Object, e As HistoricalTradeEventArgs) Handles ApiEvents.HistoricalTrade
-        mMarketDataText.DisplayMessage($"Historical Tick Trade. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Last Tick Attributes: {e.Attributes}")
+        mMarketDataText.DisplayMessage($"Historical Tick Trade. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Last Tick Attributes: {e.Attributes}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalTradesEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalTradesEnd
-        mMarketDataText.DisplayMessage($"Historical Tick Trade End. Request Id: {e.RequestId}")
+        mMarketDataText.DisplayMessage($"Historical Tick Trade End. Request Id: {e.RequestId}", e.Timestamp)
     End Sub
 
 #End Region
@@ -2929,21 +2986,21 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _MarketDataType(sender As Object, e As MarketDataTypeEventArgs) Handles ApiEvents.MarketDataType
-        mMarketDataText.DisplayMessage($"id={e.RequestId} MarketDataType={[Enum].GetName(GetType(MarketDataType), e.MarketDataType)}")
+        mMarketDataText.DisplayMessage($"id={e.RequestId} MarketDataType={[Enum].GetName(GetType(MarketDataType), e.MarketDataType)}", e.Timestamp)
     End Sub
 
     Private Sub _RealtimeBar(sender As Object, e As RealtimeBarEventArgs) Handles ApiEvents.RealtimeBar
         mMarketDataText.DisplayMessage($"id={e.RequestId} time={e.Bar.TimeStamp.ToString("yyyyMMdd-HH:mm:ss")} open={e.Bar.OpenValue} high={e.Bar.HighValue} " &
                         $"low={e.Bar.LowValue} close={e.Bar.CloseValue} volume={e.Bar.Volume} WAP={e.Bar.WAP} " &
-                        $"count={e.Bar.TickVolume}")
+                        $"count={e.Bar.TickVolume}", e.Timestamp)
     End Sub
 
     Private Sub _RerouteMarketData(sender As Object, e As RerouteDataEventArgs) Handles ApiEvents.RerouteMarketData
-        mServerResponsesText.DisplayMessage($"Re-route market data request. Req Id: {e.RequestId}, Con Id: {e.ConId}, Exchange: {e.Exchange}")
+        mServerResponsesText.DisplayMessage($"Re-route market data request. Req Id: {e.RequestId}, Con Id: {e.ConId}, Exchange: {e.Exchange}", e.Timestamp)
     End Sub
 
     Private Sub _SmartComponents(sender As Object, e As SmartComponentsEventArgs) Handles ApiEvents.SmartComponents
-        mServerResponsesText.DisplayMessage(" ---- Smart Components Begin ----")
+        mServerResponsesText.DisplayMessage(" ---- Smart Components Begin ----", e.Timestamp)
 
         For Each item In e.Dict
             mServerResponsesText.DisplayMessage($"bitNumber={item.Key}")
@@ -2955,43 +3012,43 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _TickByTickAllLast(sender As Object, e As TickByTickAllLastEventArgs) Handles ApiEvents.TickByTickAllLast
-        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, DataType: {IBAPI.TickByTickDataTypes.ToExternalString(e.DataType)}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Attributes: {e.Attributes}")
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, DataType: {IBAPI.TickByTickDataTypes.ToExternalString(e.DataType)}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Attributes: {e.Attributes}", e.Timestamp)
         mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
     End Sub
 
     Private Sub _TickByTickBidAsk(sender As Object, e As TickByTickBidAskEventArgs) Handles ApiEvents.TickByTickBidAsk
-        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: BidAsk, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, BidPrice: {e.BidPrice}, AskPrice: {e.AskPrice}, BidSize: {e.BidSize}, AskSize: {e.AskSize}, Attributes: {e.Attributes}")
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: BidAsk, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, BidPrice: {e.BidPrice}, AskPrice: {e.AskPrice}, BidSize: {e.BidSize}, AskSize: {e.AskSize}, Attributes: {e.Attributes}", e.Timestamp)
         mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
     End Sub
 
     Private Sub _TickByTickMidPoint(sender As Object, e As TickByTickMidPointEventArgs) Handles ApiEvents.TickByTickMidPoint
-        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: MidPoint, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, MidPoint: {e.MidPoint}")
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: MidPoint, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, MidPoint: {e.MidPoint}", e.Timestamp)
         mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
     End Sub
 
     Private Sub _TickEFP(sender As Object, e As TickEFPEventArgs) Handles ApiEvents.TickEFP
         mMarketDataText.DisplayMessage($"
-{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.TickType)}:{e.BasisPoints} / {e.FormattedBasisPoints}
+id={e.TickerId} {GetField(e.TickType)}:{e.BasisPoints} / {e.FormattedBasisPoints}
     totalDividends = {e.DividendsToLastTradeDate} holdDays={e.HoldDays}
     futureLastTradeDate = {e.FutureLastTradeDate} dividendImpact={e.DividendImpact}
-    dividendsToLastTradeDate = {e.DividendsToLastTradeDate}")
+    dividendsToLastTradeDate = {e.DividendsToLastTradeDate}", e.Timestamp)
     End Sub
 
     Private Sub _TickGeneric(sender As Object, e As TickGenericEventArgs) Handles ApiEvents.TickGeneric
-        mMarketDataText.DisplayMessage($"{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.TickType)}={e.Value}")
+        mMarketDataText.DisplayMessage($"id={e.TickerId} {GetField(e.TickType)}={e.Value}", e.Timestamp)
     End Sub
 
     Private Sub _TickOptionComputation(sender As Object, e As TickOptionComputationEventArgs) Handles ApiEvents.TickOptionComputation
         mMarketDataText.DisplayMessage($"
-{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.Field)} vol={IBAPI.NullableToString(e.ImpliedVolatility)} 
+id={e.TickerId} {GetField(e.Field)} vol={IBAPI.NullableToString(e.ImpliedVolatility)} 
     delta={IBAPI.NullableToString(e.Delta)} gamma={IBAPI.NullableToString(e.Gamma)} 
     vega={IBAPI.NullableToString(e.Vega)} theta={IBAPI.NullableToString(e.Theta) }
     optPrice={IBAPI.NullableToString(e.OptPrice)} pvDividend={IBAPI.NullableToString(e.PvDividend)}
-    undPrice={IBAPI.NullableToString(e.UndPrice)}")
+    undPrice={IBAPI.NullableToString(e.UndPrice)}", e.Timestamp)
     End Sub
 
     Private Sub _TickPrice(sender As Object, e As TickPriceEventArgs) Handles ApiEvents.TickPrice
-        mMarketDataText.DisplayMessage($"{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.Field)}={e.Price} size={e.Size} {e.Attributes.ToString}")
+        mMarketDataText.DisplayMessage($"id={e.TickerId} {GetField(e.Field)}={e.Price} size={e.Size} {e.Attributes.ToString}", e.Timestamp)
     End Sub
 
     Private Sub _TickRequestParams(sender As Object, e As TickRequestParamsEventArgs) Handles ApiEvents.TickRequestParams
@@ -3001,19 +3058,19 @@ $"  secIdList=({cd.SecIdList?.ToString})
     minTick={e.MinTick}
     bboExchange={e.BBOExchange}
     snapshotPermissions={e.SnapshotPermissions}
----- Tick Req Params End ----")
+---- Tick Req Params End ----", e.Timestamp)
     End Sub
 
     Private Sub _TickSize(sender As Object, e As TickSizeEventArgs) Handles ApiEvents.TickSize
-        mMarketDataText.DisplayMessage($"{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.Field)}={e.Size}")
+        mMarketDataText.DisplayMessage($"id={e.TickerId} {GetField(e.Field)}={e.Size}", e.Timestamp)
     End Sub
 
     Private Sub _TickSnapshotEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.TickSnapshotEnd
-        mMarketDataText.DisplayMessage($"TickSnapshot({e.RequestId}) =============== end ===============")
+        mMarketDataText.DisplayMessage($"TickSnapshot({e.RequestId}) =============== end ===============", e.Timestamp)
     End Sub
 
     Private Sub _TickString(sender As Object, e As TickStringEventArgs) Handles ApiEvents.TickString
-        mMarketDataText.DisplayMessage($"{e.Timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  id={e.TickerId} {GetField(e.TickType)}={e.Value}")
+        mMarketDataText.DisplayMessage($"id={e.TickerId} {GetField(e.TickType)}={e.Value}", e.Timestamp)
     End Sub
 
 #End Region
@@ -3025,7 +3082,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _MktDepthExchanges(sender As Object, e As MarketDepthExchangesEventArgs) Handles ApiEvents.MarketDepthExchanges
-        mServerResponsesText.DisplayMessage($" ==== Market Depth Exchanges Begin (total={e.Descriptions.Count}) ====")
+        mServerResponsesText.DisplayMessage($" ==== Market Depth Exchanges Begin (total={e.Descriptions.Count}) ====", e.Timestamp)
         Dim count As Integer = 0
         For Each depthMktDataDescription As DepthMktDataDescription In e.Descriptions
             mServerResponsesText.DisplayMessage($"Depth Market Data Description ({count}) - exchange={depthMktDataDescription.Exchange} secType={depthMktDataDescription.SecType} serviceType={depthMktDataDescription.ServiceDataType}")
@@ -3035,7 +3092,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _RerouteDepthData(sender As Object, e As RerouteDataEventArgs) Handles ApiEvents.RerouteDepthData
-        mServerResponsesText.DisplayMessage($"Re-route market depth request. Req Id: {e.RequestId}, Con Id: {e.ConId}, Exchange: {e.Exchange}")
+        mServerResponsesText.DisplayMessage($"Re-route market depth request. Req Id: {e.RequestId}, Con Id: {e.ConId}, Exchange: {e.Exchange}", e.Timestamp)
     End Sub
 
     Private Sub _ResetMarketDepth(sender As Object, e As MarketDepthRestEventArgs) Handles ApiEvents.ResetMarketDepth
@@ -3118,7 +3175,7 @@ $"---- Tick News Begin ----
 #Region "Order Events"
 
     Private Sub _CommissionReport(sender As Object, e As CommissionReportEventArgs) Handles ApiEvents.CommissionReport
-        mServerResponsesText.DisplayMessage(" ---- Commission Report ----")
+        mServerResponsesText.DisplayMessage(" ---- Commission Report ----", e.Timestamp)
 
         With e.CommissionReport
             mServerResponsesText.DisplayMessage($"
@@ -3135,7 +3192,7 @@ $"---- Tick News Begin ----
     End Sub
 
     Private Sub _DeltaNeutralValidation(sender As Object, e As DeltaNeutralValidationEventArgs) Handles ApiEvents.DeltaNeutralValidation
-        mServerResponsesText.DisplayMessage($"deltaNeutralValidation called, reqId={e.RequestId}")
+        mServerResponsesText.DisplayMessage($"deltaNeutralValidation called, reqId={e.RequestId}", e.Timestamp)
 
         Dim underComp = e.DeltaNeutralContract
 
@@ -3150,14 +3207,14 @@ $"---- Tick News Begin ----
     End Sub
 
     Private Sub _ExecDetails(sender As Object, e As ExecutionDetailsEventArgs) Handles ApiEvents.ExecutionDetails
-        mServerResponsesText.DisplayMessage(" ---- Execution Details begin ----")
+        mServerResponsesText.DisplayMessage("
+---- Execution Details begin ----", e.Timestamp)
         mServerResponsesText.DisplayMessage($"reqId = {e.ReqId}")
 
         mServerResponsesText.DisplayMessage("Contract")
         With e.Contract
 
-            mServerResponsesText.DisplayMessage($"
-  conId={ .ConId}
+            mServerResponsesText.DisplayMessage($"  conId={ .ConId}
   symbol={ .Symbol}
   secType={ .SecType}
   lastTradeDate={ .Expiry}
@@ -3175,8 +3232,7 @@ $"---- Tick News Begin ----
         mServerResponsesText.DisplayMessage("Execution")
         With e.Execution
 
-            mServerResponsesText.DisplayMessage($"
-  execId = { .ExecId}
+            mServerResponsesText.DisplayMessage($"  execId = { .ExecId}
   orderId = { .OrderId}
   clientId = { .ClientID}
   permId = { .PermId}
@@ -3197,7 +3253,7 @@ $"---- Tick News Begin ----
 
         End With
 
-        mServerResponsesText.DisplayMessage(" ---- Execution Details End ----")
+        mServerResponsesText.DisplayMessage("---- Execution Details End ----")
     End Sub
 
     Private Sub _ExecDetailsEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.ExecutionDetailsEnd
@@ -3209,8 +3265,8 @@ $"---- Tick News Begin ----
         Dim c = e.Contract
         Dim s = e.OrderState
 
-        mServerResponsesText.DisplayMessage($"==== Order Details Begin ====
-Order
+        mServerResponsesText.DisplayMessage($"==== Order Details Begin ====", e.Timestamp)
+        mServerResponsesText.DisplayMessage($"Order
     orderId = {o.OrderId}
     clientId ={o.ClientID}
     permId = {o.PermId}
@@ -3403,7 +3459,7 @@ $"Order status
     parentId={e.ParentId} 
     whyHeld={e.WhyHeld} 
     mktCapPrice={e.MarketCapPrice}
-    ")
+    ", e.Timestamp)
     End Sub
 
 
@@ -3413,7 +3469,9 @@ $"Order status
 #Region "Performance Data Events"
 
     Private Sub _PerformanceStatsUpdate(sender As Object, e As PerformanceStatsUpdateEventArgs) Handles ApiEvents.PerformanceStatsUpdate
-        mServerResponsesText.DisplayMessage($"Socket message statistics:{vbCrLf}{e.Statistics}")
+        If DisplayApiMessageStatisticsCheck.Checked Then
+            mServerResponsesText.DisplayMessage($"Socket message statistics:{vbCrLf}{e.Statistics}", Date.Now)
+        End If
     End Sub
 
 #End Region
@@ -3431,7 +3489,7 @@ $"id={e.RequestId} rank={e.Rank} conId={contract.ConId}
  localSymbol={contract.LocalSymbol} marketName={contractDetails.MarketName}
  tradingClass={contract.TradingClass} distance={e.Distance}
  benchmark={e.Benchmark} projection={e.Projection}
- legsStr={e.LegsStr}")
+ legsStr={e.LegsStr}", e.Timestamp)
     End Sub
 
     Private Sub _ScannerDataEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.ScannerDataEnd
@@ -3442,7 +3500,7 @@ $"id={e.RequestId} rank={e.Rank} conId={contract.ConId}
         Dim xmlDoc = New XmlDocument
         xmlDoc.LoadXml(e.XmlData)
         Dim node1 = getRootNode(xmlDoc)
-        mServerResponsesText.DisplayMessage($"SCANNER PARAMETERS {node1.Name} document.")
+        mServerResponsesText.DisplayMessage($"SCANNER PARAMETERS {node1.Name} document.", e.Timestamp)
         node1 = node1.SelectSingleNode("InstrumentList")
         Dim name1 = parseNode(node1.FirstChild, "name")
         Dim theType1 = parseNode(node1.FirstChild, "type")
@@ -3458,22 +3516,22 @@ $"id={e.RequestId} rank={e.Rank} conId={contract.ConId}
 
     Private Sub _SocketInputData(sender As Object, e As SocketDataEventArgs) Handles ApiEvents.SocketInputData
         If Not DisplaySocketDataCheck.Checked Then Return
-        mSocketDataText.DisplayMessage($"{Now.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.Data}")
+        mSocketDataText.DisplayMessage($"{e.Data}", Now)
     End Sub
 
     Private Sub _SocketInputMessage(sender As Object, e As ApiMessageEventArgs) Handles ApiEvents.SocketInputMessage
-        If Not DisplaySocketDataCheck.Checked Then Return
-        mSocketDataText.DisplayMessage($"{Now.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.Message}")
+        If Not DisplaySocketMessagesCheck.Checked Then Return
+        mSocketDataText.DisplayMessage($"{e.Message}", Now)
     End Sub
 
     Private Sub _SocketOutputData(sender As Object, e As SocketDataEventArgs) Handles ApiEvents.SocketOutputData
         If Not DisplaySocketDataCheck.Checked Then Return
-        mSocketDataText.DisplayMessage($"{Now.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.Data}")
+        mSocketDataText.DisplayMessage($"{e.Data}", Now)
     End Sub
 
     Private Sub _SocketOutputMessage(sender As Object, e As ApiMessageEventArgs) Handles ApiEvents.SocketOutputMessage
-        If Not DisplaySocketDataCheck.Checked Then Return
-        mSocketDataText.DisplayMessage($"{Now.ToString("yyyyMMdd HH:mm:ss.fff")}  {e.Message}")
+        If Not DisplaySocketMessagesCheck.Checked Then Return
+        mSocketDataText.DisplayMessage($"{e.Message}", Now)
     End Sub
 
 #End Region
@@ -3613,6 +3671,7 @@ $"id={e.RequestId} rank={e.Rank} conId={contract.ConId}
             Case ApiConnectionState.NotConnected
                 TopPanel.BackColor = Color.MistyRose
                 TopPanelCheckboxesSite.BackColor = Color.MistyRose
+                ApiDetailsPanel.BackColor = Color.MistyRose
                 ConnectionStatusLabel.Text = "Not connected"
                 ConnectionStatusLabel.ForeColor = Color.Red
                 ConnectDisconnectButton.Enabled = True
@@ -3621,12 +3680,14 @@ $"id={e.RequestId} rank={e.Rank} conId={contract.ConId}
             Case ApiConnectionState.Connecting
                 TopPanel.BackColor = Color.FromArgb(251, 227, 80)
                 TopPanelCheckboxesSite.BackColor = Color.FromArgb(251, 227, 80)
+                ApiDetailsPanel.BackColor = Color.FromArgb(251, 227, 80)
                 ConnectionStatusLabel.Text = "Connecting..."
                 ConnectionStatusLabel.ForeColor = Color.FromArgb(255, 178, 82)
                 ConnectDisconnectButton.Enabled = False
             Case ApiConnectionState.Connected
                 TopPanel.BackColor = Color.FromArgb(179, 230, 179)
                 TopPanelCheckboxesSite.BackColor = Color.FromArgb(179, 230, 179)
+                ApiDetailsPanel.BackColor = Color.FromArgb(179, 230, 179)
                 ConnectionStatusLabel.Text = "Connected"
                 ConnectionStatusLabel.ForeColor = Color.FromArgb(19, 146, 18)
                 ConnectDisconnectButton.Enabled = True

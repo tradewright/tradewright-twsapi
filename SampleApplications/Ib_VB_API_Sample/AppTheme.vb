@@ -1,5 +1,5 @@
 ﻿Public Class AppTheme
-    Inherits TradeWright.Utilities.Themes.DarkTheme
+    Inherits TradeWright.UI.Themes.DarkTheme
 
     Public Overrides ReadOnly Property ButtonFont As Font = New System.Drawing.Font("Segoe UI", 8.0!, System.Drawing.FontStyle.Regular)
 

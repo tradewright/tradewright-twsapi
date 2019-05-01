@@ -16,14 +16,14 @@ Friend Class FAcctData
     'Form overrides dispose to clean up the component list.
     Protected Overloads Overrides Sub Dispose(Disposing As Boolean)
         If Disposing Then
-            If Not mComponents Is Nothing Then
-                mComponents.Dispose()
+            If Not components Is Nothing Then
+                components.Dispose()
             End If
         End If
         MyBase.Dispose(Disposing)
     End Sub
     'Required by the Windows Form Designer
-    Private mComponents As System.ComponentModel.IContainer
+    Private components As System.ComponentModel.IContainer
     Public ToolTip1 As System.Windows.Forms.ToolTip
     Public WithEvents LastUpdateTimeText As System.Windows.Forms.TextBox
     Public WithEvents Frame2 As System.Windows.Forms.GroupBox
@@ -31,13 +31,14 @@ Friend Class FAcctData
     Public WithEvents CloseButton As System.Windows.Forms.Button
     Friend WithEvents KeyValueDataText As TextBox
     Friend WithEvents PortfolioDataText As TextBox
+    Public WithEvents UnsubscribeButton As Button
     Public WithEvents Label1 As System.Windows.Forms.Label
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.mComponents = New System.ComponentModel.Container()
-        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.mComponents)
+        Me.components = New System.ComponentModel.Container()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.LastUpdateTimeText = New System.Windows.Forms.TextBox()
         Me.Frame2 = New System.Windows.Forms.GroupBox()
         Me.PortfolioDataText = New System.Windows.Forms.TextBox()
@@ -45,6 +46,7 @@ Friend Class FAcctData
         Me.KeyValueDataText = New System.Windows.Forms.TextBox()
         Me.CloseButton = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.UnsubscribeButton = New System.Windows.Forms.Button()
         Me.Frame2.SuspendLayout()
         Me.Frame1.SuspendLayout()
         Me.SuspendLayout()
@@ -117,9 +119,10 @@ Friend Class FAcctData
         '
         Me.CloseButton.BackColor = System.Drawing.SystemColors.Control
         Me.CloseButton.Cursor = System.Windows.Forms.Cursors.Default
+        Me.CloseButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.CloseButton.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CloseButton.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CloseButton.Location = New System.Drawing.Point(293, 352)
+        Me.CloseButton.Location = New System.Drawing.Point(566, 344)
         Me.CloseButton.Name = "CloseButton"
         Me.CloseButton.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CloseButton.Size = New System.Drawing.Size(81, 25)
@@ -140,11 +143,28 @@ Friend Class FAcctData
         Me.Label1.TabIndex = 5
         Me.Label1.Text = "Last update time :"
         '
+        'UnsubscribeButton
+        '
+        Me.UnsubscribeButton.BackColor = System.Drawing.SystemColors.Control
+        Me.UnsubscribeButton.Cursor = System.Windows.Forms.Cursors.Default
+        Me.UnsubscribeButton.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.UnsubscribeButton.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.UnsubscribeButton.Location = New System.Drawing.Point(453, 344)
+        Me.UnsubscribeButton.Name = "UnsubscribeButton"
+        Me.UnsubscribeButton.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.UnsubscribeButton.Size = New System.Drawing.Size(89, 25)
+        Me.UnsubscribeButton.TabIndex = 11
+        Me.UnsubscribeButton.Text = "Unsubscribe"
+        Me.UnsubscribeButton.UseVisualStyleBackColor = False
+        '
         'FAcctData
         '
+        Me.AcceptButton = Me.UnsubscribeButton
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
         Me.BackColor = System.Drawing.Color.Gainsboro
+        Me.CancelButton = Me.CloseButton
         Me.ClientSize = New System.Drawing.Size(667, 392)
+        Me.Controls.Add(Me.UnsubscribeButton)
         Me.Controls.Add(Me.LastUpdateTimeText)
         Me.Controls.Add(Me.Frame2)
         Me.Controls.Add(Me.Frame1)
@@ -172,10 +192,11 @@ Friend Class FAcctData
 #End Region
 
     Private mAccountName As String
-    Private mComplete As Boolean
 
     Private mKeyValueDataText As TextboxDisplayManager
     Private mPortfolioDataText As TextboxDisplayManager
+
+    Private mUnsubscribe As Action
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
@@ -196,6 +217,10 @@ Friend Class FAcctData
         Hide()
     End Sub
 
+    Private Sub unsubscribeButton_Click(sender As Object, e As EventArgs) Handles UnsubscribeButton.Click
+        mUnsubscribe()
+    End Sub
+
     ' ========================================================
     ' Public methods
     ' ========================================================
@@ -212,7 +237,7 @@ Friend Class FAcctData
     '--------------------------------------------------------------------------------
     Public Sub UpdatePortfolio(contract As Contract, position As Double, marketPrice As Double, marketValue As Double, averageCost As Double, unrealizedPNL As Double, realizedPNL As Double, accountName As String)
         mPortfolioDataText.DisplayMessage(
-            $"Contract={contract.ToString} position={position} mktPrice={marketPrice} mktValue={marketValue}" &
+            $"Contract={contract.LocalSymbol}@{contract.Exchange} position={position} mktPrice={marketPrice} mktValue={marketValue}" &
             $" avgCost={averageCost} unrealizedPNL={unrealizedPNL} realizedPNL={realizedPNL} account={accountName}")
     End Sub
 
@@ -223,35 +248,25 @@ Friend Class FAcctData
         LastUpdateTimeText.Text = timeStamp
     End Sub
 
-    Public Sub AccountDownloadBegin(accountName As String)
+    Public Sub AccountDownloadBegin(accountName As String, unsubscribe As Action)
         mAccountName = accountName
-        mComplete = False
-        updateTitle()
+        mUnsubscribe = unsubscribe
+        updateTitle(False)
     End Sub
 
     Public Sub AccountDownloadEnd(accountName As String)
-        If Len(mAccountName) <> 0 And mAccountName <> accountName Then
-            Return
-        End If
-
-        mComplete = True
-        updateTitle()
+        updateTitle(True)
     End Sub
 
-    Private Sub updateTitle()
-        Dim title = ""
+    Private Sub updateTitle(complete As Boolean)
+        If Len(mAccountName) = 0 Then Exit Sub
 
-        If Len(mAccountName) <> 0 Then
-            title = mAccountName
-        End If
-        If mComplete Then
-            If Len(title) <> 0 Then
-                title = title & " "
-            End If
+        Dim title = mAccountName
+        If complete Then
             title = title & "[complete]"
         End If
 
         Me.Text = title
-
     End Sub
+
 End Class

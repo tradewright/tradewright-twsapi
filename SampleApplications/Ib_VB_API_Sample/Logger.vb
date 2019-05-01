@@ -19,7 +19,8 @@ Public Class Logger
     End Sub
 
     Private Function ILogger_IsLoggable(logLevel As TradeWright.IBAPI.ILogger.LogLevel) As Boolean Implements TradeWright.IBAPI.ILogger.IsLoggable
-        Return mBaseLogger.IsLoggable(translateLogLevel(logLevel))
+        If mBaseLogger IsNot Nothing Then Return mBaseLogger.IsLoggable(translateLogLevel(logLevel))
+        Return mBaseFormattingLogger.IsLoggable(translateLogLevel(logLevel))
     End Function
 
     Public Sub Log(message As String,

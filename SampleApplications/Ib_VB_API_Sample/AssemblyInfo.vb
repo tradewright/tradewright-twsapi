@@ -17,7 +17,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("TradeWright Software Systems")>
 <Assembly: AssemblyProduct("VB API SAMPLE")>
-<Assembly: AssemblyCopyright("(C) Copyright 2018 Interactive Brokers")>
+<Assembly: AssemblyCopyright("(C) Copyright 2019 Interactive Brokers, Richard L King")>
 <Assembly: AssemblyTrademark("")>
 <Assembly: AssemblyCulture("")>
 
@@ -32,5 +32,6 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below
 
 
-<Assembly: AssemblyVersion("9.73.0.0")>
+<Assembly: AssemblyVersion("973.07.0.0")>
 <Assembly: ComVisible(False)>
+<Assembly: AssemblyFileVersion("973.07.0.0")>

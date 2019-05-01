@@ -17,13 +17,13 @@ Public Class FPnL
         ModelCode = ModelCodeText.Text
         ConId() = If(String.IsNullOrWhiteSpace(ConIdText.Text), 0, Integer.Parse(ConIdText.Text))
 
-        DialogResult = Windows.Forms.DialogResult.OK
+        DialogResult = DialogResult.OK
 
         Close()
     End Sub
 
     Private Sub cancelItButton_Click(sender As Object, e As EventArgs) Handles CancelItButton.Click
-        DialogResult = Windows.Forms.DialogResult.Cancel
+        DialogResult = DialogResult.Cancel
 
         Close()
     End Sub

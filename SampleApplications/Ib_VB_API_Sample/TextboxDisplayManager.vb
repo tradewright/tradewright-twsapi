@@ -17,14 +17,17 @@
         Timer.Stop()
     End Sub
 
-    Friend Sub DisplayMessage(message As String)
-
+    Friend Sub DisplayMessage(message As String, Optional timestamp As Date = #1/1/0001 12:00:00 AM#)
+        If timestamp <> Date.MinValue Then
+            mSb.Append($"{timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  ")
+        End If
         mSb.Append(message)
         mSb.Append(Environment.NewLine)
         If Not Timer.Enabled Then Timer.Start()
     End Sub
 
     Private Sub mTimer_Tick(sender As Object, e As EventArgs) Handles Timer.Elapsed
+        If mTextBox.IsDisposed Then Exit Sub
         mTextBox.AppendText(mSb.ToString())
         mSb.Clear()
         Timer.Stop()
