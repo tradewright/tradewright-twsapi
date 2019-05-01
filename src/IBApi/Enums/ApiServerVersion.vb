@@ -68,9 +68,10 @@ Friend Enum ApiServerVersion
     TICK_BY_TICK_IGNORE_SIZE = 140
     AUTO_PRICE_FOR_HEDGE = 141
     WHAT_IF_EXT_FIELDS = 142
+    SCANNER_GENERIC_OPTS = 143
 
-    ' Max for API 973.06
+    ' Max for API 973.07
 
-    Max = WHAT_IF_EXT_FIELDS
+    Max = SCANNER_GENERIC_OPTS
 End Enum
 

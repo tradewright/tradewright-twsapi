@@ -73,7 +73,7 @@ Public Class ScannerSubscription
     Public Property MaturityDateBelow As String
     Public Property CouponRateAbove As Double?
     Public Property CouponRateBelow As Double?
-    Public Property ExcludeConvertible As String
+    Public Property ExcludeConvertible As Boolean
     Public Property ScannerSettingPairs As String
     Public Property StockTypeFilter As String
 

@@ -1140,8 +1140,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerParameters, Nothing)
     End Sub
 
-    Public Sub RequestScannerSubscription(pTickerId As Integer, pSubscription As ScannerSubscription, Optional options As List(Of TagValue) = Nothing)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerSubscription, {pTickerId, pSubscription, options})
+    Public Sub RequestScannerSubscription(requestId As Integer, pSubscription As ScannerSubscription, Optional options As List(Of TagValue) = Nothing, Optional filterOptions As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerSubscription, {requestId, pSubscription, options, filterOptions})
     End Sub
 
     Public Sub RequestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)

@@ -104,7 +104,7 @@ Public Enum ApiSocketInMsgType
     HistoricalTickLast = 98
     TickByTick = 99
 
-    ' Max for API 973.06
+    ' Max for API 973.07
 
     Max
 End Enum
