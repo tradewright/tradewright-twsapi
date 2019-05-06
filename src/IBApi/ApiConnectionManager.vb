@@ -46,8 +46,6 @@ Friend Class ApiConnectionManager
 
     Private ReadOnly mUseV100Plus As Boolean
 
-    Private mReader As MessageReader
-
     Private mServerVersion As Integer
 
     Private ReadOnly mEventConsumers As ApiEventConsumers
@@ -69,6 +67,8 @@ Friend Class ApiConnectionManager
                    port As Integer,
                    clientId As Integer,
                    useV100Plus As Boolean,
+                   useSSL As Boolean,
+                   cancellationSource As CancellationTokenSource,
                    registry As GeneratorAndParserRegistry,
                    eventConsumers As ApiEventConsumers,
                    generateSocketDataEvents As Boolean)
@@ -79,6 +79,16 @@ Friend Class ApiConnectionManager
         mRegistry = registry
         mEventConsumers = eventConsumers
         mGenerateSocketDataEvents = generateSocketDataEvents
+
+        Dim socket = createSocket(mServer, mPort, useSSL)
+        TheSocketHandler = New SocketHandler(socket,
+                                           Sub() setConnectionState(ApiConnectionState.Connecting, ConnectionString),
+                                           AddressOf socketHandlerConnected,
+                                           Sub(reason) setConnectionState(ApiConnectionState.Failed, $"{reason}: {ConnectionString}"),
+                                           Sub(reason) setConnectionState(ApiConnectionState.NotConnected, $"{reason}: {ConnectionString}"),
+                                           Sub(reason) setConnectionState(ApiConnectionState.NotConnected, $"{reason}: {ConnectionString}"),
+                                           mConnectionRetryIntervalSecs)
+        Reader = New MessageReader(New InputStringReader(socket, cancellationSource, MaxMessageSize), mUseV100Plus, mGenerateSocketDataEvents)
     End Sub
 
 #End Region
@@ -108,6 +118,8 @@ Friend Class ApiConnectionManager
         End Get
     End Property
 
+    Friend ReadOnly Property Reader As MessageReader
+
     Friend ReadOnly Property ServerVersion As Integer
         Get
             Return mServerVersion
@@ -118,20 +130,10 @@ Friend Class ApiConnectionManager
 
 #Region "Methods"
 
-    Friend Function Connect(connectedAction As Action, cancellationSource As CancellationTokenSource, Optional useSSL As Boolean = False) As MessageReader
+    Friend Sub Connect(connectedAction As Action)
         mConnectedAction = connectedAction
-        Dim socket = createSocket(mServer, mPort, useSSL)
-        TheSocketHandler = New SocketHandler(socket,
-                                           Sub() setConnectionState(ApiConnectionState.Connecting, ConnectionString),
-                                           AddressOf socketHandlerConnected,
-                                           Sub(reason) setConnectionState(ApiConnectionState.Failed, $"{reason}: {ConnectionString}"),
-                                           Sub(reason) setConnectionState(ApiConnectionState.NotConnected, $"{reason}: {ConnectionString}"),
-                                           Sub(reason) setConnectionState(ApiConnectionState.NotConnected, $"{reason}: {ConnectionString}"),
-                                           mConnectionRetryIntervalSecs)
-        mReader = New MessageReader(New InputStringReader(socket, cancellationSource, MaxMessageSize), mUseV100Plus, mGenerateSocketDataEvents)
         TheSocketHandler.Connect(keepAlive:=True)
-        Return mReader
-    End Function
+    End Sub
 
     Friend Function CreateMessageGenerator() As MessageGenerator
         Return TheSocketHandler.CreateMessageGenerator(mUseV100Plus, mGenerateSocketDataEvents)
@@ -179,12 +181,12 @@ Friend Class ApiConnectionManager
         Const ProcName = "negotiateConnection"
 
         Try
-            Await mReader.BeginMessageAsync("IN: ", True)
-            mServerVersion = Await mReader.GetIntAsync("Server Version")
+            Await Reader.BeginMessageAsync("IN: ", True)
+            mServerVersion = Await Reader.GetIntAsync("Server Version")
 
-            Dim lServerTime = Await mReader.GetStringAsync("TWS Time")
-            mReader.LogSocketInputMessage(mEventConsumers.SocketDataConsumer)
-            mReader.EndMessage()
+            Dim lServerTime = Await Reader.GetStringAsync("TWS Time")
+            Reader.LogSocketInputMessage(mEventConsumers.SocketDataConsumer)
+            Reader.EndMessage()
 
             If Not isValidServerVersion() Then
                 Dim e = New ApiException(ErrorCodes.TwsOutOfDate, "TWS is out of date and needs to be upgraded")

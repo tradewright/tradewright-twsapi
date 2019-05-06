@@ -495,8 +495,30 @@ Public Class IBAPI
                                                 End Sub
 
         generateSocketDataEvents = If(SocketLogger?.IsLoggable(ILogger.LogLevel.Detail), True, generateSocketDataEvents)
-        mConnectionManager = New ApiConnectionManager(mServer, mPort, Me.ClientID, mUseV100Plus, mRegistry, mEventConsumers, generateSocketDataEvents)
+
+        mCancellationSource = New CancellationTokenSource()
+        mConnectionManager = New ApiConnectionManager(mServer, mPort, Me.ClientID, mUseV100Plus, useSSL, mCancellationSource, mRegistry, mEventConsumers, generateSocketDataEvents)
         mInMessageHandler = New InputMessageHandler(mEventConsumers, mRegistry, generateSocketDataEvents)
+
+        mInMessageHandler.Initialise(mConnectionManager.Reader, mStatsRecorder)
+        mInMessageHandler.Reset()
+
+        mIdManager = New IdManager
+        mRegistry.Initialise(mIdManager,
+                             mEventConsumers,
+                             mConnectionManager.Reader,
+                             AddressOf mInMessageHandler.LogSocketInputMessage,
+                             Function()
+                                 Return mConnectionManager.ServerVersion
+                             End Function,
+                             Function()
+                                 Return mConnectionManager.CreateMessageGenerator
+                             End Function,
+                             Function()
+                                 Return mConnectionManager.ConnectionState
+                             End Function)
+        registerGenerators()
+        registerParsers()
     End Sub
 
 #End Region
@@ -931,30 +953,7 @@ Public Class IBAPI
 
 
     Public Sub Connect(Optional useSSL As Boolean = False)
-        mCancellationSource = New CancellationTokenSource()
-        Dim lreader = mConnectionManager.Connect(AddressOf startInputMessageHandler,
-                                                mCancellationSource,
-                                                mUseSSL)
-
-        mInMessageHandler.Initialise(lreader, mStatsRecorder)
-        mInMessageHandler.Reset()
-
-        mIdManager = New IdManager
-        mRegistry.Initialise(mIdManager,
-                             mEventConsumers,
-                             lreader,
-                             AddressOf mInMessageHandler.LogSocketInputMessage,
-                             Function()
-                                 Return mConnectionManager.ServerVersion
-                             End Function,
-                             Function()
-                                 Return mConnectionManager.CreateMessageGenerator
-                             End Function,
-                             Function()
-                                 Return mConnectionManager.ConnectionState
-                             End Function)
-        registerGenerators()
-        registerParsers()
+        mConnectionManager.Connect(AddressOf startInputMessageHandler)
     End Sub
 
     Public Sub Disconnect(pReason As String)
