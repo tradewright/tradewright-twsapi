@@ -410,9 +410,9 @@ Friend Class FMarketDepth
 
         Select Case side
             Case DOMSide.Bid
-                updateDepth(mBids, DataGridViewBid, rowId, marketMaker, operation, side, price, size)
+                updateDepth(mBids, DataGridViewBid, rowId, marketMaker, operation, price, size)
             Case DOMSide.Ask
-                updateDepth(mAsks, DataGridViewAsk, rowId, marketMaker, operation, side, price, size)
+                updateDepth(mAsks, DataGridViewAsk, rowId, marketMaker, operation, price, size)
             Case Else
                 Throw New InvalidOperationException
         End Select
@@ -458,7 +458,7 @@ Friend Class FMarketDepth
     End Function
 
 
-    Private Sub updateDepth(model As List(Of ModelEntry), bookEntries As DataGridView, rowId As Integer, marketMaker As String, operation As DOMOperation, side As DOMSide, price As Double, size As Integer)
+    Private Sub updateDepth(model As List(Of ModelEntry), bookEntries As DataGridView, rowId As Integer, marketMaker As String, operation As DOMOperation, price As Double, size As Integer)
         Select Case operation
             Case DOMOperation.Insert
                 model.Insert(rowId, New ModelEntry() With {.MarketMaker = marketMaker, .Price = price, .Size = size})
@@ -487,9 +487,9 @@ Friend Class FMarketDepth
 
         For i = baseRow To model.Count - 1
             With model(i)
-                cumSize = cumSize + .Size
+                cumSize += .Size
                 .CumSize = cumSize
-                totalPrice = totalPrice + (.Price * .Size)
+                totalPrice += (.Price * .Size)
                 .TotalPrice = totalPrice
 
                 Dim avgPrice = totalPrice / cumSize

@@ -3,7 +3,7 @@
 Friend Class SocketLogListener
     Implements ILogListener
 
-    Private mLogText As TextBox
+    Private ReadOnly mLogText As TextBox
 
     Friend Sub New(logText As TextBox)
         mLogText = logText

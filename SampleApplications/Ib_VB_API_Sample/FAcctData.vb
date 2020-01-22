@@ -263,7 +263,7 @@ Friend Class FAcctData
 
         Dim title = mAccountName
         If complete Then
-            title = title & "[complete]"
+            title &= "[complete]"
         End If
 
         Me.Text = title

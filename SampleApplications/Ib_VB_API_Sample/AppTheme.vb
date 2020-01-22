@@ -3,6 +3,9 @@
 
     Public Overrides ReadOnly Property ButtonFont As Font = New System.Drawing.Font("Segoe UI", 8.0!, System.Drawing.FontStyle.Regular)
 
+    Public Overrides ReadOnly Property TextBoxBackColor As Color = Color.FromArgb(96, 96, 96)
+
+
     ' We use ThemedButton1 for the main buttons on forms
     Public Overrides ReadOnly Property Button1Autosize As Boolean = True
     Public Overrides ReadOnly Property Button1ForeColor As Color = Color.DimGray

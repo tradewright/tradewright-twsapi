@@ -7,8 +7,8 @@ Imports TradeWright.Utilities.Logging
 Public Class Logger
     Implements TradeWright.IBAPI.ILogger
 
-    Private mBaseLogger As TradeWright.Utilities.Logging.Logger
-    Private mBaseFormattingLogger As FormattingLogger
+    Private ReadOnly mBaseLogger As TradeWright.Utilities.Logging.Logger
+    Private ReadOnly mBaseFormattingLogger As FormattingLogger
 
     Public Sub New(baseLogger As FormattingLogger)
         mBaseFormattingLogger = baseLogger

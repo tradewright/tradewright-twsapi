@@ -1360,9 +1360,6 @@ Friend Class FOrder
     Private mFaMethod, mFaGroup, mFaPercentage As Object
     Private mFaProfile As String
 
-    Private ReadOnly mExerciseQuantity As Integer
-    Private ReadOnly mExerciseOverride As Integer
-
     Private mMarketDataType As MarketDataType
     Private mOptionsFormTitle As String
     Private mOptions As List(Of TagValue)
@@ -1571,14 +1568,15 @@ Friend Class FOrder
     End Sub
 
     Private Sub algoParamsButton_Click(sender As Object, e As System.EventArgs) Handles AlgoParamsButton.Click
-        Dim f As New FAlgoParams
+        Using f As New FAlgoParams
 
-        f.Init(OrderInfo.AlgoStrategy, OrderInfo.AlgoParams)
-        Dim res = f.ShowDialog()
-        If res = DialogResult.OK Then
-            OrderInfo.AlgoStrategy = f.AlgoStrategy
-            OrderInfo.AlgoParams = f.AlgoParams
-        End If
+            f.Init(OrderInfo.AlgoStrategy, OrderInfo.AlgoParams)
+            Dim res = f.ShowDialog()
+            If res = DialogResult.OK Then
+                OrderInfo.AlgoStrategy = f.AlgoStrategy
+                OrderInfo.AlgoParams = f.AlgoParams
+            End If
+        End Using
     End Sub
 
     Private Sub setShareAllocationButton_Click(sender As Object, e As EventArgs) Handles SetShareAllocationButton.Click
@@ -1643,9 +1641,9 @@ Friend Class FOrder
             mErrorsText.DisplayMessage($"Invalid order type - must be one of {String.Join(", ", IBAPI.OrderTypes.ExternalNames)}")
             DialogResult = DialogResult.No
         End If
-        OrderInfo.LmtPrice = dval(LimitPriceText.Text)
-        OrderInfo.AuxPrice = dval(AuxPriceText.Text)
-        OrderInfo.CashQty = dval(CashQtyText.Text)
+        OrderInfo.LmtPrice = IBAPI.NullableDoubleFromString(LimitPriceText.Text)
+        OrderInfo.AuxPrice = IBAPI.NullableDoubleFromString(AuxPriceText.Text)
+        OrderInfo.CashQty = IBAPI.NullableDoubleFromString(CashQtyText.Text)
 
         OrderInfo.GoodAfterTime = GATText.Text
         OrderInfo.GoodTillDate = GTDText.Text
@@ -1861,14 +1859,6 @@ Friend Class FOrder
         End If
     End Sub
 
-
-    Private Function dval(text As String) As Double
-        If Len(text) = 0 Then
-            dval = Double.MaxValue
-        Else
-            dval = CDbl(text)
-        End If
-    End Function
 
     Private Sub pegBenchButton_Click(sender As Object, e As EventArgs) Handles PegBenchButton.Click
         Dim f = New FPegBench(OrderInfo)

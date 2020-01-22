@@ -167,10 +167,13 @@ Public Class FOrderAttribs
     Friend WithEvents ETradeOnlyCheck As CheckBox
     Friend WithEvents ContinuousUpdateCheck As CheckBox
     Friend WithEvents OrderPropertyGrid As PropertyGrid
+    Private components As System.ComponentModel.IContainer
+    Public WithEvents LmtPriceOffsetText As TextBox
+    Public WithEvents Label8 As Label
     Friend WithEvents OutsideRTHCheck As CheckBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.mComponents = New System.ComponentModel.Container()
-        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.mComponents)
+        Me.components = New System.ComponentModel.Container()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.HedgeParamText = New System.Windows.Forms.TextBox()
         Me.Rule80AText = New System.Windows.Forms.TextBox()
         Me.SettlingFirmText = New System.Windows.Forms.TextBox()
@@ -311,6 +314,8 @@ Public Class FOrderAttribs
         Me.ETradeOnlyCheck = New System.Windows.Forms.CheckBox()
         Me.ContinuousUpdateCheck = New System.Windows.Forms.CheckBox()
         Me.OrderPropertyGrid = New System.Windows.Forms.PropertyGrid()
+        Me.LmtPriceOffsetText = New System.Windows.Forms.TextBox()
+        Me.Label8 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'HedgeParamText
@@ -367,7 +372,7 @@ Public Class FOrderAttribs
         Me.MinQtyText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.MinQtyText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MinQtyText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.MinQtyText.Location = New System.Drawing.Point(432, 82)
+        Me.MinQtyText.Location = New System.Drawing.Point(433, 106)
         Me.MinQtyText.MaxLength = 0
         Me.MinQtyText.Name = "MinQtyText"
         Me.MinQtyText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -382,7 +387,7 @@ Public Class FOrderAttribs
         Me.PercentOffsetText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.PercentOffsetText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.PercentOffsetText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.PercentOffsetText.Location = New System.Drawing.Point(432, 106)
+        Me.PercentOffsetText.Location = New System.Drawing.Point(433, 130)
         Me.PercentOffsetText.MaxLength = 0
         Me.PercentOffsetText.Name = "PercentOffsetText"
         Me.PercentOffsetText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -397,7 +402,7 @@ Public Class FOrderAttribs
         Me.NBBOPriceCapText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.NBBOPriceCapText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.NBBOPriceCapText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.NBBOPriceCapText.Location = New System.Drawing.Point(432, 178)
+        Me.NBBOPriceCapText.Location = New System.Drawing.Point(433, 202)
         Me.NBBOPriceCapText.MaxLength = 0
         Me.NBBOPriceCapText.Name = "NBBOPriceCapText"
         Me.NBBOPriceCapText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -412,7 +417,7 @@ Public Class FOrderAttribs
         Me.AuctionStrategyText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.AuctionStrategyText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.AuctionStrategyText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.AuctionStrategyText.Location = New System.Drawing.Point(432, 370)
+        Me.AuctionStrategyText.Location = New System.Drawing.Point(433, 394)
         Me.AuctionStrategyText.MaxLength = 0
         Me.AuctionStrategyText.Name = "AuctionStrategyText"
         Me.AuctionStrategyText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -428,7 +433,7 @@ Public Class FOrderAttribs
         Me.StartingPriceText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.StartingPriceText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StartingPriceText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.StartingPriceText.Location = New System.Drawing.Point(432, 394)
+        Me.StartingPriceText.Location = New System.Drawing.Point(433, 418)
         Me.StartingPriceText.MaxLength = 0
         Me.StartingPriceText.Name = "StartingPriceText"
         Me.StartingPriceText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -443,7 +448,7 @@ Public Class FOrderAttribs
         Me.StockRefPriceText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.StockRefPriceText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StockRefPriceText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.StockRefPriceText.Location = New System.Drawing.Point(432, 418)
+        Me.StockRefPriceText.Location = New System.Drawing.Point(433, 442)
         Me.StockRefPriceText.MaxLength = 0
         Me.StockRefPriceText.Name = "StockRefPriceText"
         Me.StockRefPriceText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -458,7 +463,7 @@ Public Class FOrderAttribs
         Me.DeltaText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.DeltaText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.DeltaText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DeltaText.Location = New System.Drawing.Point(432, 442)
+        Me.DeltaText.Location = New System.Drawing.Point(433, 466)
         Me.DeltaText.MaxLength = 0
         Me.DeltaText.Name = "DeltaText"
         Me.DeltaText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -473,7 +478,7 @@ Public Class FOrderAttribs
         Me.StockRangeLowerText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.StockRangeLowerText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StockRangeLowerText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.StockRangeLowerText.Location = New System.Drawing.Point(432, 468)
+        Me.StockRangeLowerText.Location = New System.Drawing.Point(433, 492)
         Me.StockRangeLowerText.MaxLength = 0
         Me.StockRangeLowerText.Name = "StockRangeLowerText"
         Me.StockRangeLowerText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -488,7 +493,7 @@ Public Class FOrderAttribs
         Me.StockRangeUpperText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.StockRangeUpperText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.StockRangeUpperText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.StockRangeUpperText.Location = New System.Drawing.Point(432, 494)
+        Me.StockRangeUpperText.Location = New System.Drawing.Point(433, 518)
         Me.StockRangeUpperText.MaxLength = 0
         Me.StockRangeUpperText.Name = "StockRangeUpperText"
         Me.StockRangeUpperText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -519,7 +524,7 @@ Public Class FOrderAttribs
         Me.ShortSaleSlotText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.ShortSaleSlotText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ShortSaleSlotText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.ShortSaleSlotText.Location = New System.Drawing.Point(432, 346)
+        Me.ShortSaleSlotText.Location = New System.Drawing.Point(433, 370)
         Me.ShortSaleSlotText.MaxLength = 0
         Me.ShortSaleSlotText.Name = "ShortSaleSlotText"
         Me.ShortSaleSlotText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -549,7 +554,7 @@ Public Class FOrderAttribs
         Me.DiscretionaryAmtText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.DiscretionaryAmtText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.DiscretionaryAmtText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DiscretionaryAmtText.Location = New System.Drawing.Point(432, 322)
+        Me.DiscretionaryAmtText.Location = New System.Drawing.Point(433, 346)
         Me.DiscretionaryAmtText.MaxLength = 0
         Me.DiscretionaryAmtText.Name = "DiscretionaryAmtText"
         Me.DiscretionaryAmtText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -563,7 +568,7 @@ Public Class FOrderAttribs
         Me.OkButton.Cursor = System.Windows.Forms.Cursors.Default
         Me.OkButton.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.OkButton.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.OkButton.Location = New System.Drawing.Point(343, 638)
+        Me.OkButton.Location = New System.Drawing.Point(550, 660)
         Me.OkButton.Name = "OkButton"
         Me.OkButton.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.OkButton.Size = New System.Drawing.Size(73, 25)
@@ -577,7 +582,7 @@ Public Class FOrderAttribs
         Me.CancelItButton.Cursor = System.Windows.Forms.Cursors.Default
         Me.CancelItButton.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CancelItButton.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CancelItButton.Location = New System.Drawing.Point(458, 638)
+        Me.CancelItButton.Location = New System.Drawing.Point(665, 660)
         Me.CancelItButton.Name = "CancelItButton"
         Me.CancelItButton.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CancelItButton.Size = New System.Drawing.Size(73, 25)
@@ -593,7 +598,7 @@ Public Class FOrderAttribs
         Me.HiddenText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.HiddenText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.HiddenText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.HiddenText.Location = New System.Drawing.Point(432, 298)
+        Me.HiddenText.Location = New System.Drawing.Point(433, 322)
         Me.HiddenText.MaxLength = 0
         Me.HiddenText.Name = "HiddenText"
         Me.HiddenText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -609,7 +614,7 @@ Public Class FOrderAttribs
         Me.TriggerMethodText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.TriggerMethodText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TriggerMethodText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TriggerMethodText.Location = New System.Drawing.Point(432, 250)
+        Me.TriggerMethodText.Location = New System.Drawing.Point(433, 274)
         Me.TriggerMethodText.MaxLength = 0
         Me.TriggerMethodText.Name = "TriggerMethodText"
         Me.TriggerMethodText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -625,7 +630,7 @@ Public Class FOrderAttribs
         Me.DisplaySizeText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.DisplaySizeText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.DisplaySizeText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DisplaySizeText.Location = New System.Drawing.Point(432, 226)
+        Me.DisplaySizeText.Location = New System.Drawing.Point(433, 250)
         Me.DisplaySizeText.MaxLength = 0
         Me.DisplaySizeText.Name = "DisplaySizeText"
         Me.DisplaySizeText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -773,7 +778,7 @@ Public Class FOrderAttribs
         Me.Label33.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label33.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label33.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label33.Location = New System.Drawing.Point(264, 83)
+        Me.Label33.Location = New System.Drawing.Point(265, 107)
         Me.Label33.Name = "Label33"
         Me.Label33.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label33.Size = New System.Drawing.Size(121, 17)
@@ -786,7 +791,7 @@ Public Class FOrderAttribs
         Me.Label32.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label32.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label32.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label32.Location = New System.Drawing.Point(264, 108)
+        Me.Label32.Location = New System.Drawing.Point(265, 132)
         Me.Label32.Name = "Label32"
         Me.Label32.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label32.Size = New System.Drawing.Size(105, 17)
@@ -799,7 +804,7 @@ Public Class FOrderAttribs
         Me.Label29.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label29.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label29.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label29.Location = New System.Drawing.Point(264, 180)
+        Me.Label29.Location = New System.Drawing.Point(265, 204)
         Me.Label29.Name = "Label29"
         Me.Label29.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label29.Size = New System.Drawing.Size(105, 17)
@@ -812,7 +817,7 @@ Public Class FOrderAttribs
         Me.Label28.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label28.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label28.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label28.Location = New System.Drawing.Point(264, 372)
+        Me.Label28.Location = New System.Drawing.Point(265, 396)
         Me.Label28.Name = "Label28"
         Me.Label28.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label28.Size = New System.Drawing.Size(120, 17)
@@ -825,7 +830,7 @@ Public Class FOrderAttribs
         Me.Label27.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label27.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label27.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label27.Location = New System.Drawing.Point(264, 397)
+        Me.Label27.Location = New System.Drawing.Point(265, 421)
         Me.Label27.Name = "Label27"
         Me.Label27.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label27.Size = New System.Drawing.Size(113, 17)
@@ -838,7 +843,7 @@ Public Class FOrderAttribs
         Me.Label26.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label26.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label26.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label26.Location = New System.Drawing.Point(264, 420)
+        Me.Label26.Location = New System.Drawing.Point(265, 444)
         Me.Label26.Name = "Label26"
         Me.Label26.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label26.Size = New System.Drawing.Size(113, 17)
@@ -851,7 +856,7 @@ Public Class FOrderAttribs
         Me.Label25.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label25.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label25.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label25.Location = New System.Drawing.Point(264, 445)
+        Me.Label25.Location = New System.Drawing.Point(265, 469)
         Me.Label25.Name = "Label25"
         Me.Label25.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label25.Size = New System.Drawing.Size(73, 17)
@@ -864,7 +869,7 @@ Public Class FOrderAttribs
         Me.Label24.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label24.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label24.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label24.Location = New System.Drawing.Point(264, 471)
+        Me.Label24.Location = New System.Drawing.Point(265, 495)
         Me.Label24.Name = "Label24"
         Me.Label24.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label24.Size = New System.Drawing.Size(160, 17)
@@ -877,7 +882,7 @@ Public Class FOrderAttribs
         Me.Label23.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label23.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label23.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label23.Location = New System.Drawing.Point(264, 497)
+        Me.Label23.Location = New System.Drawing.Point(265, 521)
         Me.Label23.Name = "Label23"
         Me.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label23.Size = New System.Drawing.Size(160, 17)
@@ -903,7 +908,7 @@ Public Class FOrderAttribs
         Me.Label17.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label17.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label17.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label17.Location = New System.Drawing.Point(264, 348)
+        Me.Label17.Location = New System.Drawing.Point(265, 372)
         Me.Label17.Name = "Label17"
         Me.Label17.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label17.Size = New System.Drawing.Size(152, 17)
@@ -929,7 +934,7 @@ Public Class FOrderAttribs
         Me.Label15.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label15.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label15.Location = New System.Drawing.Point(264, 324)
+        Me.Label15.Location = New System.Drawing.Point(265, 348)
         Me.Label15.Name = "Label15"
         Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label15.Size = New System.Drawing.Size(152, 17)
@@ -942,7 +947,7 @@ Public Class FOrderAttribs
         Me.Label14.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label14.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label14.Location = New System.Drawing.Point(264, 300)
+        Me.Label14.Location = New System.Drawing.Point(265, 324)
         Me.Label14.Name = "Label14"
         Me.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label14.Size = New System.Drawing.Size(65, 17)
@@ -955,7 +960,7 @@ Public Class FOrderAttribs
         Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label12.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label12.Location = New System.Drawing.Point(264, 252)
+        Me.Label12.Location = New System.Drawing.Point(265, 276)
         Me.Label12.Name = "Label12"
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(88, 17)
@@ -968,7 +973,7 @@ Public Class FOrderAttribs
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(264, 228)
+        Me.Label11.Location = New System.Drawing.Point(265, 252)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(65, 17)
@@ -1846,7 +1851,7 @@ Public Class FOrderAttribs
         Me.ActiveStopTimeText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.ActiveStopTimeText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ActiveStopTimeText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.ActiveStopTimeText.Location = New System.Drawing.Point(432, 567)
+        Me.ActiveStopTimeText.Location = New System.Drawing.Point(433, 591)
         Me.ActiveStopTimeText.MaxLength = 0
         Me.ActiveStopTimeText.Name = "ActiveStopTimeText"
         Me.ActiveStopTimeText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -1861,7 +1866,7 @@ Public Class FOrderAttribs
         Me.ActiveStartTimeText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.ActiveStartTimeText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ActiveStartTimeText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.ActiveStartTimeText.Location = New System.Drawing.Point(432, 543)
+        Me.ActiveStartTimeText.Location = New System.Drawing.Point(433, 567)
         Me.ActiveStartTimeText.MaxLength = 0
         Me.ActiveStartTimeText.Name = "ActiveStartTimeText"
         Me.ActiveStartTimeText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -1876,7 +1881,7 @@ Public Class FOrderAttribs
         Me.ScaleTableText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.ScaleTableText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ScaleTableText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.ScaleTableText.Location = New System.Drawing.Point(432, 519)
+        Me.ScaleTableText.Location = New System.Drawing.Point(433, 543)
         Me.ScaleTableText.MaxLength = 0
         Me.ScaleTableText.Name = "ScaleTableText"
         Me.ScaleTableText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -1889,7 +1894,7 @@ Public Class FOrderAttribs
         Me.Label60.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label60.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label60.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label60.Location = New System.Drawing.Point(264, 570)
+        Me.Label60.Location = New System.Drawing.Point(265, 594)
         Me.Label60.Name = "Label60"
         Me.Label60.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label60.Size = New System.Drawing.Size(160, 17)
@@ -1902,7 +1907,7 @@ Public Class FOrderAttribs
         Me.Label61.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label61.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label61.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label61.Location = New System.Drawing.Point(264, 545)
+        Me.Label61.Location = New System.Drawing.Point(265, 569)
         Me.Label61.Name = "Label61"
         Me.Label61.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label61.Size = New System.Drawing.Size(160, 17)
@@ -1915,7 +1920,7 @@ Public Class FOrderAttribs
         Me.Label62.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label62.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label62.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label62.Location = New System.Drawing.Point(264, 521)
+        Me.Label62.Location = New System.Drawing.Point(265, 545)
         Me.Label62.Name = "Label62"
         Me.Label62.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label62.Size = New System.Drawing.Size(160, 17)
@@ -2008,7 +2013,7 @@ Public Class FOrderAttribs
         Me.Mifid2ExecutionTraderText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.Mifid2ExecutionTraderText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Mifid2ExecutionTraderText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.Mifid2ExecutionTraderText.Location = New System.Drawing.Point(143, 610)
+        Me.Mifid2ExecutionTraderText.Location = New System.Drawing.Point(143, 612)
         Me.Mifid2ExecutionTraderText.MaxLength = 0
         Me.Mifid2ExecutionTraderText.Name = "Mifid2ExecutionTraderText"
         Me.Mifid2ExecutionTraderText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -2021,7 +2026,7 @@ Public Class FOrderAttribs
         Me.Label66.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label66.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label66.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label66.Location = New System.Drawing.Point(11, 610)
+        Me.Label66.Location = New System.Drawing.Point(11, 612)
         Me.Label66.Name = "Label66"
         Me.Label66.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label66.Size = New System.Drawing.Size(133, 17)
@@ -2036,7 +2041,7 @@ Public Class FOrderAttribs
         Me.Mifid2ExecutionAlgoText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.Mifid2ExecutionAlgoText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Mifid2ExecutionAlgoText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.Mifid2ExecutionAlgoText.Location = New System.Drawing.Point(431, 610)
+        Me.Mifid2ExecutionAlgoText.Location = New System.Drawing.Point(432, 638)
         Me.Mifid2ExecutionAlgoText.MaxLength = 0
         Me.Mifid2ExecutionAlgoText.Name = "Mifid2ExecutionAlgoText"
         Me.Mifid2ExecutionAlgoText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -2049,7 +2054,7 @@ Public Class FOrderAttribs
         Me.Label67.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label67.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label67.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label67.Location = New System.Drawing.Point(263, 610)
+        Me.Label67.Location = New System.Drawing.Point(264, 636)
         Me.Label67.Name = "Label67"
         Me.Label67.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label67.Size = New System.Drawing.Size(160, 17)
@@ -2092,7 +2097,7 @@ Public Class FOrderAttribs
         Me.Mifid2DecisionAlgoText.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.Mifid2DecisionAlgoText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Mifid2DecisionAlgoText.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.Mifid2DecisionAlgoText.Location = New System.Drawing.Point(431, 591)
+        Me.Mifid2DecisionAlgoText.Location = New System.Drawing.Point(432, 615)
         Me.Mifid2DecisionAlgoText.MaxLength = 0
         Me.Mifid2DecisionAlgoText.Name = "Mifid2DecisionAlgoText"
         Me.Mifid2DecisionAlgoText.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -2105,7 +2110,7 @@ Public Class FOrderAttribs
         Me.Label65.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label65.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label65.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label65.Location = New System.Drawing.Point(263, 591)
+        Me.Label65.Location = New System.Drawing.Point(264, 615)
         Me.Label65.Name = "Label65"
         Me.Label65.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label65.Size = New System.Drawing.Size(160, 17)
@@ -2135,7 +2140,7 @@ Public Class FOrderAttribs
         'OutsideRTHCheck
         '
         Me.OutsideRTHCheck.AutoSize = True
-        Me.OutsideRTHCheck.Location = New System.Drawing.Point(266, 272)
+        Me.OutsideRTHCheck.Location = New System.Drawing.Point(267, 296)
         Me.OutsideRTHCheck.Name = "OutsideRTHCheck"
         Me.OutsideRTHCheck.Size = New System.Drawing.Size(86, 18)
         Me.OutsideRTHCheck.TabIndex = 157
@@ -2145,7 +2150,7 @@ Public Class FOrderAttribs
         'OverridePercentageConstraintsCheck
         '
         Me.OverridePercentageConstraintsCheck.AutoSize = True
-        Me.OverridePercentageConstraintsCheck.Location = New System.Drawing.Point(266, 200)
+        Me.OverridePercentageConstraintsCheck.Location = New System.Drawing.Point(267, 224)
         Me.OverridePercentageConstraintsCheck.Name = "OverridePercentageConstraintsCheck"
         Me.OverridePercentageConstraintsCheck.Size = New System.Drawing.Size(184, 18)
         Me.OverridePercentageConstraintsCheck.TabIndex = 158
@@ -2155,7 +2160,7 @@ Public Class FOrderAttribs
         'AllOrNoneCheck
         '
         Me.AllOrNoneCheck.AutoSize = True
-        Me.AllOrNoneCheck.Location = New System.Drawing.Point(266, 57)
+        Me.AllOrNoneCheck.Location = New System.Drawing.Point(267, 81)
         Me.AllOrNoneCheck.Name = "AllOrNoneCheck"
         Me.AllOrNoneCheck.Size = New System.Drawing.Size(79, 18)
         Me.AllOrNoneCheck.TabIndex = 159
@@ -2165,7 +2170,7 @@ Public Class FOrderAttribs
         'FirmQuoteOnlyCheck
         '
         Me.FirmQuoteOnlyCheck.AutoSize = True
-        Me.FirmQuoteOnlyCheck.Location = New System.Drawing.Point(267, 155)
+        Me.FirmQuoteOnlyCheck.Location = New System.Drawing.Point(268, 179)
         Me.FirmQuoteOnlyCheck.Name = "FirmQuoteOnlyCheck"
         Me.FirmQuoteOnlyCheck.Size = New System.Drawing.Size(103, 18)
         Me.FirmQuoteOnlyCheck.TabIndex = 160
@@ -2175,7 +2180,7 @@ Public Class FOrderAttribs
         'ETradeOnlyCheck
         '
         Me.ETradeOnlyCheck.AutoSize = True
-        Me.ETradeOnlyCheck.Location = New System.Drawing.Point(266, 130)
+        Me.ETradeOnlyCheck.Location = New System.Drawing.Point(267, 154)
         Me.ETradeOnlyCheck.Name = "ETradeOnlyCheck"
         Me.ETradeOnlyCheck.Size = New System.Drawing.Size(149, 18)
         Me.ETradeOnlyCheck.TabIndex = 161
@@ -2199,11 +2204,41 @@ Public Class FOrderAttribs
         Me.OrderPropertyGrid.Size = New System.Drawing.Size(287, 595)
         Me.OrderPropertyGrid.TabIndex = 163
         '
+        'LmtPriceOffsetText
+        '
+        Me.LmtPriceOffsetText.AcceptsReturn = True
+        Me.LmtPriceOffsetText.BackColor = System.Drawing.SystemColors.Window
+        Me.LmtPriceOffsetText.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.LmtPriceOffsetText.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.LmtPriceOffsetText.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LmtPriceOffsetText.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.LmtPriceOffsetText.Location = New System.Drawing.Point(432, 58)
+        Me.LmtPriceOffsetText.MaxLength = 0
+        Me.LmtPriceOffsetText.Name = "LmtPriceOffsetText"
+        Me.LmtPriceOffsetText.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.LmtPriceOffsetText.Size = New System.Drawing.Size(85, 13)
+        Me.LmtPriceOffsetText.TabIndex = 165
+        '
+        'Label8
+        '
+        Me.Label8.BackColor = System.Drawing.Color.Gainsboro
+        Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label8.Font = New System.Drawing.Font("Arial", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label8.Location = New System.Drawing.Point(264, 58)
+        Me.Label8.Name = "Label8"
+        Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label8.Size = New System.Drawing.Size(136, 17)
+        Me.Label8.TabIndex = 164
+        Me.Label8.Text = "Lmt Price Offset"
+        '
         'FOrderAttribs
         '
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
         Me.BackColor = System.Drawing.Color.Gainsboro
         Me.ClientSize = New System.Drawing.Size(1158, 832)
+        Me.Controls.Add(Me.LmtPriceOffsetText)
+        Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.OrderPropertyGrid)
         Me.Controls.Add(Me.ContinuousUpdateCheck)
         Me.Controls.Add(Me.ETradeOnlyCheck)
@@ -2364,16 +2399,13 @@ Public Class FOrderAttribs
     ' Member variables
     ' ========================================================
     Private mOrderInfo As Order
-    Private mMainWnd As MainForm
 
     Private mOk As Boolean
 
     ' ========================================================
     ' Public Methods
     ' ========================================================
-    Public Sub Init(mainWin As Form, orderInfo As Order, transmit As Boolean)
-
-        mMainWnd = MainForm
+    Public Sub Init(orderInfo As Order, transmit As Boolean)
         mOrderInfo = orderInfo
 
         OrderPropertyGrid.SelectedObject = mOrderInfo
@@ -2402,6 +2434,7 @@ Public Class FOrderAttribs
         PercentOffsetText.Text = IBAPI.NullableToString(mOrderInfo.PercentOffset)
         TrailStopPriceText.Text = IBAPI.NullableToString(mOrderInfo.TrailStopPrice)
         TrailingPercentText.Text = IBAPI.NullableToString(mOrderInfo.TrailingPercent)
+        LmtPriceOffsetText.Text = IBAPI.NullableToString(mOrderInfo.LmtPriceOffset)
 
         ' Institutional orders only
         OpenCloseText.Text = mOrderInfo.OpenClose
@@ -2525,10 +2558,11 @@ Public Class FOrderAttribs
         mOrderInfo.OverridePercentageConstraints = OverridePercentageConstraintsCheck.Checked
         mOrderInfo.Rule80A = Rule80AText.Text
         mOrderInfo.AllOrNone = AllOrNoneCheck.Checked
-        mOrderInfo.MinQty = ival(MinQtyText.Text)
-        mOrderInfo.PercentOffset = dval(PercentOffsetText.Text)
-        mOrderInfo.TrailStopPrice = dval(TrailStopPriceText.Text)
-        mOrderInfo.TrailingPercent = dval(TrailingPercentText.Text)
+        mOrderInfo.MinQty = IBAPI.NullableIntegerFromString(MinQtyText.Text)
+        mOrderInfo.PercentOffset = IBAPI.NullableDoubleFromString(PercentOffsetText.Text)
+        mOrderInfo.TrailStopPrice = IBAPI.NullableDoubleFromString(TrailStopPriceText.Text)
+        mOrderInfo.TrailingPercent = IBAPI.NullableDoubleFromString(TrailingPercentText.Text)
+        mOrderInfo.LmtPriceOffset = LmtPriceOffsetText.Text
 
         ' Institutional orders only
         mOrderInfo.OpenClose = OpenCloseText.Text
@@ -2545,7 +2579,7 @@ Public Class FOrderAttribs
         mOrderInfo.DiscretionaryAmt = dval(DiscretionaryAmtText.Text)
         mOrderInfo.ETradeOnly = ETradeOnlyCheck.Checked
         mOrderInfo.FirmQuoteOnly = FirmQuoteOnlyCheck.Checked
-        mOrderInfo.NbboPriceCap = dval(NBBOPriceCapText.Text)
+        mOrderInfo.NbboPriceCap = NBBOPriceCapText.Text
         mOrderInfo.OptOutSmartRouting = OptOutSmartRoutingCheck.Checked
 
         ' BOX or VOL orders only
@@ -2577,15 +2611,15 @@ Public Class FOrderAttribs
         mOrderInfo.DeltaNeutralDesignatedLocation = DeltaNeutralDesignatedLocationText.Text
 
         ' SCALE orders only
-        mOrderInfo.ScaleInitLevelSize = ival(ScaleInitLevelSizeText.Text)
-        mOrderInfo.ScaleSubsLevelSize = ival(ScaleSubsLevelSizeText.Text)
-        mOrderInfo.ScalePriceIncrement = dval(ScalePriceIncrText.Text)
-        mOrderInfo.ScalePriceAdjustValue = dval(ScalePriceAdjustValueText.Text)
-        mOrderInfo.ScalePriceAdjustInterval = ival(ScalePriceAdjustIntervalText.Text)
-        mOrderInfo.ScaleProfitOffset = dval(ScaleProfitOffsetText.Text)
+        mOrderInfo.ScaleInitLevelSize = ScaleInitLevelSizeText.Text
+        mOrderInfo.ScaleSubsLevelSize = ScaleSubsLevelSizeText.Text
+        mOrderInfo.ScalePriceIncrement = ScalePriceIncrText.Text
+        mOrderInfo.ScalePriceAdjustValue = ScalePriceAdjustValueText.Text
+        mOrderInfo.ScalePriceAdjustInterval = ScalePriceAdjustIntervalText.Text
+        mOrderInfo.ScaleProfitOffset = ScaleProfitOffsetText.Text
         mOrderInfo.ScaleAutoReset = ScaleAutoResetCheck.Checked
-        mOrderInfo.ScaleInitPosition = ival(ScaleInitPositionText.Text)
-        mOrderInfo.ScaleInitFillQty = ival(ScaleInitFillQtyText.Text)
+        mOrderInfo.ScaleInitPosition = ScaleInitPositionText.Text
+        mOrderInfo.ScaleInitFillQty = ScaleInitFillQtyText.Text
         mOrderInfo.ScaleRandomPercent = ScaleRandomPercentCheck.Checked
         mOrderInfo.ScaleTable = ScaleTableText.Text
 
@@ -2618,4 +2652,5 @@ Public Class FOrderAttribs
         mOk = False
         Hide()
     End Sub
+
 End Class

@@ -926,7 +926,6 @@ Friend Class FScanner
     Private mMainWnd As MainForm
 
     Private mId As Integer
-    Private mOk As Boolean
     Private mOptions As List(Of TagValue)
     Private mFilterOptions As List(Of TagValue)
 
@@ -934,7 +933,6 @@ Friend Class FScanner
     ' Public Methods
     ' ========================================================
     Public Sub Init(mainWin As System.Windows.Forms.Form)
-        mOk = False
         mMainWnd = mainWin
         mSubscription = New ScannerSubscription
     End Sub
@@ -943,7 +941,6 @@ Friend Class FScanner
     ' Private Methods
     ' ========================================================
     Private Sub cancelButton_Click()
-        mOk = False
         Hide()
     End Sub
 

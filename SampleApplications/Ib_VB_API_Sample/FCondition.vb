@@ -3,10 +3,8 @@ Imports System.Collections.Generic
 Imports System.Linq
 
 Public Class FCondition
-    Private mRadioMap As New Dictionary(Of RadioButton, Tuple(Of Panel, OrderConditionType))
-    Private mRadioButtons As IEnumerable(Of RadioButton)
-
-    Private mCondition As OrderCondition
+    Private ReadOnly mRadioMap As New Dictionary(Of RadioButton, Tuple(Of Panel, OrderConditionType))
+    Private ReadOnly mRadioButtons As IEnumerable(Of RadioButton)
 
     Public Property Condition As OrderCondition
 

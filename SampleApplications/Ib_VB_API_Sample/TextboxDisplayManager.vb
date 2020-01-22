@@ -2,8 +2,8 @@
     Implements IDisposable
 
     Private Const TimerInterval As Integer = 100
-    Private mSb As New System.Text.StringBuilder()
-    Private mTextBox As TextBoxBase
+    Private ReadOnly mSb As New System.Text.StringBuilder()
+    Private ReadOnly mTextBox As TextBoxBase
     Private WithEvents Timer As New System.Timers.Timer(TimerInterval)
 
     Friend Sub New(textBox As TextBoxBase)

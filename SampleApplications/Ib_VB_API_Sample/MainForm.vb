@@ -1496,7 +1496,7 @@ Friend Class MainForm
         Me.ClientIdText.Name = "ClientIdText"
         Me.ClientIdText.Size = New System.Drawing.Size(66, 16)
         Me.ClientIdText.TabIndex = 2
-        Me.ClientIdText.Text = "123"
+        Me.ClientIdText.Text = "49723415"
         '
         'ServerText
         '
@@ -1561,6 +1561,7 @@ Friend Class MainForm
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "VB.NET Sample"
+        Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.SplitContainer1.Panel1.ResumeLayout(False)
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1611,7 +1612,6 @@ Friend Class MainForm
 
     Private mApi As IBAPI
     Private mApiPaused As Boolean
-    Private mClientId As Integer
 
     Private mMarketDataText As TextboxDisplayManager
     Private mSocketDataText As TextboxDisplayManager
@@ -1624,17 +1624,17 @@ Friend Class MainForm
     Private mMarketDepthOptions As List(Of TagValue)
     Private mRealTimeBarsOptions As List(Of TagValue)
 
-    Private mPnLForm As New FPnL
-    Private mOrderForm As New FOrder()
+    Private ReadOnly mPnLForm As New FPnL
+    Private ReadOnly mOrderForm As New FOrder()
     Private mMarketDepthForm As FMarketDepth
-    Private mAccountDataForm As New FAcctData
-    Private mAccountUpdatesForm As New FAccountUpdates
-    Private mNewsBulletinsForm As New FNewsBulletins
-    Private mLogConfigForm As New FLogConfig
-    Private mFinancialAdvisorForm As New FFinancialAdvisor
-    Private mScannerForm As New FScanner
-    Private mGroupsForm As New FGroups
-    Private mAccountSummaryForm As New FAccountSummary
+    Private ReadOnly mAccountDataForm As New FAcctData
+    Private ReadOnly mAccountUpdatesForm As New FAccountUpdates
+    Private ReadOnly mNewsBulletinsForm As New FNewsBulletins
+    Private ReadOnly mLogConfigForm As New FLogConfig
+    Private ReadOnly mFinancialAdvisorForm As New FFinancialAdvisor
+    Private ReadOnly mScannerForm As New FScanner
+    Private ReadOnly mGroupsForm As New FGroups
+    Private ReadOnly mAccountSummaryForm As New FAccountSummary
 
     Private mFaAccount As Boolean
     Private mFaError As Boolean
@@ -1648,7 +1648,7 @@ Friend Class MainForm
 
     Private mNewsArticlePath As String
 
-    Private mTheme As Theme
+    Private ReadOnly mTheme As Theme
 
 #End Region
 
@@ -2066,7 +2066,7 @@ Friend Class MainForm
         Dim fOrderAttribs As New FOrderAttribs
         mTheme.ApplyTheme(fOrderAttribs.Controls)
 
-        fOrderAttribs.Init(Me, mOrderForm.OrderInfo, mTransmit)
+        fOrderAttribs.Init(mOrderForm.OrderInfo, mTransmit)
         fOrderAttribs.ShowDialog()
         mTransmit = fOrderAttribs.Transmit
         ' nothing to do besides that
@@ -2727,7 +2727,6 @@ Friend Class MainForm
 
             setConnectionState(ApiConnectionState.Connected)
 
-            mClientId = e.ClientId
             mServerResponsesText.DisplayMessage($"Connected to Tws: server version {mApi.ServerVersion}", e.Timestamp)
 
             If mUseQueueing Then
@@ -2746,7 +2745,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub _CurrentTime(sender As Object, e As CurrentTimeEventArgs) Handles ApiEvents.CurrentTime
-        mServerResponsesText.DisplayMessage($"Current server time = {e.ServerTimestamp}", e.Timestamp)
+        mServerResponsesText.DisplayMessage($"Current server time = {e.ServerTimestamp.ToString("yyyyMMdd-HH:mm:ss.fff")}", e.Timestamp)
     End Sub
 
     Private Sub _IBServerConnectionStateChange(sender As Object, e As IBServerConnectionStateChangeEventArgs) Handles ApiEvents.IBServerConnectionStateChanged
@@ -3096,11 +3095,11 @@ id={e.TickerId} {GetField(e.Field)} vol={IBAPI.NullableToString(e.ImpliedVolatil
     End Sub
 
     Private Sub _ResetMarketDepth(sender As Object, e As MarketDepthRestEventArgs) Handles ApiEvents.ResetMarketDepth
-        mMarketDepthForm.Clear()
+        If mMarketDepthForm IsNot Nothing Then mMarketDepthForm.Clear()
     End Sub
 
     Private Sub _UpdateMktDepth(sender As Object, e As MarketDepthUpdateEventArgs) Handles ApiEvents.MarketDepthUpdate
-        mMarketDepthForm.UpdateMktDepth(e.RequestId, e.Position, e.MarketMaker, e.Operation, e.Side, e.Price, e.Size)
+        If mMarketDepthForm IsNot Nothing Then mMarketDepthForm.UpdateMktDepth(e.RequestId, e.Position, e.MarketMaker, e.Operation, e.Side, e.Price, e.Size)
     End Sub
 
 #End Region
@@ -3321,6 +3320,7 @@ Order (extended)
     percentOffset={IBAPI.NullableToString(o.PercentOffset)}
     trailStopPrice={IBAPI.NullableToString(o.TrailStopPrice)}
     trailingPercent={IBAPI.NullableToString(o.TrailingPercent)}
+    lmtPriceOffset={IBAPI.NullableToString(o.LmtPriceOffset)}
     whatIf={o.WhatIf}
     notHeld={o.NotHeld}
 
@@ -3703,7 +3703,6 @@ $"id={e.RequestId} rank={e.Rank} conId={contract.ConId}
         Dim attr = xmlDoc.CreateAttribute(attrName)
         attr.Value = attrValue
         elem.SetAttributeNode(attr)
-        attr = Nothing
     End Sub
 
 #End Region
