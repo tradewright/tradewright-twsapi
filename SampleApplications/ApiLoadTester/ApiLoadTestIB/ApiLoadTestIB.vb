@@ -96,7 +96,7 @@ Public Class ApiLoadTestIB
         mIBApi.reqMktData(mNextMarketDataTickerId, contract, "", False, False, Nothing)
         mNextMarketDataTickerId += 1
         If marketDepth Then
-            mIBApi.reqMarketDepth(mNextMarketDepthTickerId, contract, 20, Nothing)
+            mIBApi.reqMarketDepth(mNextMarketDepthTickerId, contract, 20, Nothing, Nothing)
             mNextMarketDepthTickerId += 1
         End If
         Return mNextMarketDataTickerId - 1
@@ -110,7 +110,7 @@ Public Class ApiLoadTestIB
         mNextMarketDataTickerId = 0
 
         For i = 0 To mNextMarketDepthTickerId - 1
-            mIBApi.cancelMktDepth(i)
+            mIBApi.cancelMktDepth(i, False)
             mUI.LogMessage("Stopping market depth " & i)
         Next
         mNextMarketDepthTickerId = 0
@@ -268,7 +268,7 @@ Public Class ApiLoadTestIB
         mUI.IncrementTotalTicks()
     End Sub
 
-    Public Sub UpdateMktDepthL2(tickerId As Integer, position As Integer, marketMaker As String, operation As Integer, side As Integer, price As Double, size As Integer) Implements EWrapper.updateMktDepthL2
+    Public Sub updateMktDepthL2(tickerId As Integer, position As Integer, marketMaker As String, operation As Integer, side As Integer, price As Double, size As Integer, isSmartDepth As Boolean) Implements EWrapper.updateMktDepthL2
         mUI.IncrementTotalTicks()
     End Sub
 
@@ -457,6 +457,14 @@ Public Class ApiLoadTestIB
     End Sub
 
     Public Sub orderBound(orderId As Long, apiClientId As Integer, apiOrderId As Integer) Implements EWrapper.orderBound
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub completedOrder(contract As Contract, order As Order, orderState As OrderState) Implements EWrapper.completedOrder
+        mUI.IncrementTotalTicks()
+    End Sub
+
+    Public Sub completedOrdersEnd() Implements EWrapper.completedOrdersEnd
         mUI.IncrementTotalTicks()
     End Sub
 
