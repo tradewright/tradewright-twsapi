@@ -1,0 +1,7 @@
+
+# Allow NuGet Packages
+!*.nupkg
+
+# Allow .dlls and pdbs
+!*.dll
+!*.pdb
