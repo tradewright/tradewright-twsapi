@@ -32,8 +32,6 @@ Friend Class CalculateImpliedVolatilityGenerator
 
     Private Delegate Sub ApiMethodDelegate(pReqId As Integer, pContract As Contract, pOptionPrice As Double, pUnderPrice As Double, impliedVolatilityOptions As List(Of TagValue))
 
-    Private Const ModuleName As String = NameOf(CalculateImpliedVolatilityGenerator)
-
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
             Return New ApiMethodDelegate(AddressOf calculateImpliedVolatility)
@@ -47,8 +45,6 @@ Friend Class CalculateImpliedVolatilityGenerator
     End Property
 
     Private Sub calculateImpliedVolatility(pReqId As Integer, pContract As Contract, pOptionPrice As Double, pUnderPrice As Double, options As List(Of TagValue))
-        Const ProcName As String = NameOf(calculateImpliedVolatility)
-
         If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 3

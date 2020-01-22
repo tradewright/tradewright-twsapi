@@ -45,7 +45,6 @@ Friend Class RequestExecutionsGenerator
     End Property
 
     Private Sub requestExecutions(pRequestId As Integer, filter As ExecutionFilter)
-        Const ProcName As String = NameOf(requestExecutions)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3

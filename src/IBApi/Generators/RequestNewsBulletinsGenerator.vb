@@ -45,7 +45,6 @@ Friend Class RequestNewsBulletinsGenerator
     End Property
 
     Private Sub RequestNewsBulletins(allMsgs As Boolean)
-        Const ProcName As String = NameOf(RequestNewsBulletins)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

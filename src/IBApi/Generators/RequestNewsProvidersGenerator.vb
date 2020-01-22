@@ -45,8 +45,6 @@ Friend Class RequestNewsProvidersGenerator
     End Property
 
     Private Sub RequestNewsProviders()
-        Const ProcName As String = NameOf(RequestNewsProviders)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_NEWS_PROVIDERS Then Throw New InvalidOperationException("News provider requests not supported")
 

@@ -30,8 +30,6 @@ Friend Class CancelHistoricalDataGenerator
 
     Private Delegate Sub ApiMethodDelegate(pRequestId As Integer)
 
-    Private Const ModuleName As String = NameOf(CancelHistoricalDataGenerator)
-
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
             Return New ApiMethodDelegate(AddressOf CancelHistoricalData)
@@ -45,8 +43,7 @@ Friend Class CancelHistoricalDataGenerator
     End Property
 
     Private Sub CancelHistoricalData(pRequestId As Integer)
-        Const ProcName As String = NameOf(CancelHistoricalData)
-        Const VERSION As Integer = 1
+                Const VERSION As Integer = 1
         If ConnectionState = ApiConnectionState.Connected Then
 
             Dim lWriter = CreateOutputMessageGenerator()

@@ -45,7 +45,6 @@ Friend Class ReplaceFAGenerator
     End Property
 
     Private Sub ReplaceFA(dataType As FinancialAdvisorDataType, xml As String)
-        Const ProcName As String = NameOf(ReplaceFA)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

@@ -33,7 +33,7 @@ Friend NotInheritable Class MarketDepthExchangesParser
 
     Private Const ModuleName As String = NameOf(MarketDepthExchangesParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim descriptions = New List(Of DepthMktDataDescription)
         Dim descriptionsCount = Await _Reader.GetIntAsync("Descriptions Count")
 

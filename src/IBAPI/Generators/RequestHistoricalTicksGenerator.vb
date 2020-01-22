@@ -45,7 +45,7 @@ Friend Class RequestHistoricalTickDataGenerator
     End Property
 
     Private Sub requestHistoricalTickData(requestId As Integer, request As HistoricalTicksRequest, Optional useRTH As Boolean = False, Optional ignoreSize As Boolean = False, Optional options As List(Of TagValue) = Nothing)
-        Const ProcName As String = NameOf(requestHistoricalTickData)
+
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.HISTORICAL_TICKS Then Throw New InvalidOperationException("Historical tick requests not supported")

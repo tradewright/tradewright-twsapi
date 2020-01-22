@@ -45,8 +45,6 @@ Friend Class RequestHistogramDataGenerator
     End Property
 
     Private Sub requestHistogramData(requestId As Integer, contract As Contract, useRTH As Boolean, period As String)
-        Const ProcName As String = NameOf(requestHistogramData)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HISTOGRAM_DATA Then Throw New InvalidOperationException("Histogram data requests not supported")
 

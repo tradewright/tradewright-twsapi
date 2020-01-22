@@ -45,7 +45,6 @@ Friend Class RequestManagedAccountsGenerator
     End Property
 
     Private Sub RequestManagedAccounts()
-        Const ProcName As String = NameOf(RequestManagedAccounts)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

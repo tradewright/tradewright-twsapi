@@ -45,7 +45,6 @@ Friend Class SubscribeToGroupEventsGenerator
     End Property
 
     Private Sub SubscribeToGroupEvents(requestId As Integer, groupId As Integer)
-        Const ProcName As String = NameOf(SubscribeToGroupEvents)
         Const VERSION As Integer = 1
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")

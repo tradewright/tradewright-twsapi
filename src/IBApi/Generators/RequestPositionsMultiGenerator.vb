@@ -45,7 +45,6 @@ Friend Class RequestPositionsMultiGenerator
     End Property
 
     Private Sub RequestPositionsMulti(requestId As Integer, account As String, modelCode As String)
-        Const ProcName As String = NameOf(RequestPositionsMulti)
         Const VERSION As Integer = 1
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")

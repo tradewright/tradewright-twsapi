@@ -45,7 +45,6 @@ Friend Class RequestAccountDataGenerator
     End Property
 
     Private Sub RequestAccountData(subscribe As Boolean, acctCode As String)
-        Const ProcName As String = NameOf(RequestAccountData)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 2

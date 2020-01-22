@@ -45,7 +45,7 @@ Friend Class QueryDisplayGroupsGenerator
     End Property
 
     Private Sub queryDisplayGroups(requestId As Integer)
-        Const ProcName As String = NameOf(queryDisplayGroups)
+
         Const VERSION As Integer = 1
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")

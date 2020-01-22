@@ -30,8 +30,6 @@ Friend Class CancelAccountSummaryGenerator
 
     Private Delegate Sub ApiMethodDelegate(pReqId As Integer)
 
-    Private Const ModuleName As String = NameOf(CancelAccountSummaryGenerator)
-
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
             Return New ApiMethodDelegate(AddressOf cancelAccountSummary)
@@ -45,7 +43,6 @@ Friend Class CancelAccountSummaryGenerator
     End Property
 
     Private Sub cancelAccountSummary(pReqId As Integer)
-        Const ProcName As String = NameOf(cancelAccountSummary)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

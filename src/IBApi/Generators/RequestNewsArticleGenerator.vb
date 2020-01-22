@@ -45,8 +45,6 @@ Friend Class RequestNewsArticleGenerator
     End Property
 
     Private Sub requestNewsArticle(requestId As Integer, providerCode As String, articleId As String, options As List(Of TagValue))
-        Const ProcName As String = NameOf(requestNewsArticle)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_NEWS_ARTICLE Then Throw New InvalidOperationException("News article requests not supported")
 

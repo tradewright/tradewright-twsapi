@@ -45,7 +45,7 @@ Friend Class CancelHeadTimestampGenerator
     End Property
 
     Private Sub CancelHeadTimestamp(requestId As Integer)
-        Const ProcName As String = NameOf(CancelHeadTimestamp)
+
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.CANCEL_HEADTIMESTAMP Then Throw New InvalidOperationException("Head timestamp request cancellation not supported")

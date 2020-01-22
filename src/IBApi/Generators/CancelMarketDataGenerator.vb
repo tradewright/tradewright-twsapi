@@ -45,7 +45,7 @@ Friend Class CancelMarketDataGenerator
     End Property
 
     Private Sub cancelMarketData(pTickerId As Integer)
-        Const ProcName As String = NameOf(cancelMarketData)
+
         If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 2

@@ -45,7 +45,6 @@ Friend Class StartAPIGenerator
     End Property
 
     Private Sub StartAPI(clientId As Integer, optionalCapabilities As String)
-        Const ProcName As String = NameOf(StartAPI)
         Const VERSION As Integer = 2
 
         Dim lwriter = CreateOutputMessageGenerator()

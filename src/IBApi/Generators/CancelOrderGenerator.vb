@@ -45,7 +45,6 @@ Friend Class CancelOrderGenerator
     End Property
 
     Private Sub cancelOrder(pOrderId As Integer)
-        Const ProcName As String = NameOf(cancelOrder)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

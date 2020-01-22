@@ -30,8 +30,6 @@ Friend Class CancelCalculateOptionPriceGenerator
 
     Private Delegate Sub ApiMethodDelegate(pReqId As Integer)
 
-    Private Const ModuleName As String = NameOf(CancelCalculateOptionPriceGenerator)
-
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
             Return New ApiMethodDelegate(AddressOf CancelCalculateOptionPrice)
@@ -45,7 +43,6 @@ Friend Class CancelCalculateOptionPriceGenerator
     End Property
 
     Private Sub CancelCalculateOptionPrice(pReqId As Integer)
-        Const ProcName As String = NameOf(CancelCalculateOptionPrice)
         If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1

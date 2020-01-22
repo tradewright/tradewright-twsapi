@@ -32,7 +32,7 @@ Friend NotInheritable Class AccountUpdateMultiEndParser
 
     Private Const ModuleName As String = NameOf(AccountUpdateMultiEndParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request id")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")

@@ -45,7 +45,7 @@ Friend Class CancelHistogramDataGenerator
     End Property
 
     Private Sub CancelHistogramData(requestId As Integer)
-        Const ProcName As String = NameOf(CancelHistogramData)
+
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HISTOGRAM_DATA Then Throw New InvalidOperationException("Histogram data requests not supported")

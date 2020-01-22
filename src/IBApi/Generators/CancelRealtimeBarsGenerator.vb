@@ -45,7 +45,6 @@ Friend Class CancelRealtimeBarsGenerator
     End Property
 
     Private Sub CancelRealtimeBars(pTickerId As Integer)
-        Const ProcName As String = NameOf(CancelRealtimeBars)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

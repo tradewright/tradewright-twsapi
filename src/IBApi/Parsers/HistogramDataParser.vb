@@ -33,7 +33,7 @@ Friend NotInheritable Class HistogramDataParser
 
     Private Const ModuleName As String = NameOf(HistogramDataParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("RequestId")
         Dim entryCount = Await _Reader.GetIntAsync("Entry Count")
         Dim histData = New List(Of HistogramEntry)

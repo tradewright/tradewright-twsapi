@@ -45,8 +45,6 @@ Friend Class RequestPnLSingleGeneratorGenerator
     End Property
 
     Private Sub requestPnLSingleGenerator(requestId As Integer, account As String, modelCode As String, conId As Integer)
-        Const ProcName As String = NameOf(requestPnLSingleGenerator)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.PNL Then Throw New InvalidOperationException("PnL requests not supported")
 

@@ -45,7 +45,6 @@ Friend Class SetServerLogLevelGenerator
     End Property
 
     Private Sub SetServerLogLevel(logLevel As ApiLogLevel)
-        Const ProcName As String = NameOf(SetServerLogLevel)
         Const VERSION As Integer = 1
 
         Dim lWriter = CreateOutputMessageGenerator()

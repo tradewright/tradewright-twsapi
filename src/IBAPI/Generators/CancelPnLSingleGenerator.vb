@@ -45,7 +45,7 @@ Friend Class CancelPnLSingleGenerator
     End Property
 
     Private Sub CancelPnLSingle(requestId As Integer)
-        Const ProcName As String = NameOf(CancelPnLSingle)
+
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.PNL Then Throw New InvalidOperationException("Daily PnL requests not supported")

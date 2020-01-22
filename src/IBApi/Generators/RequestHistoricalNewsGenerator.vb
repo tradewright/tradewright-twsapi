@@ -45,7 +45,7 @@ Friend Class RequestHistoricalNewsGenerator
     End Property
 
     Private Sub requestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, options As List(Of TagValue))
-        Const ProcName As String = NameOf(requestHistoricalNews)
+
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HISTORICAL_NEWS Then Throw New InvalidOperationException("Historical news requests not supported")

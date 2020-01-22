@@ -33,7 +33,7 @@ Friend NotInheritable Class SoftDollarTiersParser
 
     Private Const ModuleName As String = NameOf(SoftDollarTiersParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim tiersCount = Await _Reader.GetIntAsync("Tiers Count")
         Dim tiers = New List(Of SoftDollarTier)

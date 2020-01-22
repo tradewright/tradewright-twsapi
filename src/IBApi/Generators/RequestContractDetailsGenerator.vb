@@ -45,8 +45,7 @@ Friend Class RequestContractDetailsGenerator
     End Property
 
     Private Sub requestContractDetails(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String)
-        Const ProcName As String = NameOf(requestContractDetails)
-        Const VERSION As Integer = 8
+                Const VERSION As Integer = 8
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 

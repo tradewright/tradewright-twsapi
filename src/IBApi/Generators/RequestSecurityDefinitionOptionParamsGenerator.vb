@@ -45,8 +45,6 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
     End Property
 
     Private Sub requestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
-        Const ProcName As String = NameOf(requestSecurityDefinitionOptionParams)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.SEC_DEF_OPT_PARAMS_REQ Then Throw New InvalidOperationException("Security definition option parameters requests not supported")
 

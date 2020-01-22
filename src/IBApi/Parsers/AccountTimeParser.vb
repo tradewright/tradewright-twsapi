@@ -32,7 +32,7 @@ Friend NotInheritable Class AccountTimeParser
 
     Private Const ModuleName As String = NameOf(AccountTimeParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim accountTime = Await _Reader.GetStringAsync("Account Time")
 
         LogSocketInputMessage(ModuleName,"ParseAsync")

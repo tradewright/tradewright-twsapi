@@ -45,7 +45,6 @@ Friend Class RequestGlobalCancelGenerator
     End Property
 
     Private Sub RequestGlobalCancel()
-        Const ProcName As String = NameOf(RequestGlobalCancel)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

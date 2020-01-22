@@ -47,7 +47,6 @@ Friend Class RequestRealtimeBarsGenerator
     End Property
 
     Private Sub requestRealtimeBars(pTickerId As Integer, pContract As Contract, pBarSize As Integer, pWhatToShow As String, pUseRTH As Boolean, options As List(Of TagValue))
-        Const ProcName As String = NameOf(requestRealtimeBars)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3

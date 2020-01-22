@@ -45,8 +45,6 @@ Friend Class RequestMarketRuleGenerator
     End Property
 
     Private Sub RequestMarketRule(marketRuleId As Integer)
-        Const ProcName As String = NameOf(RequestMarketRule)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.MARKET_RULES Then Throw New InvalidOperationException("Market rule requests not supported")
 

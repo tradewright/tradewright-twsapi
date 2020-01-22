@@ -32,7 +32,7 @@ Friend NotInheritable Class PositionMultiParser
 
     Private Const ModuleName As String = NameOf(PositionMultiParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request id")
         Dim account = Await _Reader.GetStringAsync("Account")
 

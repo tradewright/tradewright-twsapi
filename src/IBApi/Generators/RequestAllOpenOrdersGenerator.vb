@@ -45,7 +45,6 @@ Friend Class RequestAllOpenOrdersGenerator
     End Property
 
     Private Sub RequestAllOpenOrders()
-        Const ProcName As String = NameOf(RequestAllOpenOrders)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
 

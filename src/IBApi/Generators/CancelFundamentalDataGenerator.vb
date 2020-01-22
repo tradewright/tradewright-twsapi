@@ -45,7 +45,6 @@ Friend Class CancelFundamentalDataGenerator
     End Property
 
     Private Sub CancelFundamentalData(pReqId As Integer)
-        Const ProcName As String = NameOf(CancelFundamentalData)
         If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1

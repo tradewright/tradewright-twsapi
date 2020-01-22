@@ -32,7 +32,7 @@ Friend NotInheritable Class RerouteMarketDataParser
 
     Private Const ModuleName As String = NameOf(RerouteMarketDataParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim conId = Await _Reader.GetIntAsync("Conid")
         Dim exchange = Await _Reader.GetStringAsync("Exchange")

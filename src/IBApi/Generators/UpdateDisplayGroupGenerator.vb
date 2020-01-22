@@ -45,7 +45,6 @@ Friend Class UpdateDisplayGroupGenerator
     End Property
 
     Private Sub UpdateDisplayGroup(requestId As Integer, contractInfo As String)
-        Const ProcName As String = NameOf(UpdateDisplayGroup)
         Const VERSION As Integer = 1
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")

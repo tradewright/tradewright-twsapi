@@ -32,7 +32,7 @@ Friend NotInheritable Class ScannerParametersParser
 
     Private Const ModuleName As String = NameOf(ScannerParametersParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim xml = Await _Reader.GetStringAsync("XML")
 
         LogSocketInputMessage(ModuleName,"ParseAsync")

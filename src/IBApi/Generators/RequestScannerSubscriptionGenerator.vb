@@ -47,7 +47,6 @@ Friend Class RequestScannerSubscriptionGenerator
     End Property
 
     Private Sub requestScannerSubscription(requestId As Integer, pSubscription As ScannerSubscription, options As List(Of TagValue), filterOptions As List(Of TagValue))
-        Const ProcName As String = NameOf(requestScannerSubscription)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If filterOptions IsNot Nothing And ServerVersion < ApiServerVersion.SCANNER_GENERIC_OPTS Then Throw New InvalidOperationException("scanner subscription generic filter options not supported")
 

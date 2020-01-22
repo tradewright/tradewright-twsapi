@@ -45,7 +45,7 @@ Friend Class CancelMarketDepthGenerator
     End Property
 
     Private Sub CancelMarketDepth(pTickerId As Integer)
-        Const ProcName As String = NameOf(CancelMarketDepth)
+
         If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1

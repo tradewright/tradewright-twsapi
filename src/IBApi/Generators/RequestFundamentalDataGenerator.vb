@@ -47,7 +47,6 @@ Friend Class RequestFundamentalDataGenerator
     End Property
 
     Private Sub requestFundamentalData(pReqId As Integer, pContract As Contract, pReportType As String, options As List(Of TagValue))
-        Const ProcName As String = NameOf(requestFundamentalData)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 3

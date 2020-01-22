@@ -33,7 +33,7 @@ Friend NotInheritable Class NewsProvidersParser
 
     Private Const ModuleName As String = NameOf(NewsProvidersParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim providers = New List(Of NewsProvider)()
         Dim providersCount = Await _Reader.GetIntAsync("Providers Count")
 

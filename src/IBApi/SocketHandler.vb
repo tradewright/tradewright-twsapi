@@ -62,7 +62,7 @@ Friend Class SocketHandler
     ' Member variables
     '@================================================================================
 
-    Private WithEvents Socket As SocketManager
+    Private Socket As SocketManager
 
     Private ReadOnly mServer As String
     Private ReadOnly mPort As Integer

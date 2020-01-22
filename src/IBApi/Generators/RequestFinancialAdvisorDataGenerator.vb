@@ -45,7 +45,6 @@ Friend Class RequestFinancialAdvisorDataGenerator
     End Property
 
     Private Sub RequestFinancialAdvisorData(dataType As FinancialAdvisorDataType)
-        Const ProcName As String = NameOf(RequestFinancialAdvisorData)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

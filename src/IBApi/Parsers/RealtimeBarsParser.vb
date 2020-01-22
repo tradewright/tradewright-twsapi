@@ -32,7 +32,7 @@ Friend NotInheritable Class RealtimeBarsParser
 
     Private Const ModuleName As String = NameOf(RealtimeBarsParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = Await _Reader.GetIntAsync("ReqId")
 
         Dim bar = New Bar With {

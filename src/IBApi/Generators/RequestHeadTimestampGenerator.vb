@@ -45,8 +45,6 @@ Friend Class RequestHeadTimestampGenerator
     End Property
 
     Private Sub requestHeadTimestamp(requestId As Integer, contract As Contract, whatToShow As String, useRTH As Boolean)
-        Const ProcName As String = NameOf(requestHeadTimestamp)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_HEAD_TIMESTAMP Then Throw New InvalidOperationException("Head timestamp requests not supported")
 

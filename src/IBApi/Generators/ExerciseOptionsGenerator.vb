@@ -45,7 +45,6 @@ Friend Class ExerciseOptionsGenerator
     End Property
 
     Private Sub exerciseOptions(pTickerId As Integer, pContract As Contract, pExerciseAction As ExerciseAction, pExerciseQuantity As Integer, pAccount As String, pOverride As Boolean)
-        Const ProcName As String = NameOf(exerciseOptions)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 2

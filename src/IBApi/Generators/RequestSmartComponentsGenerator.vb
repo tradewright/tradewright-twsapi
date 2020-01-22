@@ -45,8 +45,6 @@ Friend Class RequestSmartComponentsGenerator
     End Property
 
     Private Sub RequestSmartComponents(requestId As Integer, bboExchange As String)
-        Const ProcName As String = NameOf(RequestSmartComponents)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_MKT_DEPTH_EXCHANGES Then Throw New InvalidOperationException("Smart components requests not supported")
 

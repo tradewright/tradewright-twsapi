@@ -45,8 +45,6 @@ Friend Class RequestTickByTickDataGenerator
     End Property
 
     Private Sub requestTickByTickData(requestId As Integer, contract As Contract, tickType As TickByTickDataType, numberOfTicks As Integer, ignoreSize As Boolean)
-        Const ProcName As String = NameOf(requestTickByTickData)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.TICK_BY_TICK Then Throw New InvalidOperationException("Tick-by-tick requests not supported")
         If ServerVersion < ApiServerVersion.TICK_BY_TICK_IGNORE_SIZE And (numberOfTicks <> 0 Or ignoreSize) Then Throw New InvalidOperationException("ignoreSize and numberOfTicks parameters not supported")

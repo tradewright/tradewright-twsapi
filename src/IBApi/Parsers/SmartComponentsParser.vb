@@ -33,7 +33,7 @@ Friend NotInheritable Class SmartComponentsParser
 
     Private Const ModuleName As String = NameOf(SmartComponentsParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
         Dim entryCount = Await _Reader.GetIntAsync("Entry Count")
         Dim dict = New Dictionary(Of Integer, KeyValuePair(Of String, Char))()

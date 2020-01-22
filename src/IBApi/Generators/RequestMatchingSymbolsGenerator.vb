@@ -45,8 +45,6 @@ Friend Class RequestMatchingSymbolsGenerator
     End Property
 
     Private Sub RequestMatchingSymbols(requestId As Integer, pattern As String)
-        Const ProcName As String = NameOf(RequestMatchingSymbols)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_MATCHING_SYMBOLS Then Throw New InvalidOperationException("Matching symbols requests not supported")
 

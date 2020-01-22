@@ -32,7 +32,7 @@ Friend NotInheritable Class MarketDataTypeParser
 
     Private Const ModuleName As String = NameOf(MarketDataTypeParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lReqId = Await _Reader.GetIntAsync("ReqID")
         Dim lMarketDataType = Await _Reader.GetIntAsync("MarketDataType")
 

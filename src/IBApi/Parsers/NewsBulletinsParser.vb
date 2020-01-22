@@ -32,7 +32,7 @@ Friend NotInheritable Class NewsBulletinsParser
 
     Private Const ModuleName As String = NameOf(NewsBulletinsParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lMsgId = Await _Reader.GetIntAsync("Id")
         Dim msgType = Await _Reader.GetIntAsync("Type")
         Dim newsMessage = Await _Reader.GetStringAsync("Message")

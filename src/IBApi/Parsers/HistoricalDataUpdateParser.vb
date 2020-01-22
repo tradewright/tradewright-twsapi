@@ -32,7 +32,7 @@ Friend NotInheritable Class HistoricalDataUpdateParser
 
     Private Const ModuleName As String = NameOf(HistoricalDataUpdateParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
 
         Dim bar As New Bar With {

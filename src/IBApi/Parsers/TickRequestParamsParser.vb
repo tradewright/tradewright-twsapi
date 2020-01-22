@@ -32,7 +32,7 @@ Friend NotInheritable Class TickRequestParamsParser
 
     Private Const ModuleName As String = NameOf(TickRequestParamsParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim tickerId = Await _Reader.GetIntAsync("Ticker Id")
         Dim minTick = Await _Reader.GetDoubleAsync("Min tick")
         Dim bboExchange = Await _Reader.GetStringAsync("BBO Exchange")

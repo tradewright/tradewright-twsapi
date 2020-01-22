@@ -45,8 +45,7 @@ Friend Class CancelPositionsMultiGenerator
     End Property
 
     Private Sub cancelPositionsMulti(requestId As Integer)
-        Const ProcName As String = NameOf(cancelPositionsMulti)
-        Const Version As Integer = 1
+                Const Version As Integer = 1
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.MODELS_SUPPORT Then Throw New InvalidOperationException("Positions multi cancellation not supported")

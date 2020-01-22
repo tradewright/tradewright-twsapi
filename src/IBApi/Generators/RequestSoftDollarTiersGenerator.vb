@@ -45,8 +45,6 @@ Friend Class RequestSoftDollarTiersGenerator
     End Property
 
     Private Sub RequestSoftDollarTiers(requestId As Integer)
-        Const ProcName As String = NameOf(RequestSoftDollarTiers)
-
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.SOFT_DOLLAR_TIER Then Throw New InvalidOperationException("Soft dollar tiers requests not supported")
 

@@ -32,7 +32,7 @@ Friend NotInheritable Class CurrentTimeParser
 
     Private Const ModuleName As String = NameOf(CurrentTimeParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lTime = IBAPI.UnixTimestampToDateTime(Await _Reader.GetLongAsync("SystemTime"))
 
         LogSocketInputMessage(ModuleName,"ParseAsync")

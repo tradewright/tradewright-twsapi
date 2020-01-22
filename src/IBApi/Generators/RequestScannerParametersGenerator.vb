@@ -45,7 +45,6 @@ Friend Class RequestScannerParametersGenerator
     End Property
 
     Private Sub RequestScannerParameters()
-        Const ProcName As String = NameOf(RequestScannerParameters)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

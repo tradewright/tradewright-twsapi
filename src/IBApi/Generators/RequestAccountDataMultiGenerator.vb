@@ -45,7 +45,7 @@ Friend Class RequestAccountDataMultiGenerator
     End Property
 
     Private Sub RequestAccountDataMulti(requestId As Integer, account As String, modelCode As String, ledgerAndNLV As Boolean)
-        Const ProcName As String = NameOf(RequestAccountDataMulti)
+
         Const VERSION As Integer = 1
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")

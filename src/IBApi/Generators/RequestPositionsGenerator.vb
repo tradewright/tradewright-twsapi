@@ -45,7 +45,6 @@ Friend Class RequestPositionsGenerator
     End Property
 
     Private Sub RequestPositions()
-        Const ProcName As String = NameOf(RequestPositions)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

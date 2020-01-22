@@ -45,7 +45,6 @@ Friend Class RequestAutoOpenOrdersGenerator
     End Property
 
     Private Sub requestAutoOpenOrders(autoBind As Boolean)
-        Const ProcName As String = NameOf(requestAutoOpenOrders)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

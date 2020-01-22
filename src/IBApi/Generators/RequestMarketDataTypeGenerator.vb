@@ -45,7 +45,6 @@ Friend Class RequestMarketDataTypeGenerator
     End Property
 
     Private Sub requestMarketDataType(pMarketDataType As MarketDataType)
-        Const ProcName As String = NameOf(requestMarketDataType)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

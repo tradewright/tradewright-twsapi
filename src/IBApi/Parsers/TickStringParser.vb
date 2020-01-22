@@ -32,7 +32,7 @@ Friend NotInheritable Class TickStringParser
 
     Private Const ModuleName As String = NameOf(TickStringParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lTickerId = Await _Reader.GetIntAsync("tickerId")
         Dim lTickType = DirectCast(Await _Reader.GetIntAsync("tickType"), TickType)
         Dim lValue = Await _Reader.GetStringAsync("Value")

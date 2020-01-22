@@ -32,7 +32,7 @@ Friend NotInheritable Class ExecutionDataEndParser
 
     Private Const ModuleName As String = NameOf(ExecutionDataEndParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim reqId As Integer
 
         reqId = IdManager.GetCallerId(Await _Reader.GetIntAsync("reqId"), IdType.Execution)

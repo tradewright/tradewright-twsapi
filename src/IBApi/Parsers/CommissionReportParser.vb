@@ -32,7 +32,7 @@ Friend NotInheritable Class CommissionReportParser
 
     Private Const ModuleName As String = NameOf(CommissionReportParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lCommissionReport As New CommissionReport With {
             .ExecId = Await _Reader.GetStringAsync("ExecId"),
             .Commission = Await _Reader.GetNullableDoubleAsync("Commission"),

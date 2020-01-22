@@ -32,7 +32,7 @@ Friend NotInheritable Class FinancialAdvisorDataParser
 
     Private Const ModuleName As String = NameOf(FinancialAdvisorDataParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim dataType = DirectCast(Await _Reader.GetIntAsync("Data type"), FinancialAdvisorDataType)
         Dim xmlData = Await _Reader.GetStringAsync("XML data")
 

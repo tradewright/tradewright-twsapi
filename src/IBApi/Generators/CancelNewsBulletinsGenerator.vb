@@ -45,7 +45,6 @@ Friend Class CancelNewsBulletinsGenerator
     End Property
 
     Private Sub CancelNewsBulletins()
-        Const ProcName As String = NameOf(CancelNewsBulletins)
         If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1

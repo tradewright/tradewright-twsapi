@@ -41,7 +41,7 @@ Friend Class ApiConnectionManager
     Private ReadOnly mPort As Integer
     Private ReadOnly mClientId As Integer
 
-    Private WithEvents TheSocketHandler As SocketHandler
+    Private TheSocketHandler As SocketHandler
     Private mConnectedAction As Action
 
     Private ReadOnly mUseV100Plus As Boolean

@@ -32,7 +32,7 @@ Friend NotInheritable Class AccountSummaryParser
 
     Private Const ModuleName As String = NameOf(AccountSummaryParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lRequestId = Await _Reader.GetIntAsync("Request Id")
         Dim lAccount = Await _Reader.GetStringAsync("Account")
         Dim lTag = Await _Reader.GetStringAsync("Tag")

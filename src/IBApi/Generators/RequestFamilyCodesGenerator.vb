@@ -45,7 +45,7 @@ Friend Class RequestFamilyCodesGenerator
     End Property
 
     Private Sub RequestFamilyCodes()
-        Const ProcName As String = NameOf(RequestFamilyCodes)
+
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_FAMILY_CODES Then Throw New InvalidOperationException("Family codes requests not supported")

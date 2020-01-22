@@ -45,7 +45,6 @@ Friend Class RequestAccountSummaryGenerator
     End Property
 
     Private Sub RequestAccountSummary(pReqId As Integer, pGroup As String, pTags As String)
-        Const ProcName As String = NameOf(RequestAccountSummary)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

@@ -32,7 +32,7 @@ Friend NotInheritable Class PortfolioValueParser
 
     Private Const ModuleName As String = NameOf(PortfolioValueParser)
 
-       Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
+    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lContract As New Contract
 
         If pVersion >= 6 Then lContract.ConId = Await _Reader.GetIntAsync("Contract id")

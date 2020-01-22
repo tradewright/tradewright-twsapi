@@ -45,7 +45,7 @@ Friend Class RequestMarketDepthExchangesGenerator
     End Property
 
     Private Sub RequestMarketDepthExchanges()
-        Const ProcName As String = NameOf(RequestMarketDepthExchanges)
+
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.REQ_MKT_DEPTH_EXCHANGES Then Throw New InvalidOperationException("Market depth exchanges requests not supported")

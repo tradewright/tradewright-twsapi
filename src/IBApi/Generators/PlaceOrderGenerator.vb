@@ -282,19 +282,19 @@ Friend Class PlaceOrderGenerator
                         lWriter.AddElement(item.Type, "Type")
                         item.Serialize(lWriter)
                     Next
+
+                    lWriter.AddElement(.ConditionsIgnoreRth, "ConditionsIgnoreRth")
+                    lWriter.AddElement(.ConditionsCancelOrder, "ConditionsCancelOrder")
                 End If
 
-                lWriter.AddElement(.ConditionsIgnoreRth, "ConditionsIgnoreRth")
-                lWriter.AddElement(.ConditionsCancelOrder, "ConditionsCancelOrder")
+                lWriter.AddElement(.AdjustedOrderType, "AdjustedOrderType")
+                lWriter.AddElement(.TriggerPrice, "TriggerPrice")
+                lWriter.AddElement(.LmtPriceOffset, "LmtPriceOffset")
+                lWriter.AddElement(.AdjustedStopPrice, "AdjustedStopPrice")
+                lWriter.AddElement(.AdjustedStopLimitPrice, "AdjustedStopLimitPrice")
+                lWriter.AddElement(.AdjustedTrailingAmount, "AdjustedTrailingAmount")
+                lWriter.AddElement(.AdjustableTrailingUnit, "AdjustableTrailingUnit")
             End If
-
-            lWriter.AddElement(.AdjustedOrderType, "AdjustedOrderType")
-            lWriter.AddElement(.TriggerPrice, "TriggerPrice")
-            lWriter.AddElement(.LmtPriceOffset, "LmtPriceOffset")
-            lWriter.AddElement(.AdjustedStopPrice, "AdjustedStopPrice")
-            lWriter.AddElement(.AdjustedStopLimitPrice, "AdjustedStopLimitPrice")
-            lWriter.AddElement(.AdjustedTrailingAmount, "AdjustedTrailingAmount")
-            lWriter.AddElement(.AdjustableTrailingUnit, "AdjustableTrailingUnit")
 
             If (ServerVersion >= ApiServerVersion.EXT_OPERATOR) Then
                 lWriter.AddElement(.ExtOperator, "ExtOperator")

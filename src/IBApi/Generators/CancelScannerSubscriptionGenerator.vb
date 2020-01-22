@@ -45,7 +45,6 @@ Friend Class CancelScannerSubscriptionGenerator
     End Property
 
     Private Sub CancelScannerSubscription(pTickerId As Integer)
-        Const ProcName As String = NameOf(CancelScannerSubscription)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1

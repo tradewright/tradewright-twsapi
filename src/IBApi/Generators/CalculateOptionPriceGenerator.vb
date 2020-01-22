@@ -32,8 +32,6 @@ Friend Class CalculateOptionPriceGenerator
 
     Private Delegate Sub ApiMethodDelegate(pReqId As Integer, pContract As Contract, pVolatility As Double, pUnderPrice As Double, options As List(Of TagValue))
 
-    Private Const ModuleName As String = NameOf(CalculateOptionPriceGenerator)
-
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
             Return New ApiMethodDelegate(AddressOf calculateOptionPrice)
@@ -47,8 +45,6 @@ Friend Class CalculateOptionPriceGenerator
     End Property
 
     Private Sub calculateOptionPrice(pReqId As Integer, pContract As Contract, pVolatility As Double, pUnderPrice As Double, options As List(Of TagValue))
-        Const ProcName As String = NameOf(calculateOptionPrice)
-
         If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 3

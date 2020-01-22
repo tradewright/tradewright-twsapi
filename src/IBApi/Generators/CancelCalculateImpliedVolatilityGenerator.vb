@@ -30,8 +30,6 @@ Friend Class CancelCalculateImpliedVolatilityGenerator
 
     Private Delegate Sub ApiMethodDelegate(pReqId As Integer)
 
-    Private Const ModuleName As String = NameOf(CancelCalculateImpliedVolatilityGenerator)
-
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
             Return New ApiMethodDelegate(AddressOf cancelCalculateImpliedVolatility)
@@ -45,7 +43,6 @@ Friend Class CancelCalculateImpliedVolatilityGenerator
     End Property
 
     Private Sub cancelCalculateImpliedVolatility(pReqId As Integer)
-        Const ProcName As String = NameOf(cancelCalculateImpliedVolatility)
         If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
 
         Const VERSION As Integer = 1
