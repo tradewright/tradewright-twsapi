@@ -63,22 +63,23 @@ of using the API:
   which is written in Visual Basic 6, and again provides a useful comparison
   with this .Net implementation
 
-* Ib_VB_API_Sample: this is IBKR's own Visual Basic sample application, 
-  modified to use the TradeWright API.
+* Ib_VB_API_Sample: this is based on IBKR's own Visual Basic sample application, 
+  but has been heavily modified to use the TradeWright API, and to generally improve
+  the rather poor code of IBKR's version.
 
 ## Releases
 
-At present, no releases have been made. The intention is to provide 
-Microsoft Installer files (.msi) that will install the API library in a 
-convenient location for use by developers, together with the compiled sample 
-applications. 
+Releases provide the following:
 
-It is also intended to provide a Nuget package, to simplify inclusion into 
-Visual Studio projects.
+* Microsoft Installer files (.msi) that install the API library in a 
+  convenient location for use by developers, together with the compiled sample 
+  applications. 
 
-In general releases will be named to follow IBKR's versions, for example
+* A Nuget package, to simplify inclusion into Visual Studio projects.
+
+In general releases are named to follow IBKR's versions, for example
 9.73.nn, where the patch number nn will be specific to this implementation 
-and will be incremented as required.
+and will be incremented as required. 
 
 
 
