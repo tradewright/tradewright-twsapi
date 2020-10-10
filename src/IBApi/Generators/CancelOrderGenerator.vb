@@ -50,8 +50,8 @@ Friend Class CancelOrderGenerator
         Const VERSION As Integer = 1
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelOrder)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pOrderId, "Order id")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pOrderId, "Order id")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer, True)
     End Sub
 

@@ -51,7 +51,7 @@ Friend Class RequestCurrentTimeGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestCurrentTime)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

@@ -125,7 +125,7 @@ Public Class Order
     Public Property OptOutSmartRouting As Boolean
 
     ' BOX or VOL ORDERS ONLY
-    Public Property AuctionStrategy As AuctionStrategy
+    Public Property AuctionStrategy As AuctionStrategy?
 
     ' BOX ORDERS ONLY
     Public Property StartingPrice As Double?

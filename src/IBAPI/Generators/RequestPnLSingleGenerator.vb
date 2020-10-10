@@ -51,10 +51,10 @@ Friend Class RequestPnLSingleGeneratorGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(account, "Account")
-        lWriter.AddElement(modelCode, "Model Code")
-        lWriter.AddElement(conId, "Contract Id")
+        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddString(account, "Account")
+        lWriter.AddString(modelCode, "Model Code")
+        lWriter.AddInteger(conId, "Contract Id")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

@@ -67,7 +67,7 @@ Public Class PriceCondition
 
     Friend Overrides Sub Serialize(writer As MessageGenerator)
         MyBase.Serialize(writer)
-        writer.AddElement(TriggerMethod, "TriggerMethod")
+        writer.AddInteger(TriggerMethod, "TriggerMethod")
     End Sub
 
     Protected Overrides Function TryParse(cond As String) As Boolean

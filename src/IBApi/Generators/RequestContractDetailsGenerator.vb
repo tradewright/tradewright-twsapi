@@ -51,13 +51,13 @@ Friend Class RequestContractDetailsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestContractData)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
 
-        lWriter.AddElement(IdManager.GetTwsId(pRequestId, IdType.ContractData), "Request id")
-        lWriter.AddElement(pContract, "Contract")
-        lWriter.AddElement(pIncludeExpired, "Include expired")
-        lWriter.AddElement(pSecIdType, "SecIdType")
-        lWriter.AddElement(pSecId, "SecId")
+        lWriter.AddInteger(IdManager.GetTwsId(pRequestId, IdType.ContractData), "Request id")
+        lWriter.AddContract(pContract, "Contract")
+        lWriter.AddBoolean(pIncludeExpired, "Include expired")
+        lWriter.AddString(pSecIdType, "SecIdType")
+        lWriter.AddString(pSecId, "SecId")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

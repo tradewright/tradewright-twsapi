@@ -51,7 +51,7 @@ Friend Class RequestManagedAccountsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestManagedAccounts)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

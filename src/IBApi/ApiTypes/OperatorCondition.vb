@@ -81,8 +81,8 @@ Public MustInherit Class OperatorCondition
 
     Friend Overrides Sub Serialize(writer As MessageGenerator)
         MyBase.Serialize(writer)
-        writer.AddElement(IsMore, "IsMore")
-        writer.AddElement(Value, "Value")
+        writer.AddBoolean(IsMore, "IsMore")
+        writer.AddString(Value, "Value")
     End Sub
 
 End Class

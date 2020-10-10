@@ -48,8 +48,8 @@ Friend Class CancelHistoricalDataGenerator
 
             Dim lWriter = CreateOutputMessageGenerator()
             StartMessage(lWriter, ApiSocketOutMsgType.CancelHistoricalData)
-            lWriter.AddElement(VERSION, "Version")
-            lWriter.AddElement(IdManager.GetTwsId(pRequestId, IdType.HistoricalData), "Request id")
+            lWriter.AddInteger(VERSION, "Version")
+            lWriter.AddInteger(IdManager.GetTwsId(pRequestId, IdType.HistoricalData), "Request id")
             lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
         End If
     End Sub

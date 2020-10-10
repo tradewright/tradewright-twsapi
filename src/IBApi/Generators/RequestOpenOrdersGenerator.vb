@@ -51,7 +51,7 @@ Friend Class RequestOpenOrdersGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestOpenOrders)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

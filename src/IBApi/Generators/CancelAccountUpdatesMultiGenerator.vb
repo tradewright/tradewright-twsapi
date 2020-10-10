@@ -49,9 +49,9 @@ Friend Class CancelAccountUpdatesMultiGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
 
-        lWriter.AddElement(requestId, "RequestId")
+        lWriter.AddInteger(requestId, "RequestId")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

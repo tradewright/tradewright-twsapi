@@ -51,8 +51,8 @@ Friend Class RequestMatchingSymbolsGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(pattern, "Pattern")
+        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddString(pattern, "Pattern")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

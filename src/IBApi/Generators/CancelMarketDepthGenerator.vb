@@ -52,8 +52,8 @@ Friend Class CancelMarketDepthGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelMarketDepth)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Ticker id")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Ticker id")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

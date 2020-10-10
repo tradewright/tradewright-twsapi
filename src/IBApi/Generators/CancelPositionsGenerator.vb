@@ -51,7 +51,7 @@ Friend Class CancelPositionsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelPositions)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

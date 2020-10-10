@@ -49,7 +49,7 @@ Friend Class CancelAccountSummaryGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelAccountSummary)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

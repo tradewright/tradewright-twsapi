@@ -53,12 +53,12 @@ Friend Class RequestAccountDataMultiGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(account, "Aacount")
-        lWriter.AddElement(modelCode, "Model Code")
-        lWriter.AddElement(ledgerAndNLV, "Ledger And NLV")
+        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddString(account, "Aacount")
+        lWriter.AddString(modelCode, "Model Code")
+        lWriter.AddBoolean(ledgerAndNLV, "Ledger And NLV")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

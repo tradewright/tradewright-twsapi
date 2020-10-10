@@ -5,19 +5,19 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <OptionStrict>On</OptionStrict>
     <AssemblyName>TradeWright.IBAPI973</AssemblyName>
-    <AssemblyVersion>973.07.1.0</AssemblyVersion>
+    <AssemblyVersion>973.07.3.0</AssemblyVersion>
     <Product>TradeWright IBAPI v973.07</Product>
     <Company>TradeWright Software Systems</Company>
     <Authors>Richard L King</Authors>
     <PackageId>TradeWright.IBAPI</PackageId>
     <Description>TradeWright Software Systems' version of the Interactive Brokers API.</Description>
     <Copyright>Copyright © 2020 Richard L King</Copyright>
-    <FileVersion>973.07.1.0</FileVersion>
+    <FileVersion>973.07.3.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/tradewright/tradewright-twsapi</RepositoryUrl>
     <PackageTags>twsapi interactive-brokers trading</PackageTags>
-    <Version>973.07.01</Version>
+    <Version>973.07.03</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

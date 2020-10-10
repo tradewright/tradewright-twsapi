@@ -51,8 +51,8 @@ Friend Class CancelRealtimeBarsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelRealtimeBars)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pTickerId, "Ticker id")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pTickerId, "Ticker id")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

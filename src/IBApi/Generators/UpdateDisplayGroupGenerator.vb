@@ -51,10 +51,10 @@ Friend Class UpdateDisplayGroupGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(contractInfo, "Contract Info")
+        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddString(contractInfo, "Contract Info")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

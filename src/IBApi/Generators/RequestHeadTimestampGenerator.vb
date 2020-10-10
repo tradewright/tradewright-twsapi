@@ -51,13 +51,13 @@ Friend Class RequestHeadTimestampGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request ID")
-        lWriter.AddElement(contract, "Contract")
-        lWriter.AddElement(If(IBAPI.IsContractExpirable(contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
+        lWriter.AddInteger(requestId, "Request ID")
+        lWriter.AddContract(contract, "Contract")
+        lWriter.AddInteger(If(IBAPI.IsContractExpirable(contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
 
-        lWriter.AddElement(useRTH, "Use RTH")
-        lWriter.AddElement(whatToShow, "What to Show")
-        lWriter.AddElement(HistoricalDataDateFormat.DateFormatString, "Date format")
+        lWriter.AddBoolean(useRTH, "Use RTH")
+        lWriter.AddString(whatToShow, "What to Show")
+        lWriter.AddInteger(HistoricalDataDateFormat.DateFormatString, "Date format")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

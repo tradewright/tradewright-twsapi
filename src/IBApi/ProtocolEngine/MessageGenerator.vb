@@ -91,7 +91,7 @@ Friend NotInheritable Class MessageGenerator
     Friend Sub StartMessage(Optional initialValue As String = Nothing)
         initialise()
         If (Not String.IsNullOrEmpty(initialValue)) Then
-            AddElement(initialValue, "Prefix")
+            AddString(initialValue, "Prefix")
             If (mUseV100Plus) Then mLengthOffset = mLength
             mLength = 0   ' don't include the prefix in the length of the message part
         End If
@@ -101,42 +101,42 @@ Friend NotInheritable Class MessageGenerator
     Friend Sub StartMessage(msgId As Integer, messageName As String)
         initialise()
         makeSpaceForLength()
-        AddElement(msgId, String.Format("({0}) MsgId", messageName))
+        AddInteger(msgId, String.Format("({0}) MsgId", messageName))
     End Sub
 
-    Friend Sub AddElement(value As Integer, fieldName As String)
-        AddElement(value.ToString(CultureInfo.InvariantCulture), fieldName)
+    Friend Sub AddInteger(value As Integer, fieldName As String)
+        AddString(value.ToString(CultureInfo.InvariantCulture), fieldName)
     End Sub
 
-    Friend Sub AddElement(value As Integer?, fieldName As String)
+    Friend Sub AddNullableInteger(value As Integer?, fieldName As String)
         If value.HasValue Then
-            AddElement(value.Value.ToString(CultureInfo.InvariantCulture), fieldName)
+            AddString(value.Value.ToString(CultureInfo.InvariantCulture), fieldName)
         Else
-            AddElement(String.Empty, fieldName)
+            AddString(String.Empty, fieldName)
         End If
     End Sub
 
-    Friend Sub AddElement(value As Double, fieldName As String)
-        AddElement(value.ToString(CultureInfo.InvariantCulture), fieldName)
+    Friend Sub AddDouble(value As Double, fieldName As String)
+        AddString(value.ToString(CultureInfo.InvariantCulture), fieldName)
     End Sub
 
-    Friend Sub AddElement(value As Double?, fieldName As String)
+    Friend Sub AddNullableDouble(value As Double?, fieldName As String)
         If value.HasValue Then
-            AddElement(value.Value.ToString(CultureInfo.InvariantCulture), fieldName)
+            AddString(value.Value.ToString(CultureInfo.InvariantCulture), fieldName)
         Else
-            AddElement(String.Empty, fieldName)
+            AddString(String.Empty, fieldName)
         End If
     End Sub
 
-    Friend Sub AddElement(value As Boolean, fieldName As String)
+    Friend Sub AddBoolean(value As Boolean, fieldName As String)
         If (Not value) Then
-            AddElement("0", fieldName)
+            AddString("0", fieldName)
         Else
-            AddElement("1", fieldName)
+            AddString("1", fieldName)
         End If
     End Sub
 
-    Friend Sub AddElement(value As String, fieldName As String)
+    Friend Sub AddString(value As String, fieldName As String)
         mMessageBuilder?.Append(fieldName)?.Append("=")?.Append(value)?.Append(";")
 
         writeRawString(value)
@@ -144,23 +144,23 @@ Friend NotInheritable Class MessageGenerator
         mLength += 1
     End Sub
 
-    Friend Sub AddElement(value As Contract, fieldName As String, Optional ignorePrimaryExchange As Boolean = False)
-        AddElement(value.ConId, $"{fieldName}.ConId")
-        AddElement(value.Symbol?.ToUpper(), $"{fieldName}.Symbol")
-        AddElement(IBAPI.SecurityTypes.ToInternalString(value.SecType), $"{fieldName}.Sectype")
-        AddElement(value.Expiry, $"{fieldName}.Expiry")
-        AddElement(value.Strike, $"{fieldName}.Strike")
-        AddElement(IBAPI.OptionRights.ToInternalString(value.OptRight), $"{fieldName}.Right")
-        AddElement(If(value.Multiplier = 1, "", CStr(value.Multiplier)), $"{fieldName}.Multiplier")
-        AddElement(value.Exchange, $"{fieldName}.Exchange")
-        If Not ignorePrimaryExchange Then AddElement(value.PrimaryExch, $"{fieldName}.Primary Exchange")
-        AddElement(value.CurrencyCode, $"{fieldName}.Currency")
-        AddElement(value.LocalSymbol?.ToUpper(), $"{fieldName}.Local Symbol")
-        AddElement(value.TradingClass, $"{fieldName}.Trading Class")
+    Friend Sub AddContract(value As Contract, fieldName As String, Optional ignorePrimaryExchange As Boolean = False)
+        AddInteger(value.ConId, $"{fieldName}.ConId")
+        AddString(value.Symbol?.ToUpper(), $"{fieldName}.Symbol")
+        AddString(IBAPI.SecurityTypes.ToInternalString(value.SecType), $"{fieldName}.Sectype")
+        AddString(value.Expiry, $"{fieldName}.Expiry")
+        AddDouble(value.Strike, $"{fieldName}.Strike")
+        AddString(IBAPI.OptionRights.ToInternalString(value.OptRight), $"{fieldName}.Right")
+        AddString(If(value.Multiplier = 1, "", CStr(value.Multiplier)), $"{fieldName}.Multiplier")
+        AddString(value.Exchange, $"{fieldName}.Exchange")
+        If Not ignorePrimaryExchange Then AddString(value.PrimaryExch, $"{fieldName}.Primary Exchange")
+        AddString(value.CurrencyCode, $"{fieldName}.Currency")
+        AddString(value.LocalSymbol?.ToUpper(), $"{fieldName}.Local Symbol")
+        AddString(value.TradingClass, $"{fieldName}.Trading Class")
     End Sub
 
-    Friend Sub AddElement(options As List(Of TagValue), fieldName As String)
-        AddElement(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), fieldName)
+    Friend Sub AddOptions(options As List(Of TagValue), fieldName As String)
+        AddString(If(options Is Nothing, "", String.Join(Of TagValue)(";", options) & ";"), fieldName)
     End Sub
 
     Friend Sub Send()
@@ -170,7 +170,7 @@ Friend NotInheritable Class MessageGenerator
         End SyncLock
     End Sub
 
-    Friend Sub AddString(value As String, fieldName As String)
+    Friend Sub AddUnterminatedString(value As String, fieldName As String)
         mMessageBuilder?.Append(fieldName)?.Append("=")?.Append(value)?.Append(";")
 
         writeRawString(value)

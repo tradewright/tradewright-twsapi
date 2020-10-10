@@ -51,8 +51,8 @@ Friend Class RequestMarketDataTypeGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketDataType)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pMarketDataType, "MarketDataType")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pMarketDataType, "MarketDataType")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

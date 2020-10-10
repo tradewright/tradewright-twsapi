@@ -53,15 +53,15 @@ Friend Class RequestRealtimeBarsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestRealtimeBars)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pTickerId, "TickerId")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pTickerId, "TickerId")
 
-        lWriter.AddElement(pContract, "Contract")
+        lWriter.AddContract(pContract, "Contract")
 
-        lWriter.AddElement(pBarSize, "BarSize") ' this parameter is not currently used
-        lWriter.AddElement(pWhatToShow, "WhatToShow")
-        lWriter.AddElement(pUseRTH, "UseRTH")
-        lWriter.AddElement(options, "Options")
+        lWriter.AddInteger(pBarSize, "BarSize") ' this parameter is not currently used
+        lWriter.AddString(pWhatToShow, "WhatToShow")
+        lWriter.AddBoolean(pUseRTH, "UseRTH")
+        lWriter.AddOptions(options, "Options")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

@@ -52,13 +52,13 @@ Friend Class RequestTickByTickDataGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(contract, "Contract")
-        lWriter.AddElement(IBAPI.TickByTickDataTypes.ToInternalString(tickType), "Tick Type")
+        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddContract(contract, "Contract")
+        lWriter.AddString(IBAPI.TickByTickDataTypes.ToInternalString(tickType), "Tick Type")
 
         If ServerVersion >= ApiServerVersion.TICK_BY_TICK_IGNORE_SIZE Then
-            lWriter.AddElement(numberOfTicks, "NumberOfTicks")
-            lWriter.AddElement(ignoreSize, "Ignore Size")
+            lWriter.AddInteger(numberOfTicks, "NumberOfTicks")
+            lWriter.AddBoolean(ignoreSize, "Ignore Size")
         End If
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)

@@ -49,8 +49,8 @@ Friend Class CancelCalculateImpliedVolatilityGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelCalculateImpliedVolatility)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pReqId, "ReqId")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pReqId, "ReqId")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

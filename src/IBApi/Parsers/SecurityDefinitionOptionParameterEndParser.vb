@@ -33,7 +33,7 @@ Friend NotInheritable Class SecurityDefinitionOptionParameterEndParser
     Private Const ModuleName As String = NameOf(SecurityDefinitionOptionParameterEndParser)
 
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim requestId = Await _Reader.GetIntAsync("RequestId")
+        Dim requestId = IdManager.GetCallerId(Await _Reader.GetIntAsync("Request Id"), IdType.ContractData)
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 

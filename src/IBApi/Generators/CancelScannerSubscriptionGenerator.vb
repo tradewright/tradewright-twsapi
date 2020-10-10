@@ -51,8 +51,8 @@ Friend Class CancelScannerSubscriptionGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelScannerSubscription)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pTickerId, "Ticker Id")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pTickerId, "Ticker Id")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

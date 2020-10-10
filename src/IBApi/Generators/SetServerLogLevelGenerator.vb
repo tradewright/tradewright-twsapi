@@ -49,8 +49,8 @@ Friend Class SetServerLogLevelGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.SetServerLogLevel)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(logLevel, "Loglevel")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(logLevel, "Loglevel")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

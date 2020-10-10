@@ -53,22 +53,22 @@ Friend Class RequestHistoricalTickDataGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(request.Contract, "Contract")
-        lWriter.AddElement(If(IBAPI.IsContractExpirable(request.Contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
-        lWriter.AddElement(If(request.StartDateTime.HasValue,
+        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddContract(request.Contract, "Contract")
+        lWriter.AddInteger(If(IBAPI.IsContractExpirable(request.Contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
+        lWriter.AddString(If(request.StartDateTime.HasValue,
                                 request.StartDateTime.Value.ToString("yyyyMMdd HH:mm:ss") & If(String.IsNullOrEmpty(request.StartTimezone), "", " " & request.StartTimezone),
                                 ""),
                            "StartDateTime")
-        lWriter.AddElement(If(request.EndDateTime.HasValue,
+        lWriter.AddString(If(request.EndDateTime.HasValue,
                                 request.EndDateTime.Value.ToString("yyyyMMdd HH:mm:ss") & If(String.IsNullOrEmpty(request.EndTimezone), "", " " & request.EndTimezone),
                                 ""),
                            "EndDateTime")
-        lWriter.AddElement(request.NumberOfTicks, "NumberOfTicks")
-        lWriter.AddElement(request.WhatToShow, "WhatToShow")
-        lWriter.AddElement(useRTH, "UseRTH")
-        lWriter.AddElement(ignoreSize, "IgnoreSize")
-        lWriter.AddElement(options, "Options")
+        lWriter.AddInteger(request.NumberOfTicks, "NumberOfTicks")
+        lWriter.AddString(request.WhatToShow, "WhatToShow")
+        lWriter.AddBoolean(useRTH, "UseRTH")
+        lWriter.AddBoolean(ignoreSize, "IgnoreSize")
+        lWriter.AddOptions(options, "Options")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

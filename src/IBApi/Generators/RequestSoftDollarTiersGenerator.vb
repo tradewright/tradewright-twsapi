@@ -51,7 +51,7 @@ Friend Class RequestSoftDollarTiersGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "RequestId")
+        lWriter.AddInteger(requestId, "RequestId")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

@@ -51,9 +51,9 @@ Friend Class RequestExecutionsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestExecutions)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
 
-        lWriter.AddElement(IdManager.GetTwsId(pRequestId, IdType.Execution), "ReqId")
+        lWriter.AddInteger(IdManager.GetTwsId(pRequestId, IdType.Execution), "ReqId")
 
         Dim theFilter As ExecutionFilter
         If ServerVersion >= 9 Then
@@ -64,13 +64,13 @@ Friend Class RequestExecutionsGenerator
             End If
 
             With theFilter
-                lWriter.AddElement(.ClientID, "Client id")
-                lWriter.AddElement(.AccountCode, "Account code")
-                lWriter.AddElement(CStr(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd-HH:mm:ss}", "")), "Fill Time")
-                lWriter.AddElement(.Symbol?.ToUpper(), "Symbol")
-                lWriter.AddElement(IBAPI.SecurityTypes.ToInternalString(.SecType), "Sec type")
-                lWriter.AddElement(.Exchange, "Exchange")
-                lWriter.AddElement(IBAPI.OrderActions.ToInternalString(.Action), "Action")
+                lWriter.AddInteger(.ClientID, "Client id")
+                lWriter.AddString(.AccountCode, "Account code")
+                lWriter.AddString(CStr(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd-HH:mm:ss}", "")), "Fill Time")
+                lWriter.AddString(.Symbol?.ToUpper(), "Symbol")
+                lWriter.AddString(IBAPI.SecurityTypes.ToInternalString(.SecType), "Sec type")
+                lWriter.AddString(.Exchange, "Exchange")
+                lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), "Action")
             End With
         End If
 

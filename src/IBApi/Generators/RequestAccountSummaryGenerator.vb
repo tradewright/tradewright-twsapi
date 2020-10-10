@@ -51,10 +51,10 @@ Friend Class RequestAccountSummaryGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestAccountSummary)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pReqId, "ReqId")
-        lWriter.AddElement(pGroup, "Group")
-        lWriter.AddElement(pTags, "Tags")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pReqId, "ReqId")
+        lWriter.AddString(pGroup, "Group")
+        lWriter.AddString(pTags, "Tags")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

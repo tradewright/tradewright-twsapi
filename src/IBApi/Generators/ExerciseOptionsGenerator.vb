@@ -51,15 +51,15 @@ Friend Class ExerciseOptionsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.ExerciseOptions)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pTickerId, "TickerId")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pTickerId, "TickerId")
 
-        lWriter.AddElement(pContract, "Contract", ignorePrimaryExchange:=True)
+        lWriter.AddContract(pContract, "Contract", ignorePrimaryExchange:=True)
 
-        lWriter.AddElement(pExerciseAction, "ExerciseAction")
-        lWriter.AddElement(pExerciseQuantity, "ExerciseQuantity")
-        lWriter.AddElement(pAccount, "Account")
-        lWriter.AddElement(pOverride, "Override")
+        lWriter.AddInteger(pExerciseAction, "ExerciseAction")
+        lWriter.AddInteger(pExerciseQuantity, "ExerciseQuantity")
+        lWriter.AddString(pAccount, "Account")
+        lWriter.AddBoolean(pOverride, "Override")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

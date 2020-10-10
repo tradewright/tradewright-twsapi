@@ -33,6 +33,9 @@ Imports System.Threading.Tasks
 ''' <summary>
 ''' This class provides the Application Programming Interface to Interactive Brokers' 
 ''' Trader Workstation and Gateway products.
+''' 
+''' Updated to IB commit 6697b6ecf2335a07229306bf52d73755b6f62d2b on 18/05/2018
+''' 
 ''' </summary>
 Public Class IBAPI
     Implements IDisposable
@@ -342,7 +345,10 @@ Public Class IBAPI
             ("STK", SecurityType.Stock, EnumNameType.Internal),
             ("Warrant", SecurityType.Warrant, EnumNameType.External),
             ("WAR", SecurityType.Warrant, EnumNameType.Internal),
-            ("Warr", SecurityType.Warrant, EnumNameType.Alias)
+            ("Warr", SecurityType.Warrant, EnumNameType.Alias),
+            ("CFD", SecurityType.ContractForDifference, EnumNameType.Internal),
+            ("Cfd", SecurityType.ContractForDifference, EnumNameType.External),
+            ("Contract for Difference", SecurityType.ContractForDifference, EnumNameType.Alias)
         })
 
     Public Shared ShortSaleSlotCodes As New ExtendedEnum(Of System.Enum, ShortSaleSlotCode)(
@@ -867,12 +873,12 @@ Public Class IBAPI
 
 #Region "Methods"
 
-    Public Sub CalculateImpliedVolatility(pReqId As Integer, pContract As Contract, pOptionPrice As Double, pUnderPrice As Double)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CalculateImpliedVolatility, {pReqId, pContract, pOptionPrice, pUnderPrice})
+    Public Sub CalculateImpliedVolatility(pReqId As Integer, pContract As Contract, pOptionPrice As Double, pUnderPrice As Double, Optional pOptions As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CalculateImpliedVolatility, {pReqId, pContract, pOptionPrice, pUnderPrice, pOptions})
     End Sub
 
-    Public Sub CalculateOptionPrice(pReqId As Integer, pContract As Contract, pVolatility As Double, pUnderPrice As Double)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CalculateOptionPrice, {pReqId, pContract, pVolatility, pUnderPrice})
+    Public Sub CalculateOptionPrice(pReqId As Integer, pContract As Contract, pVolatility As Double, pUnderPrice As Double, Optional pOptions As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CalculateOptionPrice, {pReqId, pContract, pVolatility, pUnderPrice, pOptions})
     End Sub
 
     Public Sub CancelAccountSummary(pReqId As Integer)

@@ -53,16 +53,16 @@ Friend Class RequestHistoricalNewsGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request ID")
-        lWriter.AddElement(conid, "Conid")
-        lWriter.AddElement(providerCodes, "Provider Codes")
+        lWriter.AddInteger(requestId, "Request ID")
+        lWriter.AddInteger(conid, "Conid")
+        lWriter.AddString(providerCodes, "Provider Codes")
 
         Const DateFormat As String = "yyyy-MM-dd HH:mm:ss.0"
-        lWriter.AddElement(startTime.ToString(DateFormat), "Start Time")
-        lWriter.AddElement(endTime.ToString(DateFormat), "End Time")
-        lWriter.AddElement(maxResults, "Max Results")
+        lWriter.AddString(startTime.ToString(DateFormat), "Start Time")
+        lWriter.AddString(endTime.ToString(DateFormat), "End Time")
+        lWriter.AddInteger(maxResults, "Max Results")
 
-        If ServerVersion >= ApiServerVersion.NEWS_QUERY_ORIGINS Then lWriter.AddElement(options, "Options")
+        If ServerVersion >= ApiServerVersion.NEWS_QUERY_ORIGINS Then lWriter.AddOptions(options, "Options")
 
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)

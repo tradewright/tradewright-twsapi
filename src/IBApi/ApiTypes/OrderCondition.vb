@@ -52,7 +52,7 @@ Public MustInherit Class OrderCondition
     End Function
 
     Friend Overridable Sub Serialize(writer As MessageGenerator)
-        writer.AddElement(If(IsConjunctionConnection, "a", "o"), "AndOr")
+        writer.AddString(If(IsConjunctionConnection, "a", "o"), "AndOr")
     End Sub
 
     Friend Overridable Async Sub Deserialize(reader As MessageReader)

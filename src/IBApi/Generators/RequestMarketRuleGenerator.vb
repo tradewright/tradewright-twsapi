@@ -51,7 +51,7 @@ Friend Class RequestMarketRuleGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(marketRuleId, "Market Rule ID")
+        lWriter.AddInteger(marketRuleId, "Market Rule ID")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

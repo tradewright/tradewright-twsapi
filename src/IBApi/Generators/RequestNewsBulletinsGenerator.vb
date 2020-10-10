@@ -51,8 +51,8 @@ Friend Class RequestNewsBulletinsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestNewsBulletins)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(allMsgs, "All messages")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddBoolean(allMsgs, "All messages")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

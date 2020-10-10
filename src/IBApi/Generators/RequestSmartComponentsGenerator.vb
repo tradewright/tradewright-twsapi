@@ -51,8 +51,8 @@ Friend Class RequestSmartComponentsGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "RequestId")
-        lWriter.AddElement(bboExchange, "BBO Exchange")
+        lWriter.AddInteger(requestId, "RequestId")
+        lWriter.AddString(bboExchange, "BBO Exchange")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

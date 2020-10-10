@@ -57,42 +57,42 @@ Friend Class RequestHistoricalBarsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestHistoricalBars)
-        If ServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(lTwsId, "Request id")
-        lWriter.AddElement(pRequest.Contract, "Contract")
+        If ServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(lTwsId, "Request id")
+        lWriter.AddContract(pRequest.Contract, "Contract")
 
-        lWriter.AddElement(If(IBAPI.IsContractExpirable(pRequest.Contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
+        lWriter.AddInteger(If(IBAPI.IsContractExpirable(pRequest.Contract), 1, 0), "Include expired") ' can't include expired for non-expiring contracts
 
-        lWriter.AddElement(If(pRequest.EndDateTime.HasValue,
+        lWriter.AddString(If(pRequest.EndDateTime.HasValue,
                               pRequest.EndDateTime.Value.ToString("yyyyMMdd HH:mm:ss") & If(String.IsNullOrEmpty(pRequest.TimeZone), "", " " & pRequest.TimeZone), ""),
                               "End date")
 
-        lWriter.AddElement(pRequest.BarSizeSetting, "Bar Size")
+        lWriter.AddString(pRequest.BarSizeSetting, "Bar Size")
 
-        lWriter.AddElement(pRequest.Duration, "Duration")
-        lWriter.AddElement(useRTH, "Use RTH")
-        lWriter.AddElement(pRequest.WhatToShow, "What to show")
+        lWriter.AddString(pRequest.Duration, "Duration")
+        lWriter.AddBoolean(useRTH, "Use RTH")
+        lWriter.AddString(pRequest.WhatToShow, "What to show")
 
-        lWriter.AddElement(HistoricalDataDateFormat.DateFormatString, "Date format")
+        lWriter.AddInteger(HistoricalDataDateFormat.DateFormatString, "Date format")
 
         Dim lComboLeg As ComboLeg
         Dim i As Integer
         If pRequest.Contract.SecType = SecurityType.Combo Then
-            lWriter.AddElement(pRequest.Contract.ComboLegs.Count, "Combo legs count")
+            lWriter.AddInteger(pRequest.Contract.ComboLegs.Count, "Combo legs count")
             For Each lComboLeg In pRequest.Contract.ComboLegs
                 With lComboLeg
                     i = i + 1
-                    lWriter.AddElement(.ConId, "ConId" & i)
-                    lWriter.AddElement(.Ratio, "Ratio" & i)
-                    lWriter.AddElement(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)
-                    lWriter.AddElement(.Exchange, "Exchange" & i)
+                    lWriter.AddInteger(.ConId, "ConId" & i)
+                    lWriter.AddInteger(.Ratio, "Ratio" & i)
+                    lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)
+                    lWriter.AddString(.Exchange, "Exchange" & i)
                 End With
             Next
         End If
 
-        If ServerVersion >= ApiServerVersion.SYNT_REALTIME_BARS Then lWriter.AddElement(keepUpToDate, "KeepUpToDate")
+        If ServerVersion >= ApiServerVersion.SYNT_REALTIME_BARS Then lWriter.AddBoolean(keepUpToDate, "KeepUpToDate")
 
-        lWriter.AddElement(options, "Options")
+        lWriter.AddOptions(options, "Options")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

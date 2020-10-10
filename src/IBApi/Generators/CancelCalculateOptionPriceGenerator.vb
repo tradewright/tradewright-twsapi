@@ -49,8 +49,8 @@ Friend Class CancelCalculateOptionPriceGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelCalculateOptionPrice)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pReqId, "ReqId")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pReqId, "ReqId")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

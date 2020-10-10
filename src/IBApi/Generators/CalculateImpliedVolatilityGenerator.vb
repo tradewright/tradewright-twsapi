@@ -51,16 +51,16 @@ Friend Class CalculateImpliedVolatilityGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CalculateImpliedVolatility)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(pReqId, "ReqId")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(pReqId, "ReqId")
 
-        lWriter.AddElement(pContract, "Contract")
+        lWriter.AddContract(pContract, "Contract")
 
-        lWriter.AddElement(pOptionPrice, "OptionPrice")
-        lWriter.AddElement(pUnderPrice, "UnderPrice")
+        lWriter.AddDouble(pOptionPrice, "OptionPrice")
+        lWriter.AddDouble(pUnderPrice, "UnderPrice")
 
-        lWriter.AddElement(If(options Is Nothing, 0, options.Count), "Options Count")
-        lWriter.AddElement(options, "Options")
+        lWriter.AddInteger(If(options Is Nothing, 0, options.Count), "Options Count")
+        lWriter.AddOptions(options, "Options")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

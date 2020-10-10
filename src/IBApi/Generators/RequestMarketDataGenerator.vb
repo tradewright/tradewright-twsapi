@@ -53,43 +53,43 @@ Friend Class RequestMarketDataGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketData)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketData), "Ticker id")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(IdManager.GetTwsId(pTickerId, IdType.MarketData), "Ticker id")
 
-        lWriter.AddElement(pContract, "Contract")
+        lWriter.AddContract(pContract, "Contract")
         With pContract
 
             ' Add combo legs for BAG requests
             If .SecType = SecurityType.Combo Then
-                lWriter.AddElement(.ComboLegs.Count, "Combolegs count")
+                lWriter.AddInteger(.ComboLegs.Count, "Combolegs count")
                 Dim i As Integer
                 For Each comboLeg In .ComboLegs
                     With comboLeg
                         i = i + 1
-                        lWriter.AddElement(.ConId, "ConId" & i)
-                        lWriter.AddElement(.Ratio, "Ratio" & i)
-                        lWriter.AddElement(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)
-                        lWriter.AddElement(.Exchange, "Exchange" & i)
+                        lWriter.AddInteger(.ConId, "ConId" & i)
+                        lWriter.AddInteger(.Ratio, "Ratio" & i)
+                        lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)
+                        lWriter.AddString(.Exchange, "Exchange" & i)
                     End With
                 Next comboLeg
             End If
 
             If .DeltaNeutralContract?.ConId <> 0 Then
-                lWriter.AddElement(True, "Under comp")
-                lWriter.AddElement(.DeltaNeutralContract.ConId, "Under comp conid")
-                lWriter.AddElement(.DeltaNeutralContract.Delta, "Under comp delta")
-                lWriter.AddElement(.DeltaNeutralContract.Price, "Under comp price")
+                lWriter.AddBoolean(True, "Under comp")
+                lWriter.AddInteger(.DeltaNeutralContract.ConId, "Under comp conid")
+                lWriter.AddDouble(.DeltaNeutralContract.Delta, "Under comp delta")
+                lWriter.AddDouble(.DeltaNeutralContract.Price, "Under comp price")
             Else
-                lWriter.AddElement(False, "Under comp")
+                lWriter.AddBoolean(False, "Under comp")
             End If
 
-            lWriter.AddElement(pGenericTicks, "Generic tick list")
+            lWriter.AddString(pGenericTicks, "Generic tick list")
 
-            lWriter.AddElement(pSnapshot, "Snapshot")
+            lWriter.AddBoolean(pSnapshot, "Snapshot")
 
-            If ServerVersion >= ApiServerVersion.SMART_COMPONENTS Then lWriter.AddElement(regulatorySnapshot, "Regulatory Snapshot")
+            If ServerVersion >= ApiServerVersion.SMART_COMPONENTS Then lWriter.AddBoolean(regulatorySnapshot, "Regulatory Snapshot")
 
-            lWriter.AddElement(options, "Options")
+            lWriter.AddOptions(options, "Options")
 
             lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
         End With

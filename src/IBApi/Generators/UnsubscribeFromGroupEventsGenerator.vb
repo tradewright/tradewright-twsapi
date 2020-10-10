@@ -51,9 +51,9 @@ Friend Class UnsubscribeFromGroupEventsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
 
-        lWriter.AddElement(requestId, "Request Id")
+        lWriter.AddInteger(requestId, "Request Id")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

@@ -51,7 +51,7 @@ Friend Class CancelPnLGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request Id")
+        lWriter.AddInteger(requestId, "Request Id")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

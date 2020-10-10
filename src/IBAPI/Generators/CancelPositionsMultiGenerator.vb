@@ -52,9 +52,9 @@ Friend Class CancelPositionsMultiGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
-        lWriter.AddElement(Version, "Version")
+        lWriter.AddInteger(Version, "Version")
 
-        lWriter.AddElement(requestId, "Request Id")
+        lWriter.AddInteger(requestId, "Request Id")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

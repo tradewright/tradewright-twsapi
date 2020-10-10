@@ -49,10 +49,10 @@ Friend Class StartAPIGenerator
 
         Dim lwriter = CreateOutputMessageGenerator()
         StartMessage(lwriter, ApiSocketOutMsgType.StartApi)
-        lwriter.AddElement(VERSION, "Version")
-        lwriter.AddElement(clientId, "Client id")
+        lwriter.AddInteger(VERSION, "Version")
+        lwriter.AddInteger(clientId, "Client id")
 
-        lwriter.AddElement(optionalCapabilities, "Optional Capabilities")
+        lwriter.AddString(optionalCapabilities, "Optional Capabilities")
 
         lwriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

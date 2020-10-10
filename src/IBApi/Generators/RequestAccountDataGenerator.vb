@@ -51,10 +51,10 @@ Friend Class RequestAccountDataGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestAccountData)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(subscribe, "Subscribe")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddBoolean(subscribe, "Subscribe")
 
-        If ServerVersion >= 9 Then lWriter.AddElement(acctCode, "Account code")
+        If ServerVersion >= 9 Then lWriter.AddString(acctCode, "Account code")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

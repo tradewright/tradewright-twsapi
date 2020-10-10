@@ -51,8 +51,8 @@ Friend Class RequestFinancialAdvisorDataGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestFinancialAdvisorData)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(dataType, "Data type")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(dataType, "Data type")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

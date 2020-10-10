@@ -217,12 +217,12 @@ Friend Class ApiConnectionManager
         If mUseV100Plus Then
             IBAPI.EventLogger.Log("Connecting to Tws: negotiating API connection", ModuleName, ProcName)
             lwriter.StartMessage("API")
-            lwriter.AddString($"v{CInt(ApiServerVersion.MinV100Plus)}..{CInt(ApiServerVersion.Max)}", "SupportedServerVersions")
+            lwriter.AddUnterminatedString($"v{CInt(ApiServerVersion.MinV100Plus)}..{CInt(ApiServerVersion.Max)}", "SupportedServerVersions")
             lwriter.SendMessage(mEventConsumers.SocketDataConsumer)
         Else
             IBAPI.EventLogger.Log("Connecting to Tws: sending client version", ModuleName, ProcName)
             lwriter.StartMessage()
-            lwriter.AddElement(ClientVersion, "Client Version")
+            lwriter.AddInteger(ClientVersion, "Client Version")
             lwriter.SendMessage(mEventConsumers.SocketDataConsumer)
         End If
 

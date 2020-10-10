@@ -51,9 +51,9 @@ Friend Class ReplaceFAGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.ReplaceFinancialAdvisorData)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(dataType, "Data type")
-        lWriter.AddElement(xml, "XML")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(dataType, "Data type")
+        lWriter.AddString(xml, "XML")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

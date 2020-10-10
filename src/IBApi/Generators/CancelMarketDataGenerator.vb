@@ -52,8 +52,8 @@ Friend Class CancelMarketDataGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.CancelMarketData)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketData), "Ticker id")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(IdManager.GetTwsId(pTickerId, IdType.MarketData), "Ticker id")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

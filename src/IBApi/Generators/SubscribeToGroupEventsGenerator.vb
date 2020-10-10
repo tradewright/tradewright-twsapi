@@ -51,10 +51,10 @@ Friend Class SubscribeToGroupEventsGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
-        lWriter.AddElement(VERSION, "Version")
+        lWriter.AddInteger(VERSION, "Version")
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(groupId, "Group Id")
+        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddInteger(groupId, "Group Id")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

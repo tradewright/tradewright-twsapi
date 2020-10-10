@@ -51,11 +51,11 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(underlyingSymbol, "Underlying Symbol")
-        lWriter.AddElement(exchange, "Exchange")
-        lWriter.AddElement(IBAPI.SecurityTypes.ToInternalString(underlyingSecType), "Underlying SecType")
-        lWriter.AddElement(underlyingConId, "Underlying ConId")
+        lWriter.AddInteger(IdManager.GetTwsId(requestId, IdType.ContractData), "Request id")
+        lWriter.AddString(underlyingSymbol, "Underlying Symbol")
+        lWriter.AddString(exchange, "Exchange")
+        lWriter.AddString(IBAPI.SecurityTypes.ToInternalString(underlyingSecType), "Underlying SecType")
+        lWriter.AddInteger(underlyingConId, "Underlying ConId")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

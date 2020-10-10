@@ -87,8 +87,8 @@ Public MustInherit Class ContractCondition
 
     Friend Overrides Sub Serialize(writer As MessageGenerator)
         MyBase.Serialize(writer)
-        writer.AddElement(ConId, "ConId")
-        writer.AddElement(Exchange, "Exchange")
+        writer.AddInteger(ConId, "ConId")
+        writer.AddString(Exchange, "Exchange")
     End Sub
 
 End Class

@@ -118,10 +118,11 @@ Friend NotInheritable Class OpenOrderParser
             .Volatility = Await _Reader.GetDoubleAsync("Volatility")
             .VolatilityType = Await _Reader.GetIntAsync("VolatilityType")
 
-            .DeltaNeutralOrderType = IBAPI.OrderTypes.Parse(Await _Reader.GetStringAsync("DeltaNeutralOrderType"))
+            Dim deltaNeutralOrderTypeStr = Await _Reader.GetStringAsync("DeltaNeutralOrderType")
+            .DeltaNeutralOrderType = IBAPI.OrderTypes.Parse(deltaNeutralOrderTypeStr)
             .DeltaNeutralAuxPrice = Await _Reader.GetNullableDoubleAsync("DeltaNeutralAuxPrice")
 
-            If .DeltaNeutralOrderType = OrderType.None Then
+            If deltaNeutralOrderTypeStr <> "" Then
                 .DeltaNeutralConId = Await _Reader.GetIntAsync("DeltaNeutralConId")
                 .DeltaNeutralSettlingFirm = Await _Reader.GetStringAsync("DeltaNeutralSettlingFirm")
                 .DeltaNeutralClearingAccount = Await _Reader.GetStringAsync("DeltaNeutralClearingAccount")

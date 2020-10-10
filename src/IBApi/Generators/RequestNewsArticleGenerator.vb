@@ -51,11 +51,11 @@ Friend Class RequestNewsArticleGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddElement(requestId, "Request Id")
-        lWriter.AddElement(providerCode, "Provider Code")
-        lWriter.AddElement(articleId, "Article Id")
+        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddString(providerCode, "Provider Code")
+        lWriter.AddString(articleId, "Article Id")
 
-        If ServerVersion >= ApiServerVersion.NEWS_QUERY_ORIGINS Then lWriter.AddElement(options, "Options")
+        If ServerVersion >= ApiServerVersion.NEWS_QUERY_ORIGINS Then lWriter.AddOptions(options, "Options")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

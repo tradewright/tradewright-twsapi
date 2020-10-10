@@ -74,9 +74,9 @@ Public Class ExecutionCondition
     Friend Overrides Sub Serialize(writer As MessageGenerator)
         MyBase.Serialize(writer)
 
-        writer.AddElement(SecType, "Sectype")
-        writer.AddElement(Exchange, "Exchange")
-        writer.AddElement(Symbol, "Symbol")
+        writer.AddString(SecType, "Sectype")
+        writer.AddString(Exchange, "Exchange")
+        writer.AddString(Symbol, "Symbol")
     End Sub
 
     Public Overrides Function Equals(obj As Object) As Boolean

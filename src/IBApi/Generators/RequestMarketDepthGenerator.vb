@@ -53,14 +53,14 @@ Friend Class RequestMarketDepthGenerator
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketDepth)
-        lWriter.AddElement(VERSION, "Version")
-        lWriter.AddElement(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Request id")
+        lWriter.AddInteger(VERSION, "Version")
+        lWriter.AddInteger(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Request id")
 
-        lWriter.AddElement(pContract, "Contract", ignorePrimaryExchange:=True)
+        lWriter.AddContract(pContract, "Contract", ignorePrimaryExchange:=True)
 
-        lWriter.AddElement(pNumberOfRows, "Num rows")
+        lWriter.AddInteger(pNumberOfRows, "Num rows")
 
-        lWriter.AddElement(options, "Options")
+        lWriter.AddOptions(options, "Options")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

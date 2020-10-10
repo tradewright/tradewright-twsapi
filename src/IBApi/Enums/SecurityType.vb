@@ -39,5 +39,6 @@ Public Enum SecurityType
     Commodity
     News
     Fund
+    ContractForDifference
 End Enum
 
