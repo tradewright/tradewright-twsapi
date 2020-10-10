@@ -12,6 +12,7 @@ Imports TradeWright.Utilities.DataStorage
 Imports TradeWright.Utilities.Logging
 Imports TradeWright.UI.Themes
 Imports System.ComponentModel
+Imports System.Text
 
 Friend Class MainForm
     Inherits System.Windows.Forms.Form
@@ -27,7 +28,7 @@ Friend Class MainForm
         MyBase.Dispose(Disposing)
     End Sub
     'Required by the Windows Form Designer
-    Private mComponents As System.ComponentModel.IContainer
+    Private ReadOnly mComponents As System.ComponentModel.IContainer
     Public WithEvents ReqHistoricalDataButton As System.Windows.Forms.Button
     Public WithEvents FinancialAdvisorButton As System.Windows.Forms.Button
     Public WithEvents ReqAllOpenOrdersButton As System.Windows.Forms.Button
@@ -1722,7 +1723,7 @@ Friend Class MainForm
 
         AddHandler AppDomain.CurrentDomain.UnhandledException,
                     Sub(s, ex)
-                        Logging.DefaultLogger.Log($"Unhandled exception:{Environment.NewLine}{ex.ExceptionObject.ToString()}", LogLevel.Severe)
+                        Logging.DefaultLogger.Log($"Unhandled exception:{Environment.NewLine}{ex.ExceptionObject}", LogLevel.Severe)
                         Me.Dispose()
                     End Sub
 
@@ -2745,7 +2746,7 @@ Friend Class MainForm
     End Sub
 
     Private Sub _CurrentTime(sender As Object, e As CurrentTimeEventArgs) Handles ApiEvents.CurrentTime
-        mServerResponsesText.DisplayMessage($"Current server time = {e.ServerTimestamp.ToString("yyyyMMdd-HH:mm:ss.fff")}", e.Timestamp)
+        mServerResponsesText.DisplayMessage($"Current server time = {e.ServerTimestamp:yyyyMMdd-HH:mm:ss.fff}", e.Timestamp)
     End Sub
 
     Private Sub _IBServerConnectionStateChange(sender As Object, e As IBServerConnectionStateChangeEventArgs) Handles ApiEvents.IBServerConnectionStateChanged
@@ -2907,7 +2908,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _Exception(sender As Object, e As ExceptionEventArgs) Handles ApiEvents.Exception
-        mErrorsText.DisplayMessage($"Exception: {e.Exception.ToString}")
+        mErrorsText.DisplayMessage($"Exception: {e.Exception}")
     End Sub
 
 #End Region
@@ -2935,7 +2936,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _HistoricalBar(sender As Object, e As HistoricalBarEventArgs) Handles ApiEvents.HistoricalBar
-        mMarketDataText.DisplayMessage($"id={e.RequestId} date={e.Bar.TimeStamp.ToString("yyyyMMdd-HH:mm:ss")} open={e.Bar.OpenValue} high={e.Bar.HighValue} " &
+        mMarketDataText.DisplayMessage($"id={e.RequestId} date={e.Bar.TimeStamp:yyyyMMdd-HH:mm:ss} open={e.Bar.OpenValue} high={e.Bar.HighValue} " &
                      $"low={e.Bar.LowValue} close={e.Bar.CloseValue} volume={e.Bar.Volume} " &
                      $"barCount={e.Bar.TickVolume} WAP={e.Bar.WAP}")
     End Sub
@@ -2945,15 +2946,15 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _HistoricalBarsEnd(sender As Object, e As HistoricalBarsRequestEventArgs) Handles ApiEvents.HistoricalBarsEnd
-        mMarketDataText.DisplayMessage($"Historical Bars End. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}")
+        mMarketDataText.DisplayMessage($"Historical Bars End. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate} count: {e.NumberOfBars}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalBarsStart(sender As Object, e As HistoricalBarsRequestEventArgs) Handles ApiEvents.HistoricalBarsStart
-        mMarketDataText.DisplayMessage($"Historical Bars Start. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate}", e.Timestamp)
+        mMarketDataText.DisplayMessage($"Historical Bars Start. Request Id: {e.RequestId} start: {e.StartDate} end: {e.EndDate} count: {e.NumberOfBars}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalBidAsk(sender As Object, e As HistoricalBidAskEventArgs) Handles ApiEvents.HistoricalBidAsk
-        mMarketDataText.DisplayMessage($"Historical Tick Bid/Ask. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price Bid: {e.BidPrice}, Price Ask: {e.AskPrice}, Size Bid: {e.BidSize}, Size Ask: {e.AskSize}, Attributes: {e.Attributes}", e.Timestamp)
+        mMarketDataText.DisplayMessage($"Historical Tick Bid/Ask. Request Id: {e.RequestId}, Time: {e.Time:yyyyMMdd-HH:mm:ss}, Price Bid: {e.BidPrice}, Price Ask: {e.AskPrice}, Size Bid: {e.BidSize}, Size Ask: {e.AskSize}, Attributes: {e.Attributes}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalBidAsksEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalBidAsksEnd
@@ -2961,7 +2962,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _HistoricalMidpoint(sender As Object, e As HistoricalMidpointEventArgs) Handles ApiEvents.HistoricalMidpoint
-        mMarketDataText.DisplayMessage($"Historical Tick Midpoint. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}", e.Timestamp)
+        mMarketDataText.DisplayMessage($"Historical Tick Midpoint. Request Id: {e.RequestId}, Time: {e.Time:yyyyMMdd-HH:mm:ss}, Price: {e.Price}, Size: {e.Size}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalMidpointsEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalMidpointsEnd
@@ -2969,7 +2970,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _HistoricalTrade(sender As Object, e As HistoricalTradeEventArgs) Handles ApiEvents.HistoricalTrade
-        mMarketDataText.DisplayMessage($"Historical Tick Trade. Request Id: {e.RequestId}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Last Tick Attributes: {e.Attributes}", e.Timestamp)
+        mMarketDataText.DisplayMessage($"Historical Tick Trade. Request Id: {e.RequestId}, Time: {e.Time:yyyyMMdd-HH:mm:ss}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Last Tick Attributes: {e.Attributes}", e.Timestamp)
     End Sub
 
     Private Sub _HistoricalTradesEnd(sender As Object, e As RequestEndEventArgs) Handles ApiEvents.HistoricalTradesEnd
@@ -2989,7 +2990,7 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _RealtimeBar(sender As Object, e As RealtimeBarEventArgs) Handles ApiEvents.RealtimeBar
-        mMarketDataText.DisplayMessage($"id={e.RequestId} time={e.Bar.TimeStamp.ToString("yyyyMMdd-HH:mm:ss")} open={e.Bar.OpenValue} high={e.Bar.HighValue} " &
+        mMarketDataText.DisplayMessage($"id={e.RequestId} time={e.Bar.TimeStamp:yyyyMMdd-HH:mm:ss} open={e.Bar.OpenValue} high={e.Bar.HighValue} " &
                         $"low={e.Bar.LowValue} close={e.Bar.CloseValue} volume={e.Bar.Volume} WAP={e.Bar.WAP} " &
                         $"count={e.Bar.TickVolume}", e.Timestamp)
     End Sub
@@ -3011,17 +3012,17 @@ $"  secIdList=({cd.SecIdList?.ToString})
     End Sub
 
     Private Sub _TickByTickAllLast(sender As Object, e As TickByTickAllLastEventArgs) Handles ApiEvents.TickByTickAllLast
-        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, DataType: {IBAPI.TickByTickDataTypes.ToExternalString(e.DataType)}, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Attributes: {e.Attributes}", e.Timestamp)
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, DataType: {IBAPI.TickByTickDataTypes.ToExternalString(e.DataType)}, Time: {e.Time:yyyyMMdd-HH:mm:ss}, Price: {e.Price}, Size: {e.Size}, Exchange: {e.Exchange}, Special Conditions: {e.SpecialConditions}, Attributes: {e.Attributes}", e.Timestamp)
         mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
     End Sub
 
     Private Sub _TickByTickBidAsk(sender As Object, e As TickByTickBidAskEventArgs) Handles ApiEvents.TickByTickBidAsk
-        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: BidAsk, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, BidPrice: {e.BidPrice}, AskPrice: {e.AskPrice}, BidSize: {e.BidSize}, AskSize: {e.AskSize}, Attributes: {e.Attributes}", e.Timestamp)
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: BidAsk, Time: {e.Time:yyyyMMdd-HH:mm:ss}, BidPrice: {e.BidPrice}, AskPrice: {e.AskPrice}, BidSize: {e.BidSize}, AskSize: {e.AskSize}, Attributes: {e.Attributes}", e.Timestamp)
         mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
     End Sub
 
     Private Sub _TickByTickMidPoint(sender As Object, e As TickByTickMidPointEventArgs) Handles ApiEvents.TickByTickMidPoint
-        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: MidPoint, Time: {e.Time.ToString("yyyyMMdd-HH:mm:ss")}, MidPoint: {e.MidPoint}", e.Timestamp)
+        mMarketDataText.DisplayMessage($"Tick-By-Tick. Request Id: {e.RequestId}, TickType: MidPoint, Time: {e.Time:yyyyMMdd-HH:mm:ss}, MidPoint: {e.MidPoint}", e.Timestamp)
         mMarketDataText.DisplayMessage($"Latency: {Now - e.Time}")
     End Sub
 
@@ -3047,7 +3048,7 @@ id={e.TickerId} {GetField(e.Field)} vol={IBAPI.NullableToString(e.ImpliedVolatil
     End Sub
 
     Private Sub _TickPrice(sender As Object, e As TickPriceEventArgs) Handles ApiEvents.TickPrice
-        mMarketDataText.DisplayMessage($"id={e.TickerId} {GetField(e.Field)}={e.Price} size={e.Size} {e.Attributes.ToString}", e.Timestamp)
+        mMarketDataText.DisplayMessage($"id={e.TickerId} {GetField(e.Field)}={e.Price} size={e.Size} {e.Attributes}", e.Timestamp)
     End Sub
 
     Private Sub _TickRequestParams(sender As Object, e As TickRequestParamsEventArgs) Handles ApiEvents.TickRequestParams
@@ -3161,7 +3162,7 @@ $"---- Historical News Begin ----
         mServerResponsesText.DisplayMessage(
 $"---- Tick News Begin ----
     tickerId={e.TickerId}
-    timeStamp={e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss zzz")}
+    timeStamp={e.Timestamp:yyyy-MM-dd HH:mm:ss zzz}
     providerCode={e.ProviderCode}
     articleId={e.ArticleId}
     headline={e.Headline}
@@ -3248,7 +3249,7 @@ $"---- Tick News Begin ----
   orderRef = { .OrderRef}
   evRule = { .EvRule}
   evMultiplier = { .EvMultiplier}
-  lastLiquidity = { .LastLiquidity.ToString()}")
+  lastLiquidity = { .LastLiquidity}")
 
         End With
 
@@ -3507,7 +3508,7 @@ $"id={e.RequestId} rank={e.Rank} conId={contract.ConId}
         Dim name2 = parseNode(node1.FirstChild.NextSibling, "name")
         Dim theType2 = parseNode(node1.FirstChild.NextSibling, "type")
         mServerResponsesText.DisplayMessage($"InstrumentList starts with ({name1},{theType1}) followed by ({name2},{theType2})")
-        mServerResponsesText.DisplayMessage(e.XmlData)
+        mServerResponsesText.DisplayMessage(e.XmlData.Replace(vbLf, Environment.NewLine).Replace(vbTab, "    "))
     End Sub
 
 #End Region
