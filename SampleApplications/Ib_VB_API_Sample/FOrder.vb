@@ -20,7 +20,7 @@ Friend Class FOrder
         MyBase.Dispose(Disposing)
     End Sub
     'Required by the Windows Form Designer
-    Private mComponents As System.ComponentModel.IContainer
+    Private ReadOnly mComponents As System.ComponentModel.IContainer
     Public WithEvents WhatToShowText As System.Windows.Forms.TextBox
     Public WithEvents Frame1 As TradeWright.UI.Themes.TitledGroupBox
     Public WithEvents CancelItButton As TradeWright.UI.Themes.ThemedButton1
@@ -382,7 +382,7 @@ Friend Class FOrder
         Me.UseRTHCheck.CheckState = System.Windows.Forms.CheckState.Checked
         Me.UseRTHCheck.Location = New System.Drawing.Point(17, 221)
         Me.UseRTHCheck.Name = "UseRTHCheck"
-        Me.UseRTHCheck.Size = New System.Drawing.Size(144, 19)
+        Me.UseRTHCheck.Size = New System.Drawing.Size(143, 19)
         Me.UseRTHCheck.TabIndex = 8
         Me.UseRTHCheck.Text = "Regular Trading Hours"
         '
@@ -462,7 +462,7 @@ Friend Class FOrder
         Me.CancelItButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.CancelItButton.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CancelItButton.ForeColor = System.Drawing.Color.DimGray
-        Me.CancelItButton.Location = New System.Drawing.Point(6, 112)
+        Me.CancelItButton.Location = New System.Drawing.Point(9, 120)
         Me.CancelItButton.Name = "CancelItButton"
         Me.CancelItButton.Size = New System.Drawing.Size(65, 25)
         Me.CancelItButton.TabIndex = 3
@@ -473,7 +473,7 @@ Friend Class FOrder
         '
         Me.OkButton.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.OkButton.ForeColor = System.Drawing.Color.DimGray
-        Me.OkButton.Location = New System.Drawing.Point(6, 81)
+        Me.OkButton.Location = New System.Drawing.Point(6, 91)
         Me.OkButton.Name = "OkButton"
         Me.OkButton.Size = New System.Drawing.Size(65, 23)
         Me.OkButton.TabIndex = 2
@@ -526,7 +526,7 @@ Friend Class FOrder
         Me.IncludeExpiredCheck.AutoSize = True
         Me.IncludeExpiredCheck.Location = New System.Drawing.Point(17, 362)
         Me.IncludeExpiredCheck.Name = "IncludeExpiredCheck"
-        Me.IncludeExpiredCheck.Size = New System.Drawing.Size(106, 19)
+        Me.IncludeExpiredCheck.Size = New System.Drawing.Size(107, 19)
         Me.IncludeExpiredCheck.TabIndex = 12
         Me.IncludeExpiredCheck.Text = "Include expired"
         '
@@ -577,7 +577,7 @@ Friend Class FOrder
         Me.Label6.AutoSize = True
         Me.Label6.Location = New System.Drawing.Point(14, 390)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(66, 15)
+        Me.Label6.Size = New System.Drawing.Size(65, 15)
         Me.Label6.TabIndex = 26
         Me.Label6.Text = "Sec Id Type"
         '
@@ -1244,7 +1244,7 @@ Friend Class FOrder
         Me.GroupBox5.Controls.Add(Me.CancelItButton)
         Me.GroupBox5.Location = New System.Drawing.Point(691, 20)
         Me.GroupBox5.Name = "GroupBox5"
-        Me.GroupBox5.Size = New System.Drawing.Size(80, 142)
+        Me.GroupBox5.Size = New System.Drawing.Size(80, 185)
         Me.GroupBox5.TabIndex = 4
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.TitleBackColor = System.Drawing.Color.Empty

@@ -19,7 +19,7 @@
 
     Friend Sub DisplayMessage(message As String, Optional timestamp As Date = #1/1/0001 12:00:00 AM#)
         If timestamp <> Date.MinValue Then
-            mSb.Append($"{timestamp.ToString("yyyyMMdd HH:mm:ss.fff")}  ")
+            mSb.Append($"{timestamp:yyyyMMdd HH:mm:ss.fff}  ")
         End If
         mSb.Append(message)
         mSb.Append(Environment.NewLine)
