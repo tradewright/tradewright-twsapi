@@ -23,7 +23,7 @@ Public Class FOrderAttribs
         MyBase.Dispose(Disposing)
     End Sub
     'Required by the Windows Form Designer
-    Private mComponents As System.ComponentModel.IContainer
+    Private ReadOnly mComponents As System.ComponentModel.IContainer
     Public ToolTip1 As System.Windows.Forms.ToolTip
     Public WithEvents Rule80AText As System.Windows.Forms.TextBox
     Public WithEvents SettlingFirmText As System.Windows.Forms.TextBox
@@ -976,7 +976,7 @@ Public Class FOrderAttribs
         Me.Label11.Location = New System.Drawing.Point(265, 252)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label11.Size = New System.Drawing.Size(65, 17)
+        Me.Label11.Size = New System.Drawing.Size(81, 17)
         Me.Label11.TabIndex = 62
         Me.Label11.Text = "Display Size"
         '
@@ -2451,7 +2451,7 @@ Public Class FOrderAttribs
         OptOutSmartRoutingCheck.Checked = mOrderInfo.OptOutSmartRouting
 
         ' BOX or VOL orders only
-        AuctionStrategyText.Text = mOrderInfo.AuctionStrategy
+        AuctionStrategyText.Text = IBAPI.NullableToString(mOrderInfo.AuctionStrategy)
 
         'BOX orders only
         StartingPriceText.Text = IBAPI.NullableToString(mOrderInfo.StartingPrice)
@@ -2529,13 +2529,13 @@ Public Class FOrderAttribs
         End If
     End Function
 
-    Private Function dval(text As String) As Double
-        If Len(text) = 0 Then
-            Return Double.MaxValue
-        Else
-            Return CDbl(text)
-        End If
-    End Function
+    'Private Function dval(text As String) As Double
+    '    If Len(text) = 0 Then
+    '        Return Double.MaxValue
+    '    Else
+    '        Return CDbl(text)
+    '    End If
+    'End Function
 
     ' ========================================================
     ' Button Events
@@ -2546,9 +2546,9 @@ Public Class FOrderAttribs
         mOrderInfo.ActiveStartTime = ActiveStartTimeText.Text
         mOrderInfo.ActiveStopTime = ActiveStopTimeText.Text
         mOrderInfo.OcaGroup = OCAText.Text
-        mOrderInfo.OcaType = ival(OcaTypeText.Text)
+        mOrderInfo.OcaType = IBAPI.NullableIntegerFromString(OcaTypeText.Text)
         mOrderInfo.OrderRef = OrderRefText.Text
-        mOrderInfo.ParentId = ival(ParentIdText.Text)
+        mOrderInfo.ParentId = IBAPI.NullableIntegerFromString(ParentIdText.Text)
         mOrderInfo.BlockOrder = BlockOrderCheck.Checked
         mOrderInfo.SweepToFill = SweepToFillCheck.Checked
         mOrderInfo.DisplaySize = ival(DisplaySizeText.Text)
@@ -2562,7 +2562,7 @@ Public Class FOrderAttribs
         mOrderInfo.PercentOffset = IBAPI.NullableDoubleFromString(PercentOffsetText.Text)
         mOrderInfo.TrailStopPrice = IBAPI.NullableDoubleFromString(TrailStopPriceText.Text)
         mOrderInfo.TrailingPercent = IBAPI.NullableDoubleFromString(TrailingPercentText.Text)
-        mOrderInfo.LmtPriceOffset = LmtPriceOffsetText.Text
+        mOrderInfo.LmtPriceOffset = IBAPI.NullableDoubleFromString(LmtPriceOffsetText.Text)
 
         ' Institutional orders only
         mOrderInfo.OpenClose = OpenCloseText.Text
@@ -2576,50 +2576,50 @@ Public Class FOrderAttribs
         End If
 
         'SMART routing only
-        mOrderInfo.DiscretionaryAmt = dval(DiscretionaryAmtText.Text)
+        mOrderInfo.DiscretionaryAmt = IBAPI.NullableDoubleFromString(DiscretionaryAmtText.Text)
         mOrderInfo.ETradeOnly = ETradeOnlyCheck.Checked
         mOrderInfo.FirmQuoteOnly = FirmQuoteOnlyCheck.Checked
-        mOrderInfo.NbboPriceCap = NBBOPriceCapText.Text
+        mOrderInfo.NbboPriceCap = IBAPI.NullableDoubleFromString(NBBOPriceCapText.Text)
         mOrderInfo.OptOutSmartRouting = OptOutSmartRoutingCheck.Checked
 
         ' BOX or VOL orders only
         mOrderInfo.AuctionStrategy = ival(AuctionStrategyText.Text)
 
         'BOX orders only
-        mOrderInfo.StartingPrice = dval(StartingPriceText.Text)
-        mOrderInfo.StockRefPrice = dval(StockRefPriceText.Text)
-        mOrderInfo.Delta = dval(DeltaText.Text)
+        mOrderInfo.StartingPrice = IBAPI.NullableDoubleFromString(StartingPriceText.Text)
+        mOrderInfo.StockRefPrice = IBAPI.NullableDoubleFromString(StockRefPriceText.Text)
+        mOrderInfo.Delta = IBAPI.NullableDoubleFromString(DeltaText.Text)
 
         ' pegged to stock or VOL orders
-        mOrderInfo.StockRangeLower = dval(StockRangeLowerText.Text)
-        mOrderInfo.StockRangeUpper = dval(StockRangeUpperText.Text)
+        mOrderInfo.StockRangeLower = IBAPI.NullableDoubleFromString(StockRangeLowerText.Text)
+        mOrderInfo.StockRangeUpper = IBAPI.NullableDoubleFromString(StockRangeUpperText.Text)
 
         ' VOLATILITY orders only
-        mOrderInfo.Volatility = dval(VolatilityText.Text)
+        mOrderInfo.Volatility = IBAPI.NullableDoubleFromString(VolatilityText.Text)
         mOrderInfo.VolatilityType = ival(VolatilityTypeText.Text)
         mOrderInfo.ContinuousUpdate = ContinuousUpdateCheck.Checked
         mOrderInfo.ReferencePriceType = ival(ReferencePriceTypeText.Text)
         mOrderInfo.DeltaNeutralOrderType = DeltaNeutralOrderTypeText.Text
-        mOrderInfo.DeltaNeutralAuxPrice = dval(DeltaNeutralAuxPriceText.Text)
+        mOrderInfo.DeltaNeutralAuxPrice = IBAPI.NullableDoubleFromString(DeltaNeutralAuxPriceText.Text)
         mOrderInfo.DeltaNeutralConId = ival(DeltaNeutralConIdText.Text)
         mOrderInfo.DeltaNeutralSettlingFirm = DeltaNeutralSettlingFirmText.Text
         mOrderInfo.DeltaNeutralClearingAccount = DeltaNeutralClearingAccountText.Text
         mOrderInfo.DeltaNeutralClearingIntent = DeltaNeutralClearingIntentText.Text
         mOrderInfo.DeltaNeutralOpenClose = DeltaNeutralOpenCloseText.Text
         mOrderInfo.DeltaNeutralShortSale = DeltaNeutralShortSaleCheck.Checked
-        mOrderInfo.DeltaNeutralShortSaleSlot = ival(DeltaNeutralShortSaleSlotText.Text)
+        mOrderInfo.DeltaNeutralShortSaleSlot = IBAPI.NullableIntegerFromString(DeltaNeutralShortSaleSlotText.Text)
         mOrderInfo.DeltaNeutralDesignatedLocation = DeltaNeutralDesignatedLocationText.Text
 
         ' SCALE orders only
-        mOrderInfo.ScaleInitLevelSize = ScaleInitLevelSizeText.Text
-        mOrderInfo.ScaleSubsLevelSize = ScaleSubsLevelSizeText.Text
-        mOrderInfo.ScalePriceIncrement = ScalePriceIncrText.Text
-        mOrderInfo.ScalePriceAdjustValue = ScalePriceAdjustValueText.Text
-        mOrderInfo.ScalePriceAdjustInterval = ScalePriceAdjustIntervalText.Text
-        mOrderInfo.ScaleProfitOffset = ScaleProfitOffsetText.Text
+        mOrderInfo.ScaleInitLevelSize = IBAPI.NullableIntegerFromString(ScaleInitLevelSizeText.Text)
+        mOrderInfo.ScaleSubsLevelSize = IBAPI.NullableIntegerFromString(ScaleSubsLevelSizeText.Text)
+        mOrderInfo.ScalePriceIncrement = IBAPI.NullableDoubleFromString(ScalePriceIncrText.Text)
+        mOrderInfo.ScalePriceAdjustValue = IBAPI.NullableDoubleFromString(ScalePriceAdjustValueText.Text)
+        mOrderInfo.ScalePriceAdjustInterval = IBAPI.NullableIntegerFromString(ScalePriceAdjustIntervalText.Text)
+        mOrderInfo.ScaleProfitOffset = IBAPI.NullableDoubleFromString(ScaleProfitOffsetText.Text)
         mOrderInfo.ScaleAutoReset = ScaleAutoResetCheck.Checked
-        mOrderInfo.ScaleInitPosition = ScaleInitPositionText.Text
-        mOrderInfo.ScaleInitFillQty = ScaleInitFillQtyText.Text
+        mOrderInfo.ScaleInitPosition = IBAPI.NullableIntegerFromString(ScaleInitPositionText.Text)
+        mOrderInfo.ScaleInitFillQty = IBAPI.NullableIntegerFromString(ScaleInitFillQtyText.Text)
         mOrderInfo.ScaleRandomPercent = ScaleRandomPercentCheck.Checked
         mOrderInfo.ScaleTable = ScaleTableText.Text
 
