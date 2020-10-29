@@ -379,7 +379,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="TradeWright.IBAPI">
-      <Version>973.7.3</Version>
+      <Version>973.7.5</Version>
     </PackageReference>
     <PackageReference Include="TradeWright.UI">
       <Version>1.0.0</Version>

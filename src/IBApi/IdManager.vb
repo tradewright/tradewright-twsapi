@@ -28,7 +28,7 @@ Friend Class IdManager
 
     Private Const BaseMarketDataRequestId As Integer = 0
     Private Const BaseMarketDepthRequestId As Integer = &H40000
-    Private Const BaseHistoricalDataRequestId As Integer = &H80000
+    Private Const BaseHistoricalDataRequestId As Integer = &H60000
     Private Const BaseRealtimeBarsRequestId As Integer = &H80000
     Private Const BaseExecutionsRequestId As Integer = &HC0000
     Private Const BaseContractRequestId As Integer = &H100000
