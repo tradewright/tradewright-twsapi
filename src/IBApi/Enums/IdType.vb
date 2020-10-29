@@ -32,5 +32,6 @@ Friend Enum IdType
     Order
     ContractData
     Execution
+    RealtimeBars
 End Enum
 

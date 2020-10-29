@@ -54,7 +54,7 @@ Friend Class RequestRealtimeBarsGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestRealtimeBars)
         lWriter.AddInteger(VERSION, "Version")
-        lWriter.AddInteger(pTickerId, "TickerId")
+        lWriter.AddInteger(IdManager.GetTwsId(pTickerId, IdType.RealtimeBars), "TickerId")
 
         lWriter.AddContract(pContract, "Contract")
 

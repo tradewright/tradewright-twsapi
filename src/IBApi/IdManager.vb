@@ -27,15 +27,17 @@
 Friend Class IdManager
 
     Private Const BaseMarketDataRequestId As Integer = 0
-    Private Const BaseMarketDepthRequestId As Integer = &H400000
-    Private Const BaseHistoricalDataRequestId As Integer = &H800000
-    Private Const BaseExecutionsRequestId As Integer = &H810000
-    Private Const BaseContractRequestId As Integer = &H1000000
+    Private Const BaseMarketDepthRequestId As Integer = &H40000
+    Private Const BaseHistoricalDataRequestId As Integer = &H80000
+    Private Const BaseRealtimeBarsRequestId As Integer = &H80000
+    Private Const BaseExecutionsRequestId As Integer = &HC0000
+    Private Const BaseContractRequestId As Integer = &H100000
     Friend Const BaseOrderId As Integer = &H10000000
 
     Friend Const MaxCallersMarketDataRequestId As Integer = BaseMarketDepthRequestId - 1
     Friend Const MaxCallersMarketDepthRequestId As Integer = BaseHistoricalDataRequestId - BaseMarketDepthRequestId - 1
-    Friend Const MaxCallersHistoricalDataRequestId As Integer = BaseExecutionsRequestId - BaseHistoricalDataRequestId - 1
+    Friend Const MaxCallersHistoricalDataRequestId As Integer = BaseRealtimeBarsRequestId - BaseHistoricalDataRequestId - 1
+    Friend Const MaxCallersRealtimeBarsRequestId As Integer = BaseExecutionsRequestId - BaseRealtimeBarsRequestId - 1
     Friend Const MaxCallersExecutionsRequestId As Integer = BaseContractRequestId - BaseExecutionsRequestId - 1
     Friend Const MaxCallersContractRequestId As Integer = BaseOrderId - BaseContractRequestId - 1
     Friend Const MaxCallersOrderId As Integer = &H7FFFFFFF - BaseOrderId - 1
@@ -50,6 +52,8 @@ Friend Class IdManager
                 Return twsId - BaseMarketDepthRequestId
             Case IdType.HistoricalData
                 Return twsId - BaseHistoricalDataRequestId
+            Case IdType.RealtimeBars
+                Return twsId - BaseRealtimeBarsRequestId
             Case IdType.Execution
                 Return twsId - BaseExecutionsRequestId
             Case IdType.ContractData
@@ -68,6 +72,8 @@ Friend Class IdManager
             Return IdType.ContractData
         ElseIf id >= BaseExecutionsRequestId Then
             Return IdType.Execution
+        ElseIf id >= BaseRealtimeBarsRequestId Then
+            Return IdType.RealtimeBars
         ElseIf id >= BaseHistoricalDataRequestId Then
             Return IdType.HistoricalData
         ElseIf id >= BaseMarketDepthRequestId Then
@@ -102,6 +108,9 @@ Friend Class IdManager
             Case IdType.HistoricalData
                 If callerId > MaxCallersHistoricalDataRequestId Then Throw New ArgumentException($"Max request id is {MaxCallersHistoricalDataRequestId}")
                 Return callerId + BaseHistoricalDataRequestId
+            Case IdType.RealtimeBars
+                If callerId > MaxCallersRealtimeBarsRequestId Then Throw New ArgumentException($"Max request id is {MaxCallersRealtimeBarsRequestId}")
+                Return callerId + BaseRealtimeBarsRequestId
             Case IdType.Execution
                 If callerId > MaxCallersExecutionsRequestId Then Throw New ArgumentException($"Max request id is {MaxCallersExecutionsRequestId}")
                 Return callerId + BaseExecutionsRequestId

@@ -33,7 +33,8 @@ Friend NotInheritable Class HistoricalDataUpdateParser
     Private Const ModuleName As String = NameOf(HistoricalDataUpdateParser)
 
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim requestId = Await _Reader.GetIntAsync("Request Id")
+        Dim reqId = Await _Reader.GetIntAsync("Request id")
+        Dim requestId = IdManager.GetCallerId(reqId, IdType.HistoricalData)
 
         Dim bar As New Bar With {
                 .TickVolume = Await _Reader.GetLongAsync("Tick Volume"),
@@ -49,11 +50,11 @@ Friend NotInheritable Class HistoricalDataUpdateParser
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.HistoricalDataConsumer?.UpdateHistoricalBar(New HistoricalBarEventArgs(timestamp, requestId, bar))
-        Return True
-            Catch e As Exception
-                Throw New ApiApplicationException("UpdateHistoricalData", e)
-            End Try
+            _EventConsumers.HistoricalDataConsumer?.UpdateHistoricalBar(New HistoricalBarEventArgs(timestamp, requestId, bar))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("UpdateHistoricalData", e)
+        End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
