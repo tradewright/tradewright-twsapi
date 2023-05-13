@@ -30,7 +30,7 @@ Friend Class RequestMarketDepthGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pContract As Contract, pNumberOfRows As Integer, options As List(Of TagValue))
+    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pContract As Contract, pIsSmartDepth As Boolean, pNumberOfRows As Integer, options As List(Of TagValue))
 
     Private Const ModuleName As String = NameOf(RequestMarketDepthGenerator)
 
@@ -46,22 +46,27 @@ Friend Class RequestMarketDepthGenerator
         End Get
     End Property
 
-    Private Sub requestMarketDepth(pTickerId As Integer, pContract As Contract, pNumberOfRows As Integer, options As List(Of TagValue))
+    Private Sub requestMarketDepth(pTickerId As Integer, pContract As Contract, pIsSmartDepth As Boolean, pNumberOfRows As Integer, options As List(Of TagValue))
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 5
+
+        If pIsSmartDepth And ServerVersion < ApiServerVersion.SMART_DEPTH Then Throw New InvalidOperationException("SMART depth request is not supported")
+        If pContract.PrimaryExch <> "" And ServerVersion < ApiServerVersion.MKT_DEPTH_PRIM_EXCHANGE Then Throw New InvalidOperationException("PrimaryExch parameter is not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketDepth)
         lWriter.AddInteger(VERSION, "Version")
         lWriter.AddInteger(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Request id")
-
-        lWriter.AddContract(pContract, "Contract", ignorePrimaryExchange:=True)
+        lWriter.AddContract(pContract, "Contract", ignorePrimaryExchange:=(ServerVersion < ApiServerVersion.MKT_DEPTH_PRIM_EXCHANGE))
 
         lWriter.AddInteger(pNumberOfRows, "Num rows")
 
+        If ServerVersion >= ApiServerVersion.SMART_DEPTH Then lWriter.AddBoolean(pIsSmartDepth, "IsSmartDepth")
+
+
         lWriter.AddOptions(options, "Options")
-        lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
+                lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 
 End Class

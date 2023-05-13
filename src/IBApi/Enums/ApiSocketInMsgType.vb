@@ -103,6 +103,9 @@ Public Enum ApiSocketInMsgType
     HistoricalTickBidAsk = 97
     HistoricalTickLast = 98
     TickByTick = 99
+    OrderBound = 100
+    CompletedOrder = 101
+    CompletedOrdersEnd = 102
 
     ' Max for API 973.07
 

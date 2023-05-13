@@ -99,6 +99,7 @@ Friend Enum ApiSocketOutMsgType
     RequestHistoricalTickData = 96
     RequestTickByTickData = 97
     CancelTickByTickData = 98
+    RequestCompletedOrders = 99
 
     ' Max for API 973.07
 

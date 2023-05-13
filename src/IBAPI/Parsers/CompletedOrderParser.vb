@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2023 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,37 +24,35 @@
 
 #End Region
 
-Imports System.Collections.Generic
 Imports System.Threading.Tasks
 
-Friend NotInheritable Class NewsProvidersParser
+Friend NotInheritable Class CompletedOrderParser
     Inherits ParserBase
     Implements IParser
 
-    Private Const ModuleName As String = NameOf(NewsProvidersParser)
+    Private Const ModuleName As String = NameOf(CompletedOrderParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim providers = New List(Of NewsProvider)()
-        Dim providersCount = Await _Reader.GetIntAsync("Providers Count")
+    Friend Overrides Async Function ParseAsync(version As Integer, timestamp As Date) As Task(Of Boolean)
+        Dim lContract = New Contract
+        Dim lOrder = New Order
+        Dim lOrderState = New OrderState
 
-        For i = 1 To providersCount
-            providers.Add(New NewsProvider(Await _Reader.GetStringAsync("Provider Code"),
-                                           Await _Reader.GetStringAsync("Provider Name")))
-        Next
+        Dim orderParser = New OrderParser()
+        Await orderParser.ParseAsync(_Reader, ServerVersion, lContract, lOrder, lOrderState, OrderParser.OrderPhase.Completed)
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-            _EventConsumers.NewsConsumer?.NotifyNewsProviders(New NewsProvidersEventArgs(timestamp, providers))
+            _EventConsumers.OrderInfoConsumer?.NotifyCompletedOrder(New CompletedOrderEventArgs(timestamp, lContract, lOrder, lOrderState))
             Return True
         Catch e As Exception
-            Throw New ApiApplicationException("NotifyNewsProviders", e)
+            Throw New ApiApplicationException("NotifyCompletedOrder", e)
         End Try
     End Function
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
         Get
-            Return ApiSocketInMsgType.NewsProviders
+            Return ApiSocketInMsgType.CompletedOrder
         End Get
     End Property
 

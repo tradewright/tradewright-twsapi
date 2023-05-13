@@ -111,7 +111,7 @@ Friend Class InputMessageHandler
         End If
     End Sub
 
-    Friend Sub LogSocketInputMessage(moduleName As String, procName As String, Optional pIgnoreLogLevel As Boolean = False)
+    Friend Sub LogSocketInputMessage()
         mReader.LogSocketInputMessage(mEventConsumers.SocketDataConsumer)
     End Sub
 
@@ -142,7 +142,7 @@ Friend Class InputMessageHandler
                              ' these have already been notified to the application
                              terminationReason = "application failure"
                          Catch e As Exception
-                             IBAPI.EventLogger.Log($"Exception in message processing loop{Environment.NewLine}{e.ToString()}", ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
+                             IBAPI.EventLogger.Log($"Exception in message processing loop{Environment.NewLine}{e}", ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
                              terminationReason = "exception"
                              mEventConsumers.ErrorAndNotificationConsumer?.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
                          Finally
@@ -192,7 +192,7 @@ Friend Class InputMessageHandler
         Catch e As ApiException When e.ErrorCode = ErrorCodes.DataStreamEnded
             Return False
         Catch e As ApiApplicationException
-            IBAPI.EventLogger.Log($"An exception occurred in the API user's application code while it was processing a callback: {IBAPI.ApiSocketInMsgTypes.ToExternalString(pMessageId)}{vbCrLf}{e.ToString()}", NameOf(InputMessageHandler), Procname, ILogger.LogLevel.Severe)
+            IBAPI.EventLogger.Log($"An exception occurred in the API user's application code while it was processing a callback: {IBAPI.ApiSocketInMsgTypes.ToExternalString(pMessageId)}{vbCrLf}{e}", NameOf(InputMessageHandler), Procname, ILogger.LogLevel.Severe)
             mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
             Return False
         End Try
@@ -202,6 +202,7 @@ Friend Class InputMessageHandler
         If messageId = ApiSocketInMsgType.ExecutionData And mServerVersion >= ApiServerVersion.LAST_LIQUIDITY Then Return False
         If messageId = ApiSocketInMsgType.HistoricalBar And mServerVersion >= ApiServerVersion.SYNT_REALTIME_BARS Then Return False
         If messageId = ApiSocketInMsgType.OrderStatus And mServerVersion >= ApiServerVersion.MARKET_CAP_PRICE Then Return False
+        If messageId = ApiSocketInMsgType.OrderStatus And mServerVersion >= ApiServerVersion.ORDER_CONTAINER Then Return False
         Return messageId <= ApiSocketInMsgType.MaxIdWithVersion
     End Function
 
@@ -234,11 +235,11 @@ Friend Class InputMessageHandler
                                                         $"MessageStartindex={i}; InputBufferNextFreeIndex={l}; InputParseIndex={c}{Environment.NewLine}" &
                                                         $"Buffer contents:{Environment.NewLine}" &
                                                         $"{IBAPI.FormatBuffer(buff, l)}{Environment.NewLine}" &
-                                                        $"{e.ToString}"
+                                                        $"{e}"
                                                   End Sub)
 
             IBAPI.EventLogger.Log(s, ModuleName, ProcName, pLogLevel:=ILogger.LogLevel.Severe)
-            LogSocketInputMessage(ModuleName, ProcName, True)
+            LogSocketInputMessage()
 
             Return False
         End Try
@@ -250,7 +251,7 @@ Friend Class InputMessageHandler
 
 
         mStatsRecorder.UpdateMessageTypeStats(CType(pMessageId, ApiSocketInMsgType), pMessageElapsedTime)
-        sEventCount = sEventCount + 1
+        sEventCount += 1
 
         Dim secs = getElapsedTimer.ElapsedTicks / Stopwatch.Frequency
         If secs >= 10.0 Then

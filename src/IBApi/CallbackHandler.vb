@@ -402,11 +402,19 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
+    Public Sub EndCompletedOrders(e As EventArgs) Implements IOrderInfoConsumer.EndCompletedOrders
+        ' no action
+    End Sub
+
     Public Overridable Sub EndOpenOrders(e As EventArgs) Implements IOrderInfoConsumer.EndOpenOrders
         ' no action
     End Sub
 
     Public Overridable Sub NotifyCommissionReport(e As CommissionReportEventArgs) Implements IOrderInfoConsumer.NotifyCommissionReport
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifyCompletedOrder(e As CompletedOrderEventArgs) Implements IOrderInfoConsumer.NotifyCompletedOrder
         ' no action
     End Sub
 
@@ -419,6 +427,10 @@ Public MustInherit Class CallbackHandler
     End Sub
 
     Public Overridable Sub NotifyOpenOrder(e As OpenOrderEventArgs) Implements IOrderInfoConsumer.NotifyOpenOrder
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifyOrderBound(e As OrderBoundEventArgs) Implements IOrderInfoConsumer.NotifyOrderBound
         ' no action
     End Sub
 

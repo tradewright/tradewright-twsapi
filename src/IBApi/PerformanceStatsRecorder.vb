@@ -61,11 +61,11 @@ Friend Class PerformanceStatsRecorder
     ' Member variables
     '@================================================================================
 
-    Private mPerformanceStats(ApiSocketInMsgType.Max) As StatisticsEntry
+    Private ReadOnly mPerformanceStats(ApiSocketInMsgType.Max) As StatisticsEntry
 
     Private WithEvents TimerSecond As Timer
 
-    Private mEventConsumers As ApiEventConsumers
+    Private ReadOnly mEventConsumers As ApiEventConsumers
 
     '@================================================================================
     ' Class Event Handlers
@@ -145,7 +145,7 @@ Friend Class PerformanceStatsRecorder
     End Sub
 
     Private Sub generateStats()
-        Static sSb As System.Text.StringBuilder = New System.Text.StringBuilder()
+        Static sSb As New System.Text.StringBuilder()
         Static sHeader As String = $"Message type           Last  Last avg    Total  Total avg Max/sec   Longest  Shortest{vbCrLf}"
 
         sSb.Append(sHeader)

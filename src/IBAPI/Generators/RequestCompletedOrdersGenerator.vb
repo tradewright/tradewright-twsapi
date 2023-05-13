@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2023 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,39 +24,33 @@
 
 #End Region
 
-Friend Class CancelMarketDepthGenerator
+Friend Class RequestCompletedOrdersGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(pTickerId As Integer, pIsSmartDepth As Boolean)
+    Private Delegate Sub ApiMethodDelegate()
 
-    Private Const ModuleName As String = NameOf(CancelMarketDepthGenerator)
+    Private Const ModuleName As String = NameOf(RequestCompletedOrdersGenerator)
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf CancelMarketDepth)
+            Return New ApiMethodDelegate(AddressOf requestCompletedOrders)
         End Get
     End Property
 
     Friend Overrides ReadOnly Property MessageType As ApiSocketOutMsgType
         Get
-            Return ApiSocketOutMsgType.CancelMarketDepth
+            Return ApiSocketOutMsgType.RequestCompletedOrders
         End Get
     End Property
 
-    Private Sub CancelMarketDepth(pTickerId As Integer, pIsSmartDepth As Boolean)
-
-        If ConnectionState <> ApiConnectionState.Connected Then Exit Sub
-
-        Const VERSION As Integer = 1
-
-        If pIsSmartDepth And ServerVersion < ApiServerVersion.SMART_DEPTH Then Throw New InvalidOperationException("SMART depth cancel is not supported")
+    Private Sub requestCompletedOrders()
+        If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ServerVersion < ApiServerVersion.COMPLETED_ORDERS Then Throw New InvalidOperationException("Completed orders requests not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
-        StartMessage(lWriter, ApiSocketOutMsgType.CancelMarketDepth)
-        lWriter.AddInteger(VERSION, "Version")
-        lWriter.AddInteger(IdManager.GetTwsId(pTickerId, IdType.MarketDepth), "Ticker id")
-        If ServerVersion >= ApiServerVersion.SMART_DEPTH Then lWriter.AddBoolean(pIsSmartDepth, "IsSmartDepth")
+        StartMessage(lWriter, MessageType)
+
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

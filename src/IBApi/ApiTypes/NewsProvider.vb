@@ -32,8 +32,8 @@ Public Class NewsProvider
     End Sub
 
     Public Sub New(providerCode As String, providerName As String)
-        providerCode = providerCode
-        providerName = providerName
+        Me.ProviderCode = providerCode
+        Me.ProviderName = providerName
     End Sub
 
 End Class

@@ -53,18 +53,15 @@ Public Class Order
     ' Constants
     '@================================================================================
 
-    Private Const Customer As Short = 0
-    Private Const Firm As Short = 1
-    Private Const OptUnknown As String = "?"
-    Private Const OptBrokerDealer As String = "b"
-    Private Const OptCustomer As String = "c"
-    Private Const OptFirm As String = "f"
-    Private Const OptIsEmm As String = "m"
-    Private Const OptFarmm As String = "n"
-    Private Const OptSpecialist As String = "y"
-    Private Const AuctionMatch As Short = 1
-    Private Const AuctionImprovement As Short = 2
-    Private Const AuctionTransparent As Short = 3
+    Public Const Customer = 0
+    Public Const FIRM = 1
+    Public Const OPT_UNKNOWN = '?'
+    Public Const OPT_BROKER_DEALER = 'b'
+    Public Const OPT_CUSTOMER = 'c'
+        Public const OPT_FIRM = 'f'
+        Public Const OPT_ISEMM = 'm'
+        Public const OPT_FARMM = 'n'
+        Public Const OPT_SPECIALIST = 'y'
 
     '@================================================================================
     ' Member variables
@@ -217,6 +214,15 @@ Public Class Order
     Public Property DontUseAutoPriceForHedge As Boolean
     Public Property RandomizeSize As Boolean
     Public Property RandomizePrice As Boolean
+    Public Property AutoCancelDate As String
+    Public Property FilledQuantity As Double?
+    Public Property RefFuturesConId As Integer?
+    Public Property AutoCancelParent As Boolean
+    Public Property Shareholder As String
+    Public Property ImbalanceOnly As Boolean
+    Public Property RouteMarketableToBbo As Boolean
+    Public Property ParentPermId As Long?
+
 
     ''' <summary>
     ''' For Pegged-to-benchmark orders, contains the Contract Id Of the contract against which the order will be pegged.
@@ -314,6 +320,15 @@ Public Class Order
     ''' <returns></returns>
     Public Property Tier As SoftDollarTier
 
+    Public Property IsOmsContainer As Boolean
+
+    ''' <summary>
+    ''' brief Set to true to convert order of type 'Primary Peg' to 'D-Peg'
+    ''' </summary>
+    Public Property DiscretionaryUpToLimitPrice As Boolean
+
+    Public Property UsePriceMgmtAlgo As Boolean?
+
     '@================================================================================
     ' Class Event Handlers
     '@================================================================================
@@ -341,7 +356,7 @@ Public Class Order
         ScaleTable = ""
         WhatIf = False
         NotHeld = False
-        Conditions = New List(Of OrderCondition)()
+        Conditions = New List(Of OrderCondition)
         ExtOperator = ""
         Tier = New SoftDollarTier("", "", "")
     End Sub

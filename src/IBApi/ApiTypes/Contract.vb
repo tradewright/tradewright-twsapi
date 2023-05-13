@@ -63,7 +63,7 @@ Public Class Contract
     Public Property Expiry As String
     Public Property Strike As Double
     Public Property OptRight As OptionRight
-    Public Property Multiplier As Integer = 1
+    Public Property Multiplier As Double = 1
     Public Property Exchange As String
 
     Public Property CurrencyCode As String
@@ -123,7 +123,7 @@ Public Class Contract
         If ComboLegs.Count > 0 Then
             addField("Combo legs count", CStr(ComboLegs.Count), sb)
             For Each lLeg In ComboLegs
-                i = i + 1
+                i += 1
                 addField("Con id " & i, CStr(lLeg.ConId), sb)
                 addField("Exchange " & i, lLeg.Exchange, sb)
                 addField("Action " & i, IBAPI.OrderActions.ToInternalString(lLeg.Action), sb)
@@ -147,7 +147,7 @@ Public Class Contract
     ' Helper Functions
     '@================================================================================
 
-    Private Sub addField(pName As String, pValue As String, sb As StringBuilder)
+    Private Shared Sub addField(pName As String, pValue As String, sb As StringBuilder)
         If pValue = "" Then Exit Sub
 
         sb.Append(pName)

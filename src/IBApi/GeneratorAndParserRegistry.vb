@@ -34,7 +34,7 @@ Friend NotInheritable Class GeneratorAndParserRegistry
     Private mEventConsumers As ApiEventConsumers
     Private mIdManager As IdManager
 
-    Private mLogSocketInputMessage As Action(Of String, String, Boolean)
+    Private mLogSocketInputMessage As Action
     Private mGetServerVersion As Func(Of Integer)
     Private mCreateOutputMessageGenerator As Func(Of MessageGenerator)
     Private mGetConnectionState As Func(Of ApiConnectionState)
@@ -42,7 +42,7 @@ Friend NotInheritable Class GeneratorAndParserRegistry
     Friend Sub Initialise(idManager As IdManager,
                           eventConsumers As ApiEventConsumers,
                           reader As MessageReader,
-                          logSocketInputMessage As Action(Of String, String, Boolean),
+                          logSocketInputMessage As Action,
                           getServerVersion As Func(Of Integer),
                           createOutputMessageGenerator As Func(Of MessageGenerator),
                           getConnectionState As Func(Of ApiConnectionState))

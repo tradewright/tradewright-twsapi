@@ -33,7 +33,7 @@ Friend Interface IParser
                    idManager As IdManager,
                    eventConsumers As ApiEventConsumers,
                    getServerVersion As Func(Of Integer),
-                   logSocketInputMessage As Action(Of String, String, Boolean))
+                   logSocketInputMessage As Action)
     Function ParseAsync(version As Integer, timestamp As Date) As Task(Of Boolean)
     Sub SetRegistry(registry As GeneratorAndParserRegistry)
 End Interface

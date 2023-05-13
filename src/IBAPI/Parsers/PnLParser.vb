@@ -43,7 +43,7 @@ Friend NotInheritable Class PnLParser
         Try
             _EventConsumers.AccountDataConsumer?.NotifyPnL(New PnLEventArgs(timestamp, requestId, pnl, unrealizedPnL, realizedPnL))
             Return True
-            Catch e As Exception
+        Catch e As Exception
             Throw New ApiApplicationException("NotifyPnl", e)
         End Try
     End Function

@@ -42,7 +42,7 @@ Public Class ExtendedEnum(Of TClass As Class, TEnum As {Structure, IConvertible,
 
     ' Thanks for assistance from this StackOverflow answer: http://stackoverflow.com/questions/79126/create-generic-method-constraining-t-to-an-enum
 
-    Private mNames() As (Name As String, Value As TEnum, Type As EnumNameType)
+    Private ReadOnly mNames() As (Name As String, Value As TEnum, Type As EnumNameType)
 
     Friend Sub New(friendlyNames() As (Name As String, Value As TEnum, Type As EnumNameType))
         If friendlyNames Is Nothing OrElse friendlyNames.Length = 0 Then Throw New ArgumentNullException(NameOf(friendlyNames))
@@ -77,7 +77,7 @@ Public Class ExtendedEnum(Of TClass As Class, TEnum As {Structure, IConvertible,
 
     Public Function TryParse(value As String, ByRef result As TEnum, Optional ignoreCase As Boolean = False) As Boolean
         Dim nextIndex As Integer
-        If TryParseFrom(value, result, nextIndex, ignoreCase) Then Return If(value Is Nothing, True, nextIndex = value.Length)
+        If TryParseFrom(value, result, nextIndex, ignoreCase) Then Return value Is Nothing OrElse nextIndex = value.Length
         Return False
     End Function
 

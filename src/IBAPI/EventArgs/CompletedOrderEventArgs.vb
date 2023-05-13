@@ -1,4 +1,4 @@
-#Region "License"
+﻿#Region "License"
 
 ' The MIT License (MIT)
 '
@@ -24,28 +24,19 @@
 
 #End Region
 
-Public Interface IOrderInfoConsumer
+Public Class CompletedOrderEventArgs
+    Inherits AbstractEventArgsWithTimestamp
+    Public Property Contract As Contract
 
-    Sub EndCompletedOrders(e As EventArgs)
+    Public Property Order As Order
 
-    Sub EndExecutions(e As RequestEndEventArgs)
+    Public Property OrderState As OrderState
 
-    Sub EndOpenOrders(e As EventArgs)
-
-    Sub NotifyCommissionReport(e As CommissionReportEventArgs)
-
-    Sub NotifyCompletedOrder(e As CompletedOrderEventArgs)
-
-    Sub NotifyDeltaNeutralValidation(e As DeltaNeutralValidationEventArgs)
-
-    Sub NotifyOrderError(e As OrderErrorEventArgs)
-
-    Sub NotifyExecution(e As ExecutionDetailsEventArgs)
-
-    Sub NotifyOpenOrder(e As OpenOrderEventArgs)
-
-    Sub NotifyOrderBound(e As OrderBoundEventArgs)
-
-    Sub NotifyOrderStatus(e As OrderStatusEventArgs)
-
-End Interface
+    Public Sub New(timestamp As DateTime, contract As TradeWright.IBAPI.Contract, order As TradeWright.IBAPI.Order, orderState As TradeWright.IBAPI.OrderState)
+        MyBase.New()
+        Me._Timestamp = timestamp
+        Me.Contract = contract
+        Me.Order = order
+        Me.OrderState = orderState
+    End Sub
+End Class

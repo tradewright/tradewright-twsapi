@@ -44,6 +44,7 @@ Friend Class SocketManager
     Protected _ClientStream As Stream
 
     Private mClosedAction As Action
+    Private mErrorAction As Action(Of SocketEventArgs)
 
     Friend Sub New(host As String, port As Integer)
         Me._Host = host
@@ -70,6 +71,7 @@ Friend Class SocketManager
     Friend Overridable Async Function ConnectAsync(connectedAction As Action, closedAction As Action, errorAction As Action(Of SocketEventArgs), keepAlive As Boolean) As Task(Of Boolean)
         Try
             mClosedAction = closedAction
+            mErrorAction = errorAction
 
             Me.mTcpClient = New TcpClient()
             Await Me.mTcpClient.ConnectAsync(Me._Host, Me.Port)
@@ -104,7 +106,11 @@ Friend Class SocketManager
     End Function
 
     Friend Sub Send(msg As Byte())
-        _ClientStream.Write(msg, 0, msg.Length)
+        Try
+            _ClientStream.Write(msg, 0, msg.Length)
+        Catch e As System.Net.Sockets.SocketException
+            mErrorAction(New SocketEventArgs(e, Me._Host, Me.Port, 0, String.Empty))
+        End Try
     End Sub
 
     Private Sub setKeepAliveOn()

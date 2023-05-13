@@ -26,6 +26,9 @@
 
 Public Class MarketDepthUpdateEventArgs
     Inherits AbstractEventArgsWithTimestamp
+
+    Public Property IsSmartDepth As Boolean
+
     Public Property MarketMaker As String
 
     Public Property Operation As DOMOperation
@@ -40,7 +43,15 @@ Public Class MarketDepthUpdateEventArgs
 
     Public Property Size As Integer
 
-    Public Sub New(timestamp As DateTime, tickerId As Integer, position As Integer, operation As DOMOperation, side As DOMSide, price As Double, size As Integer, marketMaker As String)
+    Public Sub New(timestamp As DateTime,
+                   tickerId As Integer,
+                   position As Integer,
+                   operation As DOMOperation,
+                   side As DOMSide,
+                   price As Double,
+                   size As Integer,
+                   marketMaker As String,
+                   isSmartDepth As Boolean)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = tickerId
@@ -50,5 +61,6 @@ Public Class MarketDepthUpdateEventArgs
         Me.Price = price
         Me.Size = size
         Me.MarketMaker = marketMaker
+        Me.IsSmartDepth = isSmartDepth
     End Sub
 End Class

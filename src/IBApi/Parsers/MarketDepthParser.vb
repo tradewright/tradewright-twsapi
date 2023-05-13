@@ -43,8 +43,16 @@ Friend NotInheritable Class MarketDepthParser
         LogSocketInputMessage(ModuleName,"ParseAsync")
 
         Try
-        _EventConsumers.MarketDepthConsumer?.NotifyMarketDepth(New MarketDepthUpdateEventArgs(timestamp, IdManager.GetCallerId(id, IdType.MarketDepth), lPosition, lOperation, lSide, lPrice, lSize, ""))
-        Return True
+            _EventConsumers.MarketDepthConsumer?.NotifyMarketDepth(New MarketDepthUpdateEventArgs(timestamp,
+                                                                                              IdManager.GetCallerId(id, IdType.MarketDepth),
+                                                                                              lPosition,
+                                                                                              lOperation,
+                                                                                              lSide,
+                                                                                              lPrice,
+                                                                                              lSize,
+                                                                                              "",
+                                                                                              False))
+            Return True
             Catch e As Exception
                 Throw New ApiApplicationException("NotifyMarketDepth", e)
             End Try

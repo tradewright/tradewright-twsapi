@@ -75,8 +75,9 @@ Public Class OrderState
     Public Property MinCommission As Double?
     Public Property MaxCommission As Double?
     Public Property CommissionCurrency As String
-
     Public Property WarningText As String
+    Public Property CompletedTime As String
+    Public Property CompletedStatus As String
 
     '@================================================================================
     ' Class Event Handlers

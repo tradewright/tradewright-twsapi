@@ -41,7 +41,7 @@ Friend NotInheritable Class PositionParser
             .Expiry = Await _Reader.GetStringAsync("Expiry"),
             .Strike = Await _Reader.GetDoubleAsync("Strike"),
             .OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right")),
-            .Multiplier = Await _Reader.GetIntAsync("Multiplier"),
+            .Multiplier = Await _Reader.GetDoubleAsync("Multiplier"),
             .Exchange = Await _Reader.GetStringAsync("Exchange"),
             .CurrencyCode = Await _Reader.GetStringAsync("Currency"),
             .LocalSymbol = Await _Reader.GetStringAsync("LocalSymbol"),

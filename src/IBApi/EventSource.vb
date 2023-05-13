@@ -810,6 +810,15 @@ Public Class EventSource
         RaiseEvent OpenOrder(Me, e)
     End Sub
 
+    Public Overrides Sub NotifyOrderBound(e As OrderBoundEventArgs) Implements IOrderInfoConsumer.NotifyOrderBound
+        OnOrderBound(e)
+    End Sub
+
+    Public Event OrderBound(sender As Object, e As OrderBoundEventArgs)
+    Protected Overridable Sub OnOrderBound(e As OrderBoundEventArgs)
+        RaiseEvent OrderBound(Me, e)
+    End Sub
+
     Public Overrides Sub NotifyOrderStatus(e As OrderStatusEventArgs) Implements IOrderInfoConsumer.NotifyOrderStatus
         OnOrderStatus(e)
     End Sub

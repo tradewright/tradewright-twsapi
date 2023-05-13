@@ -45,14 +45,15 @@ Friend Class PlaceOrderGenerator
     Private Sub placeOrder(order As Order, contract As Contract, transmit As Boolean, secIdType As String, secId As String)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
-        If ServerVersion < ApiServerVersion.EXT_OPERATOR And Not String.IsNullOrEmpty(order.ExtOperator) Then Throw New InvalidOperationException("extOperator parameter not supported")
-        If ServerVersion < ApiServerVersion.CASH_QTY And order.CashQty.HasValue Then Throw New InvalidOperationException("cashQty parameter not supported")
+        If ServerVersion < ApiServerVersion.ORDER_CONTAINER And order.IsOmsContainer Then Throw New InvalidOperationException("IsOmsContainer parameter not supported")
+        If ServerVersion < ApiServerVersion.D_PEG_ORDERS And order.DiscretionaryUpToLimitPrice Then Throw New InvalidOperationException("DiscretionaryUpToLimitPrice parameter not supported")
+        If ServerVersion < ApiServerVersion.PRICE_MGMT_ALGO And order.UsePriceMgmtAlgo.HasValue Then Throw New InvalidOperationException("UsePriceMgmtAlgo parameter not supported")
 
         Const VERSION As Integer = 45
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.PlaceOrder)
-        lWriter.AddInteger(VERSION, "Version")
+        If ServerVersion < ApiServerVersion.ORDER_CONTAINER Then lWriter.AddInteger(VERSION, "Version")
 
         If order.OrderId = 0 Then order.OrderId = _IdManager.NextOrderId
         If order.OrderId < IdManager.BaseOrderId Then Throw New ArgumentException($"Order id must not be less than {IdManager.BaseOrderId}")
@@ -321,6 +322,18 @@ Friend Class PlaceOrderGenerator
 
             If ServerVersion >= ApiServerVersion.AUTO_PRICE_FOR_HEDGE Then
                 lWriter.AddBoolean(.DontUseAutoPriceForHedge, "DontUseAutoPriceForHedge")
+            End If
+
+            If ServerVersion >= ApiServerVersion.ORDER_CONTAINER Then
+                lWriter.AddBoolean(.IsOmsContainer, "IsOmsContainer")
+            End If
+
+            If (ServerVersion >= ApiServerVersion.D_PEG_ORDERS) Then
+                lWriter.AddBoolean(.DiscretionaryUpToLimitPrice, "DiscretionaryUpToLimitPrice")
+            End If
+
+            If (ServerVersion >= ApiServerVersion.PRICE_MGMT_ALGO) Then
+                lWriter.AddNullableBoolean(.UsePriceMgmtAlgo, "UsePriceMgmtAlgo")
             End If
 
         End With

@@ -44,7 +44,7 @@ Friend NotInheritable Class PortfolioValueParser
         lContract.OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
 
         If pVersion >= 7 Then
-            lContract.Multiplier = Await _Reader.GetIntAsync("Multiplier")
+            lContract.Multiplier = Await _Reader.GetDoubleAsync("Multiplier")
             If lContract.Multiplier = 0 Then lContract.Multiplier = 1
             lContract.Exchange = Await _Reader.GetStringAsync("Exchange")
         End If

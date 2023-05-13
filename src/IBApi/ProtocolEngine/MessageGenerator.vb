@@ -36,7 +36,7 @@ Friend NotInheritable Class MessageGenerator
 
     Private mBuffer As MemoryStream
 
-    Private mSocketManager As SocketManager
+    Private ReadOnly mSocketManager As SocketManager
 
     Private mWriter As BinaryWriter
 
@@ -48,7 +48,7 @@ Friend NotInheritable Class MessageGenerator
 
     Private ReadOnly mUseV100Plus As Boolean
 
-    Private ReadOnly mThisLock As Object = New Object()
+    Private ReadOnly mThisLock As New Object()
 
     Private ReadOnly mMessageBuilder As StringBuilder
 
@@ -129,15 +129,25 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub AddBoolean(value As Boolean, fieldName As String)
-        If (Not value) Then
-            AddString("0", fieldName)
-        Else
+        If value Then
             AddString("1", fieldName)
+        Else
+            AddString("0", fieldName)
+        End If
+    End Sub
+
+    Friend Sub AddNullableBoolean(value As Boolean?, fieldName As String)
+        If value.HasValue Then
+            AddString("", fieldName)
+        ElseIf value.Value Then
+            AddString("1", fieldName)
+        Else
+            AddString("0", fieldName)
         End If
     End Sub
 
     Friend Sub AddString(value As String, fieldName As String)
-        mMessageBuilder?.Append(fieldName)?.Append("=")?.Append(value)?.Append(";")
+        mMessageBuilder?.Append(fieldName)?.Append("="c)?.Append(value)?.Append(";"c)
 
         writeRawString(value)
         mWriter.Write(EOL)
@@ -171,7 +181,7 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub AddUnterminatedString(value As String, fieldName As String)
-        mMessageBuilder?.Append(fieldName)?.Append("=")?.Append(value)?.Append(";")
+        mMessageBuilder?.Append(fieldName)?.Append("="c)?.Append(value)?.Append(";"c)
 
         writeRawString(value)
     End Sub

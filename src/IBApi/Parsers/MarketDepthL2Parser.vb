@@ -40,11 +40,20 @@ Friend NotInheritable Class MarketDepthL2Parser
         Dim lSide = DirectCast(Await _Reader.GetIntAsync("Side"), DOMSide)
         Dim lPrice = Await _Reader.GetDoubleAsync("Price")
         Dim lSize = Await _Reader.GetIntAsync("Size")
+        Dim lIsSmartDepth = ServerVersion > ApiServerVersion.SMART_DEPTH AndAlso Await _Reader.GetBooleanAsync("IsSmartDepth")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-            _EventConsumers.MarketDepthConsumer?.NotifyMarketDepth(New MarketDepthUpdateEventArgs(timestamp, IdManager.GetCallerId(id, IdType.MarketDepth), lPosition, lOperation, lSide, lPrice, lSize, lMarketMaker))
+            _EventConsumers.MarketDepthConsumer?.NotifyMarketDepth(New MarketDepthUpdateEventArgs(timestamp,
+                                                                                                  IdManager.GetCallerId(id, IdType.MarketDepth),
+                                                                                                  lPosition,
+                                                                                                  lOperation,
+                                                                                                  lSide,
+                                                                                                  lPrice,
+                                                                                                  lSize,
+                                                                                                  lMarketMaker,
+                                                                                                  lIsSmartDepth))
             Return True
         Catch e As Exception
             Throw New ApiApplicationException("NotifyMarketDepth", e)

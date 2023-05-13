@@ -46,7 +46,7 @@ Friend NotInheritable Class ExecutionDataParser
             .Expiry = Await _Reader.GetStringAsync("Expiry")
             .Strike = Await _Reader.GetDoubleAsync("Strike")
             .OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
-            If pVersion >= 9 Then .Multiplier = Await _Reader.GetIntAsync("Multiplier")
+            If pVersion >= 9 Then .Multiplier = Await _Reader.GetDoubleAsync("Multiplier")
             If .Multiplier = 0 Then .Multiplier = 1
             .Exchange = Await _Reader.GetStringAsync("Exchange")
             .CurrencyCode = Await _Reader.GetStringAsync("Currency")

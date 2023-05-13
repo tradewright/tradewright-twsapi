@@ -81,7 +81,7 @@ Friend Class RequestHistoricalBarsGenerator
             lWriter.AddInteger(pRequest.Contract.ComboLegs.Count, "Combo legs count")
             For Each lComboLeg In pRequest.Contract.ComboLegs
                 With lComboLeg
-                    i = i + 1
+                    i += 1
                     lWriter.AddInteger(.ConId, "ConId" & i)
                     lWriter.AddInteger(.Ratio, "Ratio" & i)
                     lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)

@@ -29,7 +29,7 @@ Imports System.Text
 Imports System.Threading.Tasks
 
 Friend NotInheritable Class MessageReader
-    Private mInputReader As InputStringReader
+    Private ReadOnly mInputReader As InputStringReader
 
     Private ReadOnly mUseV100Plus As Boolean
 
@@ -83,7 +83,7 @@ Friend NotInheritable Class MessageReader
 
     Friend Async Function GetBoolFromIntAsync(fieldName As String) As Task(Of Boolean)
         Dim str = Await GetStringAsync(fieldName)
-        Return If(String.IsNullOrEmpty(str), False, Integer.Parse(str) <> 0)
+        Return Not String.IsNullOrEmpty(str) AndAlso Integer.Parse(str) <> 0
     End Function
 
     Friend Async Function GetCharAsync(fieldName As String) As Task(Of Char)
@@ -120,13 +120,20 @@ Friend NotInheritable Class MessageReader
         Return result
     End Function
 
+    Friend Async Function GetNullableLongAsync(fieldName As String) As Task(Of Long?)
+        Dim s = Await GetStringAsync(fieldName)
+        Dim result? = If(String.IsNullOrEmpty(s), Nothing, Long.Parse(s))
+        If result.HasValue And result.Value = Long.MaxValue Then result = Nothing
+        Return result
+    End Function
+
     Friend Async Function GetStringAsync(fieldName As String) As Task(Of String)
         Dim element = Await mInputReader.ReadStringAsync()
 
         mInMessageBuilder?.Append(fieldName)
-        mInMessageBuilder?.Append("=")
+        mInMessageBuilder?.Append("="c)
         mInMessageBuilder?.Append(element)
-        mInMessageBuilder?.Append(";")
+        mInMessageBuilder?.Append(";"c)
 
         Return element
     End Function

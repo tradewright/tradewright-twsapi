@@ -75,11 +75,9 @@ Public Class PriceCondition
         If IBAPI.TriggerMethods.TryParseFrom(cond, TriggerMethod, nextIndex) Then
             cond = cond.Substring(nextIndex)
             Return MyBase.TryParse(cond)
-        Else
-            Return False
         End If
 
-        Return True
+        Return False
     End Function
 
 End Class

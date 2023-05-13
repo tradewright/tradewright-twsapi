@@ -70,7 +70,7 @@ Friend NotInheritable Class ContractDataParser
 
         If ServerVersion >= ApiServerVersion.MD_SIZE_MULTIPLIER Then lContractDetails.MDSizeMultiplier = Await _Reader.GetIntAsync("MDSizeMultiplier")
 
-        lContract.Multiplier = Await _Reader.GetIntAsync("Multiplier")
+        lContract.Multiplier = Await _Reader.GetDoubleAsync("Multiplier")
         If lContract.Multiplier = 0 Then lContract.Multiplier = 1
 
         lContractDetails.OrderTypes = Await _Reader.GetStringAsync("Order types")
@@ -135,6 +135,8 @@ Friend NotInheritable Class ContractDataParser
         If ServerVersion >= ApiServerVersion.MARKET_RULES Then lContractDetails.MarketRuleIds = Await _Reader.GetStringAsync("Market Rule Ids")
 
         If ServerVersion >= ApiServerVersion.REAL_EXPIRATION_DATE Then lContractDetails.RealExpirationDate = Await _Reader.GetStringAsync("Real Expiration Date")
+
+        If ServerVersion >= ApiServerVersion.STOCK_TYPE Then lContractDetails.StockType = Await _Reader.GetStringAsync("StockType")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 

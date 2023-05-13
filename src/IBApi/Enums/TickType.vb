@@ -114,5 +114,7 @@ Public Enum TickType
     FuturesOpenInterest
     AverageOptionVolume
     DelayedLastTimestamp
+    ShortableShares
+    DelayedHalted
 End Enum
 

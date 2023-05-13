@@ -49,7 +49,7 @@ Friend Class RequestMarketDataGenerator
 
         Const VERSION As Integer = 11
 
-        IBAPI.EventLogger.Log($"Requesting market data for: {pContract.ToString()}", NameOf(RequestMarketDataGenerator), NameOf(requestMarketData))
+        IBAPI.EventLogger.Log($"Requesting market data for: {pContract}", NameOf(RequestMarketDataGenerator), NameOf(requestMarketData))
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketData)
@@ -65,7 +65,7 @@ Friend Class RequestMarketDataGenerator
                 Dim i As Integer
                 For Each comboLeg In .ComboLegs
                     With comboLeg
-                        i = i + 1
+                        i += 1
                         lWriter.AddInteger(.ConId, "ConId" & i)
                         lWriter.AddInteger(.Ratio, "Ratio" & i)
                         lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)

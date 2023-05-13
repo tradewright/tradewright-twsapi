@@ -63,7 +63,7 @@ Public MustInherit Class ContractCondition
             cond = cond.Substring(cond.IndexOf(Delimiter) + Delimiter.Length)
             Dim cId As Integer
 
-            If Not Integer.TryParse(cond.Substring(0, cond.IndexOf("(")), cId) Then Return False
+            If Not Integer.TryParse(cond.AsSpan(0, cond.IndexOf("(")), cId) Then Return False
 
             ConId = cId
             cond = cond.Substring(cond.IndexOf("(") + 1)
@@ -74,8 +74,6 @@ Public MustInherit Class ContractCondition
         Catch
             Return False
         End Try
-
-        Return True
     End Function
 
     Friend Overrides Async Sub Deserialize(reader As MessageReader)

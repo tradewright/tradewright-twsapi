@@ -85,6 +85,7 @@ Public Class ContractDetails
     Public Property MarketRuleIds As String
     Public Property RealExpirationDate As String
     Public Property LastTradeTime As String
+    Public Property StockType As String
 
 
 

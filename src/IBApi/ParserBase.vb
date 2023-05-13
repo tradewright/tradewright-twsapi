@@ -31,7 +31,7 @@ Friend MustInherit Class ParserBase
     Implements IParser
 
     Protected _Reader As MessageReader
-    Protected _LogSocketInputMessage As Action(Of String, String, Boolean)
+    Protected _LogSocketInputMessage As Action
     Protected _EventConsumers As ApiEventConsumers
     Protected _IdManager As IdManager
 
@@ -41,7 +41,7 @@ Friend MustInherit Class ParserBase
                            idManager As IdManager,
                            eventConsumers As ApiEventConsumers,
                            getServerVersion As Func(Of Integer),
-                           logSocketInputMessage As Action(Of String, String, Boolean)) Implements IParser.Initialise
+                           logSocketInputMessage As Action) Implements IParser.Initialise
         _Reader = reader
         _LogSocketInputMessage = logSocketInputMessage
         _EventConsumers = eventConsumers
@@ -50,7 +50,7 @@ Friend MustInherit Class ParserBase
     End Sub
 
     Protected Sub LogSocketInputMessage(moduleName As String, procName As String, Optional ignoreLogLevel As Boolean = False)
-        _LogSocketInputMessage(moduleName, procName, ignoreLogLevel)
+        _LogSocketInputMessage()
     End Sub
 
     Friend MustOverride Async Function ParseAsync(version As Integer, timestamp As Date) As Task(Of Boolean) Implements IParser.ParseAsync

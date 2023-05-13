@@ -1,4 +1,4 @@
-#Region "License"
+﻿#Region "License"
 
 ' The MIT License (MIT)
 '
@@ -24,28 +24,17 @@
 
 #End Region
 
-Public Interface IOrderInfoConsumer
+Public Class OrderBoundEventArgs
+    Inherits AbstractEventArgsWithTimestamp
+    Public Property OrderId As Long
+    Public Property ApiClientId As Integer
+    Public Property ApiOrderId As Integer
 
-    Sub EndCompletedOrders(e As EventArgs)
-
-    Sub EndExecutions(e As RequestEndEventArgs)
-
-    Sub EndOpenOrders(e As EventArgs)
-
-    Sub NotifyCommissionReport(e As CommissionReportEventArgs)
-
-    Sub NotifyCompletedOrder(e As CompletedOrderEventArgs)
-
-    Sub NotifyDeltaNeutralValidation(e As DeltaNeutralValidationEventArgs)
-
-    Sub NotifyOrderError(e As OrderErrorEventArgs)
-
-    Sub NotifyExecution(e As ExecutionDetailsEventArgs)
-
-    Sub NotifyOpenOrder(e As OpenOrderEventArgs)
-
-    Sub NotifyOrderBound(e As OrderBoundEventArgs)
-
-    Sub NotifyOrderStatus(e As OrderStatusEventArgs)
-
-End Interface
+    Public Sub New(timestamp As DateTime, orderId As Long, apiClientId As Integer, apiOrderId As Integer)
+        MyBase.New
+        Me._Timestamp = timestamp
+        Me.OrderId = orderId
+        Me.ApiClientId = apiClientId
+        Me.ApiOrderId = apiOrderId
+    End Sub
+End Class
