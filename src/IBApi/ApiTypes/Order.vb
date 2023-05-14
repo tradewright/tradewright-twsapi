@@ -55,13 +55,15 @@ Public Class Order
 
     Public Const Customer = 0
     Public Const FIRM = 1
-    Public Const OPT_UNKNOWN = '?'
-    Public Const OPT_BROKER_DEALER = 'b'
-    Public Const OPT_CUSTOMER = 'c'
-        Public const OPT_FIRM = 'f'
-        Public Const OPT_ISEMM = 'm'
-        Public const OPT_FARMM = 'n'
-        Public Const OPT_SPECIALIST = 'y'
+    Public Const OPT_UNKNOWN = "?"c
+
+
+    Public Const OPT_BROKER_DEALER = "b"c
+    Public Const OPT_CUSTOMER = "c"c
+    Public Const OPT_FIRM = "f"c
+    Public Const OPT_ISEMM = "m"c
+    Public Const OPT_FARMM = "n"c
+    Public Const OPT_SPECIALIST = "y"c
 
     '@================================================================================
     ' Member variables

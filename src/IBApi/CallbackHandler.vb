@@ -64,6 +64,10 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
+    Public Overridable Sub EndReplaceFA(e As ReplaceFAEndEventArgs) Implements IAccountDataConsumer.EndReplaceFA
+        ' no action
+    End Sub
+
     Public Overridable Sub NotifyAccountSummary(e As AccountSummaryEventArgs) Implements IAccountDataConsumer.NotifyAccountSummary
         ' no action
     End Sub

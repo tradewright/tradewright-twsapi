@@ -106,6 +106,7 @@ Public Enum ApiSocketInMsgType
     OrderBound = 100
     CompletedOrder = 101
     CompletedOrdersEnd = 102
+    ReplaceFAEnd = 103
 
     ' Max for API 973.07
 

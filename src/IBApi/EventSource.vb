@@ -207,6 +207,15 @@ Public Class EventSource
         RaiseEvent UpdatePortfolio(Me, e)
     End Sub
 
+    Public Overrides Sub EndReplaceFA(e As ReplaceFAEndEventArgs) Implements IAccountDataConsumer.EndReplaceFA
+
+    End Sub
+
+    Public Event ReplaceFAEnd(sender As Object, e As ReplaceFAEndEventArgs)
+    Protected Overridable Sub OnReplaceFAEnd(e As ReplaceFAEndEventArgs)
+        RaiseEvent ReplaceFAEnd(Me, e)
+    End Sub
+
 #End Region
 
 #Region "IConnectionStatusConsumer"

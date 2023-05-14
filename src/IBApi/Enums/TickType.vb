@@ -116,5 +116,14 @@ Public Enum TickType
     DelayedLastTimestamp
     ShortableShares
     DelayedHalted
+    Reuters2MutualFunds
+    EtfNavClose
+    EtfNavPriorClose
+    EtfNavBid
+    EtfNavAsk
+    EtfNavLast
+    EtfFrozenNavLast
+    EtfNavHigh
+    EtfNavLow
 End Enum
 

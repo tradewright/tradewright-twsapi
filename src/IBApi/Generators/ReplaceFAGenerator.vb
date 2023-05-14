@@ -28,7 +28,7 @@ Friend Class ReplaceFAGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(DataType As FinancialAdvisorDataType, xml As String)
+    Private Delegate Sub ApiMethodDelegate(requestId As Integer, DataType As FinancialAdvisorDataType, xml As String)
 
     Private Const ModuleName As String = NameOf(ReplaceFAGenerator)
 
@@ -44,7 +44,7 @@ Friend Class ReplaceFAGenerator
         End Get
     End Property
 
-    Private Sub ReplaceFA(dataType As FinancialAdvisorDataType, xml As String)
+    Private Sub ReplaceFA(requestId As Integer, dataType As FinancialAdvisorDataType, xml As String)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1
@@ -54,6 +54,9 @@ Friend Class ReplaceFAGenerator
         lWriter.AddInteger(VERSION, "Version")
         lWriter.AddInteger(dataType, "Data type")
         lWriter.AddString(xml, "XML")
+        If ServerVersion >= ApiServerVersion.REPLACE_FA_END Then
+            lWriter.AddInteger(IdManager.GetTwsId(requestId, IdType.Accounts), "Request id")
+        End If
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

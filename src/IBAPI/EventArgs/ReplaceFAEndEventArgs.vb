@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2023 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,17 @@
 
 #End Region
 
-Friend Enum IdType
-    None
-    MarketData
-    MarketDepth
-    HistoricalData
-    Order
-    ContractData
-    Execution
-    RealtimeBars
-    Accounts
-End Enum
+Public Class ReplaceFAEndEventArgs
+    Inherits AbstractEventArgsWithTimestamp
 
+    Public Property Text As String
+
+    Public Property RequestId As Integer
+
+    Public Sub New(timestamp As DateTime, requestId As Integer, text As String)
+        MyBase.New()
+        Me._Timestamp = timestamp
+        Me.RequestId = requestId
+        Me.Text = text
+    End Sub
+End Class

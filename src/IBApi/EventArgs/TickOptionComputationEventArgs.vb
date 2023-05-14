@@ -34,6 +34,8 @@ Public Class TickOptionComputationEventArgs
 
     Public Property ImpliedVolatility As Double?
 
+    Public Property TickAttrib As Integer
+
     Public Property OptPrice As Double?
 
     Public Property PvDividend As Double?
@@ -49,7 +51,8 @@ Public Class TickOptionComputationEventArgs
     Public Sub New(timestamp As DateTime,
                    tickerId As Integer,
                    field As TickType,
-                   impliedVolatility As Double?,
+                   tickAttrib As Integer,
+                   ImpliedVolatility As Double?,
                    delta As Double?,
                    optPrice As Double?,
                    pvDividend As Double?,
@@ -60,8 +63,9 @@ Public Class TickOptionComputationEventArgs
         MyBase.New()
         Me._Timestamp = timestamp
         Me.TickerId = tickerId
+        Me.TickAttrib = tickAttrib
         Me.Field = field
-        Me.ImpliedVolatility = impliedVolatility
+        Me.ImpliedVolatility = ImpliedVolatility
         Me.Delta = delta
         Me.OptPrice = optPrice
         Me.PvDividend = pvDividend

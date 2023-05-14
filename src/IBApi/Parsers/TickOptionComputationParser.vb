@@ -36,6 +36,9 @@ Friend NotInheritable Class TickOptionComputationParser
         Dim lTickerId = Await _Reader.GetIntAsync("tickerId")
         Dim lTickType = DirectCast(Await _Reader.GetIntAsync("tickType"), TickType)
 
+        Dim lTickAttrib As Integer
+        If ServerVersion >= ApiServerVersion.PRICE_BASED_VOLATILITY Then lTickAttrib = Await _Reader.GetIntAsync("tickAttrib")
+
         Dim lImpliedVol? = Await _Reader.GetDoubleAsync("impliedVol")
         If lImpliedVol = -1 Then
             ' -1 is the "not yet computed" indicator
@@ -91,6 +94,7 @@ Friend NotInheritable Class TickOptionComputationParser
                 New TickOptionComputationEventArgs(timestamp,
                                                    IdManager.GetCallerId(lTickerId, IdType.MarketData),
                                                    lTickType,
+                                                   lTickAttrib,
                                                    lImpliedVol,
                                                    lDelta,
                                                    lOptPrice,

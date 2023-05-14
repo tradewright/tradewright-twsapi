@@ -32,6 +32,7 @@ Friend Class IdManager
     Private Const BaseRealtimeBarsRequestId As Integer = &H80000
     Private Const BaseExecutionsRequestId As Integer = &HC0000
     Private Const BaseContractRequestId As Integer = &H100000
+    Private Const BaseAccountRequestId As Integer = &H110000
     Friend Const BaseOrderId As Integer = &H10000000
 
     Friend Const MaxCallersMarketDataRequestId As Integer = BaseMarketDepthRequestId - 1
@@ -39,7 +40,8 @@ Friend Class IdManager
     Friend Const MaxCallersHistoricalDataRequestId As Integer = BaseRealtimeBarsRequestId - BaseHistoricalDataRequestId - 1
     Friend Const MaxCallersRealtimeBarsRequestId As Integer = BaseExecutionsRequestId - BaseRealtimeBarsRequestId - 1
     Friend Const MaxCallersExecutionsRequestId As Integer = BaseContractRequestId - BaseExecutionsRequestId - 1
-    Friend Const MaxCallersContractRequestId As Integer = BaseOrderId - BaseContractRequestId - 1
+    Friend Const MaxCallersContractRequestId As Integer = BaseAccountRequestId - BaseContractRequestId - 1
+    Friend Const MaxCallersAccountRequestId As Integer = BaseOrderId - BaseAccountRequestId - 1
     Friend Const MaxCallersOrderId As Integer = &H7FFFFFFF - BaseOrderId - 1
 
     Private mNextOrderID As Integer = IdManager.BaseOrderId

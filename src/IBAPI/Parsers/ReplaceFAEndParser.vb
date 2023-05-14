@@ -24,15 +24,31 @@
 
 #End Region
 
-Friend Enum IdType
-    None
-    MarketData
-    MarketDepth
-    HistoricalData
-    Order
-    ContractData
-    Execution
-    RealtimeBars
-    Accounts
-End Enum
+Imports System.Threading.Tasks
 
+Friend NotInheritable Class ReplaceFAEndParser
+    Inherits ParserBase
+    Implements IParser
+
+    Private Const ModuleName As String = NameOf(ReplaceFAEndParser)
+
+    Friend Overrides Async Function ParseAsync(version As Integer, timestamp As Date) As Task(Of Boolean)
+        Dim requestId = IdManager.GetCallerId(Await _Reader.GetIntAsync("Request Id"), IdType.Accounts)
+        Dim text = Await _Reader.GetStringAsync("Text")
+        LogSocketInputMessage(ModuleName, "ParseAsync")
+
+        Try
+            _EventConsumers.AccountDataConsumer?.EndReplaceFA(New ReplaceFAEndEventArgs(timestamp, requestId, text))
+            Return True
+        Catch e As Exception
+            Throw New ApiApplicationException("EndReplaceFA", e)
+        End Try
+    End Function
+
+    Friend Overrides ReadOnly Property MessageType As ApiSocketInMsgType
+        Get
+            Return ApiSocketInMsgType.ReplaceFAEnd
+        End Get
+    End Property
+
+End Class

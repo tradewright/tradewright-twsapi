@@ -80,6 +80,8 @@ Friend Enum ApiServerVersion
     ENCODE_MSG_ASCII7 = 153
     SEND_ALL_FAMILY_CODES = 154
     NO_DEFAULT_OPEN_CLOSE = 155
+    PRICE_BASED_VOLATILITY = 156
+    REPLACE_FA_END = 157
 
     'DURATION = 158
     'POST_TO_ATS = 160
@@ -87,6 +89,6 @@ Friend Enum ApiServerVersion
 
     ' Max for API 973.07
 
-    Max = NO_DEFAULT_OPEN_CLOSE
+    Max = REPLACE_FA_END
 End Enum
 

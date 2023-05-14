@@ -34,7 +34,7 @@ Imports System.Threading.Tasks
 ''' This class provides the Application Programming Interface to Interactive Brokers' 
 ''' Trader Workstation and Gateway products.
 ''' 
-''' Updated to IB commit 61c5633c3456ad63d811a1d6e5a2d76c4afc5184 on 05/02/2020
+''' Updated to IB commit 5ec6e9c814dcac97df281a68ce60ba5518342e13 on 29/06/2020
 ''' 
 ''' </summary>
 Public Class IBAPI
@@ -1024,8 +1024,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.QueryDisplayGroups, {requestId})
     End Sub
 
-    Public Sub ReplaceFA(dataType As FinancialAdvisorDataType, xml As String)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.ReplaceFinancialAdvisorData, {dataType, xml})
+    Public Sub ReplaceFA(requestId As Integer, dataType As FinancialAdvisorDataType, xml As String)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.ReplaceFinancialAdvisorData, {requestId, dataType, xml})
     End Sub
 
     Public Sub RequestAccountData(subscribe As Boolean, acctCode As String)
