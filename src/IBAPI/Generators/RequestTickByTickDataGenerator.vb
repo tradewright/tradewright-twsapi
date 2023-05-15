@@ -52,7 +52,7 @@ Friend Class RequestTickByTickDataGenerator
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, MessageType)
 
-        lWriter.AddInteger(requestId, "Request Id")
+        lWriter.AddInteger(IdManager.GetTwsId(requestId, IdType.MarketData), "Request Id")
         lWriter.AddContract(contract, "Contract")
         lWriter.AddString(IBAPI.TickByTickDataTypes.ToInternalString(tickType), "Tick Type")
 

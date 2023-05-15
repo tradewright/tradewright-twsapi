@@ -147,6 +147,8 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub AddString(value As String, fieldName As String)
+        If Not IBAPI.IsAsciiPrintableString(value) Then Throw New ApiApplicationException($"Unprintable value <{value}> passed to API for field {fieldName}")
+
         mMessageBuilder?.Append(fieldName)?.Append("="c)?.Append(value)?.Append(";"c)
 
         writeRawString(value)

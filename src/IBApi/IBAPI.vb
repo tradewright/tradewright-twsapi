@@ -34,7 +34,7 @@ Imports System.Threading.Tasks
 ''' This class provides the Application Programming Interface to Interactive Brokers' 
 ''' Trader Workstation and Gateway products.
 ''' 
-''' Updated to IB commit 5ec6e9c814dcac97df281a68ce60ba5518342e13 on 29/06/2020
+''' Updated to IB commit 5532cc2513ad140c8464c892160e3b23be41e9b0 on 17/11/2020
 ''' 
 ''' </summary>
 Public Class IBAPI
@@ -854,6 +854,15 @@ Public Class IBAPI
     Public Shared Function IsContractExpired(pContract As Contract) As Boolean
         If Not IsContractExpirable(pContract) Then Return False
         Return contractExpiryToDate(pContract) < Date.Now
+    End Function
+
+    Public Shared Function IsAsciiPrintableString(value As String) As Boolean
+        If value Is Nothing Then Return False
+        For i = 0 To value.Length - 1
+            Dim currChar = Asc(value(i))
+            If currChar < 32 Or currChar > 127 Then Return False
+        Next
+        Return True
     End Function
 
     Public Shared Function NullableDoubleFromString(val As String) As Double?

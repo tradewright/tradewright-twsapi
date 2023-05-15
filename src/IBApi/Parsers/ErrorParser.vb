@@ -62,7 +62,7 @@ Friend NotInheritable Class ErrorParser
                                 New MarketDepthRestEventArgs(
                                                 timestamp,
                                                 reEstablish:=False))
-            Case 321 ' invalid Request
+            Case 320, 321 ' invalid Request
                 IBAPI.EventLogger.Log(
                                 $"Error ({lErrorCode}; id={id}) from Tws: {lErrorMsg}",
                                 ModuleName,
