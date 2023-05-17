@@ -4,20 +4,20 @@
     <RootNamespace>TradeWright.IBAPI</RootNamespace>
     <TargetFramework>net6.0</TargetFramework>
     <OptionStrict>On</OptionStrict>
-    <AssemblyName>TradeWright.IBAPI980</AssemblyName>
-    <AssemblyVersion>981.1.0.0</AssemblyVersion>
-    <Product>TradeWright IBAPI v981.1</Product>
+    <AssemblyName>TradeWright.IBAPI985</AssemblyName>
+    <AssemblyVersion>985.1.4.0</AssemblyVersion>
+    <Product>TradeWright IBAPI v985.1</Product>
     <Company>TradeWright Software Systems</Company>
     <Authors>Richard L King</Authors>
     <PackageId>TradeWright.IBAPI</PackageId>
     <Description>TradeWright Software Systems' version of the Interactive Brokers API.</Description>
     <Copyright>Copyright © 2023 Richard L King</Copyright>
-    <FileVersion>981.1.0.0</FileVersion>
+    <FileVersion>985.1.4.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/tradewright/tradewright-twsapi</RepositoryUrl>
     <PackageTags>twsapi interactive-brokers trading</PackageTags>
-    <Version>981.1.00</Version>
+    <Version>985.1.4</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -37,8 +37,8 @@ Friend NotInheritable Class TickPriceParser
         Dim lTickType = DirectCast(Await _Reader.GetIntAsync("Tick type"), TickType)
         Dim lPrice = Await _Reader.GetDoubleAsync("Price")
 
-        Dim lSize As Integer
-        If version >= 2 Then lSize = Await _Reader.GetIntAsync("Size")
+        Dim lSize As Long
+        If version >= 2 Then lSize = Await _Reader.GetLongAsync("Size")
 
         Dim lAttributes = New TickAttributes
 

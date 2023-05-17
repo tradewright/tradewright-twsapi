@@ -208,7 +208,7 @@ Public Class EventSource
     End Sub
 
     Public Overrides Sub EndReplaceFA(e As ReplaceFAEndEventArgs) Implements IAccountDataConsumer.EndReplaceFA
-
+        OnReplaceFAEnd(e)
     End Sub
 
     Public Event ReplaceFAEnd(sender As Object, e As ReplaceFAEndEventArgs)

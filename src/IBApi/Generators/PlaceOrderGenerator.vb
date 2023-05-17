@@ -45,10 +45,11 @@ Friend Class PlaceOrderGenerator
     Private Sub placeOrder(order As Order, contract As Contract, transmit As Boolean, secIdType As String, secId As String)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
-        If ServerVersion < ApiServerVersion.ORDER_CONTAINER And order.IsOmsContainer Then Throw New InvalidOperationException("IsOmsContainer parameter not supported")
-        If ServerVersion < ApiServerVersion.D_PEG_ORDERS And order.DiscretionaryUpToLimitPrice Then Throw New InvalidOperationException("DiscretionaryUpToLimitPrice parameter not supported")
-        If ServerVersion < ApiServerVersion.PRICE_MGMT_ALGO And order.UsePriceMgmtAlgo.HasValue Then Throw New InvalidOperationException("UsePriceMgmtAlgo parameter not supported")
-
+        If ServerVersion < ApiServerVersion.ORDER_CONTAINER And order.IsOmsContainer Then Throw New InvalidOperationException("IsOmsContainer attribute not supported")
+        If ServerVersion < ApiServerVersion.D_PEG_ORDERS And order.DiscretionaryUpToLimitPrice Then Throw New InvalidOperationException("DiscretionaryUpToLimitPrice attribute not supported")
+        If ServerVersion < ApiServerVersion.PRICE_MGMT_ALGO And order.UsePriceMgmtAlgo.HasValue Then Throw New InvalidOperationException("UsePriceMgmtAlgo attribute not supported")
+        If ServerVersion < ApiServerVersion.DURATION And order.Duration.HasValue Then Throw New InvalidOperationException("Duration attribute not supported")
+        If ServerVersion < ApiServerVersion.POST_TO_ATS And order.PostToAts.HasValue Then Throw New InvalidOperationException("PostToAts attribute not supported")
         Const VERSION As Integer = 45
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -91,7 +92,7 @@ Friend Class PlaceOrderGenerator
             lWriter.AddInteger(.ParentId, "Parent id")
             lWriter.AddBoolean(.BlockOrder, "Block Order")
             lWriter.AddBoolean(.SweepToFill, "Sweep to fill")
-            lWriter.AddInteger(.DisplaySize, "Display Size")
+            lWriter.AddNullableInteger(.DisplaySize, "Display Size")
             lWriter.AddString(stopTriggerMethodToString(.TriggerMethod), "Trigger method")
             lWriter.AddBoolean(.OutsideRth, "Outside RTH")
             lWriter.AddBoolean(.Hidden, "Hidden")
@@ -164,9 +165,9 @@ Friend Class PlaceOrderGenerator
             lWriter.AddBoolean(.AllOrNone, "All or none")
             lWriter.AddNullableInteger(.MinQty, "Minimum quantity")
             lWriter.AddNullableDouble(.PercentOffset, "Percent Offset")
-            lWriter.AddBoolean(.ETradeOnly, "E-trade only")
-            lWriter.AddBoolean(.FirmQuoteOnly, "Firm quote only")
-            lWriter.AddNullableDouble(.NbboPriceCap, "NBBO price cap")
+            lWriter.AddBoolean(False, "E-trade only")
+            lWriter.AddBoolean(False, "Firm quote only")
+            lWriter.AddNullableDouble(Nothing, "NBBO price cap")
             lWriter.AddNullableInteger(.AuctionStrategy, "Auction strategy")
             lWriter.AddNullableDouble(.StartingPrice, "Starting price")
             lWriter.AddNullableDouble(.StockRefPrice, "Stock ref price")
@@ -328,12 +329,20 @@ Friend Class PlaceOrderGenerator
                 lWriter.AddBoolean(.IsOmsContainer, "IsOmsContainer")
             End If
 
-            If (ServerVersion >= ApiServerVersion.D_PEG_ORDERS) Then
+            If ServerVersion >= ApiServerVersion.D_PEG_ORDERS Then
                 lWriter.AddBoolean(.DiscretionaryUpToLimitPrice, "DiscretionaryUpToLimitPrice")
             End If
 
-            If (ServerVersion >= ApiServerVersion.PRICE_MGMT_ALGO) Then
+            If ServerVersion >= ApiServerVersion.PRICE_MGMT_ALGO Then
                 lWriter.AddNullableBoolean(.UsePriceMgmtAlgo, "UsePriceMgmtAlgo")
+            End If
+
+            If ServerVersion >= ApiServerVersion.DURATION Then
+                lWriter.AddNullableInteger(.Duration, "Duration")
+            End If
+
+            If ServerVersion >= ApiServerVersion.POST_TO_ATS Then
+                lWriter.AddNullableInteger(.PostToAts, "PostToAts")
             End If
 
         End With

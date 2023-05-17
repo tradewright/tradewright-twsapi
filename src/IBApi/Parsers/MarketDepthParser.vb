@@ -38,7 +38,7 @@ Friend NotInheritable Class MarketDepthParser
         Dim lOperation = DirectCast(Await _Reader.GetIntAsync("Operation"), DOMOperation)
         Dim lSide = DirectCast(Await _Reader.GetIntAsync("Side"), DOMSide)
         Dim lPrice = Await _Reader.GetDoubleAsync("Price")
-        Dim lSize = Await _Reader.GetIntAsync("Size")
+        Dim lSize = Await _Reader.GetLongAsync("Size")
 
         LogSocketInputMessage(ModuleName,"ParseAsync")
 

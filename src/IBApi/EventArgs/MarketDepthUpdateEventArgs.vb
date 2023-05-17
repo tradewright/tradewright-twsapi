@@ -41,7 +41,7 @@ Public Class MarketDepthUpdateEventArgs
 
     Public Property Side As DOMSide
 
-    Public Property Size As Integer
+    Public Property Size As Long
 
     Public Sub New(timestamp As DateTime,
                    tickerId As Integer,
@@ -49,7 +49,7 @@ Public Class MarketDepthUpdateEventArgs
                    operation As DOMOperation,
                    side As DOMSide,
                    price As Double,
-                   size As Integer,
+                   size As Long,
                    marketMaker As String,
                    isSmartDepth As Boolean)
         MyBase.New()

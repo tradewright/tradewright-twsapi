@@ -110,7 +110,7 @@ Friend Class OrderParser
             .StockRangeLower = Await reader.GetDoubleAsync("stockRangeLower")
             .StockRangeUpper = Await reader.GetDoubleAsync("stockRangeUpper")
 
-            .DisplaySize = Await reader.GetIntAsync("displaySize")
+            .DisplaySize = Await reader.GetNullableIntAsync("displaySize")
 
             If orderPhase = OrderPhase.Open Then .BlockOrder = Await reader.GetBooleanAsync("blockOrder")
 
@@ -120,9 +120,10 @@ Friend Class OrderParser
             .OcaType = DirectCast(Await reader.GetIntAsync("ocaType"), OcaType)
 
             If orderPhase = OrderPhase.Open Then
-                .ETradeOnly = Await reader.GetBooleanAsync("eTradeOnly")
-                .FirmQuoteOnly = Await reader.GetBooleanAsync("firmQuoteOnly")
-                .NbboPriceCap = Await reader.GetDoubleAsync("nbboPriceCap")
+                Await reader.GetBooleanAsync("eTradeOnly")      ' desupported
+                Await reader.GetBooleanAsync("firmQuoteOnly")   ' desupported
+                Await reader.GetDoubleAsync("nbboPriceCap")     ' desupported
+
                 .ParentId = Await reader.GetIntAsync("ParentId")
             End If
 
@@ -346,18 +347,18 @@ Friend Class OrderParser
                 If serverVersion >= ApiServerVersion.PRICE_MGMT_ALGO Then
                     .UsePriceMgmtAlgo = Await reader.GetBoolFromIntAsync("UsePriceMgmtAlgo")
                 End If
-                'If serverVersion >= ApiServerVersion.DURATION) Then
-                '    .Duration = Await reader.GetNullableIntAsync("Duration")
-                'End If
-                'If serverVersion >= ApiServerVersion.POST_TO_ATS Then
-                '    .PostToAts = Await reader.GetNullableIntAsync("PostToAts")
-                'End If
+                If serverVersion >= ApiServerVersion.DURATION Then
+                    .Duration = Await reader.GetNullableIntAsync("Duration")
+                End If
+                If serverVersion >= ApiServerVersion.POST_TO_ATS Then
+                    .PostToAts = Await reader.GetNullableIntAsync("PostToAts")
+                End If
                 'If serverVersion >= ApiServerVersion.AUTO_CANCEL_PARENT) Then
                 '    .AutoCancelParent = Await reader.GetBoolFromIntAsync("AutoCancelParent")
                 'End If
             End If
 
-            If orderPhase = OrderPhase.Completed Then
+                If orderPhase = OrderPhase.Completed Then
                 .AutoCancelDate = Await reader.GetStringAsync("AutoCancelDate")
                 .FilledQuantity = Await reader.GetIntAsync("FilledQuantity")
                 .RefFuturesConId = Await reader.GetIntAsync("RefFuturesConId")

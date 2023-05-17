@@ -67,7 +67,6 @@ Friend Class ApiConnectionManager
                    port As Integer,
                    clientId As Integer,
                    useV100Plus As Boolean,
-                   useSSL As Boolean,
                    cancellationSource As CancellationTokenSource,
                    registry As GeneratorAndParserRegistry,
                    eventConsumers As ApiEventConsumers,
@@ -80,7 +79,7 @@ Friend Class ApiConnectionManager
         mEventConsumers = eventConsumers
         mGenerateSocketDataEvents = generateSocketDataEvents
 
-        Dim socket = createSocket(mServer, mPort, useSSL)
+        Dim socket = createSocket(mServer, mPort)
         TheSocketHandler = New SocketHandler(socket,
                                            Sub() setConnectionState(ApiConnectionState.Connecting, ConnectionString),
                                            AddressOf socketHandlerConnected,
@@ -162,14 +161,10 @@ Friend Class ApiConnectionManager
 #End Region
 
 #Region "Private Methods"
-    Private Function createSocket(host As String, port As Integer, useSSL As Boolean) As SocketManager
+    Private Function createSocket(host As String, port As Integer) As SocketManager
         If String.IsNullOrEmpty(host) Then host = "127.0.0.1"
 
-        If useSSL Then
-            Return New SocketManagerSSL(mServer, port)
-        Else
-            Return New SocketManager(mServer, port)
-        End If
+        Return New SocketManager(mServer, port)
     End Function
 
     Private Function isValidServerVersion() As Boolean

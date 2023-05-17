@@ -34,7 +34,7 @@ Imports System.Threading.Tasks
 ''' This class provides the Application Programming Interface to Interactive Brokers' 
 ''' Trader Workstation and Gateway products.
 ''' 
-''' Updated to IB commit 5532cc2513ad140c8464c892160e3b23be41e9b0 on 17/11/2020
+''' Updated to IB commit 480907de3c57bc4c3cf3707e569a2fc385122253 on 31/05/2021
 ''' 
 ''' </summary>
 Public Class IBAPI
@@ -313,8 +313,16 @@ Public Class IBAPI
             ("DAY", OrderTimeInForce.Day, EnumNameType.Internal),
             ("Good Till Cancelled", OrderTimeInForce.GoodTillCancelled, EnumNameType.External),
             ("GTC", OrderTimeInForce.GoodTillCancelled, EnumNameType.Internal),
+            ("Good Till Date", OrderTimeInForce.GoodTillDate, EnumNameType.External),
+            ("GTD", OrderTimeInForce.GoodTillDate, EnumNameType.Internal),
             ("Immediate or Cancel", OrderTimeInForce.ImmediateOrCancel, EnumNameType.External),
-            ("IOC", OrderTimeInForce.ImmediateOrCancel, EnumNameType.Internal)
+            ("IOC", OrderTimeInForce.ImmediateOrCancel, EnumNameType.Internal),
+            ("Market Open", OrderTimeInForce.MarketOpen, EnumNameType.External),
+            ("OPG", OrderTimeInForce.MarketOpen, EnumNameType.Internal),
+            ("Fill or Kill", OrderTimeInForce.FillOrKill, EnumNameType.External),
+            ("FOK", OrderTimeInForce.FillOrKill, EnumNameType.Internal),
+            ("Day Till Cancelled", OrderTimeInForce.DayTillCancelled, EnumNameType.External),
+            ("DTC", OrderTimeInForce.DayTillCancelled, EnumNameType.Internal)
         })
 
     Public Shared ReadOnly OrderTypes As New ExtendedEnum(Of System.Enum, OrderType)(
@@ -440,7 +448,6 @@ Public Class IBAPI
     Private ReadOnly mServer As String
     Private ReadOnly mPort As Integer
 
-    Private ReadOnly mUseSSL As Boolean
     Private ReadOnly mUseV100Plus As Boolean
 
     Private mCallbackHandler As CallbackHandler
@@ -493,10 +500,6 @@ Public Class IBAPI
     ''' By default, the synchronization context for the current thread is used.
     ''' </param>
     ''' 
-    ''' <param name="useSSL">
-    ''' If <c>True</c>, the API connection is protected using SSL.
-    ''' </param>
-    ''' 
     ''' <param name="useLegacyProtocol">
     ''' If <c>True</c>, use the old API protocol to TWS. There is no practical 
     ''' benefit in doing this.
@@ -507,7 +510,6 @@ Public Class IBAPI
                    clientId As Integer,
                    Optional disableEventSource As Boolean = False,
                    Optional syncContext As SynchronizationContext = Nothing,
-                   Optional useSSL As Boolean = False,
                    Optional useLegacyProtocol As Boolean = False,
                    Optional generateSocketDataEvents As Boolean = False)
 
@@ -521,7 +523,6 @@ Public Class IBAPI
 
         If Not disableEventSource Then mCallbackHandler = registerCallbackHandler(New EventSource())
         Me.SyncContext = syncContext
-        mUseSSL = useSSL
         mUseV100Plus = Not useLegacyProtocol
 
         mEventConsumers.NotifyOpenOrderAction = Sub(e)
@@ -540,7 +541,7 @@ Public Class IBAPI
         generateSocketDataEvents = If(SocketLogger?.IsLoggable(ILogger.LogLevel.Detail), True, generateSocketDataEvents)
 
         mCancellationSource = New CancellationTokenSource()
-        mConnectionManager = New ApiConnectionManager(mServer, mPort, Me.ClientID, mUseV100Plus, useSSL, mCancellationSource, mRegistry, mEventConsumers, generateSocketDataEvents)
+        mConnectionManager = New ApiConnectionManager(mServer, mPort, Me.ClientID, mUseV100Plus, mCancellationSource, mRegistry, mEventConsumers, generateSocketDataEvents)
         mInMessageHandler = New InputMessageHandler(mEventConsumers, mRegistry, generateSocketDataEvents)
 
         mInMessageHandler.Initialise(mConnectionManager.Reader, mStatsRecorder)

@@ -82,13 +82,13 @@ Friend Enum ApiServerVersion
     NO_DEFAULT_OPEN_CLOSE = 155
     PRICE_BASED_VOLATILITY = 156
     REPLACE_FA_END = 157
+    DURATION = 158
+    MARKET_DATA_IN_SHARES = 159
+    POST_TO_ATS = 160
 
-    'DURATION = 158
-    'POST_TO_ATS = 160
+
     'AUTO_CANCEL_PARENT = 162
 
-    ' Max for API 973.07
-
-    Max = REPLACE_FA_END
+    Max = POST_TO_ATS
 End Enum
 

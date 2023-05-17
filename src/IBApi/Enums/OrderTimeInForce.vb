@@ -29,5 +29,9 @@ Public Enum OrderTimeInForce
     Day
     GoodTillCancelled
     ImmediateOrCancel
+    GoodTillDAte
+    MarketOpen
+    FillOrKill
+    DayTillCancelled
 End Enum
 

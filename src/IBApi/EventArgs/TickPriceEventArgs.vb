@@ -32,11 +32,11 @@ Public Class TickPriceEventArgs
 
     Public Property Price As Double
 
-    Public Property Size As Integer
+    Public Property Size As Long
 
     Public Property TickerId As Integer
 
-    Public Sub New(timestamp As DateTime, tickerId As Integer, field As TickType, price As Double, size As Integer, attributes As TickAttributes)
+    Public Sub New(timestamp As DateTime, tickerId As Integer, field As TickType, price As Double, size As Long, attributes As TickAttributes)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.TickerId = tickerId

@@ -89,7 +89,7 @@ Public Class Order
     Public Property ParentId As Integer ' Parent Order Id, to associate Auto STP or TRAIL orders with the original Order.
     Public Property BlockOrder As Boolean
     Public Property SweepToFill As Boolean
-    Public Property DisplaySize As Integer
+    Public Property DisplaySize As Integer?
     Public Property TriggerMethod As TriggerMethod
     Public Property OutsideRth As Boolean
     Public Property Hidden As Boolean
@@ -118,9 +118,7 @@ Public Class Order
 
     ' SMART routing only
     Public Property DiscretionaryAmt As Double
-    Public Property ETradeOnly As Boolean
-    Public Property FirmQuoteOnly As Boolean
-    Public Property NbboPriceCap As Double?
+
     Public Property OptOutSmartRouting As Boolean
 
     ' BOX or VOL ORDERS ONLY
@@ -330,6 +328,10 @@ Public Class Order
     Public Property DiscretionaryUpToLimitPrice As Boolean
 
     Public Property UsePriceMgmtAlgo As Boolean?
+
+    Public Property Duration As Integer?
+
+    Public Property PostToAts As Integer?
 
     '@================================================================================
     ' Class Event Handlers

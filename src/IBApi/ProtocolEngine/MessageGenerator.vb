@@ -137,7 +137,7 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub AddNullableBoolean(value As Boolean?, fieldName As String)
-        If value.HasValue Then
+        If Not value.HasValue Then
             AddString("", fieldName)
         ElseIf value.Value Then
             AddString("1", fieldName)
@@ -147,7 +147,7 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub AddString(value As String, fieldName As String)
-        If Not IBAPI.IsAsciiPrintableString(value) Then Throw New ApiApplicationException($"Unprintable value <{value}> passed to API for field {fieldName}")
+        If value IsNot Nothing And Not IBAPI.IsAsciiPrintableString(value) Then Throw New ApiApplicationException($"Unprintable value <{value}> passed to API for field {fieldName}")
 
         mMessageBuilder?.Append(fieldName)?.Append("="c)?.Append(value)?.Append(";"c)
 
