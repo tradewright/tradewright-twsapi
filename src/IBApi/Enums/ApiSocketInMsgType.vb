@@ -107,8 +107,8 @@ Public Enum ApiSocketInMsgType
     CompletedOrder = 101
     CompletedOrdersEnd = 102
     ReplaceFAEnd = 103
-
-    ' Max for API 973.07
+    WshMetaData = 104
+    WshEventData = 105
 
     Max
 End Enum

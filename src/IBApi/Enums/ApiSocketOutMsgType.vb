@@ -100,8 +100,10 @@ Friend Enum ApiSocketOutMsgType
     RequestTickByTickData = 97
     CancelTickByTickData = 98
     RequestCompletedOrders = 99
-
-    ' Max for API 973.07
+    RequestWshMetaData = 100
+    CancelWshMetaData = 101
+    RequestWshEventData = 102
+    CancelWshEventData = 103
 
     Max
 End Enum

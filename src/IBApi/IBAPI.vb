@@ -251,7 +251,11 @@ Public Class IBAPI
             ("RequestHistoricalTickData", ApiSocketOutMsgType.RequestHistoricalTickData, EnumNameType.Both),
             ("RequestTickByTickData", ApiSocketOutMsgType.RequestTickByTickData, EnumNameType.Both),
             ("CancelTickByTickData", ApiSocketOutMsgType.CancelTickByTickData, EnumNameType.Both),
-            ("RequestCompletedOrders", ApiSocketOutMsgType.RequestCompletedOrders, EnumNameType.Both)
+            ("RequestCompletedOrders", ApiSocketOutMsgType.RequestCompletedOrders, EnumNameType.Both),
+            ("RequestWshMetaData", ApiSocketOutMsgType.RequestWshMetaData, EnumNameType.Both),
+            ("CancelWshMetaData", ApiSocketOutMsgType.CancelWshMetaData, EnumNameType.Both),
+            ("RequestWshEventData", ApiSocketOutMsgType.RequestWshEventData, EnumNameType.Both),
+            ("CancelWshEventData", ApiSocketOutMsgType.CancelWshEventData, EnumNameType.Both)
             })
 
     Public Shared ReadOnly HedgeTypes As New ExtendedEnum(Of System.Enum, HedgeType)({
@@ -1006,6 +1010,13 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelTickByTickData, {requestId})
     End Sub
 
+    Public Sub CancelWshEventData(requestId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelWshEventData, {requestId})
+    End Sub
+
+    Public Sub CancelWshMetaData(requestId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelWshMetaData, {requestId})
+    End Sub
 
     Public Sub Connect()
         mConnectionManager.Connect(AddressOf startInputMessageHandler)
@@ -1220,6 +1231,14 @@ Public Class IBAPI
 
     Public Sub RequestTickByTickData(requestId As Integer, contract As Contract, tickType As TickByTickDataType, numberOfTicks As Integer, ignoreSize As Boolean)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestTickByTickData, {requestId, contract, tickType, numberOfTicks, ignoreSize})
+    End Sub
+
+    Public Sub RequestWshEventData(requestId As Integer, contractId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestWshEventData, {requestId})
+    End Sub
+
+    Public Sub RequestWshMetaData(requestId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestWshMetaData, {requestId})
     End Sub
 
     Public Sub SetLogLevel(pLogLevel As ApiLogLevel)

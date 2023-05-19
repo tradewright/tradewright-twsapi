@@ -398,6 +398,14 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
+    Public Overridable Sub NotifyWshEventData(e As WshDataEventArgs) Implements INewsConsumer.NotifyWshEventData
+        ' no action
+    End Sub
+
+    Public Overridable Sub NotifyWshMetaData(e As WshDataEventArgs) Implements INewsConsumer.NotifyWshMetaData
+        ' no action
+    End Sub
+
 #End Region
 
 #Region "IOrderInfoConsumer"
@@ -406,7 +414,7 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
-    Public Sub EndCompletedOrders(e As EventArgs) Implements IOrderInfoConsumer.EndCompletedOrders
+    Public Overridable Sub EndCompletedOrders(e As EventArgs) Implements IOrderInfoConsumer.EndCompletedOrders
         ' no action
     End Sub
 

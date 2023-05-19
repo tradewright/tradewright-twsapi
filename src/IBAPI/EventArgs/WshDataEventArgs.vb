@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2023 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,16 @@
 
 #End Region
 
-Public Interface INewsConsumer
-    Sub EndHistoricalNews(e As HistoricalNewsEndEventArgs)
-    Sub NotifyNewsArticle(e As NewsArticleEventArgs)
-    Sub NotifyNewsBulletin(e As NewsBulletinEventArgs)
-    Sub NotifyHistoricalNews(e As HistoricalNewsEventArgs)
-    Sub NotifyNewsProviders(e As NewsProvidersEventArgs)
-    Sub NotifyTickNews(e As TickNewsEventArgs)
-    Sub NotifyWshEventData(e As WshDataEventArgs)
-    Sub NotifyWshMetaData(e As WshDataEventArgs)
-End Interface
+Public Class WshDataEventArgs
+    Inherits AbstractEventArgsWithTimestamp
+
+    Public ReadOnly Property RequestId As Integer
+    Public Property Data As String
+
+    Public Sub New(timestamp As DateTime, requestId As Integer, data As String)
+        MyBase.New()
+        Me._Timestamp = timestamp
+        Me.RequestId = requestId
+        Me.Data = data
+    End Sub
+End Class

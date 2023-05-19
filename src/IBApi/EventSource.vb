@@ -698,6 +698,7 @@ Public Class EventSource
 
 #Region "INewsConsumer"
 
+
     Public Overrides Sub EndHistoricalNews(e As HistoricalNewsEndEventArgs) Implements INewsConsumer.EndHistoricalNews
         OnHistoricalNewsEnd(e)
     End Sub
@@ -706,6 +707,7 @@ Public Class EventSource
     Protected Overridable Sub OnHistoricalNewsEnd(e As HistoricalNewsEndEventArgs)
         RaiseEvent HistoricalNewsEnd(Me, e)
     End Sub
+
 
     Public Overrides Sub NotifyNewsArticle(e As NewsArticleEventArgs) Implements INewsConsumer.NotifyNewsArticle
         OnNewsArticle(e)
@@ -716,6 +718,7 @@ Public Class EventSource
         RaiseEvent NewsArticle(Me, e)
     End Sub
 
+
     Public Overrides Sub NotifyHistoricalNews(e As HistoricalNewsEventArgs) Implements INewsConsumer.NotifyHistoricalNews
         OnHistoricalNews(e)
     End Sub
@@ -724,6 +727,7 @@ Public Class EventSource
     Protected Overridable Sub OnHistoricalNews(e As HistoricalNewsEventArgs)
         RaiseEvent HistoricalNews(Me, e)
     End Sub
+
 
     Public Overrides Sub NotifyNewsProviders(e As NewsProvidersEventArgs) Implements INewsConsumer.NotifyNewsProviders
         OnNewsProviders(e)
@@ -734,6 +738,7 @@ Public Class EventSource
         RaiseEvent NewsProviders(Me, e)
     End Sub
 
+
     Public Overrides Sub NotifyTickNews(e As TickNewsEventArgs) Implements INewsConsumer.NotifyTickNews
         OnTickNews(e)
     End Sub
@@ -743,6 +748,7 @@ Public Class EventSource
         RaiseEvent TickNews(Me, e)
     End Sub
 
+
     Public Overrides Sub NotifyNewsBulletin(e As NewsBulletinEventArgs) Implements INewsConsumer.NotifyNewsBulletin
         OnNewsBulletin(e)
     End Sub
@@ -751,6 +757,28 @@ Public Class EventSource
     Protected Overridable Sub OnNewsBulletin(e As NewsBulletinEventArgs)
         RaiseEvent NewsBulletin(Me, e)
     End Sub
+
+
+    Public Overrides Sub NotifyWshEventData(e As WshDataEventArgs) Implements INewsConsumer.NotifyWshEventData
+        OnWshEventData(e)
+    End Sub
+
+    Public Event WshEventData(sender As Object, e As WshDataEventArgs)
+    Protected Overridable Sub OnWshEventData(e As WshDataEventArgs)
+        RaiseEvent WshEventData(Me, e)
+    End Sub
+
+
+    Public Overrides Sub NotifyWshMetaData(e As WshDataEventArgs) Implements INewsConsumer.NotifyWshMetaData
+        OnWshMetaData(e)
+    End Sub
+
+    Public Event WshMetaData(sender As Object, e As WshDataEventArgs)
+    Protected Overridable Sub OnWshMetaData(e As WshDataEventArgs)
+        RaiseEvent WshMetaData(Me, e)
+    End Sub
+
+
 
 #End Region
 

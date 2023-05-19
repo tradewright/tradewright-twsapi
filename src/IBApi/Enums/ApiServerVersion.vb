@@ -85,10 +85,11 @@ Friend Enum ApiServerVersion
     DURATION = 158
     MARKET_DATA_IN_SHARES = 159
     POST_TO_ATS = 160
+    WSHE_CALENDAR = 161
 
 
     'AUTO_CANCEL_PARENT = 162
 
-    Max = POST_TO_ATS
+    Max = WSHE_CALENDAR
 End Enum
 

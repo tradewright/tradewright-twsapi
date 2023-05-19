@@ -110,6 +110,10 @@ Public Class QueueingCallbackHandler
         queueEvent(e, AddressOf mEv.EndPositionMulti)
     End Sub
 
+    Public Overrides Sub EndReplaceFA(e As ReplaceFAEndEventArgs) Implements IAccountDataConsumer.EndReplaceFA
+        queueEvent(e, AddressOf mEv.EndReplaceFA)
+    End Sub
+
     Public Overrides Sub NotifyAccountSummary(e As AccountSummaryEventArgs) Implements IAccountDataConsumer.NotifyAccountSummary
         queueEvent(e, AddressOf mEv.NotifyAccountSummary)
     End Sub
@@ -410,9 +414,29 @@ Public Class QueueingCallbackHandler
         queueEvent(e, AddressOf mEv.NotifyTickNews)
     End Sub
 
+    Public Overrides Sub NotifyWshEventData(e As WshDataEventArgs) Implements INewsConsumer.NotifyWshEventData
+        queueEvent(e, AddressOf mEv.NotifyWshEventData)
+    End Sub
+
+    Public Overrides Sub NotifyWshMetaData(e As WshDataEventArgs) Implements INewsConsumer.NotifyWshMetaData
+        queueEvent(e, AddressOf mEv.NotifyWshMetaData)
+    End Sub
+
 #End Region
 
 #Region "IOrderInfoConsumer"
+
+    Public Overrides Sub EndCompletedOrders(e As EventArgs) Implements IOrderInfoConsumer.EndCompletedOrders
+        queueEvent(e, AddressOf mEv.EndCompletedOrders)
+    End Sub
+
+    Public Overrides Sub NotifyCompletedOrder(e As CompletedOrderEventArgs) Implements IOrderInfoConsumer.NotifyCompletedOrder
+        queueEvent(e, AddressOf mEv.NotifyCompletedOrder)
+    End Sub
+
+    Public Overrides Sub NotifyOrderBound(e As OrderBoundEventArgs) Implements IOrderInfoConsumer.NotifyOrderBound
+        queueEvent(e, AddressOf mEv.NotifyOrderBound)
+    End Sub
 
     Public Overrides Sub EndExecutions(e As RequestEndEventArgs) Implements IOrderInfoConsumer.EndExecutions
         queueEvent(e, AddressOf mEv.EndExecutions)
