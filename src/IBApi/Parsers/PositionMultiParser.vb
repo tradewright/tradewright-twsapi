@@ -50,7 +50,7 @@ Friend NotInheritable Class PositionMultiParser
         contract.LocalSymbol = Await _Reader.GetStringAsync("LocalSymbol")
         contract.TradingClass = Await _Reader.GetStringAsync("TradingClass")
 
-        Dim position = Await _Reader.GetNullableDoubleAsync("Position")
+        Dim position = Await _Reader.GetNullableDecimalAsync("Position")
         Dim avgCost = Await _Reader.GetNullableDoubleAsync("Avg Cost")
         Dim modelCode = Await _Reader.GetStringAsync("Model Code")
 

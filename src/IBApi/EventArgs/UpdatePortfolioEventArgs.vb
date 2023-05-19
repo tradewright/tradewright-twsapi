@@ -36,13 +36,13 @@ Public Class UpdatePortfolioEventArgs
 
     Public Property MarketValue As Double
 
-    Public Property Position As Double
+    Public Property Position As Decimal
 
     Public Property RealizedPNL As Double
 
     Public Property UnrealizedPNL As Double
 
-    Public Sub New(timestamp As DateTime, contract As TradeWright.IBAPI.Contract, position As Double, marketPrice As Double, marketValue As Double, averageCost As Double, unrealizedPNL As Double, realizedPNL As Double, accountName As String)
+    Public Sub New(timestamp As DateTime, contract As TradeWright.IBAPI.Contract, position As Decimal, marketPrice As Double, marketValue As Double, averageCost As Double, unrealizedPNL As Double, realizedPNL As Double, accountName As String)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.Contract = contract

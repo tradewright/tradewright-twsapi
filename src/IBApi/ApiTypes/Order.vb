@@ -74,7 +74,7 @@ Public Class Order
     Public Property ClientID As Integer
     Public Property PermId As Integer
     Public Property Action As OrderAction
-    Public Property TotalQuantity As Double
+    Public Property TotalQuantity As Decimal
     Public Property OrderType As OrderType
     Public Property LmtPrice As Double?
     Public Property AuxPrice As Double?
@@ -215,7 +215,7 @@ Public Class Order
     Public Property RandomizeSize As Boolean
     Public Property RandomizePrice As Boolean
     Public Property AutoCancelDate As String
-    Public Property FilledQuantity As Double?
+    Public Property FilledQuantity As Decimal?
     Public Property RefFuturesConId As Integer?
     Public Property AutoCancelParent As Boolean
     Public Property Shareholder As String

@@ -91,6 +91,11 @@ Friend NotInheritable Class MessageReader
         Return If(String.IsNullOrEmpty(s), ChrW(0), s(0))
     End Function
 
+    Friend Async Function GetDecimalAsync(fieldName As String) As Task(Of Decimal)
+        Dim s = Await GetStringAsync(fieldName)
+        Return If(Not String.IsNullOrEmpty(s), Decimal.Parse(s), 0)
+    End Function
+
     Friend Async Function GetDoubleAsync(fieldName As String) As Task(Of Double)
         Dim s = Await GetStringAsync(fieldName)
         Return If(Not String.IsNullOrEmpty(s), Double.Parse(s, NumberFormatInfo.InvariantInfo), 0)
@@ -104,6 +109,13 @@ Friend NotInheritable Class MessageReader
     Friend Async Function GetLongAsync(fieldName As String) As Task(Of Long)
         Dim s = Await GetStringAsync(fieldName)
         Return If(Not String.IsNullOrEmpty(s), Long.Parse(s), CLng(0))
+    End Function
+
+    Friend Async Function GetNullableDecimalAsync(fieldName As String) As Task(Of Decimal?)
+        Dim s = Await GetStringAsync(fieldName)
+        Dim result? = If(String.IsNullOrEmpty(s), Nothing, Decimal.Parse(s, NumberFormatInfo.InvariantInfo))
+        If result.HasValue And (result.Value = Decimal.MaxValue Or result.Value = Integer.MaxValue Or result.Value = Double.MaxValue) Then result = Nothing
+        Return result
     End Function
 
     Friend Async Function GetNullableDoubleAsync(fieldName As String) As Task(Of Double?)

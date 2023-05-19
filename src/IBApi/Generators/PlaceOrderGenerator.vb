@@ -50,6 +50,8 @@ Friend Class PlaceOrderGenerator
         If ServerVersion < ApiServerVersion.PRICE_MGMT_ALGO And order.UsePriceMgmtAlgo.HasValue Then Throw New InvalidOperationException("UsePriceMgmtAlgo attribute not supported")
         If ServerVersion < ApiServerVersion.DURATION And order.Duration.HasValue Then Throw New InvalidOperationException("Duration attribute not supported")
         If ServerVersion < ApiServerVersion.POST_TO_ATS And order.PostToAts.HasValue Then Throw New InvalidOperationException("PostToAts attribute not supported")
+        If ServerVersion < ApiServerVersion.AUTO_CANCEL_PARENT And order.AutoCancelParent Then Throw New InvalidOperationException("AutoCancelParent attribute not supported")
+
         Const VERSION As Integer = 45
 
         Dim lWriter = CreateOutputMessageGenerator()
@@ -71,11 +73,7 @@ Friend Class PlaceOrderGenerator
 
             ' mwriter.send main Order fields
             lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), "Action")
-            If ServerVersion >= ApiServerVersion.FRACTIONAL_POSITIONS Then
-                lWriter.AddDouble(.TotalQuantity, "Quantity")
-            Else
-                lWriter.AddInteger(CInt(.TotalQuantity), "Quantity")
-            End If
+            lWriter.AddDecimal(.TotalQuantity, "Quantity")
             lWriter.AddString(IBAPI.OrderTypes.ToInternalString(.OrderType), "Order type")
 
             lWriter.AddNullableDouble(.LmtPrice, "Price")
@@ -343,6 +341,10 @@ Friend Class PlaceOrderGenerator
 
             If ServerVersion >= ApiServerVersion.POST_TO_ATS Then
                 lWriter.AddNullableInteger(.PostToAts, "PostToAts")
+            End If
+
+            If ServerVersion >= ApiServerVersion.AUTO_CANCEL_PARENT Then
+                lWriter.AddBoolean(.AutoCancelParent, "AutoCancelParent")
             End If
 
         End With

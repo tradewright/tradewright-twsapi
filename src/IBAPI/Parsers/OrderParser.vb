@@ -59,7 +59,7 @@ Friend Class OrderParser
         ' read Order fields
         With order
             .Action = IBAPI.OrderActions.Parse(Await reader.GetStringAsync("Action"))
-            .TotalQuantity = Await reader.GetDoubleAsync("Quantity")
+            .TotalQuantity = Await reader.GetDecimalAsync("Quantity")
             .OrderType = IBAPI.OrderTypes.Parse(Await reader.GetStringAsync("Order type"))
             If .OrderType = OrderType.None Then Throw New InvalidOperationException("Invalid OrderYype")
             .LmtPrice = Await reader.GetNullableDoubleAsync("Limit price")
@@ -353,14 +353,14 @@ Friend Class OrderParser
                 If serverVersion >= ApiServerVersion.POST_TO_ATS Then
                     .PostToAts = Await reader.GetNullableIntAsync("PostToAts")
                 End If
-                'If serverVersion >= ApiServerVersion.AUTO_CANCEL_PARENT) Then
-                '    .AutoCancelParent = Await reader.GetBoolFromIntAsync("AutoCancelParent")
-                'End If
+                If serverVersion >= ApiServerVersion.AUTO_CANCEL_PARENT Then
+                    .AutoCancelParent = Await reader.GetBoolFromIntAsync("AutoCancelParent")
+                End If
             End If
 
                 If orderPhase = OrderPhase.Completed Then
                 .AutoCancelDate = Await reader.GetStringAsync("AutoCancelDate")
-                .FilledQuantity = Await reader.GetIntAsync("FilledQuantity")
+                .FilledQuantity = Await reader.GetNullableDecimalAsync("FilledQuantity")
                 .RefFuturesConId = Await reader.GetIntAsync("RefFuturesConId")
                 '                If serverVersion >= ApiServerVersion.AUTO_CANCEL_PARENT Then
                 .AutoCancelParent = Await reader.GetBoolFromIntAsync("AutoCancelParent")

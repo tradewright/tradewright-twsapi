@@ -34,7 +34,7 @@ Imports System.Threading.Tasks
 ''' This class provides the Application Programming Interface to Interactive Brokers' 
 ''' Trader Workstation and Gateway products.
 ''' 
-''' Updated to IB commit 480907de3c57bc4c3cf3707e569a2fc385122253 on 31/05/2021
+''' Updated to IB commit 964800d27f534ed78b53b82c7fd97ff59fe40691 on 27/10/2021
 ''' 
 ''' </summary>
 Public Class IBAPI

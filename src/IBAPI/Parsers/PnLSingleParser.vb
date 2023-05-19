@@ -34,7 +34,7 @@ Friend NotInheritable Class PnLSingleParser
 
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
-        Dim position = Await _Reader.GetIntAsync("Position")
+        Dim position = Await _Reader.GetDecimalAsync("Position")
         Dim pnl = Await _Reader.GetDoubleAsync("PnL")
         Dim unrealizedPnL? = If(ServerVersion >= ApiServerVersion.UNREALIZED_PNL, Await _Reader.GetDoubleAsync("Unrealized PnL"), Nothing)
         Dim realizedPnL? = If(ServerVersion >= ApiServerVersion.REALIZED_PNL, Await _Reader.GetDoubleAsync("Realized PnL"), Nothing)

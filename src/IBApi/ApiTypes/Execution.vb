@@ -64,11 +64,11 @@ Public Class Execution
     Public Property AcctNumber As String
     Public Property Exchange As String
     Public Property Side As String
-    Public Property Shares As Double
+    Public Property Shares As Decimal
     Public Property Price As Double
     Public Property PermId As Integer
     Public Property Liquidation As Boolean
-    Public Property CumQty As Integer
+    Public Property CumQty As Decimal
     Public Property AvgPrice As Double
     Public Property OrderRef As String
     Public Property EvRule As String

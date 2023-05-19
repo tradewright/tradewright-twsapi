@@ -34,18 +34,18 @@ Public Class PositionMultiEventArgs
 
     Public Property ModelCode As String
 
-    Public Property Position As Double?
+    Public Property Position As Decimal?
 
     Public Property ReqId As Integer
 
-    Public Sub New(timestamp As DateTime, reqId As Integer, account As String, modelCode As String, contract As TradeWright.IBAPI.Contract, pos As Double?, avgCost As Double?)
+    Public Sub New(timestamp As DateTime, reqId As Integer, account As String, modelCode As String, contract As TradeWright.IBAPI.Contract, position As Decimal?, avgCost As Double?)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.ReqId = reqId
         Me.Account = account
         Me.ModelCode = modelCode
         Me.Contract = contract
-        Me.Position = pos
+        Me.Position = position
         Me.AverageCost = avgCost
     End Sub
 End Class

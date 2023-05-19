@@ -28,13 +28,13 @@ Public Class PnLSingleEventArgs
     Inherits AbstractEventArgsWithTimestamp
 
     Public Property PnL As Double
-    Public Property Position As Integer
+    Public Property Position As Decimal
     Public Property RequestId As Integer
     Public Property UnrealizedPnL As Double?
     Public Property RealizedPnL As Double?
     Public Property Value As Double
 
-    Public Sub New(timestamp As DateTime, requestId As Integer, position As Integer, pnl As Double, unrealizedPnL As Double?, realizedPnL As Double?, value As Double)
+    Public Sub New(timestamp As DateTime, requestId As Integer, position As Decimal, pnl As Double, unrealizedPnL As Double?, realizedPnL As Double?, value As Double)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = requestId

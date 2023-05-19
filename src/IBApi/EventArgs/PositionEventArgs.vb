@@ -32,14 +32,14 @@ Public Class PositionEventArgs
 
     Public Property Contract As Contract
 
-    Public Property Position As Double?
+    Public Property Position As Decimal?
 
-    Public Sub New(timestamp As DateTime, account As String, contract As TradeWright.IBAPI.Contract, pos As Double?, avgCost As Double?)
+    Public Sub New(timestamp As DateTime, account As String, contract As TradeWright.IBAPI.Contract, position As Decimal?, avgCost As Double?)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.Account = account
         Me.Contract = contract
-        Me.Position = pos
+        Me.Position = position
         Me.AverageCost = avgCost
     End Sub
 End Class

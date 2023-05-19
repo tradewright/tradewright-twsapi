@@ -35,8 +35,8 @@ Friend NotInheritable Class OrderStatusParser
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lorderId = Await _Reader.GetIntAsync("id")
         Dim lStatus = Await _Reader.GetStringAsync("Status")
-        Dim lFilled = Await _Reader.GetDoubleAsync("Filled")
-        Dim lRemaining = Await _Reader.GetDoubleAsync("Remaining")
+        Dim lFilled = Await _Reader.GetDecimalAsync("Filled")
+        Dim lRemaining = Await _Reader.GetDecimalAsync("Remaining")
         Dim lAvgFillPrice = Await _Reader.GetDoubleAsync("Avg fill price")
 
         Dim lPermId As Integer

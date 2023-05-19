@@ -50,12 +50,7 @@ Friend NotInheritable Class PositionParser
 
         If lContract.Multiplier = 0 Then lContract.Multiplier = 1
 
-        Dim lPosition As Double?
-        If ServerVersion >= ApiServerVersion.FRACTIONAL_POSITIONS Then
-            lPosition = Await _Reader.GetNullableDoubleAsync("Position")
-        Else
-            lPosition = CDbl(Await _Reader.GetNullableIntAsync("Position"))
-        End If
+        Dim lPosition? = Await _Reader.GetNullableDecimalAsync("Position")
 
         Dim lAverageCost As Double
         If pVersion >= 3 Then lAverageCost = Await _Reader.GetDoubleAsync("Average Cost")

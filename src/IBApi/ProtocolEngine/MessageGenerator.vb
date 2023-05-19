@@ -128,6 +128,18 @@ Friend NotInheritable Class MessageGenerator
         End If
     End Sub
 
+    Friend Sub AddDecimal(value As Decimal, fieldName As String)
+        AddString(value.ToString(CultureInfo.InvariantCulture), fieldName)
+    End Sub
+
+    Friend Sub AddNullableDecimal(value As Decimal?, fieldName As String)
+        If value.HasValue Then
+            AddString(value.Value.ToString(CultureInfo.InvariantCulture), fieldName)
+        Else
+            AddString(String.Empty, fieldName)
+        End If
+    End Sub
+
     Friend Sub AddBoolean(value As Boolean, fieldName As String)
         If value Then
             AddString("1", fieldName)

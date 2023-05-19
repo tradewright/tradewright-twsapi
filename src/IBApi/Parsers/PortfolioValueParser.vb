@@ -54,7 +54,7 @@ Friend NotInheritable Class PortfolioValueParser
         If pVersion >= 2 Then lContract.LocalSymbol = Await _Reader.GetStringAsync("Local Symbol")
         If pVersion >= 8 Then lContract.TradingClass = Await _Reader.GetStringAsync("Trading Class")
 
-        Dim lPosition = If(ServerVersion >= ApiServerVersion.FRACTIONAL_POSITIONS, Await _Reader.GetDoubleAsync("POSITION"), Await _Reader.GetIntAsync("POSITION"))
+        Dim lPosition = Await _Reader.GetDecimalAsync("POSITION")
         Dim lMarketPrice = Await _Reader.GetDoubleAsync("Market price")
         Dim lMarketValue = Await _Reader.GetDoubleAsync("Market Value")
         Dim lAverageCost As Double
