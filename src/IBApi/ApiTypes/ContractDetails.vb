@@ -61,11 +61,11 @@ Public Class ContractDetails
 
     Public Property Summary As Contract
     Public Property MarketName As String
-    Public Property MinTick As Double
+    Public Property MinimumTick As Double
     Public Property PriceMagnifier As Integer
     Public Property OrderTypes As String
     Public Property ValidExchanges As String
-    Public Property UnderConId As Integer
+    Public Property UnderlyingContractId As Integer
     Public Property LongName As String
     Public Property ContractMonth As String
     Public Property Industry As String
@@ -77,22 +77,25 @@ Public Class ContractDetails
 
     Public Property EvRule As String
     Public Property EvMultiplier As Double
-    Public Property MDSizeMultiplier As Integer
-    Public Property AggGroup As Integer
-    Public Property SecIdList As List(Of TagValue) ' CUSIP/ISIN/etc.
-    Public Property UnderSymbol As String
-    Public Property UnderSecType As SecurityType
+    Public Property AggregatedGroup As Integer
+    Public Property SecurityIdsList As List(Of TagValue) ' CUSIP/ISIN/etc.
+    Public Property UnderlyingSymbol As String
+    Public Property UnderlyingSecurityType As SecurityType
     Public Property MarketRuleIds As String
     Public Property RealExpirationDate As String
     Public Property LastTradeTime As String
     Public Property StockType As String
+    Public Property MinimumSize As Decimal?
+    Public Property SizeIncrement As Decimal?
+    Public Property SuggestedSizeIncrement As Decimal?
+
 
 
 
     ' BOND values
     Public Property Cusip As String
     Public Property Ratings As String
-    Public Property DescAppend As String
+    Public Property BondDescription As String
     Public Property BondType As String
     Public Property CouponType As String
     Public Property Callable As Boolean = False

@@ -42,7 +42,7 @@ Friend NotInheritable Class TickByTickParser
             Case TickByTickDataType.Last,
                  TickByTickDataType.AllLast
                 Dim price = Await _Reader.GetDoubleAsync("Price")
-                Dim size = Await _Reader.GetLongAsync("Size")
+                Dim size = Await _Reader.GetDecimalAsync("Size")
 
                 Const PastLimit As Integer = &H1
                 Const Unreported As Integer = &H2
@@ -67,8 +67,8 @@ Friend NotInheritable Class TickByTickParser
             Case TickByTickDataType.BidAsk
                 Dim bidPrice = Await _Reader.GetDoubleAsync("Bid Price")
                 Dim askPrice = Await _Reader.GetDoubleAsync("Ask Price")
-                Dim bidSize = Await _Reader.GetLongAsync("Bid Size")
-                Dim askSize = Await _Reader.GetLongAsync("Ask Size")
+                Dim bidSize = Await _Reader.GetDecimalAsync("Bid Size")
+                Dim askSize = Await _Reader.GetDecimalAsync("Ask Size")
 
                 Const BidPastLow As Integer = &H1
                 Const AskPastHigh As Integer = &H2

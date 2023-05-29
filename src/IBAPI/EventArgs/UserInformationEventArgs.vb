@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2023 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,18 @@
 
 #End Region
 
-Public Class OrderErrorEventArgs
-    Inherits RequestErrorEventArgs
+Public Class UserInformationEventArgs
+    Inherits AbstractEventArgsWithTimestamp
 
-    Public Property AdvancedOrderRejectJson As String
+    Public Property RequestId As Integer
+    Public Property WhiteBrandingId As String
 
-    Public Sub New(timestamp As DateTime, orderId As Integer, errorCode As Integer, message As String, advancedOrderRejectJson As String)
-        MyBase.New(timestamp, orderId, errorCode, message)
-        Me.AdvancedOrderRejectJson = advancedOrderRejectJson
+    Public Sub New(timestamp As DateTime, requestId As Integer, whiteBrandingId As String)
+        MyBase.New()
+        Me._Timestamp = timestamp
+        Me.RequestId = requestId
+        Me.WhiteBrandingId = whiteBrandingId
     End Sub
+
+
 End Class

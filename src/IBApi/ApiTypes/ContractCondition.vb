@@ -29,7 +29,7 @@ Imports TradeWright.IBAPI.ApiException
 Public MustInherit Class ContractCondition
     Inherits OperatorCondition
 
-    Public Property ConId As Integer
+    Public Property ContractId As Integer
     Public Property Exchange As String
 
     Const Delimiter As String = " of "
@@ -41,7 +41,7 @@ Public MustInherit Class ContractCondition
     End Sub
 
     Public Overrides Function ToString() As String
-        Return Type & Delimiter & ContractResolver(ConId, Exchange) & MyBase.ToString()
+        Return Type & Delimiter & ContractResolver(ContractId, Exchange) & MyBase.ToString()
     End Function
 
     Public Overrides Function Equals(obj As Object) As Boolean
@@ -49,11 +49,11 @@ Public MustInherit Class ContractCondition
         If TypeOf obj IsNot ContractCondition Then Return False
         Dim other = DirectCast(obj, ContractCondition)
 
-        Return MyBase.Equals(obj) And ConId = other.ConId And Exchange.Equals(other.Exchange)
+        Return MyBase.Equals(obj) And ContractId = other.ContractId And Exchange.Equals(other.Exchange)
     End Function
 
     Public Overrides Function GetHashCode() As Integer
-        Return MyBase.GetHashCode() + ConId.GetHashCode() + Exchange.GetHashCode()
+        Return MyBase.GetHashCode() + ContractId.GetHashCode() + Exchange.GetHashCode()
     End Function
 
     Protected Overrides Function TryParse(cond As String) As Boolean
@@ -65,7 +65,7 @@ Public MustInherit Class ContractCondition
 
             If Not Integer.TryParse(cond.AsSpan(0, cond.IndexOf("(")), cId) Then Return False
 
-            ConId = cId
+            ContractId = cId
             cond = cond.Substring(cond.IndexOf("(") + 1)
             Exchange = cond.Substring(0, cond.IndexOf(")"))
             cond = cond.Substring(cond.IndexOf(")") + 1)
@@ -79,13 +79,13 @@ Public MustInherit Class ContractCondition
     Friend Overrides Async Sub Deserialize(reader As MessageReader)
         MyBase.Deserialize(reader)
 
-        ConId = Await reader.GetIntAsync("ConId")
+        ContractId = Await reader.GetIntAsync("ContractId")
         Exchange = Await reader.GetStringAsync("Exchange")
     End Sub
 
     Friend Overrides Sub Serialize(writer As MessageGenerator)
         MyBase.Serialize(writer)
-        writer.AddInteger(ConId, "ConId")
+        writer.AddInteger(ContractId, "ContractId")
         writer.AddString(Exchange, "Exchange")
     End Sub
 

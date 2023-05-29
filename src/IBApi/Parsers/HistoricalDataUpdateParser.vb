@@ -43,8 +43,8 @@ Friend NotInheritable Class HistoricalDataUpdateParser
                 .CloseValue = Await _Reader.GetDoubleAsync("Close"),
                 .HighValue = Await _Reader.GetDoubleAsync("High"),
                 .LowValue = Await _Reader.GetDoubleAsync("Low"),
-                .WAP = Await _Reader.GetDoubleAsync("WAP"),
-                .Volume = Await _Reader.GetLongAsync("Volume")
+                .WAP = Await _Reader.GetDecimalAsync("WAP"),
+                .Volume = Await _Reader.GetDecimalAsync("Volume")
             }
 
         LogSocketInputMessage(ModuleName, "ParseAsync")

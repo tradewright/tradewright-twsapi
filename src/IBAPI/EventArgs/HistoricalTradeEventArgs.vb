@@ -30,7 +30,7 @@ Public Class HistoricalTradeEventArgs
     Public ReadOnly Property RequestId As Integer
     Public ReadOnly Property Time As Date
     Public ReadOnly Property Price As Double
-    Public ReadOnly Property Size As Long
+    Public ReadOnly Property Size As Decimal
     Public ReadOnly Property Exchange As String
     Public ReadOnly Property SpecialConditions As String
     Public ReadOnly Property Attributes As TickAttributes
@@ -38,7 +38,7 @@ Public Class HistoricalTradeEventArgs
     Public Sub New(requestId As Integer,
                    time As Date,
                    price As Double,
-                   size As Long,
+                   size As Decimal,
                    exchange As String,
                    specialConditions As String,
                    attributes As TickAttributes)

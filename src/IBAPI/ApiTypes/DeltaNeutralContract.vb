@@ -26,7 +26,7 @@
 
 Public Class DeltaNeutralContract
 
-    Public Property ConId As Integer
+    Public Property ContractId As Integer
     Public Property Delta As Double
     Public Property Price As Double
 End Class

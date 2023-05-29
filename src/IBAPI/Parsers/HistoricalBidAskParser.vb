@@ -57,8 +57,8 @@ Friend Class HistoricalBidAskParser
 
             Dim bidPrice = Await _Reader.GetDoubleAsync("Price")
             Dim askPrice = Await _Reader.GetDoubleAsync("Price")
-            Dim bidSize = Await _Reader.GetLongAsync("Size")
-            Dim askSize = Await _Reader.GetLongAsync("Size")
+            Dim bidSize = Await _Reader.GetDecimalAsync("Size")
+            Dim askSize = Await _Reader.GetDecimalAsync("Size")
             ticks.Add(New HistoricalBidAskEventArgs(requestId, time, bidPrice, bidSize, askPrice, askSize, attributes))
         Next
 

@@ -42,12 +42,12 @@ Friend Class OrderParser
                                      orderState As OrderState,
                                      orderPhase As OrderPhase) As Task(Of Boolean)
         With contract
-            .ConId = Await reader.GetIntAsync("conId")
+            .ContractId = Await reader.GetIntAsync("ContractId")
             .Symbol = Await reader.GetStringAsync("Symbol")
-            .SecType = IBAPI.SecurityTypes.Parse(Await reader.GetStringAsync("Sec type"))
+            .SecurityType = IBAPI.SecurityTypes.Parse(Await reader.GetStringAsync("Sec type"))
             .Expiry = Await reader.GetStringAsync("Expiry")
             .Strike = Await reader.GetDoubleAsync("Strike")
-            .OptRight = IBAPI.OptionRights.Parse(Await reader.GetStringAsync("Right"))
+            .OptionRight = IBAPI.OptionRights.Parse(Await reader.GetStringAsync("Right"))
             .Multiplier = Await reader.GetDoubleAsync("Multiplier")
             If .Multiplier = 0 Then .Multiplier = 1
             .Exchange = Await reader.GetStringAsync("Exchange")
@@ -62,20 +62,20 @@ Friend Class OrderParser
             .TotalQuantity = Await reader.GetDecimalAsync("Quantity")
             .OrderType = IBAPI.OrderTypes.Parse(Await reader.GetStringAsync("Order type"))
             If .OrderType = OrderType.None Then Throw New InvalidOperationException("Invalid OrderYype")
-            .LmtPrice = Await reader.GetNullableDoubleAsync("Limit price")
+            .LimitPrice = Await reader.GetNullableDoubleAsync("Limit price")
             .AuxPrice = Await reader.GetNullableDoubleAsync("Aux price")
-            .Tif = IBAPI.OrderTIFs.Parse(Await reader.GetStringAsync("Time in force"))
+            .TimeInForce = IBAPI.OrderTIFs.Parse(Await reader.GetStringAsync("Time in force"))
             .OcaGroup = Await reader.GetStringAsync("OCA group")
             .Account = Await reader.GetStringAsync("Account")
             .OpenClose = Await reader.GetStringAsync("Open/close")
             .Origin = Await reader.GetIntAsync("Origin")
-            .OrderRef = Await reader.GetStringAsync("Order ref")
+            .OrderReference = Await reader.GetStringAsync("Order ref")
             If orderPhase = OrderPhase.Open Then .ClientID = Await reader.GetIntAsync("Client id")
 
-            .PermId = Await reader.GetIntAsync("Perm id")
+            .PermanentId = Await reader.GetIntAsync("Perm id")
             .OutsideRth = Await reader.GetBooleanAsync("Outside RTH")
             .Hidden = Await reader.GetBooleanAsync("Hidden")
-            .DiscretionaryAmt = Await reader.GetDoubleAsync("Discr amt")
+            .DiscretionaryAmount = Await reader.GetDoubleAsync("Discr amt")
 
             .GoodAfterTime = Await reader.GetStringAsync("Good after Time")
 
@@ -104,7 +104,7 @@ Friend Class OrderParser
             If orderPhase = OrderPhase.Open Then .AuctionStrategy = DirectCast(Await reader.GetIntAsync("Auction Strategy"), AuctionStrategy)
 
             .StartingPrice = Await reader.GetDoubleAsync("starting Price")
-            .StockRefPrice = Await reader.GetDoubleAsync("stockRefPrice")
+            .StockReferencePrice = Await reader.GetDoubleAsync("stockRefPrice")
             .Delta = Await reader.GetDoubleAsync("delta")
 
             .StockRangeLower = Await reader.GetDoubleAsync("stockRangeLower")
@@ -116,7 +116,7 @@ Friend Class OrderParser
 
             .SweepToFill = Await reader.GetBooleanAsync("sweepToFill")
             .AllOrNone = Await reader.GetBooleanAsync("allOrNone")
-            .MinQty = Await reader.GetIntAsync("minQty")
+            .MinimumQuantity = Await reader.GetIntAsync("minQty")
             .OcaType = DirectCast(Await reader.GetIntAsync("ocaType"), OcaType)
 
             If orderPhase = OrderPhase.Open Then
@@ -137,7 +137,7 @@ Friend Class OrderParser
             .DeltaNeutralAuxPrice = Await reader.GetNullableDoubleAsync("DeltaNeutralAuxPrice")
 
             If deltaNeutralOrderTypeStr <> "" Then
-                .DeltaNeutralConId = Await reader.GetIntAsync("DeltaNeutralConId")
+                .DeltaNeutralContractId = Await reader.GetIntAsync("DeltaNeutralConId")
                 If orderPhase = OrderPhase.Open Then
                     .DeltaNeutralSettlingFirm = Await reader.GetStringAsync("DeltaNeutralSettlingFirm")
                     .DeltaNeutralClearingAccount = Await reader.GetStringAsync("DeltaNeutralClearingAccount")
@@ -166,7 +166,7 @@ Friend Class OrderParser
             If lComboLegsCount > 0 Then
                 For i = 1 To lComboLegsCount
                     Dim lComboLeg As New ComboLeg With {
-                        .ConId = Await reader.GetIntAsync($"ConId{i}"),
+                        .ContractId = Await reader.GetIntAsync($"ContractId{i}"),
                         .Ratio = Await reader.GetIntAsync($"Ratio{i}"),
                         .Action = IBAPI.OrderActions.Parse(Await reader.GetStringAsync($"Action{i}")),
                         .Exchange = Await reader.GetStringAsync($"Exchange{i}"),
@@ -193,17 +193,17 @@ Friend Class OrderParser
 
             Dim lSmartComboRoutingParamsCount = Await reader.GetIntAsync("SmartComboRoutingParamsCount")
             If lSmartComboRoutingParamsCount > 0 Then
-                .SmartComboRoutingParams = New List(Of TagValue)()
+                .SmartComboRoutingParameters = New List(Of TagValue)()
                 For i = 1 To lSmartComboRoutingParamsCount
-                    .SmartComboRoutingParams.Add(New TagValue() With {
+                    .SmartComboRoutingParameters.Add(New TagValue() With {
                                                                     .Tag = Await reader.GetStringAsync("Tag" & (i + 1)),
                                                                     .Value = Await reader.GetStringAsync("Value" & (i + 1))
                                                                     })
                 Next
             End If
 
-            .ScaleInitLevelSize = Await reader.GetNullableIntAsync("Scale Init Level Size")
-            .ScaleSubsLevelSize = Await reader.GetNullableIntAsync("Scale Subs Level Size")
+            .ScaleInititialLevelSize = Await reader.GetNullableIntAsync("Scale Init Level Size")
+            .ScaleSubsequentLevelSize = Await reader.GetNullableIntAsync("Scale Subs Level Size")
             .ScalePriceIncrement = Await reader.GetNullableDoubleAsync("Scale Price Increment")
 
             If .ScalePriceIncrement.HasValue And .ScalePriceIncrement > 0.0# Then
@@ -211,13 +211,13 @@ Friend Class OrderParser
                 .ScalePriceAdjustInterval = Await reader.GetNullableIntAsync("ScalePriceAdjustInterval")
                 .ScaleProfitOffset = Await reader.GetNullableDoubleAsync("ScaleProfitOffset")
                 .ScaleAutoReset = Await reader.GetBooleanAsync("ScaleAutoReset")
-                .ScaleInitPosition = Await reader.GetNullableIntAsync("ScaleInitPosition")
-                .ScaleInitFillQty = Await reader.GetNullableIntAsync("ScaleInitFillQty")
+                .ScaleInitialPosition = Await reader.GetNullableIntAsync("ScaleInitPosition")
+                .ScaleInitialFillQuantity = Await reader.GetNullableIntAsync("ScaleInitFillQty")
                 .ScaleRandomPercent = Await reader.GetBooleanAsync("ScaleRandomPercent")
             End If
 
             .HedgeType = IBAPI.HedgeTypes.Parse(Await reader.GetStringAsync("HedgeType"))
-            If .HedgeType <> HedgeType.None Then .HedgeParam = Await reader.GetStringAsync("HedgeParam")
+            If .HedgeType <> HedgeType.None Then .HedgeParameter = Await reader.GetStringAsync("HedgeParam")
 
             If orderPhase = OrderPhase.Open Then .OptOutSmartRouting = Await reader.GetBooleanAsync("OptOutSmartRouting")
 
@@ -228,15 +228,15 @@ Friend Class OrderParser
 
             If CBool(Await reader.GetIntAsync("UnderComp")) Then
                 Dim lDeltaNeutralContract = New DeltaNeutralContract With {
-                    .ConId = Await reader.GetIntAsync("UnderComp ConId"),
+                    .ContractId = Await reader.GetIntAsync("UnderComp ContractId"),
                     .Delta = Await reader.GetDoubleAsync("UnderComp Delta"),
                     .Price = Await reader.GetDoubleAsync("UnderComp Price")
                 }
                 contract.DeltaNeutralContract = lDeltaNeutralContract
             End If
 
-            .AlgoStrategy = Await reader.GetStringAsync("Algo strategy")
-            If .AlgoStrategy <> "" Then
+            .AlgorithmStrategy = Await reader.GetStringAsync("Algo strategy")
+            If .AlgorithmStrategy <> "" Then
                 Dim algoParamsCount = Await reader.GetIntAsync("Algo params count")
                 If algoParamsCount > 0 Then
                     Dim lAlgoParams(algoParamsCount - 1) As TagValue
@@ -244,7 +244,7 @@ Friend Class OrderParser
                         lAlgoParams(i).Tag = Await reader.GetStringAsync($"Tag{i + 1}")
                         lAlgoParams(i).Value = Await reader.GetStringAsync($"Value{i + 1}")
                     Next
-                    .AlgoParams = lAlgoParams
+                    .AlgorithmParameters = lAlgoParams
                 End If
             End If
 
@@ -311,14 +311,14 @@ Friend Class OrderParser
                     .AdjustedOrderType = IBAPI.OrderTypes.Parse(Await reader.GetStringAsync("AdjustedOrderType"))
                     .TriggerPrice = Await reader.GetNullableDoubleAsync("TriggerPrice")
                     .TrailStopPrice = Await reader.GetNullableDoubleAsync("TrailStopPrice")
-                    .LmtPriceOffset = Await reader.GetNullableDoubleAsync("LmtPriceOffset")
+                    .LimitPriceOffset = Await reader.GetNullableDoubleAsync("LmtPriceOffset")
                     .AdjustedStopPrice = Await reader.GetNullableDoubleAsync("AdjustedStopPrice")
                     .AdjustedStopLimitPrice = Await reader.GetNullableDoubleAsync("AdjustedStopLimitPrice")
                     .AdjustedTrailingAmount = Await reader.GetNullableDoubleAsync("AdjustedTrailingAmount")
                     .AdjustableTrailingUnit = Await reader.GetIntAsync("AdjustableTrailingUnit")
                 Else
                     .TrailStopPrice = Await reader.GetNullableDoubleAsync("TrailStopPrice")
-                    .LmtPriceOffset = Await reader.GetNullableDoubleAsync("LmtPriceOffset")
+                    .LimitPriceOffset = Await reader.GetNullableDoubleAsync("LmtPriceOffset")
                 End If
             End If
 
@@ -329,7 +329,7 @@ Friend Class OrderParser
             End If
 
             If serverVersion >= ApiServerVersion.CASH_QTY Then
-                .CashQty = Await reader.GetNullableDoubleAsync("Cash Qty")
+                .CashQuantity = Await reader.GetNullableDoubleAsync("Cash Qty")
             End If
 
             If serverVersion >= ApiServerVersion.AUTO_PRICE_FOR_HEDGE Then
@@ -361,14 +361,14 @@ Friend Class OrderParser
                 If orderPhase = OrderPhase.Completed Then
                 .AutoCancelDate = Await reader.GetStringAsync("AutoCancelDate")
                 .FilledQuantity = Await reader.GetNullableDecimalAsync("FilledQuantity")
-                .RefFuturesConId = Await reader.GetIntAsync("RefFuturesConId")
+                .ReferenceFutureContractId = Await reader.GetIntAsync("RefFuturesConId")
                 '                If serverVersion >= ApiServerVersion.AUTO_CANCEL_PARENT Then
                 .AutoCancelParent = Await reader.GetBoolFromIntAsync("AutoCancelParent")
                 '                End If
                 .Shareholder = Await reader.GetStringAsync("Shareholder")
                 .ImbalanceOnly = Await reader.GetBoolFromIntAsync("ImbalanceOnly")
                 .RouteMarketableToBbo = Await reader.GetBoolFromIntAsync("RouteMarketableToBbo")
-                .ParentPermId = Await reader.GetNullableLongAsync("ParentPermId")
+                .ParentPermanentId = Await reader.GetNullableLongAsync("ParentPermId")
                 orderState.CompletedTime = Await reader.GetStringAsync("CompletedTime")
                 orderState.CompletedStatus = Await reader.GetStringAsync("CompletedStatus")
             End If

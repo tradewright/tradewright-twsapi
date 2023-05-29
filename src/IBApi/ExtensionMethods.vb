@@ -27,8 +27,9 @@
 Imports TradeWright.IBAPI.ApiException
 
 Imports System.Runtime.CompilerServices
+Imports System.Globalization
 
-Module ExtensionMethods
+Public Module ExtensionMethods
 
     <Extension()>
     Friend Function CreateMessageGenerator(socketHandler As SocketHandler, useV100Plus As Boolean, generateSocketDataEvents As Boolean) As MessageGenerator
@@ -62,19 +63,63 @@ Module ExtensionMethods
 
         If messageWriter.GenerateSocketDataEvents Then socketDataConsumer?.NotifySocketOutputMessage(New ApiMessageEventArgs(messageWriter.MessageAsStructuredString))
 
-        Dim s = ""
         If IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.HighDetail) Or
             (messageWriter.GenerateSocketDataEvents And socketDataConsumer IsNot Nothing) Then
-            s = messageWriter.MessageAsPrintableBytes
+            Dim s = messageWriter.MessageAsPrintableBytes
+            If IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.HighDetail) Then IBAPI.SocketLogger.Log(s, pLogLevel:=ILogger.LogLevel.HighDetail)
+            If messageWriter.GenerateSocketDataEvents Then socketDataConsumer?.NotifySocketOutputData(New SocketDataEventArgs(s))
         End If
-        If IBAPI.SocketLogger.IsLoggable(ILogger.LogLevel.HighDetail) Then IBAPI.SocketLogger.Log(s, pLogLevel:=ILogger.LogLevel.HighDetail)
-        If messageWriter.GenerateSocketDataEvents Then socketDataConsumer?.NotifySocketOutputData(New SocketDataEventArgs(s))
     End Sub
 
     <Extension()>
+    Public Function NullableDecimalFromString(val As String) As Decimal?
+        Dim result As Decimal?
+        If Not String.IsNullOrWhiteSpace(val) Then result = Decimal.Parse(val, CultureInfo.InvariantCulture)
+        Return result
+    End Function
+
+    <Extension()>
+    Public Function NullableDecimalToString(val As Decimal?, Optional defaultValue As String = Nothing) As String
+        If defaultValue Is Nothing Then defaultValue = String.Empty
+        Return If(val.HasValue, val.Value.ToString(CultureInfo.InvariantCulture), defaultValue)
+    End Function
+
+    <Extension()>
+    Public Function NullableDoubleFromString(val As String) As Double?
+        Dim result As Double?
+        If Not String.IsNullOrWhiteSpace(val) Then result = Double.Parse(val, CultureInfo.InvariantCulture)
+        Return result
+    End Function
+
+    <Extension()>
+    Public Function NullableDoubleToString(val As Double?, Optional defaultValue As String = Nothing) As String
+        If defaultValue Is Nothing Then defaultValue = String.Empty
+        Return If(val.HasValue, val.Value.ToString(CultureInfo.InvariantCulture), defaultValue)
+    End Function
+
+    <Extension()>
+    Public Function NullableIntegerFromString(val As String) As Integer?
+        Dim result As Integer?
+        If Not String.IsNullOrWhiteSpace(val) Then result = Integer.Parse(val, CultureInfo.InvariantCulture)
+        Return result
+    End Function
+
+    <Extension()>
+    Public Function NullableIntegerToString(val As Integer?, Optional defaultValue As String = Nothing) As String
+        If defaultValue Is Nothing Then defaultValue = String.Empty
+        Return If(val.HasValue, val.Value.ToString(CultureInfo.InvariantCulture), defaultValue)
+    End Function
+
+    '<Extension()>
+    'Public Function ToExternalString(Of TClass As ExtendedEnum(Of UClass as Class, TEnum As {Structure, IConvertible, UClass}))(val As TEnum, extEnum As TClass) As String
+
+    'End Function
+
+    <Extension()>
     Friend Sub SendMessage(writer As MessageGenerator, socketDataConsumer As ISocketDataConsumer, Optional ignoreLogLevel As Boolean = False)
-        writer.Send()
+        writer.prepareOutputMessage()
         writer.LogSocketOutputMessage(socketDataConsumer, ignoreLogLevel)
+        writer.Send()
     End Sub
 
 End Module

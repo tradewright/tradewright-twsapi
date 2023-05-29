@@ -35,7 +35,7 @@ Friend NotInheritable Class DeltaNeutralValidationParser
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim reqId = Await _Reader.GetIntAsync("ReqID")
 
-        Dim underComp = New DeltaNeutralContract() With {.ConId = Await _Reader.GetIntAsync("ConID"),
+        Dim underComp = New DeltaNeutralContract() With {.ContractId = Await _Reader.GetIntAsync("ContractId"),
                                                 .Delta = Await _Reader.GetDoubleAsync("Delta"),
                                                 .Price = Await _Reader.GetDoubleAsync("Price")}
 

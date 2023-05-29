@@ -28,7 +28,7 @@ Friend Class RequestHistoricalNewsGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, options As List(Of TagValue))
+    Private Delegate Sub ApiMethodDelegate(requestId As Integer, contractId as integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, options As List(Of TagValue))
 
     Private Const ModuleName As String = NameOf(RequestHistoricalNewsGenerator)
 
@@ -44,7 +44,7 @@ Friend Class RequestHistoricalNewsGenerator
         End Get
     End Property
 
-    Private Sub requestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, options As List(Of TagValue))
+    Private Sub requestHistoricalNews(requestId As Integer, contractId as integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, options As List(Of TagValue))
 
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
@@ -54,7 +54,7 @@ Friend Class RequestHistoricalNewsGenerator
         StartMessage(lWriter, MessageType)
 
         lWriter.AddInteger(requestId, "Request ID")
-        lWriter.AddInteger(conid, "Conid")
+        lWriter.AddInteger(contractId,"ContractId")
         lWriter.AddString(providerCodes, "Provider Codes")
 
         Const DateFormat As String = "yyyy-MM-dd HH:mm:ss.0"

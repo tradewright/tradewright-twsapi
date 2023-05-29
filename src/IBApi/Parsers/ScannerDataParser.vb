@@ -42,13 +42,13 @@ Friend NotInheritable Class ScannerDataParser
             Dim contractDetails = New ContractDetails
             contractDetails.Summary = contract
 
-            If (pVersion >= 3) Then contract.ConId = Await _Reader.GetIntAsync("ConId")
+            If (pVersion >= 3) Then contract.ContractId = Await _Reader.GetIntAsync("ContractId")
 
             contract.Symbol = Await _Reader.GetStringAsync("Symbol")
-            contract.SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
+            contract.SecurityType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
             contract.Expiry = Await _Reader.GetStringAsync("Expiry")
             contract.Strike = Await _Reader.GetDoubleAsync("Strike")
-            contract.OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
+            contract.OptionRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
             contract.Exchange = Await _Reader.GetStringAsync("Exchange")
             contract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
             contract.LocalSymbol = Await _Reader.GetStringAsync("Local Symbol")

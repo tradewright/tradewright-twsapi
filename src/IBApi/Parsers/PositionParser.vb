@@ -35,12 +35,12 @@ Friend NotInheritable Class PositionParser
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim lAccount = Await _Reader.GetStringAsync("Account")
         Dim lContract As New Contract With {
-            .ConId = Await _Reader.GetIntAsync("Contract id"),
+            .ContractId = Await _Reader.GetIntAsync("Contract id"),
             .Symbol = Await _Reader.GetStringAsync("Symbol"),
-            .SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("SecType")),
+            .SecurityType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("SecType")),
             .Expiry = Await _Reader.GetStringAsync("Expiry"),
             .Strike = Await _Reader.GetDoubleAsync("Strike"),
-            .OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right")),
+            .OptionRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right")),
             .Multiplier = Await _Reader.GetDoubleAsync("Multiplier"),
             .Exchange = Await _Reader.GetStringAsync("Exchange"),
             .CurrencyCode = Await _Reader.GetStringAsync("Currency"),

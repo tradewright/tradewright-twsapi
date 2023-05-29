@@ -166,6 +166,10 @@ Public Class QueueingCallbackHandler
         queueEvent(e, AddressOf mEv.NotifySoftDollarTiers)
     End Sub
 
+    Public Overrides Sub NotifyUserInformation(e As UserInformationEventArgs) Implements IAccountDataConsumer.NotifyUserInformation
+        queueEvent(e, AddressOf mEv.NotifyUserInformation)
+    End Sub
+
 #End Region
 
 #Region "IConnectionStatusConsumer"

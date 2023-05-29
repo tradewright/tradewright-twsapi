@@ -28,7 +28,7 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
+    Private Delegate Sub ApiMethodDelegate(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingContractId as integer)
 
     Private Const ModuleName As String = NameOf(RequestSecurityDefinitionOptionParamsGenerator)
 
@@ -44,7 +44,7 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
         End Get
     End Property
 
-    Private Sub requestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
+    Private Sub requestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingContractId as integer)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.SEC_DEF_OPT_PARAMS_REQ Then Throw New InvalidOperationException("Security definition option parameters requests not supported")
 
@@ -55,7 +55,7 @@ Friend Class RequestSecurityDefinitionOptionParamsGenerator
         lWriter.AddString(underlyingSymbol, "Underlying Symbol")
         lWriter.AddString(exchange, "Exchange")
         lWriter.AddString(IBAPI.SecurityTypes.ToInternalString(underlyingSecType), "Underlying SecType")
-        lWriter.AddInteger(underlyingConId, "Underlying ConId")
+        lWriter.AddInteger(underlyingContractId,"Underlying ContractId")
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

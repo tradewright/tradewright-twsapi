@@ -28,11 +28,11 @@ Public Class TickSizeEventArgs
     Inherits AbstractEventArgsWithTimestamp
     Public Property Field As TickType
 
-    Public Property Size As Long
+    Public Property Size As Decimal
 
     Public Property TickerId As Integer
 
-    Public Sub New(timestamp As DateTime, tickerId As Integer, field As TickType, size As Long)
+    Public Sub New(timestamp As DateTime, tickerId As Integer, field As TickType, size As Decimal)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.TickerId = tickerId

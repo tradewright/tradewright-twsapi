@@ -26,17 +26,17 @@
 
 Public Class RerouteDataEventArgs
     Inherits AbstractEventArgsWithTimestamp
-    Public Property ConId As Integer
+    Public Property contractId as integer
 
     Public Property Exchange As String
 
     Public Property RequestId As Integer
 
-    Public Sub New(timestamp As DateTime, requestId As Integer, conId As Integer, exchange As String)
+    Public Sub New(timestamp As DateTime, requestId As Integer, contractId as integer, exchange As String)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = requestId
-        Me.ConId = conId
+        Me.ContractId = ContractId
         Me.Exchange = exchange
     End Sub
 End Class

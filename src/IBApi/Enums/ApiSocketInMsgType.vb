@@ -109,6 +109,8 @@ Public Enum ApiSocketInMsgType
     ReplaceFAEnd = 103
     WshMetaData = 104
     WshEventData = 105
+    HistoricalSchedule = 106
+    UserInformation = 107
 
     Max
 End Enum

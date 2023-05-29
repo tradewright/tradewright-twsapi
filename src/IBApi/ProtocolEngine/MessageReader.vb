@@ -83,7 +83,7 @@ Friend NotInheritable Class MessageReader
 
     Friend Async Function GetBoolFromIntAsync(fieldName As String) As Task(Of Boolean)
         Dim str = Await GetStringAsync(fieldName)
-        Return Not String.IsNullOrEmpty(str) AndAlso Integer.Parse(str) <> 0
+        Return Not String.IsNullOrEmpty(str) AndAlso Integer.Parse(str, NumberFormatInfo.InvariantInfo) <> 0
     End Function
 
     Friend Async Function GetCharAsync(fieldName As String) As Task(Of Char)
@@ -93,7 +93,7 @@ Friend NotInheritable Class MessageReader
 
     Friend Async Function GetDecimalAsync(fieldName As String) As Task(Of Decimal)
         Dim s = Await GetStringAsync(fieldName)
-        Return If(Not String.IsNullOrEmpty(s), Decimal.Parse(s), 0)
+        Return If(Not String.IsNullOrEmpty(s), Decimal.Parse(s, NumberFormatInfo.InvariantInfo), 0)
     End Function
 
     Friend Async Function GetDoubleAsync(fieldName As String) As Task(Of Double)
@@ -103,12 +103,12 @@ Friend NotInheritable Class MessageReader
 
     Friend Async Function GetIntAsync(fieldName As String) As Task(Of Integer)
         Dim s = Await GetStringAsync(fieldName)
-        Return If(Not String.IsNullOrEmpty(s), Integer.Parse(s), 0)
+        Return If(Not String.IsNullOrEmpty(s), Integer.Parse(s, NumberFormatInfo.InvariantInfo), 0)
     End Function
 
     Friend Async Function GetLongAsync(fieldName As String) As Task(Of Long)
         Dim s = Await GetStringAsync(fieldName)
-        Return If(Not String.IsNullOrEmpty(s), Long.Parse(s), CLng(0))
+        Return If(Not String.IsNullOrEmpty(s), Long.Parse(s, NumberFormatInfo.InvariantInfo), CLng(0))
     End Function
 
     Friend Async Function GetNullableDecimalAsync(fieldName As String) As Task(Of Decimal?)
@@ -127,14 +127,14 @@ Friend NotInheritable Class MessageReader
 
     Friend Async Function GetNullableIntAsync(fieldName As String) As Task(Of Integer?)
         Dim s = Await GetStringAsync(fieldName)
-        Dim result? = If(String.IsNullOrEmpty(s), Nothing, Integer.Parse(s))
+        Dim result? = If(String.IsNullOrEmpty(s), Nothing, Integer.Parse(s, NumberFormatInfo.InvariantInfo))
         If result.HasValue And result.Value = Integer.MaxValue Then result = Nothing
         Return result
     End Function
 
     Friend Async Function GetNullableLongAsync(fieldName As String) As Task(Of Long?)
         Dim s = Await GetStringAsync(fieldName)
-        Dim result? = If(String.IsNullOrEmpty(s), Nothing, Long.Parse(s))
+        Dim result? = If(String.IsNullOrEmpty(s), Nothing, Long.Parse(s, NumberFormatInfo.InvariantInfo))
         If result.HasValue And result.Value = Long.MaxValue Then result = Nothing
         Return result
     End Function

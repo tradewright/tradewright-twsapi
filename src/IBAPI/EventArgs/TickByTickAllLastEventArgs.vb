@@ -31,12 +31,12 @@ Public Class TickByTickAllLastEventArgs
     Public ReadOnly Property DataType As TickByTickDataType
     Public ReadOnly Property Time As Date
     Public ReadOnly Property Price As Double
-    Public ReadOnly Property Size As Long
+    Public ReadOnly Property Size As Decimal
     Public ReadOnly Property Attributes As TickAttributes
     Public ReadOnly Property Exchange As String
     Public ReadOnly Property SpecialConditions As String
 
-    Public Sub New(timestamp As DateTime, reqId As Integer, tickType As TickByTickDataType, time As Date, price As Double, size As Long, attributes As TickAttributes, exchange As String, specialConditions As String)
+    Public Sub New(timestamp As DateTime, reqId As Integer, tickType As TickByTickDataType, time As Date, price As Double, size As Decimal, attributes As TickAttributes, exchange As String, specialConditions As String)
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = reqId

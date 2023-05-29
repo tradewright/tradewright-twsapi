@@ -24,6 +24,7 @@
 
 #End Region
 
+Imports System.Reflection
 Imports TradeWright.IBAPI.ApiException
 
 Friend NotInheritable Class GeneratorAndParserRegistry
@@ -58,6 +59,10 @@ Friend NotInheritable Class GeneratorAndParserRegistry
     Friend Sub InvokeGenerator(messageType As ApiSocketOutMsgType, params() As Object)
         Try
             getGeneratorDelegate(messageType).DynamicInvoke(params)
+        Catch e As TargetInvocationException
+            IBAPI.EventLogger.Log($"An exception occurred while processing an API request: {IBAPI.ApiSocketOutMsgTypes.ToExternalString(messageType)}{vbCrLf}{e}", NameOf(GeneratorAndParserRegistry), NameOf(InvokeGenerator), ILogger.LogLevel.Severe)
+            mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
+            Throw
         Catch e As ApiApplicationException
             IBAPI.EventLogger.Log($"An exception occurred while processing an API request: {IBAPI.ApiSocketOutMsgTypes.ToExternalString(messageType)}{vbCrLf}{e}", NameOf(GeneratorAndParserRegistry), NameOf(InvokeGenerator), ILogger.LogLevel.Severe)
             mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))

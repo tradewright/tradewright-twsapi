@@ -120,6 +120,10 @@ Public MustInherit Class CallbackHandler
         ' no action
     End Sub
 
+    Public Overridable Sub NotifyUserInformation(e As UserInformationEventArgs) Implements IAccountDataConsumer.NotifyUserInformation
+        ' no action
+    End Sub
+
 #End Region
 
 #Region "IConnectionStatusConsumer"
@@ -265,6 +269,11 @@ Public MustInherit Class CallbackHandler
     Public Overridable Sub NotifyHistoricalMidpoint(e As HistoricalMidpointEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalMidpoint
         ' no action
     End Sub
+
+    Public Overridable Sub NotifyHistoricalSchedule(e As HistoricalScheduleEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalSchedule
+        ' no action
+    End Sub
+
 
     Public Overridable Sub NotifyHistoricalTrade(e As HistoricalTradeEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalTrade
         ' no action
@@ -497,6 +506,7 @@ Public MustInherit Class CallbackHandler
     Public Overridable Sub NotifySocketOutputMessage(e As ApiMessageEventArgs) Implements ISocketDataConsumer.NotifySocketOutputMessage
         ' no action
     End Sub
+
 
 #End Region
 

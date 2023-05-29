@@ -25,6 +25,7 @@
 #End Region
 
 Imports System.Collections.Generic
+Imports System.Globalization
 Imports System.Linq
 Imports System.Reflection
 Imports System.Threading
@@ -34,7 +35,7 @@ Imports System.Threading.Tasks
 ''' This class provides the Application Programming Interface to Interactive Brokers' 
 ''' Trader Workstation and Gateway products.
 ''' 
-''' Updated to IB commit 964800d27f534ed78b53b82c7fd97ff59fe40691 on 27/10/2021
+''' Updated to IB commit 6a134a32f449a3ed35a45ace35e92227566fb2c7 on 24/01/2022
 ''' 
 ''' </summary>
 Public Class IBAPI
@@ -51,7 +52,7 @@ Public Class IBAPI
 #End Region
 
 #Region "Extended Enums"
-    Public Shared ReadOnly AccountSummaryValues As New ExtendedEnum(Of System.Enum, AccountSummaryValue)(
+    Public Shared ReadOnly AccountSummaryValues As New ExtendedEnum(Of [Enum], AccountSummaryValue)(
     {
         ("AccountType", AccountSummaryValue.AccountType, EnumNameType.Both),
         ("NetLiquidation", AccountSummaryValue.NetLiquidation, EnumNameType.Both),
@@ -85,7 +86,7 @@ Public Class IBAPI
     })
 
 
-    Public Shared ReadOnly ApiLogLevels As New ExtendedEnum(Of System.Enum, ApiLogLevel)(
+    Public Shared ReadOnly ApiLogLevels As New ExtendedEnum(Of [Enum], ApiLogLevel)(
         {
             ("System", ApiLogLevel.System, EnumNameType.Both),
             ("Error", ApiLogLevel.Error, EnumNameType.Both),
@@ -94,7 +95,7 @@ Public Class IBAPI
             ("Detail", ApiLogLevel.Detail, EnumNameType.Both)
         })
 
-    Friend Shared ReadOnly ApiSocketInMsgTypes As New ExtendedEnum(Of System.Enum, ApiSocketInMsgType)(
+    Friend Shared ReadOnly ApiSocketInMsgTypes As New ExtendedEnum(Of [Enum], ApiSocketInMsgType)(
         {
             ("TickPrice", ApiSocketInMsgType.TickPrice, EnumNameType.Both),
             ("TickSize", ApiSocketInMsgType.TickSize, EnumNameType.Both),
@@ -166,16 +167,21 @@ Public Class IBAPI
             ("MarketRule", ApiSocketInMsgType.MarketRule, EnumNameType.Both),
             ("PnL", ApiSocketInMsgType.PnL, EnumNameType.Both),
             ("PnLSingle", ApiSocketInMsgType.PnLSingle, EnumNameType.Both),
-            ("HistoricalTickMidpoint", ApiSocketInMsgType.HistoricalTickMidpoint, EnumNameType.Both),
+            ("HistoricalTick", ApiSocketInMsgType.HistoricalTickMidpoint, EnumNameType.Both),
             ("HistoricalTickBidAsk", ApiSocketInMsgType.HistoricalTickBidAsk, EnumNameType.Both),
             ("HistoricalTickLast", ApiSocketInMsgType.HistoricalTickLast, EnumNameType.Both),
             ("TickByTick", ApiSocketInMsgType.TickByTick, EnumNameType.Both),
             ("OrderBound", ApiSocketInMsgType.OrderBound, EnumNameType.Both),
             ("CompletedOrder", ApiSocketInMsgType.CompletedOrder, EnumNameType.Both),
-            ("CompletedOrdersEnd", ApiSocketInMsgType.CompletedOrdersEnd, EnumNameType.Both)
+            ("CompletedOrdersEnd", ApiSocketInMsgType.CompletedOrdersEnd, EnumNameType.Both),
+            ("ReplaceFAEnd", ApiSocketInMsgType.ReplaceFAEnd, EnumNameType.Both),
+            ("WshMetaData", ApiSocketInMsgType.WshMetaData, EnumNameType.Both),
+            ("WshEventData", ApiSocketInMsgType.WshEventData, EnumNameType.Both),
+            ("HistoricalSchedule", ApiSocketInMsgType.HistoricalSchedule, EnumNameType.Both),
+            ("UserInformation", ApiSocketInMsgType.UserInformation, EnumNameType.Both)
         })
 
-    Friend Shared ReadOnly ApiSocketOutMsgTypes As New ExtendedEnum(Of System.Enum, ApiSocketOutMsgType)(
+    Friend Shared ReadOnly ApiSocketOutMsgTypes As New ExtendedEnum(Of [Enum], ApiSocketOutMsgType)(
         {
             ("REQ_MKT_DATA", ApiSocketOutMsgType.RequestMarketData, EnumNameType.Both),
             ("CANCEL_MKT_DATA", ApiSocketOutMsgType.CancelMarketData, EnumNameType.Both),
@@ -255,10 +261,11 @@ Public Class IBAPI
             ("RequestWshMetaData", ApiSocketOutMsgType.RequestWshMetaData, EnumNameType.Both),
             ("CancelWshMetaData", ApiSocketOutMsgType.CancelWshMetaData, EnumNameType.Both),
             ("RequestWshEventData", ApiSocketOutMsgType.RequestWshEventData, EnumNameType.Both),
-            ("CancelWshEventData", ApiSocketOutMsgType.CancelWshEventData, EnumNameType.Both)
+            ("CancelWshEventData", ApiSocketOutMsgType.CancelWshEventData, EnumNameType.Both),
+            ("RequestUserInformation", ApiSocketOutMsgType.RequestUserInformation, EnumNameType.Both)
             })
 
-    Public Shared ReadOnly HedgeTypes As New ExtendedEnum(Of System.Enum, HedgeType)({
+    Public Shared ReadOnly HedgeTypes As New ExtendedEnum(Of [Enum], HedgeType)({
             ("D", HedgeType.Delta, EnumNameType.Internal),
             ("Delta", HedgeType.Delta, EnumNameType.External),
             ("B", HedgeType.Beta, EnumNameType.Internal),
@@ -271,14 +278,14 @@ Public Class IBAPI
             ("*None*", HedgeType.None, EnumNameType.External)
         })
 
-    Public Shared ReadOnly LiquidityTypes As New ExtendedEnum(Of System.Enum, LiquidityType)({
+    Public Shared ReadOnly LiquidityTypes As New ExtendedEnum(Of [Enum], LiquidityType)({
             ("", LiquidityType.None, EnumNameType.Internal),
             ("Added Liquidity", LiquidityType.AddedLiquidity, EnumNameType.Both),
             ("Removed Liquidity", LiquidityType.RemovedLiquidity, EnumNameType.Both),
             ("Liquidity Routed Out", LiquidityType.LiquidityRoutedOut, EnumNameType.Both)
         })
 
-    Public Shared ReadOnly OcaTypes As New ExtendedEnum(Of System.Enum, OcaType)({
+    Public Shared ReadOnly OcaTypes As New ExtendedEnum(Of [Enum], OcaType)({
             ("", OcaType.None, EnumNameType.Alias),
             ("*None*", OcaType.None, EnumNameType.NonAliasExternal),
             ("CancelWithBlock", OcaType.CancelWithBlock, EnumNameType.Both),
@@ -286,7 +293,7 @@ Public Class IBAPI
             ("ReduceNonBlock", OcaType.ReduceNonBlock, EnumNameType.Both)
         })
 
-    Public Shared ReadOnly OptionRights As New ExtendedEnum(Of System.Enum, OptionRight)({
+    Public Shared ReadOnly OptionRights As New ExtendedEnum(Of [Enum], OptionRight)({
             ("", OptionRight.None, EnumNameType.Internal),
             ("0", OptionRight.None, EnumNameType.Alias),    ' PortfolioValue messages seem to use this 
             ("*None*", OptionRight.None, EnumNameType.NonAliasExternal),
@@ -297,7 +304,7 @@ Public Class IBAPI
             ("P", OptionRight.Put, EnumNameType.Internal)
     })
 
-    Public Shared ReadOnly OrderActions As New ExtendedEnum(Of System.Enum, OrderAction)(
+    Public Shared ReadOnly OrderActions As New ExtendedEnum(Of [Enum], OrderAction)(
         {
             ("Buy", OrderAction.Buy, EnumNameType.External),
             ("BUY", OrderAction.Buy, EnumNameType.Internal),
@@ -309,7 +316,7 @@ Public Class IBAPI
             ("*None*", OrderAction.None, EnumNameType.NonAliasExternal)
         })
 
-    Public Shared ReadOnly OrderTIFs As New ExtendedEnum(Of System.Enum, OrderTimeInForce)(
+    Public Shared ReadOnly OrderTIFs As New ExtendedEnum(Of [Enum], OrderTimeInForce)(
         {
             ("", OrderTimeInForce.None, EnumNameType.Internal),
             ("*None*", OrderTimeInForce.None, EnumNameType.NonAliasExternal),
@@ -317,8 +324,8 @@ Public Class IBAPI
             ("DAY", OrderTimeInForce.Day, EnumNameType.Internal),
             ("Good Till Cancelled", OrderTimeInForce.GoodTillCancelled, EnumNameType.External),
             ("GTC", OrderTimeInForce.GoodTillCancelled, EnumNameType.Internal),
-            ("Good Till Date", OrderTimeInForce.GoodTillDate, EnumNameType.External),
-            ("GTD", OrderTimeInForce.GoodTillDate, EnumNameType.Internal),
+            ("Good Till Date", OrderTimeInForce.GoodTillDAte, EnumNameType.External),
+            ("GTD", OrderTimeInForce.GoodTillDAte, EnumNameType.Internal),
             ("Immediate or Cancel", OrderTimeInForce.ImmediateOrCancel, EnumNameType.External),
             ("IOC", OrderTimeInForce.ImmediateOrCancel, EnumNameType.Internal),
             ("Market Open", OrderTimeInForce.MarketOpen, EnumNameType.External),
@@ -329,7 +336,7 @@ Public Class IBAPI
             ("DTC", OrderTimeInForce.DayTillCancelled, EnumNameType.Internal)
         })
 
-    Public Shared ReadOnly OrderTypes As New ExtendedEnum(Of System.Enum, OrderType)(
+    Public Shared ReadOnly OrderTypes As New ExtendedEnum(Of [Enum], OrderType)(
         {
             ("", OrderType.None, EnumNameType.Internal),
             ("None", OrderType.None, EnumNameType.Alias),
@@ -362,7 +369,7 @@ Public Class IBAPI
             ("PEG BENCH", OrderType.PeggedToBenchmark, EnumNameType.Both)
         })
 
-    Public Shared ReadOnly SecurityTypes As New ExtendedEnum(Of System.Enum, SecurityType)(
+    Public Shared ReadOnly SecurityTypes As New ExtendedEnum(Of [Enum], SecurityType)(
         {
             ("Bond", SecurityType.Bond, EnumNameType.External),
             ("BOND", SecurityType.Bond, EnumNameType.Internal),
@@ -400,7 +407,7 @@ Public Class IBAPI
             ("Contract for Difference", SecurityType.ContractForDifference, EnumNameType.Alias)
         })
 
-    Public Shared ReadOnly ShortSaleSlotCodes As New ExtendedEnum(Of System.Enum, ShortSaleSlotCode)(
+    Public Shared ReadOnly ShortSaleSlotCodes As New ExtendedEnum(Of [Enum], ShortSaleSlotCode)(
         {
             ("", ShortSaleSlotCode.NotApplicable, EnumNameType.Internal),
             ("N/A", ShortSaleSlotCode.NotApplicable, EnumNameType.External),
@@ -414,7 +421,7 @@ Public Class IBAPI
             ("THIRD PARTY", ShortSaleSlotCode.ThirdParty, EnumNameType.Alias)
         })
 
-    Public Shared ReadOnly TickByTickDataTypes As New ExtendedEnum(Of System.Enum, TickByTickDataType)(
+    Public Shared ReadOnly TickByTickDataTypes As New ExtendedEnum(Of [Enum], TickByTickDataType)(
         {
         ("", TickByTickDataType.None, EnumNameType.Both),
         ("Last", TickByTickDataType.Last, EnumNameType.Both),
@@ -426,7 +433,7 @@ Public Class IBAPI
         ("Midpoint", TickByTickDataType.MidPoint, EnumNameType.Alias)
         })
 
-    Public Shared ReadOnly TriggerMethods As New ExtendedEnum(Of System.Enum, TriggerMethod)(
+    Public Shared ReadOnly TriggerMethods As New ExtendedEnum(Of [Enum], TriggerMethod)(
         {
         ("Default", TriggerMethod.Default, EnumNameType.Both),
         ("Double Bid/Ask", TriggerMethod.DoubleBidAsk, EnumNameType.Both),
@@ -704,7 +711,7 @@ Public Class IBAPI
         End Set
     End Property
 
-    Public Property HistDataConsumer() As IHistoricalDataConsumer
+    Public Property HistoricalDataConsumer() As IHistoricalDataConsumer
         Get
             Return mEventConsumers.HistoricalDataConsumer
         End Get
@@ -770,10 +777,6 @@ Public Class IBAPI
     End Property
 
     Public ReadOnly Property Port() As Integer
-        Get
-            Port = mPort
-        End Get
-    End Property
 
     Public Property ScannerDataConsumer() As IScannerDataConsumer
         Get
@@ -794,10 +797,6 @@ Public Class IBAPI
     End Property
 
     Public ReadOnly Property Server() As String
-        Get
-            Server = mServer
-        End Get
-    End Property
 
     Public ReadOnly Property ServerVersion() As Integer
         Get
@@ -843,7 +842,7 @@ Public Class IBAPI
     End Function
 
     Public Shared Function IsContractExpirable(pContract As Contract) As Boolean
-        Select Case pContract.SecType
+        Select Case pContract.SecurityType
             Case SecurityType.Future,
                     SecurityType.Option,
                     SecurityType.FuturesOption,
@@ -870,24 +869,46 @@ Public Class IBAPI
         Return True
     End Function
 
+    Public Shared Function NullableDecimalFromString(val As String) As Decimal?
+        Dim result As Decimal?
+        If Not String.IsNullOrWhiteSpace(val) Then result = Decimal.Parse(val, CultureInfo.InvariantCulture)
+        Return result
+    End Function
+
     Public Shared Function NullableDoubleFromString(val As String) As Double?
         Dim result As Double?
-        If Not String.IsNullOrWhiteSpace(val) Then result = CDbl(val)
+        If Not String.IsNullOrWhiteSpace(val) Then result = Double.Parse(val, CultureInfo.InvariantCulture)
         Return result
     End Function
 
     Public Shared Function NullableIntegerFromString(val As String) As Integer?
         Dim result As Integer?
-        If Not String.IsNullOrWhiteSpace(val) Then result = CInt(val)
+        If Not String.IsNullOrWhiteSpace(val) Then result = Integer.Parse(val, CultureInfo.InvariantCulture)
         Return result
     End Function
 
-    Public Shared Function NullableToString(Of T As Structure)(val As T?) As String
-        Return NullableToString(val, "")
+    Public Shared Function NullableDecimalToString(val As Decimal?) As String
+        Return NullableDecimalToString(val, "")
     End Function
 
-    Public Shared Function NullableToString(Of T As Structure)(val As T?, defaultValue As String) As String
-        Return If(val.HasValue, val.Value.ToString(), defaultValue)
+    Public Shared Function NullableDecimalToString(val As Decimal?, defaultValue As String) As String
+        Return If(val.HasValue, val.Value.ToString(CultureInfo.InvariantCulture), defaultValue)
+    End Function
+
+    Public Shared Function NullableDoubleToString(val As Double?) As String
+        Return NullableDoubleToString(val, "")
+    End Function
+
+    Public Shared Function NullableDoubleToString(val As Double?, defaultValue As String) As String
+        Return If(val.HasValue, val.Value.ToString(CultureInfo.InvariantCulture), defaultValue)
+    End Function
+
+    Public Shared Function NullableIntegerToString(val As Integer?) As String
+        Return NullableIntegerToString(val, "")
+    End Function
+
+    Public Shared Function NullableIntegerToString(val As Integer?, defaultValue As String) As String
+        Return If(val.HasValue, val.Value.ToString(CultureInfo.InvariantCulture), defaultValue)
     End Function
 
     Public Shared Function TwsDateStringToDate(pDateString As String) As (theDate As Date, timezoneName As String)
@@ -1125,8 +1146,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalBars, {requestId, request, useRTH, keepUpToDate, options})
     End Sub
 
-    Public Sub RequestHistoricalNews(requestId As Integer, conid As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, Optional options As List(Of TagValue) = Nothing)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalNews, {requestId, conid, providerCodes, startTime, endTime, maxResults, options})
+    Public Sub RequestHistoricalNews(requestId As Integer, contractId As Integer, providerCodes As String, startTime As Date, endTime As Date, maxResults As Integer, Optional options As List(Of TagValue) = Nothing)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestHistoricalNews, {requestId, contractId, providerCodes, startTime, endTime, maxResults, options})
     End Sub
 
     ''' <summary>
@@ -1193,8 +1214,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestPnL, {requestId, account, modelCode})
     End Sub
 
-    Public Sub RequestPnLSingle(requestId As Integer, account As String, modelCode As String, conId As Integer)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestPnLSingle, {requestId, account, modelCode, conId})
+    Public Sub RequestPnLSingle(requestId As Integer, account As String, modelCode As String, contractId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestPnLSingle, {requestId, account, modelCode, contractId})
     End Sub
 
     Public Sub RequestPositions()
@@ -1217,8 +1238,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestScannerSubscription, {requestId, pSubscription, options, filterOptions})
     End Sub
 
-    Public Sub RequestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingConId As Integer)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestSecurityDefinitionOptionParameters, {requestId, underlyingSymbol, exchange, underlyingSecType, underlyingConId})
+    Public Sub RequestSecurityDefinitionOptionParams(requestId As Integer, underlyingSymbol As String, exchange As String, underlyingSecType As SecurityType, underlyingContractId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestSecurityDefinitionOptionParameters, {requestId, underlyingSymbol, exchange, underlyingSecType, underlyingContractId})
     End Sub
 
     Public Sub RequestSmartComponents(requestId As Integer, bboExchange As String)
@@ -1233,8 +1254,12 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestTickByTickData, {requestId, contract, tickType, numberOfTicks, ignoreSize})
     End Sub
 
+    Public Sub RequestUserInformation(requestId As Integer)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestUserInformation, {requestId})
+    End Sub
+
     Public Sub RequestWshEventData(requestId As Integer, contractId As Integer)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestWshEventData, {requestId})
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestWshEventData, {contractId, requestId})
     End Sub
 
     Public Sub RequestWshMetaData(requestId As Integer)
@@ -1312,7 +1337,7 @@ Public Class IBAPI
         Me.ContractDetailsConsumer = handler
         Me.ErrorAndNotificationConsumer = handler
         Me.FundamentalDataConsumer = handler
-        Me.HistDataConsumer = handler
+        Me.HistoricalDataConsumer = handler
         Me.MarketDataConsumer = handler
         Me.MarketDepthConsumer = handler
         Me.NewsConsumer = handler

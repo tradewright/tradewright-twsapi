@@ -204,6 +204,9 @@ Friend Class InputMessageHandler
         If messageId = ApiSocketInMsgType.OrderStatus And mServerVersion >= ApiServerVersion.MARKET_CAP_PRICE Then Return False
         If messageId = ApiSocketInMsgType.OpenOrder And mServerVersion >= ApiServerVersion.ORDER_CONTAINER Then Return False
         If messageId = ApiSocketInMsgType.TickOptionComputation And mServerVersion >= ApiServerVersion.PRICE_BASED_VOLATILITY Then Return False
+        If messageId = ApiSocketInMsgType.BondContractData And mServerVersion >= ApiServerVersion.SIZE_RULES Then Return False
+        If messageId = ApiSocketInMsgType.ContractData And mServerVersion >= ApiServerVersion.SIZE_RULES Then Return False
+
         Return messageId <= ApiSocketInMsgType.MaxIdWithVersion
     End Function
 

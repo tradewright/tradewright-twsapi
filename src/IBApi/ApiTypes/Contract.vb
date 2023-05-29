@@ -57,12 +57,12 @@ Public Class Contract
     ' Member variables
     '@================================================================================
 
-    Public Property ConId As Integer
+    Public Property ContractId As Integer
     Public Property Symbol As String
-    Public Property SecType As SecurityType
+    Public Property SecurityType As SecurityType
     Public Property Expiry As String
     Public Property Strike As Double
-    Public Property OptRight As OptionRight
+    Public Property OptionRight As OptionRight
     Public Property Multiplier As Double = 1
     Public Property Exchange As String
 
@@ -106,15 +106,15 @@ Public Class Contract
     Public Overrides Function ToString() As String
         Dim sb As New System.Text.StringBuilder
 
-        addField("Con Id", CStr(ConId), sb)
+        addField("Con Id", CStr(ContractId), sb)
         addField("Local Symbol", LocalSymbol, sb)
         addField("Symbol", Symbol, sb)
-        addField("Sec Type", IBAPI.SecurityTypes.ToInternalString(SecType), sb)
+        addField("Sec Type", IBAPI.SecurityTypes.ToInternalString(SecurityType), sb)
         addField("Expiry", Expiry, sb)
         addField("Exchange", Exchange, sb)
         addField("Currency", CurrencyCode, sb)
         addField("Strike", CStr(Strike), sb)
-        addField("Right", IBAPI.OptionRights.ToExternalString(OptRight), sb)
+        addField("Right", IBAPI.OptionRights.ToExternalString(OptionRight), sb)
         addField("Multiplier", CStr(Multiplier), sb)
         addField("Primary exchange", PrimaryExch, sb)
 
@@ -124,7 +124,7 @@ Public Class Contract
             addField("Combo legs count", CStr(ComboLegs.Count), sb)
             For Each lLeg In ComboLegs
                 i += 1
-                addField("Con id " & i, CStr(lLeg.ConId), sb)
+                addField("Con id " & i, CStr(lLeg.ContractId), sb)
                 addField("Exchange " & i, lLeg.Exchange, sb)
                 addField("Action " & i, IBAPI.OrderActions.ToInternalString(lLeg.Action), sb)
                 addField("Ratio " & i, CStr(lLeg.Ratio), sb)
@@ -134,8 +134,8 @@ Public Class Contract
             Next lLeg
         End If
 
-        If DeltaNeutralContract?.ConId <> 0 Then
-            addField("Under con id", CStr(DeltaNeutralContract.ConId), sb)
+        If DeltaNeutralContract?.ContractId <> 0 Then
+            addField("Under con id", CStr(DeltaNeutralContract.ContractId), sb)
             addField("Under delta", CStr(DeltaNeutralContract.Delta), sb)
             addField("Under price", CStr(DeltaNeutralContract.Price), sb)
         End If

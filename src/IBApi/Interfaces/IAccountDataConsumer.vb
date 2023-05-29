@@ -95,6 +95,7 @@ Public Interface IAccountDataConsumer
     Sub NotifyPortfolioUpdate(e As UpdatePortfolioEventArgs)
     Sub NotifyPositionMulti(e As PositionMultiEventArgs)
     Sub NotifySoftDollarTiers(e As SoftDollarTiersEventArgs)
+    Sub NotifyUserInformation(e As UserInformationEventArgs)
 
     '@================================================================================
     ' Helper Functions

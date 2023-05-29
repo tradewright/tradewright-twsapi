@@ -26,11 +26,11 @@
 
 Imports System.Threading.Tasks
 
-Friend NotInheritable Class RealtimeBarsParser
+Friend NotInheritable Class RealtimeBarParser
     Inherits ParserBase
     Implements IParser
 
-    Private Const ModuleName As String = NameOf(RealtimeBarsParser)
+    Private Const ModuleName As String = NameOf(RealtimeBarParser)
 
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim reqId = Await _Reader.GetIntAsync("Request id")
@@ -42,8 +42,8 @@ Friend NotInheritable Class RealtimeBarsParser
             .HighValue = Await _Reader.GetDoubleAsync("High"),
             .LowValue = Await _Reader.GetDoubleAsync("Low"),
             .CloseValue = Await _Reader.GetDoubleAsync("Close"),
-            .Volume = Await _Reader.GetIntAsync("Volume"),
-            .WAP = Await _Reader.GetDoubleAsync("Wap"),
+            .Volume = Await _Reader.GetDecimalAsync("Volume"),
+            .WAP = Await _Reader.GetDecimalAsync("Wap"),
             .TickVolume = Await _Reader.GetIntAsync("Count")
         }
 

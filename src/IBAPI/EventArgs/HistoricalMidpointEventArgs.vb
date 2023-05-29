@@ -30,10 +30,10 @@ Public Class HistoricalMidpointEventArgs
     Public ReadOnly Property RequestId As Integer
     Public ReadOnly Property Time As Date
     Public ReadOnly Property Price As Double
-    Public ReadOnly Property Size As Long
+    Public ReadOnly Property Size As Decimal
 
 
-    Public Sub New(requestId As Integer, time As Date, price As Double, size As Long)
+    Public Sub New(requestId As Integer, time As Date, price As Double, size As Decimal)
         MyBase.New()
         Me._Timestamp = Timestamp
         Me.RequestId = requestId

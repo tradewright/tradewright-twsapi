@@ -26,5 +26,5 @@
 
 Public Class HistogramEntry
     Public Property Price As Double
-    Public Property Size As Long
+    Public Property Size As Decimal
 End Class

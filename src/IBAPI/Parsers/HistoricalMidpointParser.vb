@@ -49,7 +49,7 @@ Friend NotInheritable Class HistoricalMidpointParser
             Dim time = IBAPI.UnixTimestampToDateTime(Await _Reader.GetLongAsync("Time"))
             Await _Reader.GetIntAsync("Dummy") ' ?? for consistency, according to comment in IB's C# code
             Dim price = Await _Reader.GetDoubleAsync("Price")
-            Dim size = Await _Reader.GetLongAsync("Size")
+            Dim size = Await _Reader.GetDecimalAsync("Size")
             ticks.Add(New HistoricalMidpointEventArgs(requestId, time, price, size))
         Next
 

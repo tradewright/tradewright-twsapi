@@ -56,7 +56,7 @@ Friend NotInheritable Class HistoricalBarsParser
                 .LowValue = Await _Reader.GetDoubleAsync("Low"),
                 .CloseValue = Await _Reader.GetDoubleAsync("Close"),
                 .Volume = Await _Reader.GetLongAsync("Volume"),
-                .WAP = Await _Reader.GetDoubleAsync("WAP")
+                .WAP = Await _Reader.GetDecimalAsync("WAP")
             }
             If ServerVersion < ApiServerVersion.SYNT_REALTIME_BARS Then Await _Reader.GetBooleanAsync("Has gaps")
             If pVersion >= 3 Then bar.TickVolume = Await _Reader.GetIntAsync("Tick volume")

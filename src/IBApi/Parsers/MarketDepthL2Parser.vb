@@ -39,7 +39,7 @@ Friend NotInheritable Class MarketDepthL2Parser
         Dim lOperation = DirectCast(Await _Reader.GetIntAsync("Operation"), DOMOperation)
         Dim lSide = DirectCast(Await _Reader.GetIntAsync("Side"), DOMSide)
         Dim lPrice = Await _Reader.GetDoubleAsync("Price")
-        Dim lSize = Await _Reader.GetLongAsync("Size")
+        Dim lSize = Await _Reader.GetDecimalAsync("Size")
         Dim lIsSmartDepth = ServerVersion > ApiServerVersion.SMART_DEPTH AndAlso Await _Reader.GetBooleanAsync("IsSmartDepth")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")

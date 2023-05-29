@@ -55,29 +55,9 @@ Public Class ComboLeg
     ' Member variables
     '@================================================================================
 
-    Private mConId As Integer
-    Private mRatio As Integer
-    Private mAction As OrderAction
-    Private mExchange As String
-    Private mOpenClose As LegOpenCloseCode
-
-    ' for stock legs when doing short sale
-    Private mShortSaleSlot As ShortSaleSlotCode
-    Private mDesignatedLocation As String
-    Private mExemptCode As Integer
-
     '@================================================================================
     ' Class Event Handlers
     '@================================================================================
-
-    'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
-    Private Sub Class_Initialize_Renamed()
-        mExemptCode = -1
-    End Sub
-    Public Sub New()
-        MyBase.New()
-        Class_Initialize_Renamed()
-    End Sub
 
     '@================================================================================
     ' XXXX Interface Members
@@ -93,83 +73,20 @@ Public Class ComboLeg
 
 
     Public Property Action() As OrderAction
-        Get
-            Action = mAction
-        End Get
-        Set(value As OrderAction)
-            mAction = value
-        End Set
-    End Property
 
-
-    Public Property ConId() As Integer
-        Get
-            ConId = mConId
-        End Get
-        Set(Value As Integer)
-            mConId = Value
-        End Set
-    End Property
-
+    Public Property ContractId() As Integer
 
     Public Property DesignatedLocation() As String
-        Get
-            DesignatedLocation = mDesignatedLocation
-        End Get
-        Set(Value As String)
-            mDesignatedLocation = Value
-        End Set
-    End Property
-
 
     Public Property Exchange() As String
-        Get
-            Exchange = mExchange
-        End Get
-        Set(Value As String)
-            mExchange = Value
-        End Set
-    End Property
 
-
-    Public Property ExemptCode() As Integer
-        Get
-            ExemptCode = mExemptCode
-        End Get
-        Set(Value As Integer)
-            mExemptCode = Value
-        End Set
-    End Property
-
+    Public Property ExemptCode() As Integer = -1
 
     Public Property OpenClose() As LegOpenCloseCode
-        Get
-            OpenClose = mOpenClose
-        End Get
-        Set(value As LegOpenCloseCode)
-            mOpenClose = value
-        End Set
-    End Property
-
 
     Public Property Ratio() As Integer
-        Get
-            Ratio = mRatio
-        End Get
-        Set(Value As Integer)
-            mRatio = Value
-        End Set
-    End Property
-
 
     Public Property ShortSaleSlot() As ShortSaleSlotCode
-        Get
-            ShortSaleSlot = mShortSaleSlot
-        End Get
-        Set(value As ShortSaleSlotCode)
-            mShortSaleSlot = value
-        End Set
-    End Property
 
     '@================================================================================
     ' Methods

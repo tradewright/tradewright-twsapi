@@ -2,7 +2,7 @@
 
 ' The MIT License (MIT)
 '
-' Copyright (c) 2018 Richard L King (TradeWright Software Systems)
+' Copyright (c) 2023 Richard L King (TradeWright Software Systems)
 ' 
 ' Permission is hereby granted, free of charge, to any person obtaining a copy
 ' of this software and associated documentation files (the "Software"), to deal
@@ -60,13 +60,13 @@ Friend Class RequestMarketDataGenerator
         With pContract
 
             ' Add combo legs for BAG requests
-            If .SecType = SecurityType.Combo Then
+            If .SecurityType = SecurityType.Combo Then
                 lWriter.AddInteger(.ComboLegs.Count, "Combolegs count")
                 Dim i As Integer
                 For Each comboLeg In .ComboLegs
                     With comboLeg
                         i += 1
-                        lWriter.AddInteger(.ConId, "ConId" & i)
+                        lWriter.AddInteger(.ContractId, "ContractId" & i)
                         lWriter.AddInteger(.Ratio, "Ratio" & i)
                         lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)
                         lWriter.AddString(.Exchange, "Exchange" & i)
@@ -74,9 +74,9 @@ Friend Class RequestMarketDataGenerator
                 Next comboLeg
             End If
 
-            If .DeltaNeutralContract?.ConId <> 0 Then
+            If .DeltaNeutralContract?.ContractId <> 0 Then
                 lWriter.AddBoolean(True, "Under comp")
-                lWriter.AddInteger(.DeltaNeutralContract.ConId, "Under comp conid")
+                lWriter.AddInteger(.DeltaNeutralContract.ContractId, "Under comp ContractId")
                 lWriter.AddDouble(.DeltaNeutralContract.Delta, "Under comp delta")
                 lWriter.AddDouble(.DeltaNeutralContract.Price, "Under comp price")
             Else

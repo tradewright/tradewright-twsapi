@@ -56,7 +56,7 @@ Friend NotInheritable Class HistoricalTradeParser
             attributes.Unreported = (attrMask And Unreported) > 0
 
             Dim price = Await _Reader.GetDoubleAsync("Price")
-            Dim size = Await _Reader.GetLongAsync("Size")
+            Dim size = Await _Reader.GetDecimalAsync("Size")
             Dim exchange = Await _Reader.GetStringAsync("Exchange")
             Dim specialConditions = Await _Reader.GetStringAsync("Special conditions")
             ticks.Add(New HistoricalTradeEventArgs(requestId, time, price, size, exchange, specialConditions, attributes))

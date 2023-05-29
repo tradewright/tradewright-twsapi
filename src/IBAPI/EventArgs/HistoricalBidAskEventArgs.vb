@@ -30,17 +30,17 @@ Public Class HistoricalBidAskEventArgs
     Public ReadOnly Property RequestId As Integer
     Public ReadOnly Property Time As Date
     Public ReadOnly Property BidPrice As Double
-    Public ReadOnly Property BidSize As Long
+    Public ReadOnly Property BidSize As Decimal
     Public ReadOnly Property AskPrice As Double
-    Public ReadOnly Property AskSize As Long
+    Public ReadOnly Property AskSize As Decimal
     Public ReadOnly Property Attributes As TickAttributes
 
     Public Sub New(requestId As Integer,
                    time As Date,
                    bidPrice As Double,
-                   bidSize As Long,
+                   bidSize As Decimal,
                    askPrice As Double,
-                   askSize As Long,
+                   askSize As Decimal,
                    attributes As TickAttributes)
         MyBase.New()
         Me._Timestamp = Timestamp

@@ -25,7 +25,6 @@
 #End Region
 
 Imports System.Globalization
-Imports System.Linq
 
 <Flags>
 Friend Enum EnumNameType

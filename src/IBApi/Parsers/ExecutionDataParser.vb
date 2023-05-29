@@ -40,12 +40,12 @@ Friend NotInheritable Class ExecutionDataParser
 
         Dim lContract As New Contract
         With lContract
-            If (pVersion >= 5) Then .ConId = Await _Reader.GetIntAsync("Con Id")
+            If (pVersion >= 5) Then .ContractId = Await _Reader.GetIntAsync("Con Id")
             .Symbol = Await _Reader.GetStringAsync("Symbol")
-            .SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
+            .SecurityType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
             .Expiry = Await _Reader.GetStringAsync("Expiry")
             .Strike = Await _Reader.GetDoubleAsync("Strike")
-            .OptRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
+            .OptionRight = IBAPI.OptionRights.Parse(Await _Reader.GetStringAsync("Right"))
             If pVersion >= 9 Then .Multiplier = Await _Reader.GetDoubleAsync("Multiplier")
             If .Multiplier = 0 Then .Multiplier = 1
             .Exchange = Await _Reader.GetStringAsync("Exchange")

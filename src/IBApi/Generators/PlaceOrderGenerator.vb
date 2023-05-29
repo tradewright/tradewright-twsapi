@@ -76,16 +76,16 @@ Friend Class PlaceOrderGenerator
             lWriter.AddDecimal(.TotalQuantity, "Quantity")
             lWriter.AddString(IBAPI.OrderTypes.ToInternalString(.OrderType), "Order type")
 
-            lWriter.AddNullableDouble(.LmtPrice, "Price")
+            lWriter.AddNullableDouble(.LimitPrice, "Price")
             lWriter.AddNullableDouble(.AuxPrice, "Aux price")
 
             ' mwriter.send extended Order fields
-            lWriter.AddString(IBAPI.OrderTIFs.ToInternalString(.Tif), "TIF")
+            lWriter.AddString(IBAPI.OrderTIFs.ToInternalString(.TimeInForce), "TIF")
             lWriter.AddString(.OcaGroup, "Oca Group")
             lWriter.AddString(.Account, "Account")
             lWriter.AddString(.OpenClose, "OpenClose")
             lWriter.AddInteger(.Origin, "Origin")
-            lWriter.AddString(.OrderRef, "Order ref")
+            lWriter.AddString(.OrderReference, "Order ref")
             lWriter.AddBoolean(transmit, "Transmit")
             lWriter.AddInteger(.ParentId, "Parent id")
             lWriter.AddBoolean(.BlockOrder, "Block Order")
@@ -98,12 +98,12 @@ Friend Class PlaceOrderGenerator
 
         ' send combo legs for BAG requests
         With contract
-            If .SecType = SecurityType.Combo Then
+            If .SecurityType = SecurityType.Combo Then
                 lWriter.AddInteger(.ComboLegs.Count, "Combo legs count")
                 If .ComboLegs.Count <> 0 Then
                     For i = 0 To .ComboLegs.Count - 1
                         With .ComboLegs.Item(i)
-                            lWriter.AddInteger(.ConId, $"Leg {i} Con id")
+                            lWriter.AddInteger(.contractId,$"Leg {i} Con id")
                             lWriter.AddInteger(.Ratio, $"Leg {i} Ratio")
                             lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), $"Leg {i} Action")
                             lWriter.AddString(.Exchange, $"Leg {i} Exchange")
@@ -119,7 +119,7 @@ Friend Class PlaceOrderGenerator
         End With
 
         ' Send order combo legs for BAG requests
-        If contract.SecType = SecurityType.Combo Then
+        If contract.SecurityType = SecurityType.Combo Then
             lWriter.AddInteger(order.OrderComboLegs.Length, "Order Combo Legs Count")
             If order.OrderComboLegs.Length <> 0 Then
                 For i = 0 To order.OrderComboLegs.Length - 1
@@ -128,19 +128,19 @@ Friend Class PlaceOrderGenerator
             End If
         End If
 
-        If contract.SecType = SecurityType.Combo Then
-            lWriter.AddInteger(order.SmartComboRoutingParams.Count, "Smart Combo Routing Params Count")
-            If order.SmartComboRoutingParams.Count <> 0 Then
-                For i = 0 To order.SmartComboRoutingParams.Count - 1
-                    lWriter.AddString(order.SmartComboRoutingParams(i).Tag, $"Param {i} Tag")
-                    lWriter.AddString(order.SmartComboRoutingParams(i).Value, $"Param {i} Value")
+        If contract.SecurityType = SecurityType.Combo Then
+            lWriter.AddInteger(order.SmartComboRoutingParameters.Count, "Smart Combo Routing Params Count")
+            If order.SmartComboRoutingParameters.Count <> 0 Then
+                For i = 0 To order.SmartComboRoutingParameters.Count - 1
+                    lWriter.AddString(order.SmartComboRoutingParameters(i).Tag, $"Param {i} Tag")
+                    lWriter.AddString(order.SmartComboRoutingParameters(i).Value, $"Param {i} Value")
                 Next
             End If
         End If
 
         With order
             lWriter.AddString("", "Shares Allocation")
-            lWriter.AddDouble(.DiscretionaryAmt, "Discretionary amount")
+            lWriter.AddDouble(.DiscretionaryAmount, "Discretionary amount")
             lWriter.AddString(.GoodAfterTime, "Good after Time")
             lWriter.AddString(.GoodTillDate, "Good till date")
 
@@ -161,14 +161,14 @@ Friend Class PlaceOrderGenerator
             lWriter.AddString(.Rule80A, "Rule 80A")
             lWriter.AddString(.SettlingFirm, "Settling firm")
             lWriter.AddBoolean(.AllOrNone, "All or none")
-            lWriter.AddNullableInteger(.MinQty, "Minimum quantity")
+            lWriter.AddNullableInteger(.MinimumQuantity, "Minimum quantity")
             lWriter.AddNullableDouble(.PercentOffset, "Percent Offset")
             lWriter.AddBoolean(False, "E-trade only")
             lWriter.AddBoolean(False, "Firm quote only")
             lWriter.AddNullableDouble(Nothing, "NBBO price cap")
             lWriter.AddNullableInteger(.AuctionStrategy, "Auction strategy")
             lWriter.AddNullableDouble(.StartingPrice, "Starting price")
-            lWriter.AddNullableDouble(.StockRefPrice, "Stock ref price")
+            lWriter.AddNullableDouble(.StockReferencePrice, "Stock ref price")
             lWriter.AddNullableDouble(.Delta, "Delta")
 
             lWriter.AddNullableDouble(.StockRangeLower, "Stock range lower")
@@ -182,7 +182,7 @@ Friend Class PlaceOrderGenerator
             lWriter.AddString(IBAPI.OrderTypes.ToInternalString(.DeltaNeutralOrderType), "Delta neutral Order type")
             lWriter.AddNullableDouble(.DeltaNeutralAuxPrice, "Delta neutral aux price")
             If .DeltaNeutralOrderType <> SecurityType.None Then
-                lWriter.AddInteger(.DeltaNeutralConId, "Delta Neutral Con Id")
+                lWriter.AddInteger(.DeltaNeutralContractId, "Delta Neutral Con Id")
                 lWriter.AddString(.DeltaNeutralSettlingFirm, "Delta Neutral Settling Firm")
                 lWriter.AddString(.DeltaNeutralClearingAccount, "Delta Neutral Clearing Account")
                 lWriter.AddString(.DeltaNeutralClearingIntent, "Delta Neutral Clearing Intent")
@@ -202,8 +202,8 @@ Friend Class PlaceOrderGenerator
             lWriter.AddNullableDouble(.TrailStopPrice, "Trail stop price")
             lWriter.AddNullableDouble(.TrailingPercent, "Trailing Percent")
 
-            lWriter.AddNullableInteger(.ScaleInitLevelSize, "ScaleInitLevelSize")
-            lWriter.AddNullableInteger(.ScaleSubsLevelSize, "ScaleSubsLevelSize")
+            lWriter.AddNullableInteger(.ScaleInititialLevelSize, "ScaleInitLevelSize")
+            lWriter.AddNullableInteger(.ScaleSubsequentLevelSize, "ScaleSubsLevelSize")
             lWriter.AddNullableDouble(.ScalePriceIncrement, "ScalePriceIncrement")
 
             If .ScalePriceIncrement > 0.0# And .ScalePriceIncrement <> Double.MaxValue Then
@@ -211,8 +211,8 @@ Friend Class PlaceOrderGenerator
                 lWriter.AddNullableInteger(.ScalePriceAdjustInterval, "Scale Price Adjust Interval")
                 lWriter.AddNullableDouble(.ScaleProfitOffset, "Scale Profit Offset")
                 lWriter.AddBoolean(.ScaleAutoReset, "Scale Auto Reset")
-                lWriter.AddNullableInteger(.ScaleInitPosition, "Scale Init POSITION")
-                lWriter.AddNullableInteger(.ScaleInitFillQty, "Scale Init Fill Qty")
+                lWriter.AddNullableInteger(.ScaleInitialPosition, "Scale Init POSITION")
+                lWriter.AddNullableInteger(.ScaleInitialFillQuantity, "Scale Init Fill Qty")
                 lWriter.AddBoolean(.ScaleRandomPercent, "Scale Random Percent")
             End If
 
@@ -221,7 +221,7 @@ Friend Class PlaceOrderGenerator
             lWriter.AddString(.ActiveStopTime, "Active Stop Time")
 
             lWriter.AddString(IBAPI.HedgeTypes.ToInternalString(.HedgeType), "Hedge Type")
-            If .HedgeType <> HedgeType.None Then lWriter.AddString(.HedgeParam, "Hedge Param")
+            If .HedgeType <> HedgeType.None Then lWriter.AddString(.HedgeParameter, "Hedge Param")
 
             lWriter.AddBoolean(.OptOutSmartRouting, "Opt Out Smart Routing")
 
@@ -232,21 +232,21 @@ Friend Class PlaceOrderGenerator
 
             If contract.DeltaNeutralContract IsNot Nothing Then
                 lWriter.AddBoolean(True, "Under comp")
-                lWriter.AddInteger(contract.DeltaNeutralContract.ConId, "Under comp conid")
+                lWriter.AddInteger(contract.DeltaNeutralContract.ContractId, "Under comp ContractId")
                 lWriter.AddDouble(contract.DeltaNeutralContract.Delta, "Under comp delta")
                 lWriter.AddDouble(contract.DeltaNeutralContract.Price, "Under comp price")
             Else
                 lWriter.AddBoolean(False, "Under comp")
             End If
 
-            lWriter.AddString(.AlgoStrategy, "Algo strategy")
-            If .AlgoStrategy <> "" Then
+            lWriter.AddString(.AlgorithmStrategy, "Algo strategy")
+            If .AlgorithmStrategy <> "" Then
 
-                Dim algoParamsCount = .AlgoParams.Length
+                Dim algoParamsCount = .AlgorithmParameters.Length
 
                 lWriter.AddInteger(algoParamsCount, "Algo params count")
                 If algoParamsCount > 0 Then
-                    Dim lAlgoParams = .AlgoParams
+                    Dim lAlgoParams = .AlgorithmParameters
 
                     For i = 0 To algoParamsCount - 1
                         lWriter.AddString(lAlgoParams(i).Tag, "Tag " & i)
@@ -255,11 +255,11 @@ Friend Class PlaceOrderGenerator
                 End If
             End If
 
-            lWriter.AddString(.AlgoId, "Algo Id")
+            lWriter.AddString(.AlgorithmId, "Algo Id")
 
             lWriter.AddBoolean(.WhatIf, "WhatIf")
 
-            lWriter.AddString(If(.OrderMiscOptions Is Nothing, "", String.Join(Of TagValue)(";", .OrderMiscOptions) & ";"), "Misc Options")
+            lWriter.AddString(If(.OrderMiscellaneousOptions Is Nothing, "", String.Join(Of TagValue)(";", .OrderMiscellaneousOptions) & ";"), "Misc Options")
 
             lWriter.AddBoolean(.Solicited, "Solicited")
 
@@ -289,7 +289,7 @@ Friend Class PlaceOrderGenerator
 
                 lWriter.AddString(IBAPI.OrderTypes.ToInternalString(.AdjustedOrderType), "AdjustedOrderType")
                 lWriter.AddNullableDouble(.TriggerPrice, "TriggerPrice")
-                lWriter.AddNullableDouble(.LmtPriceOffset, "LmtPriceOffset")
+                lWriter.AddNullableDouble(.LimitPriceOffset, "LmtPriceOffset")
                 lWriter.AddNullableDouble(.AdjustedStopPrice, "AdjustedStopPrice")
                 lWriter.AddNullableDouble(.AdjustedStopLimitPrice, "AdjustedStopLimitPrice")
                 lWriter.AddNullableDouble(.AdjustedTrailingAmount, "AdjustedTrailingAmount")
@@ -306,7 +306,7 @@ Friend Class PlaceOrderGenerator
             End If
 
             If (ServerVersion >= ApiServerVersion.CASH_QTY) Then
-                lWriter.AddNullableDouble(.CashQty, "Cash Qty")
+                lWriter.AddNullableDouble(.CashQuantity, "Cash Qty")
             End If
 
             If ServerVersion >= ApiServerVersion.DECISION_MAKER Then

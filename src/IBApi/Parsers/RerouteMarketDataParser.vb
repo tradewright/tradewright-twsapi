@@ -34,13 +34,13 @@ Friend NotInheritable Class RerouteMarketDataParser
 
     Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
         Dim requestId = Await _Reader.GetIntAsync("Request Id")
-        Dim conId = Await _Reader.GetIntAsync("Conid")
+        Dim contractId = Await _Reader.GetIntAsync("ContractId")
         Dim exchange = Await _Reader.GetStringAsync("Exchange")
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-        _EventConsumers.MarketDataConsumer?.NotifyRerouteData(New RerouteDataEventArgs(timestamp, requestId, conId, exchange))
+        _EventConsumers.MarketDataConsumer?.NotifyRerouteData(New RerouteDataEventArgs(timestamp, requestId, contractId,exchange))
         Return True
             Catch e As Exception
                 Throw New ApiApplicationException("NotifyRerouteData", e)

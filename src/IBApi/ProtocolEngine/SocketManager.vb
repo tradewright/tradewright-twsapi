@@ -95,7 +95,7 @@ Friend Class SocketManager
     Friend Async Function ReadByteArrayAsync(buf As Byte(), offset As Integer, token As CancellationToken) As Task(Of Integer)
         Try
             While Not (Me.mBaseStream.DataAvailable Or token.IsCancellationRequested)
-                Await Task.Delay(1)
+                Await Task.Delay(1, token)
             End While
             Return If(token.IsCancellationRequested, 0, Me._ClientStream.Read(buf, offset, CInt(buf.Length) - offset))
         Catch objectDisposedException As System.ObjectDisposedException

@@ -32,7 +32,7 @@ Friend NotInheritable Class InputStringReader
 
     Private Const SizeOfInt As Integer = 4  ' sizeof Integer
 
-    Private mSocketManager As SocketManager
+    Private ReadOnly mSocketManager As SocketManager
 
     Private ReadOnly mToken As CancellationToken
 
@@ -41,11 +41,10 @@ Friend NotInheritable Class InputStringReader
     ' it doesn't much matter what size we make the buffer initially, as it will 
     ' quickly be expanded when necessary. Note that we never bother to reduce
     ' the buffer's size once it has been increased, because even the largest message
-    ' (ie 10 days of 1-minute historical data) Is only a megabyte Or so, And that's
-    ' Not really a significant amount of memory in comparison with what the rest of
-    ' the application Is likely to be using. So we set it initially to something that's likely
+    ' (ie 10 days of 1-minute historical data) is only a megabyte or so, and that's
+    ' not really a significant amount of memory in comparison with what the rest of
+    ' the application is likely to be using. So we set it initially to something that's likely
     ' to be adequate for most programs that don't make large historical data requests.
-    Private Const InitialBufferSize As Integer = 4096
 
     Private mBuffer As Byte() = New Byte(4095) {}
 
@@ -58,7 +57,7 @@ Friend NotInheritable Class InputStringReader
     ' the current position at which data Is being read from the buffer
     Private mCurrIndex As Integer
 
-    Private mEncoding As Encoding = New UTF8Encoding(False, True)
+    Private ReadOnly mEncoding As Encoding = New UTF8Encoding(False, True)
 
     Private ReadOnly mMaxMessageSize As Integer
 

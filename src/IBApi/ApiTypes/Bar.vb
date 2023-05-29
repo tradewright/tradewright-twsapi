@@ -30,8 +30,8 @@ Public Class Bar
     Public Property HighValue As Double
     Public Property LowValue As Double
     Public Property CloseValue As Double
-    Public Property Volume As Long
+    Public Property Volume As Decimal
     Public Property TickVolume As Long
-    Public Property WAP As Double
+    Public Property WAP As Decimal
 End Class
 

@@ -216,6 +216,17 @@ Public Class EventSource
         RaiseEvent ReplaceFAEnd(Me, e)
     End Sub
 
+
+    Public Overrides Sub NotifyUserInformation(e As UserInformationEventArgs) Implements IAccountDataConsumer.NotifyUserInformation
+        OnUserInformation(e)
+    End Sub
+
+    Public Event UserInformation(sender As Object, e As UserInformationEventArgs)
+    Protected Overridable Sub OnUserInformation(e As UserInformationEventArgs)
+        RaiseEvent UserInformation(Me, e)
+    End Sub
+
+
 #End Region
 
 #Region "IConnectionStatusConsumer"
@@ -394,6 +405,7 @@ Public Class EventSource
         RaiseEvent HeadTimestamp(Me, e)
     End Sub
 
+
     Public Overrides Sub NotifyHistogramData(e As HistogramDataEventArgs) Implements IHistoricalDataConsumer.NotifyHistogramData
         OnHistogramData(e)
     End Sub
@@ -402,6 +414,7 @@ Public Class EventSource
     Protected Overridable Sub OnHistogramData(e As HistogramDataEventArgs)
         RaiseEvent HistogramData(Me, e)
     End Sub
+
 
     Public Overrides Sub EndHistoricalBars(e As HistoricalBarsRequestEventArgs) Implements IHistoricalDataConsumer.EndHistoricalBars
         OnHistoricalBarsEnd(e)
@@ -412,6 +425,7 @@ Public Class EventSource
         RaiseEvent HistoricalBarsEnd(Me, e)
     End Sub
 
+
     Public Overrides Sub EndHistoricalBidAsks(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalBidAsks
         OnHistoricalBidAsksEnd(e)
     End Sub
@@ -420,6 +434,7 @@ Public Class EventSource
     Protected Overridable Sub OnHistoricalBidAsksEnd(e As RequestEndEventArgs)
         RaiseEvent HistoricalBidAsksEnd(Me, e)
     End Sub
+
 
     Public Overrides Sub EndHistoricalMidpoints(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalMidpoints
         OnHistoricalMidpointsEnd(e)
@@ -430,6 +445,7 @@ Public Class EventSource
         RaiseEvent HistoricalMidpointsEnd(Me, e)
     End Sub
 
+
     Public Overrides Sub EndHistoricalTrades(e As RequestEndEventArgs) Implements IHistoricalDataConsumer.EndHistoricalTrades
         OnHistoricalTradesEnd(e)
     End Sub
@@ -438,6 +454,7 @@ Public Class EventSource
     Protected Overridable Sub OnHistoricalTradesEnd(e As RequestEndEventArgs)
         RaiseEvent HistoricalTradesEnd(Me, e)
     End Sub
+
 
     Public Overrides Sub UpdateHistoricalBar(e As HistoricalBarEventArgs) Implements IHistoricalDataConsumer.UpdateHistoricalBar
         OnHistoricalBar(e)
@@ -452,6 +469,7 @@ Public Class EventSource
         RaiseEvent HistoricalBar(Me, e)
     End Sub
 
+
     Public Overrides Sub NotifyHistoricalBarError(e As RequestErrorEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBarError
         OnHistoricalBarError(e)
     End Sub
@@ -460,6 +478,7 @@ Public Class EventSource
     Protected Overridable Sub OnHistoricalBarError(e As RequestErrorEventArgs)
         RaiseEvent HistoricalBarError(Me, e)
     End Sub
+
 
     Public Overrides Sub NotifyHistoricalBidAsk(e As HistoricalBidAskEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalBidAsk
         OnHistoricalBidAsk(e)
@@ -470,6 +489,7 @@ Public Class EventSource
         RaiseEvent HistoricalBidAsk(Me, e)
     End Sub
 
+
     Public Overrides Sub NotifyHistoricalMidpoint(e As HistoricalMidpointEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalMidpoint
         OnHistoricalMidpoint(e)
     End Sub
@@ -478,6 +498,17 @@ Public Class EventSource
     Protected Overridable Sub OnHistoricalMidpoint(e As HistoricalMidpointEventArgs)
         RaiseEvent HistoricalMidpoint(Me, e)
     End Sub
+
+
+    Public Overrides Sub NotifyHistoricalSchedule(e As HistoricalScheduleEventArgs)
+        OnHistoricalSchedule(e)
+    End Sub
+
+    Public Event HistoricalSchedule(sender As Object, e As HistoricalScheduleEventArgs)
+    Protected Overridable Sub OnHistoricalSchedule(e As HistoricalScheduleEventArgs)
+        RaiseEvent HistoricalSchedule(Me, e)
+    End Sub
+
 
     Public Overrides Sub NotifyHistoricalTrade(e As HistoricalTradeEventArgs) Implements IHistoricalDataConsumer.NotifyHistoricalTrade
         OnHistoricalTrade(e)
@@ -488,6 +519,7 @@ Public Class EventSource
         RaiseEvent HistoricalTrade(Me, e)
     End Sub
 
+
     Public Overrides Sub StartHistoricalBars(e As HistoricalBarsRequestEventArgs) Implements IHistoricalDataConsumer.StartHistoricalBars
         OnHistoricalDataStart(e)
     End Sub
@@ -496,6 +528,7 @@ Public Class EventSource
     Protected Overridable Sub OnHistoricalDataStart(e As HistoricalBarsRequestEventArgs)
         RaiseEvent HistoricalBarsStart(Me, e)
     End Sub
+
 
 #End Region
 
@@ -784,6 +817,16 @@ Public Class EventSource
 
 #Region "IOrderInfoConsumer"
 
+    Public Overrides Sub EndCompletedOrders(e As EventArgs) Implements IOrderInfoConsumer.EndCompletedOrders
+        OnEndCompletedOrders(e)
+    End Sub
+
+    Public Event CompletedOrdersEnd(sender As Object, e As EventArgs)
+    Protected Overridable Sub OnEndCompletedOrders(e As EventArgs)
+        RaiseEvent CompletedOrdersEnd(Me, EventArgs.Empty)
+    End Sub
+
+
     Public Overrides Sub EndExecutions(e As RequestEndEventArgs) Implements IOrderInfoConsumer.EndExecutions
         OnExecutionDetailsEnd(e)
     End Sub
@@ -810,6 +853,17 @@ Public Class EventSource
     Protected Overridable Sub OnCommissionReport(e As CommissionReportEventArgs)
         RaiseEvent CommissionReport(Me, e)
     End Sub
+
+
+    Public Overrides Sub NotifyCompletedOrder(e As CompletedOrderEventArgs) Implements IOrderInfoConsumer.NotifyCompletedOrder
+        OnNotifyCompletedOrder(e)
+    End Sub
+
+    Public Event CompletedOrder(sender As Object, e As CompletedOrderEventArgs)
+    Protected Overridable Sub OnNotifyCompletedOrder(e As CompletedOrderEventArgs)
+        RaiseEvent CompletedOrder(Me, e)
+    End Sub
+
 
     Public Overrides Sub NotifyDeltaNeutralValidation(e As DeltaNeutralValidationEventArgs) Implements IOrderInfoConsumer.NotifyDeltaNeutralValidation
         OnDeltaNeutralValidation(e)

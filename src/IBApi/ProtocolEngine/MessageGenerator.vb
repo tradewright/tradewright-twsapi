@@ -169,12 +169,12 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub AddContract(value As Contract, fieldName As String, Optional ignorePrimaryExchange As Boolean = False)
-        AddInteger(value.ConId, $"{fieldName}.ConId")
+        AddInteger(value.ContractId, $"{fieldName}.ContractId")
         AddString(value.Symbol?.ToUpper(), $"{fieldName}.Symbol")
-        AddString(IBAPI.SecurityTypes.ToInternalString(value.SecType), $"{fieldName}.Sectype")
+        AddString(IBAPI.SecurityTypes.ToInternalString(value.SecurityType), $"{fieldName}.Sectype")
         AddString(value.Expiry, $"{fieldName}.Expiry")
         AddDouble(value.Strike, $"{fieldName}.Strike")
-        AddString(IBAPI.OptionRights.ToInternalString(value.OptRight), $"{fieldName}.Right")
+        AddString(IBAPI.OptionRights.ToInternalString(value.OptionRight), $"{fieldName}.Right")
         AddString(If(value.Multiplier = 1, "", CStr(value.Multiplier)), $"{fieldName}.Multiplier")
         AddString(value.Exchange, $"{fieldName}.Exchange")
         If Not ignorePrimaryExchange Then AddString(value.PrimaryExch, $"{fieldName}.Primary Exchange")
@@ -188,7 +188,6 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub Send()
-        mMessage = getMessage()
         SyncLock mThisLock
             mSocketManager.Send(mMessage)
         End SyncLock
@@ -200,13 +199,13 @@ Friend NotInheritable Class MessageGenerator
         writeRawString(value)
     End Sub
 
-    Private Function getMessage() As Byte()
+    Friend Sub prepareOutputMessage()
         If (mUseV100Plus) Then
             mWriter.Seek(mLengthOffset, SeekOrigin.Begin)
             mWriter.Write(IPAddress.HostToNetworkOrder(mLength))
         End If
-        Return mBuffer.ToArray()
-    End Function
+        mMessage = mBuffer.ToArray()
+    End Sub
 
     Private Sub initialise()
         mBuffer = New MemoryStream()

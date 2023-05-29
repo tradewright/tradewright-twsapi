@@ -40,14 +40,14 @@ Public Class SecurityDefinitionOptionParameterEventArgs
 
     Public Property TradingClass As String
 
-    Public Property UnderlyingConId As Integer
+    Public Property UnderlyingContractId As Integer
 
-    Public Sub New(timestamp As DateTime, reqId As Integer, exchange As String, underlyingConId As Integer, tradingClass As String, multiplier As Integer, expirations As HashSet(Of String), strikes As HashSet(Of Double))
+    Public Sub New(timestamp As DateTime, reqId As Integer, exchange As String, underlyingContractId As Integer, tradingClass As String, multiplier As Integer, expirations As HashSet(Of String), strikes As HashSet(Of Double))
         MyBase.New()
         Me._Timestamp = timestamp
         Me.RequestId = reqId
         Me.Exchange = exchange
-        Me.UnderlyingConId = underlyingConId
+        Me.UnderlyingContractId = underlyingContractId
         Me.TradingClass = tradingClass
         Me.Multiplier = multiplier
         Me.Expirations = expirations

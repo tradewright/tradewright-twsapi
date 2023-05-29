@@ -52,6 +52,9 @@ Friend Class RequestHistoricalBarsGenerator
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
+        If ServerVersion < ApiServerVersion.HISTORICAL_SCHEDULE And
+            "SCHEDULE".Equals(pRequest.WhatToShow, StringComparison.InvariantCultureIgnoreCase) Then Throw New ApiApplicationException("Historical schedule requests not supported")
+
         Dim lTwsId = IdManager.GetTwsId(pRequestId, IdType.HistoricalData)
         IBAPI.EventLogger.Log($"Requesting historical data for: {pRequest.Contract.LocalSymbol.ToUpper()}; id={lTwsId}; barsize={pRequest.BarSizeSetting}; endTime={pRequest.EndDateTime}; duration={pRequest.Duration}", ModuleName, ProcName)
 
@@ -77,12 +80,12 @@ Friend Class RequestHistoricalBarsGenerator
 
         Dim lComboLeg As ComboLeg
         Dim i As Integer
-        If pRequest.Contract.SecType = SecurityType.Combo Then
+        If pRequest.Contract.SecurityType = SecurityType.Combo Then
             lWriter.AddInteger(pRequest.Contract.ComboLegs.Count, "Combo legs count")
             For Each lComboLeg In pRequest.Contract.ComboLegs
                 With lComboLeg
                     i += 1
-                    lWriter.AddInteger(.ConId, "ConId" & i)
+                    lWriter.AddInteger(.contractId,"ContractId" & i)
                     lWriter.AddInteger(.Ratio, "Ratio" & i)
                     lWriter.AddString(IBAPI.OrderActions.ToInternalString(.Action), "Action" & i)
                     lWriter.AddString(.Exchange, "Exchange" & i)

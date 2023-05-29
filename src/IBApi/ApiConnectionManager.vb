@@ -28,6 +28,7 @@ Imports TradeWright.IBAPI.ApiException
 
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports System.Formats.Asn1
 
 Friend Class ApiConnectionManager
 
@@ -37,7 +38,7 @@ Friend Class ApiConnectionManager
     Private Const MinReqdServerVersion As Integer = ApiServerVersion.RANDOMIZE_SIZE_AND_PRICE
 
 
-    Private ReadOnly mServer As String
+    Private ReadOnly mServer As String = "127.0.0.1"
     Private ReadOnly mPort As Integer
     Private ReadOnly mClientId As Integer
 
@@ -79,7 +80,7 @@ Friend Class ApiConnectionManager
         mEventConsumers = eventConsumers
         mGenerateSocketDataEvents = generateSocketDataEvents
 
-        Dim socket = createSocket(mServer, mPort)
+        Dim socket = New SocketManager(mServer, port)
         TheSocketHandler = New SocketHandler(socket,
                                            Sub() setConnectionState(ApiConnectionState.Connecting, ConnectionString),
                                            AddressOf socketHandlerConnected,
@@ -101,7 +102,7 @@ Friend Class ApiConnectionManager
         Set(Value As Integer)
             If Value < 0 Then Throw New ArgumentException("Value cannot be negative")
             mConnectionRetryIntervalSecs = Value
-            If Not TheSocketHandler Is Nothing Then TheSocketHandler.ConnectionRetryIntervalSecs = Value
+            If TheSocketHandler IsNot Nothing Then TheSocketHandler.ConnectionRetryIntervalSecs = Value
         End Set
     End Property
 
@@ -161,12 +162,6 @@ Friend Class ApiConnectionManager
 #End Region
 
 #Region "Private Methods"
-    Private Function createSocket(host As String, port As Integer) As SocketManager
-        If String.IsNullOrEmpty(host) Then host = "127.0.0.1"
-
-        Return New SocketManager(mServer, port)
-    End Function
-
     Private Function isValidServerVersion() As Boolean
         Return (mUseV100Plus And mServerVersion >= ApiServerVersion.MinV100Plus And mServerVersion <= ApiServerVersion.Max) Or
                 ((Not mUseV100Plus) And mServerVersion >= MinReqdServerVersion)
@@ -185,7 +180,7 @@ Friend Class ApiConnectionManager
 
             If Not isValidServerVersion() Then
                 Dim e = New ApiException(ErrorCodes.TwsOutOfDate, "TWS is out of date and needs to be upgraded")
-                IBAPI.EventLogger.Log($"An exception occurred:{vbCrLf}{e.ToString()}", ModuleName, ProcName, ILogger.LogLevel.Severe)
+                IBAPI.EventLogger.Log($"An exception occurred:{vbCrLf}{e}", ModuleName, ProcName, ILogger.LogLevel.Severe)
                 mEventConsumers.ErrorAndNotificationConsumer.NotifyException(New ExceptionEventArgs(Date.UtcNow, e))
                 Return False
             End If
@@ -212,7 +207,7 @@ Friend Class ApiConnectionManager
         If mUseV100Plus Then
             IBAPI.EventLogger.Log("Connecting to Tws: negotiating API connection", ModuleName, ProcName)
             lwriter.StartMessage("API")
-            lwriter.AddUnterminatedString($"v{CInt(ApiServerVersion.MinV100Plus)}..{CInt(ApiServerVersion.Max)}", "SupportedServerVersions")
+            lwriter.AddUnterminatedString($"v{CInt(ApiServerVersion.MinV100Plus)}..{CInt(ApiServerVersion.Max)} +PACEAPI", "SupportedServerVersions")
             lwriter.SendMessage(mEventConsumers.SocketDataConsumer)
         Else
             IBAPI.EventLogger.Log("Connecting to Tws: sending client version", ModuleName, ProcName)

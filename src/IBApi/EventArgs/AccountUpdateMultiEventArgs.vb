@@ -34,13 +34,14 @@ Public Class AccountUpdateMultiEventArgs
 
     Public Property ModelCode As String
 
-    Public Property ReqId As Integer
+    Public Property RequestId As Integer
 
     Public Property Value As String
 
-    Public Sub New(timestamp As DateTime, reqId As Integer, account As String, modelCode As String, key As String, value As String, currency As String)
+    Public Sub New(timestamp As DateTime, requestId As Integer, account As String, modelCode As String, key As String, value As String, currency As String)
         MyBase.New()
         Me._Timestamp = timestamp
+        Me.RequestId = requestId
         Me.Account = account
         Me.ModelCode = modelCode
         Me.Key = key

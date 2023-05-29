@@ -28,7 +28,7 @@ Friend Class RequestPnLSingleGeneratorGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(requestId As Integer, account As String, modelCode As String, conId As Integer)
+    Private Delegate Sub ApiMethodDelegate(requestId As Integer, account As String, modelCode As String, contractId as integer)
 
     Private Const ModuleName As String = NameOf(RequestPnLSingleGeneratorGenerator)
 
@@ -44,7 +44,7 @@ Friend Class RequestPnLSingleGeneratorGenerator
         End Get
     End Property
 
-    Private Sub requestPnLSingleGenerator(requestId As Integer, account As String, modelCode As String, conId As Integer)
+    Private Sub requestPnLSingleGenerator(requestId As Integer, account As String, modelCode As String, contractId as integer)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.PNL Then Throw New InvalidOperationException("PnL requests not supported")
 
@@ -54,7 +54,7 @@ Friend Class RequestPnLSingleGeneratorGenerator
         lWriter.AddInteger(requestId, "Request Id")
         lWriter.AddString(account, "Account")
         lWriter.AddString(modelCode, "Model Code")
-        lWriter.AddInteger(conId, "Contract Id")
+        lWriter.AddInteger(contractId,"Contract Id")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

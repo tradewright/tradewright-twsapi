@@ -104,6 +104,7 @@ Friend Enum ApiSocketOutMsgType
     CancelWshMetaData = 101
     RequestWshEventData = 102
     CancelWshEventData = 103
+    RequestUserInformation = 104
 
     Max
 End Enum

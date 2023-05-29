@@ -56,9 +56,9 @@ Friend Class RequestFundamentalDataGenerator
         lWriter.AddInteger(VERSION, "Version")
         lWriter.AddInteger(pReqId, "ReqId")
 
-        lWriter.AddInteger(pContract.ConId, "ConId")
+        lWriter.AddInteger(pContract.ContractId, "ContractId")
         lWriter.AddString(pContract.Symbol?.ToUpper(), "Symbol")
-        lWriter.AddString(IBAPI.SecurityTypes.ToInternalString(pContract.SecType), "Sectype")
+        lWriter.AddString(IBAPI.SecurityTypes.ToInternalString(pContract.SecurityType), "Sectype")
         lWriter.AddString(pContract.Exchange, "Exchange")
         lWriter.AddString(pContract.PrimaryExch, "PrimaryExch")
         lWriter.AddString(pContract.CurrencyCode, "Currency")

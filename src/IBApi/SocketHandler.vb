@@ -184,7 +184,7 @@ Friend Class SocketHandler
         mIsConnecting = False
         mIsConnected = False
 
-        If Not mConnectionTimer Is Nothing Then mConnectionTimer.Dispose()
+        If mConnectionTimer IsNot Nothing Then mConnectionTimer.Dispose()
 
         releaseSocket()
 
@@ -241,7 +241,7 @@ Friend Class SocketHandler
     End Sub
 
     Private Sub releaseSocket()
-        If Not Socket Is Nothing Then
+        If Socket IsNot Nothing Then
             IBAPI.EventLogger.Log($"Releasing socket: {getConnectionString()}", ModuleName, NameOf(releaseSocket))
             Socket.Close()
             Socket = Nothing

@@ -72,20 +72,20 @@ Public Class Order
     ' main Order fields
     Public Property OrderId As Integer
     Public Property ClientID As Integer
-    Public Property PermId As Integer
+    Public Property PermanentId As Integer
     Public Property Action As OrderAction
     Public Property TotalQuantity As Decimal
     Public Property OrderType As OrderType
-    Public Property LmtPrice As Double?
+    Public Property LimitPrice As Double?
     Public Property AuxPrice As Double?
 
     ' extended Order fields
-    Public Property Tif As OrderTimeInForce
+    Public Property TimeInForce As OrderTimeInForce
     Public Property ActiveStartTime As String ' GTC orders
     Public Property ActiveStopTime As String ' GTC orders
     Public Property OcaGroup As String ' one cancels all group name
     Public Property OcaType As OcaType
-    Public Property OrderRef As String
+    Public Property OrderReference As String
     Public Property ParentId As Integer ' Parent Order Id, to associate Auto STP or TRAIL orders with the original Order.
     Public Property BlockOrder As Boolean
     Public Property SweepToFill As Boolean
@@ -98,7 +98,7 @@ Public Class Order
     Public Property OverridePercentageConstraints As Boolean
     Public Property Rule80A As String ' Individual = 'I', Agency = 'A', AgentOtherMember = 'W', IndividualPTIA = 'J', AgencyPTIA = 'U', AgentOtherMemberPTIA = 'M', IndividualPT = 'K', AgencyPT = 'Y', AgentOtherMemberPT = 'N'
     Public Property AllOrNone As Boolean
-    Public Property MinQty As Integer?
+    Public Property MinimumQuantity As Integer?
     Public Property PercentOffset As Double? ' REL orders only
     Public Property TrailStopPrice As Double? ' for TRAILLIMIT orders only
     Public Property TrailingPercent As Double? ' specify the percentage, e.g. 3, not .03
@@ -117,7 +117,7 @@ Public Class Order
     Public Property ExemptCode As Integer
 
     ' SMART routing only
-    Public Property DiscretionaryAmt As Double
+    Public Property DiscretionaryAmount As Double
 
     Public Property OptOutSmartRouting As Boolean
 
@@ -126,7 +126,7 @@ Public Class Order
 
     ' BOX ORDERS ONLY
     Public Property StartingPrice As Double?
-    Public Property StockRefPrice As Double?
+    Public Property StockReferencePrice As Double?
     Public Property Delta As Double?
 
     ' pegged to stock or VOL orders
@@ -140,7 +140,7 @@ Public Class Order
     Public Property ReferencePriceType As Integer? ' 1=Average, 2 = BidOrAsk
     Public Property DeltaNeutralOrderType As OrderType
     Public Property DeltaNeutralAuxPrice As Double?
-    Public Property DeltaNeutralConId As Integer
+    Public Property DeltaNeutralContractId As Integer
     Public Property DeltaNeutralSettlingFirm As String
     Public Property DeltaNeutralClearingAccount As String
     Public Property DeltaNeutralClearingIntent As String
@@ -154,21 +154,21 @@ Public Class Order
     Public Property BasisPointsType As Integer? ' EFP orders only
 
     ' SCALE ORDERS ONLY
-    Public Property ScaleInitLevelSize As Integer?
-    Public Property ScaleSubsLevelSize As Integer?
+    Public Property ScaleInititialLevelSize As Integer?
+    Public Property ScaleSubsequentLevelSize As Integer?
     Public Property ScalePriceIncrement As Double?
     Public Property ScalePriceAdjustValue As Double?
     Public Property ScalePriceAdjustInterval As Integer?
     Public Property ScaleProfitOffset As Double?
     Public Property ScaleAutoReset As Boolean
-    Public Property ScaleInitPosition As Integer?
-    Public Property ScaleInitFillQty As Integer?
+    Public Property ScaleInitialPosition As Integer?
+    Public Property ScaleInitialFillQuantity As Integer?
     Public Property ScaleRandomPercent As Boolean
     Public Property ScaleTable As String
 
     ' HEDGE ORDERS ONLY
     Public Property HedgeType As HedgeType ' 'D' - delta, 'B' - beta, 'F' - FX, 'P' - pair
-    Public Property HedgeParam As String ' beta value for beta hedge (in range 0-1), ratio for pair hedge
+    Public Property HedgeParameter As String ' beta value for beta hedge (in range 0-1), ratio for pair hedge
 
     ' Clearing info
     Public Property Account As String ' IB account
@@ -177,24 +177,24 @@ Public Class Order
     Public Property ClearingIntent As String ' "" (Default), "IB", "Away", "PTA" (PostTrade)
 
     ' ALGO ORDERS ONLY
-    Public Property AlgoStrategy As String
-    Public Property AlgoParams() As TagValue()
+    Public Property AlgorithmStrategy As String
+    Public Property AlgorithmParameters() As TagValue()
 
     ' What-if
     Public Property WhatIf As Boolean
 
-    Public Property AlgoId As String
+    Public Property AlgorithmId As String
 
     ' Not Held
     Public Property NotHeld As Boolean
 
     ' Smart combo routing params
-    Public Property SmartComboRoutingParams As List(Of TagValue)
+    Public Property SmartComboRoutingParameters As List(Of TagValue)
 
     ' order combo legs
     Public Property OrderComboLegs() As OrderComboLeg()
 
-    Public Property OrderMiscOptions As List(Of TagValue)
+    Public Property OrderMiscellaneousOptions As List(Of TagValue)
 
     Public Property Solicited As Boolean
     Public Property ModelCode As String
@@ -205,7 +205,7 @@ Public Class Order
     ''' </summary>
     ''' <returns></returns>
     Public Property ExtOperator As String
-    Public Property CashQty As Double?
+    Public Property CashQuantity As Double?
     Public Property Mifid2DecisionMaker As String
     Public Property Mifid2DecisionAlgo As String
     Public Property Mifid2ExecutionTrader As String
@@ -216,12 +216,12 @@ Public Class Order
     Public Property RandomizePrice As Boolean
     Public Property AutoCancelDate As String
     Public Property FilledQuantity As Decimal?
-    Public Property RefFuturesConId As Integer?
+    Public Property ReferenceFutureContractId As Integer?
     Public Property AutoCancelParent As Boolean
     Public Property Shareholder As String
     Public Property ImbalanceOnly As Boolean
     Public Property RouteMarketableToBbo As Boolean
-    Public Property ParentPermId As Long?
+    Public Property ParentPermanentId As Long?
 
 
     ''' <summary>
@@ -270,7 +270,7 @@ Public Class Order
     ''' - DOC_TODO
     ''' </summary>
     ''' <returns></returns>
-    Public Property LmtPriceOffset As Double?
+    Public Property LimitPriceOffset As Double?
 
     ''' <summary>
     ''' For Adjusted Stop orders, specifies the Stop price Of the adjusted (STP) parent.
@@ -338,30 +338,11 @@ Public Class Order
     '@================================================================================
 
     Public Sub New()
-        ActiveStartTime = ""
-        ActiveStopTime = ""
-        OutsideRth = False
         OpenClose = "O"
         Origin = Customer
-        DesignatedLocation = ""
         ExemptCode = -1
-        OptOutSmartRouting = False
         DeltaNeutralOrderType = OrderType.None
-        DeltaNeutralConId = 0
-        DeltaNeutralSettlingFirm = ""
-        DeltaNeutralClearingAccount = ""
-        DeltaNeutralClearingIntent = ""
-        DeltaNeutralOpenClose = ""
-        DeltaNeutralShortSale = False
-        DeltaNeutralShortSaleSlot = 0
-        DeltaNeutralDesignatedLocation = ""
-        ScaleAutoReset = False
-        ScaleRandomPercent = False
-        ScaleTable = ""
-        WhatIf = False
-        NotHeld = False
         Conditions = New List(Of OrderCondition)
-        ExtOperator = ""
         Tier = New SoftDollarTier("", "", "")
     End Sub
 

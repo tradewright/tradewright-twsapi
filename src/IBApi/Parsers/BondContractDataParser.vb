@@ -34,29 +34,28 @@ Friend NotInheritable Class BondContractDataParser
 
     Private Const ModuleName As String = NameOf(BondContractDataParser)
 
-    Friend Overrides Async Function ParseAsync(pVersion As Integer, timestamp As Date) As Task(Of Boolean)
-        Dim lContract As New Contract
-        Dim lContractDetails As New ContractDetails With {
-            .Summary = lContract
+    Friend Overrides Async Function ParseAsync(version As Integer, timestamp As Date) As Task(Of Boolean)
+        Dim contract As New Contract
+        Dim contractDetails As New ContractDetails With {
+            .Summary = contract
         }
 
-        Dim lRequestId = If(pVersion >= 3, Await _Reader.GetIntAsync("Req Id"), -1)
+        Dim requestId = If(version >= 3, Await _Reader.GetIntAsync("Req Id"), -1)
 
-        lContract.Symbol = Await _Reader.GetStringAsync("Symbol")
-        lContract.SecType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sectype"))
+        contract.Symbol = Await _Reader.GetStringAsync("Symbol")
+        contract.SecurityType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sectype"))
 
-        With lContractDetails
+        With contractDetails
             .Cusip = Await _Reader.GetStringAsync("Cusip")
             .Coupon = Await _Reader.GetDoubleAsync("Coupon")
 
             Dim lMaturity = Await _Reader.GetStringAsync("Maturity")
             If Not String.IsNullOrEmpty(lMaturity) Then
                 Dim ar() = lMaturity.Split({" "c}, StringSplitOptions.RemoveEmptyEntries)
-                If ar.Length > 0 Then lContract.Expiry = ar(0)
-                If ar.Length > 1 Then lContractDetails.LastTradeTime = ar(1)
-                If ar.Length > 2 Then lContractDetails.TimeZoneId = ar(2)
+                If ar.Length > 0 Then contractDetails.Maturity = ar(0)
+                If ar.Length > 1 Then contractDetails.LastTradeTime = ar(1)
+                If ar.Length > 2 Then contractDetails.TimeZoneId = ar(2)
             End If
-            .Maturity = Await _Reader.GetStringAsync("Maturity")
             .IssueDate = Await _Reader.GetStringAsync("IssueDate")
             .Ratings = Await _Reader.GetStringAsync("Ratings")
             .BondType = Await _Reader.GetStringAsync("BondType")
@@ -64,56 +63,66 @@ Friend NotInheritable Class BondContractDataParser
             .Convertible = Await _Reader.GetBooleanAsync("Convertible")
             .Callable = Await _Reader.GetBooleanAsync("Callable")
             .Putable = Await _Reader.GetBooleanAsync("Putable")
-            .DescAppend = Await _Reader.GetStringAsync("DescAppend")
+            .BondDescription = Await _Reader.GetStringAsync("DescAppend")
         End With
 
-        lContract.Exchange = Await _Reader.GetStringAsync("Exchange")
-        lContract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
-        lContractDetails.MarketName = Await _Reader.GetStringAsync("MarketName")
-        lContract.TradingClass = Await _Reader.GetStringAsync("TradingClass")
-        lContract.ConId = Await _Reader.GetIntAsync("Con Id")
-        lContractDetails.MinTick = Await _Reader.GetDoubleAsync("MinTick")
+        contract.Exchange = Await _Reader.GetStringAsync("Exchange")
+        contract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
+        contractDetails.MarketName = Await _Reader.GetStringAsync("MarketName")
+        contract.TradingClass = Await _Reader.GetStringAsync("TradingClass")
+        contract.ContractId = Await _Reader.GetIntAsync("Con Id")
+        contractDetails.MinimumTick = Await _Reader.GetDoubleAsync("MinTick")
 
-        If ServerVersion >= ApiServerVersion.MD_SIZE_MULTIPLIER Then lContractDetails.MDSizeMultiplier = Await _Reader.GetIntAsync("MDSizeMultiplier")
-
-        lContractDetails.OrderTypes = Await _Reader.GetStringAsync("OrderTypes")
-        lContractDetails.ValidExchanges = Await _Reader.GetStringAsync("ValidExchanges")
-
-        If (pVersion >= 2) Then
-            lContractDetails.NextOptionDate = Await _Reader.GetStringAsync("Next Option Date")
-            lContractDetails.NextOptionType = Await _Reader.GetStringAsync("Next Option Type")
-            lContractDetails.NextOptionPartial = Await _Reader.GetBooleanAsync("Next Option Partial")
-            lContractDetails.Notes = Await _Reader.GetStringAsync("Notes")
-        End If
-        If pVersion >= 4 Then Await _Reader.GetStringAsync("LongName")
-        If pVersion >= 6 Then
-            lContractDetails.EvRule = Await _Reader.GetStringAsync("EvRule")
-            lContractDetails.EvMultiplier = Await _Reader.GetDoubleAsync("EvMultiplier")
+        If ServerVersion >= ApiServerVersion.MD_SIZE_MULTIPLIER And ServerVersion < ApiServerVersion.SIZE_RULES Then
+            ' MDSizeMultiplier is no longer used
+            Await _Reader.GetIntAsync("MDSizeMultiplier")
         End If
 
-        If pVersion >= 5 Then
-            Dim lSecIdListCount = Await _Reader.GetIntAsync("SecIdListCount")
-            If lSecIdListCount > 0 Then
-                Dim lSecIdList = New List(Of TagValue)
-                For i = 0 To lSecIdListCount - 1
+        contractDetails.OrderTypes = Await _Reader.GetStringAsync("OrderTypes")
+        contractDetails.ValidExchanges = Await _Reader.GetStringAsync("ValidExchanges")
+
+        If (version >= 2) Then
+            contractDetails.NextOptionDate = Await _Reader.GetStringAsync("Next Option Date")
+            contractDetails.NextOptionType = Await _Reader.GetStringAsync("Next Option Type")
+            contractDetails.NextOptionPartial = Await _Reader.GetBooleanAsync("Next Option Partial")
+            contractDetails.Notes = Await _Reader.GetStringAsync("Notes")
+        End If
+        If version >= 4 Then Await _Reader.GetStringAsync("LongName")
+        If version >= 6 Then
+            contractDetails.EvRule = Await _Reader.GetStringAsync("EvRule")
+            contractDetails.EvMultiplier = Await _Reader.GetDoubleAsync("EvMultiplier")
+        End If
+
+        If version >= 5 Then
+            Dim secIdListCount = Await _Reader.GetIntAsync("SecIdListCount")
+            If secIdListCount > 0 Then
+                Dim secIdList = New List(Of TagValue)
+                For i = 0 To secIdListCount - 1
                     Dim tv = New TagValue With {
                         .Tag = Await _Reader.GetStringAsync("Tag"),
                         .Value = Await _Reader.GetStringAsync("Value")
                     }
-                    lSecIdList.Add(tv)
+                    secIdList.Add(tv)
                 Next
-                lContractDetails.SecIdList = lSecIdList
+                contractDetails.SecurityIdsList = secIdList
             End If
         End If
 
-        If ServerVersion >= ApiServerVersion.AGG_GROUP Then lContractDetails.AggGroup = Await _Reader.GetIntAsync("Agg Group")
+        If ServerVersion >= ApiServerVersion.AGG_GROUP Then contractDetails.AggregatedGroup = Await _Reader.GetIntAsync("Agg Group")
 
-        If ServerVersion >= ApiServerVersion.MARKET_RULES Then lContractDetails.MarketRuleIds = Await _Reader.GetStringAsync("Market Rule Ids")
+        If ServerVersion >= ApiServerVersion.MARKET_RULES Then contractDetails.MarketRuleIds = Await _Reader.GetStringAsync("Market Rule Ids")
+
+        If ServerVersion >= ApiServerVersion.SIZE_RULES Then
+            contractDetails.MinimumSize = Await _Reader.GetNullableDecimalAsync("MinimumSize")
+            contractDetails.SizeIncrement = Await _Reader.GetNullableDecimalAsync("SizeIncrement")
+            contractDetails.SuggestedSizeIncrement = Await _Reader.GetNullableDecimalAsync("SuggestedSizeIncrement")
+        End If
+
 
         LogSocketInputMessage(ModuleName, "ParseAsync")
 
         Try
-            _EventConsumers.ContractDetailsConsumer?.NotifyContract(New ContractDetailsEventArgs(timestamp, lRequestId, lContractDetails))
+            _EventConsumers.ContractDetailsConsumer?.NotifyContract(New ContractDetailsEventArgs(timestamp, requestId, contractDetails))
             Return True
         Catch e As Exception
             Throw New ApiApplicationException("NotifyContract", e)
