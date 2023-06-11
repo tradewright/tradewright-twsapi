@@ -1,0 +1,155 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ProjectType>Local</ProjectType>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>TwsApiExplorer</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TwsApiExplorer</RootNamespace>
+    <StartupObject>TwsApiExplorer.MainForm</StartupObject>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DocumentationFile>TWSAPI_VBSample.xml</DocumentationFile>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>Win32 = True</DefineConstants>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DocumentationFile>TWSAPI_VBSample.xml</DocumentationFile>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>Win32 = True</DefineConstants>
+    <DefineDebug>false</DefineDebug>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>true</RemoveIntegerChecks>
+    <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <OptionStrict>On</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Update="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Update="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Update="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="System.Drawing" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="FDeltaNeutralContract.Designer.vb">
+      <DependentUpon>FDeltaNeutralContract.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FPnL.Designer.vb">
+      <DependentUpon>FPnL.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FAdjustStop.Designer.vb">
+      <DependentUpon>FAdjustStop.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FAlgoParams.Designer.vb">
+      <DependentUpon>FAlgoParams.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FCondition.Designer.vb">
+      <DependentUpon>FCondition.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FConditions.Designer.vb">
+      <DependentUpon>FConditions.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FPegBench.Designer.vb">
+      <DependentUpon>FPegBench.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FOptions.Designer.vb">
+      <DependentUpon>FOptions.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FGroups.Designer.vb">
+      <DependentUpon>FGroups.vb</DependentUpon>
+    </Compile>
+    <Compile Update="FSmartComponents.designer.vb">
+      <DependentUpon>FSmartComponents.vb</DependentUpon>
+    </Compile>
+    <Compile Update="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Qaz.Designer.vb">
+      <DependentUpon>Qaz.vb</DependentUpon>
+    </Compile>
+  </ItemGroup>
+<!--
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+-->
+  <ItemGroup>
+    <PackageReference Include="TradeWright.IBAPI" Version="1022.1.0" />
+    <PackageReference Include="TradeWright.Themes" Version="2.0.0" />
+    <PackageReference Include="TradeWright.Utilities.Logging">
+      <Version>1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="FDeltaNeutralContract.resX" />
+  </ItemGroup>
+</Project>
