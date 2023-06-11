@@ -125,5 +125,10 @@ Public Enum TickType
     EtfFrozenNavLast
     EtfNavHigh
     EtfNavLow
+    SocialMarketAnalytics
+    EstimatedIpoMidpoint
+    FinalIpoLast
+    DelayedYieldBid
+    DelayedYieldAsk
 End Enum
 

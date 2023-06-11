@@ -49,5 +49,15 @@ Public Enum OrderType
     PeggedToPrimary
     Vol
     PeggedToBenchmark
+    Auction
+    PeggedToStock
+    BoxTop
+    PassiveRelative
+    PeggedToBest
+    PeggedToMidpoint
+    StopWithProtection
+    RelativeLimitCombo
+    RelativeMarketCombo
+
 End Enum
 

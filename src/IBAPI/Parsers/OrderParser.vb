@@ -64,7 +64,16 @@ Friend Class OrderParser
             If .OrderType = OrderType.None Then Throw New InvalidOperationException("Invalid OrderYype")
             .LimitPrice = Await reader.GetNullableDoubleAsync("Limit price")
             .AuxPrice = Await reader.GetNullableDoubleAsync("Aux price")
-            .TimeInForce = IBAPI.OrderTIFs.Parse(Await reader.GetStringAsync("Time in force"))
+            Dim tifString = Await reader.GetStringAsync("Time in force")
+            If tifString.Equals("OPG") Then
+                If .OrderType = OrderType.Market Then
+                    .OrderType = OrderType.MarketOnOpen
+                ElseIf .OrderType = OrderType.Limit Then
+                    .OrderType = OrderType.LimitOnOpen
+                End If
+            Else
+                .TimeInForce = IBAPI.OrderTIFs.Parse(tifString)
+            End If
             .OcaGroup = Await reader.GetStringAsync("OCA group")
             .Account = Await reader.GetStringAsync("Account")
             .OpenClose = Await reader.GetStringAsync("Open/close")
@@ -86,10 +95,10 @@ Friend Class OrderParser
                 .FaGroup = Await reader.GetStringAsync("FA Group")
                 .FaMethod = Await reader.GetStringAsync("FA method")
                 .FaPercentage = Await reader.GetStringAsync("FA Percentage")
-                .FaProfile = Await reader.GetStringAsync("FA Profile")
+                If serverVersion < ApiServerVersion.FA_PROFILE_DESUPPORT Then Await reader.GetStringAsync("FA Profile")
             End If
 
-            If serverVersion >= ApiServerVersion.MODELS_SUPPORT Then .ModelCode = Await reader.GetStringAsync("Model Code")
+                If serverVersion >= ApiServerVersion.MODELS_SUPPORT Then .ModelCode = Await reader.GetStringAsync("Model Code")
 
             .GoodTillDate = Await reader.GetStringAsync("Good till date")
 
@@ -358,7 +367,7 @@ Friend Class OrderParser
                 End If
             End If
 
-                If orderPhase = OrderPhase.Completed Then
+            If orderPhase = OrderPhase.Completed Then
                 .AutoCancelDate = Await reader.GetStringAsync("AutoCancelDate")
                 .FilledQuantity = Await reader.GetNullableDecimalAsync("FilledQuantity")
                 .ReferenceFutureContractId = Await reader.GetIntAsync("RefFuturesConId")
@@ -373,13 +382,13 @@ Friend Class OrderParser
                 orderState.CompletedStatus = Await reader.GetStringAsync("CompletedStatus")
             End If
 
-            'If serverVersion >= ApiServerVersion.PEGBEST_PEGMID_OFFSETS Then
-            '    .MinTradeQty = Await reader.GetNullableIntAsync("MinTradeQty")
-            '    .MinCompeteSize = Await reader.GetNullableIntAsync("MinCompeteSize")
-            '    .CompeteAgainstBestOffset = Await reader.GetNullableDoubleAsync("CompeteAgainstBestOffset")
-            '    .MidOffsetAtWhole = Await reader.GetNullableDoubleAsync("MidOffsetAtWhole")
-            '    .MidOffsetAtHalf = Await reader.GetNullableDoubleAsync("MidOffsetAtHalf")
-            'End If
+            If serverVersion >= ApiServerVersion.PEGBEST_PEGMID_OFFSETS Then
+                .MinimumTradeQuantity = Await reader.GetNullableIntAsync("MinimumTradeQuantity")
+                .MinimumCompeteSize = Await reader.GetNullableIntAsync("MinimumCompeteSize")
+                .CompeteAgainstBestOffset = Await reader.GetNullableDoubleAsync("CompeteAgainstBestOffset")
+                .MidOffsetAtWhole = Await reader.GetNullableDoubleAsync("MidOffsetAtWhole")
+                .MidOffsetAtHalf = Await reader.GetNullableDoubleAsync("MidOffsetAtHalf")
+            End If
         End With
 
         Return True

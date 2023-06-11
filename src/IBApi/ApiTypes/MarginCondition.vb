@@ -24,6 +24,7 @@
 
 #End Region
 
+Imports System.Globalization
 ''' <summary>
 ''' A TwsMarginCondition Is met whenever the margin penetrates the given percent.
 ''' </summary>
@@ -34,10 +35,10 @@ Public Class MarginCondition
 
     Protected Overrides Property Value As String
         Get
-            Return Percent.ToString()
+            Return Percent.ToString(NumberFormatInfo.InvariantInfo)
         End Get
         Set
-            Percent = Integer.Parse(Value)
+            Percent = Integer.Parse(Value, NumberFormatInfo.InvariantInfo)
         End Set
     End Property
 

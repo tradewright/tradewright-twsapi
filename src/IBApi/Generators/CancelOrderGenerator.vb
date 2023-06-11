@@ -28,7 +28,7 @@ Friend Class CancelOrderGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(pOrderId As Integer)
+    Private Delegate Sub ApiMethodDelegate(orderId As Integer, manualOrderCancelTime As String)
 
     Private Const ModuleName As String = NameOf(CancelOrderGenerator)
 
@@ -44,15 +44,16 @@ Friend Class CancelOrderGenerator
         End Get
     End Property
 
-    Private Sub cancelOrder(pOrderId As Integer)
+    Private Sub cancelOrder(orderId As Integer, manualOrderCancelTime As String)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
 
         Const VERSION As Integer = 1
-        Dim lWriter = CreateOutputMessageGenerator()
-        StartMessage(lWriter, ApiSocketOutMsgType.CancelOrder)
-        lWriter.AddInteger(VERSION, "Version")
-        lWriter.AddInteger(pOrderId, "Order id")
-        lWriter.SendMessage(_EventConsumers.SocketDataConsumer, True)
+        Dim writer = CreateOutputMessageGenerator()
+        StartMessage(writer, ApiSocketOutMsgType.CancelOrder)
+        writer.AddInteger(VERSION, "Version")
+        writer.AddInteger(orderId, "Order id")
+        If ServerVersion >= ApiServerVersion.MANUAL_ORDER_TIME Then writer.AddString(manualOrderCancelTime, "manualOrderCancelTime")
+        writer.SendMessage(_EventConsumers.SocketDataConsumer, True)
     End Sub
 
 End Class

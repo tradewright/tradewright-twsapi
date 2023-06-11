@@ -29,6 +29,7 @@ Public Class ExecutionFilter
     Public ClientID As Integer
     Public AccountCode As String
     Public Time As Date = Date.MaxValue
+    Public TimeZone As String
     Public Symbol As String
     Public SecType As SecurityType = SecurityType.None
     Public Exchange As String

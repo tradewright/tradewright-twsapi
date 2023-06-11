@@ -28,7 +28,7 @@ Friend Class RequestContractDetailsGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub RequestContractDetailsDelegate(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String)
+    Private Delegate Sub RequestContractDetailsDelegate(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String, issuerID As String)
 
     Private Const ModuleName As String = NameOf(RequestContractDetailsGenerator)
 
@@ -44,10 +44,11 @@ Friend Class RequestContractDetailsGenerator
         End Get
     End Property
 
-    Private Sub requestContractDetails(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String)
-                Const VERSION As Integer = 8
+    Private Sub requestContractDetails(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String, issuerID As String)
+        Const VERSION As Integer = 8
 
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
+        If ServerVersion < ApiServerVersion.BOND_ISSUERID And Not String.IsNullOrWhiteSpace(issuerID) Then Throw New InvalidOperationException("IssuerId not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestContractData)
@@ -58,6 +59,8 @@ Friend Class RequestContractDetailsGenerator
         lWriter.AddBoolean(pIncludeExpired, "Include expired")
         lWriter.AddString(pSecIdType, "SecIdType")
         lWriter.AddString(pSecId, "SecId")
+
+        If ServerVersion >= ApiServerVersion.BOND_ISSUERID Then lWriter.AddString(issuerID, "IssuerID")
 
         lWriter.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub

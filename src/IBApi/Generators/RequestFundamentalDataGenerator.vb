@@ -60,7 +60,7 @@ Friend Class RequestFundamentalDataGenerator
         lWriter.AddString(pContract.Symbol?.ToUpper(), "Symbol")
         lWriter.AddString(IBAPI.SecurityTypes.ToInternalString(pContract.SecurityType), "Sectype")
         lWriter.AddString(pContract.Exchange, "Exchange")
-        lWriter.AddString(pContract.PrimaryExch, "PrimaryExch")
+        lWriter.AddString(pContract.PrimaryExchange, "PrimaryExch")
         lWriter.AddString(pContract.CurrencyCode, "Currency")
         lWriter.AddString(pContract.LocalSymbol?.ToUpper(), "LocalSymbol")
         lWriter.AddString(pReportType, "ReportType")

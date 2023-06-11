@@ -24,15 +24,17 @@
 
 #End Region
 
+Imports System.Globalization
+
 Public Class VolumeCondition
     Inherits ContractCondition
 
     Protected Overrides Property Value As String
         Get
-            Return Volume.ToString()
+            Return Volume.ToString(NumberFormatInfo.InvariantInfo)
         End Get
         Set
-            Volume = Integer.Parse(Value)
+            Volume = Integer.Parse(Value, NumberFormatInfo.InvariantInfo)
         End Set
     End Property
 

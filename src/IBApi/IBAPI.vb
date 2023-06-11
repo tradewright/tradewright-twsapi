@@ -24,18 +24,16 @@
 
 #End Region
 
-Imports System.Collections.Generic
 Imports System.Globalization
 Imports System.Linq
 Imports System.Reflection
 Imports System.Threading
-Imports System.Threading.Tasks
 
 ''' <summary>
 ''' This class provides the Application Programming Interface to Interactive Brokers' 
 ''' Trader Workstation and Gateway products.
 ''' 
-''' Updated to IB commit 6a134a32f449a3ed35a45ace35e92227566fb2c7 on 24/01/2022
+''' Updated to IB commit 61a7a3b6f06412a529c7c5feda4c39d8ffab3813 on 05/29/2023
 ''' 
 ''' </summary>
 Public Class IBAPI
@@ -48,6 +46,8 @@ Public Class IBAPI
     Public Const MaxHistoricalDataRequestId As Integer = IdManager.MaxCallersHistoricalDataRequestId
     Public Const MaxMarketDataRequestId As Integer = IdManager.MaxCallersMarketDataRequestId
     Public Const MaxMarketDepthRequestId As Integer = IdManager.MaxCallersMarketDepthRequestId
+
+    Friend Const Infinity As String = "Infinity"
 
 #End Region
 
@@ -287,7 +287,7 @@ Public Class IBAPI
 
     Public Shared ReadOnly OcaTypes As New ExtendedEnum(Of [Enum], OcaType)({
             ("", OcaType.None, EnumNameType.Alias),
-            ("*None*", OcaType.None, EnumNameType.NonAliasExternal),
+            ("*None*", OcaType.None, EnumNameType.External),
             ("CancelWithBlock", OcaType.CancelWithBlock, EnumNameType.Both),
             ("ReduceWithBlock", OcaType.ReduceWithBlock, EnumNameType.Both),
             ("ReduceNonBlock", OcaType.ReduceNonBlock, EnumNameType.Both)
@@ -296,7 +296,7 @@ Public Class IBAPI
     Public Shared ReadOnly OptionRights As New ExtendedEnum(Of [Enum], OptionRight)({
             ("", OptionRight.None, EnumNameType.Internal),
             ("0", OptionRight.None, EnumNameType.Alias),    ' PortfolioValue messages seem to use this 
-            ("*None*", OptionRight.None, EnumNameType.NonAliasExternal),
+            ("*None*", OptionRight.None, EnumNameType.External),
             ("?", OptionRight.None, EnumNameType.External),
             ("Call", OptionRight.Call, EnumNameType.External),
             ("C", OptionRight.Call, EnumNameType.Internal),
@@ -313,13 +313,13 @@ Public Class IBAPI
             ("Sell Short", OrderAction.SellShort, EnumNameType.External),
             ("SSHORT", OrderAction.SellShort, EnumNameType.Internal),
             ("", OrderAction.None, EnumNameType.Internal),
-            ("*None*", OrderAction.None, EnumNameType.NonAliasExternal)
+            ("*None*", OrderAction.None, EnumNameType.External)
         })
 
     Public Shared ReadOnly OrderTIFs As New ExtendedEnum(Of [Enum], OrderTimeInForce)(
         {
-            ("", OrderTimeInForce.None, EnumNameType.Internal),
-            ("*None*", OrderTimeInForce.None, EnumNameType.NonAliasExternal),
+            ("", OrderTimeInForce.None, EnumNameType.Internal Or EnumNameType.Alias),
+            ("*None*", OrderTimeInForce.None, EnumNameType.External),
             ("Day", OrderTimeInForce.Day, EnumNameType.External),
             ("DAY", OrderTimeInForce.Day, EnumNameType.Internal),
             ("Good Till Cancelled", OrderTimeInForce.GoodTillCancelled, EnumNameType.External),
@@ -328,26 +328,31 @@ Public Class IBAPI
             ("GTD", OrderTimeInForce.GoodTillDAte, EnumNameType.Internal),
             ("Immediate or Cancel", OrderTimeInForce.ImmediateOrCancel, EnumNameType.External),
             ("IOC", OrderTimeInForce.ImmediateOrCancel, EnumNameType.Internal),
-            ("Market Open", OrderTimeInForce.MarketOpen, EnumNameType.External),
-            ("OPG", OrderTimeInForce.MarketOpen, EnumNameType.Internal),
             ("Fill or Kill", OrderTimeInForce.FillOrKill, EnumNameType.External),
             ("FOK", OrderTimeInForce.FillOrKill, EnumNameType.Internal),
             ("Day Till Cancelled", OrderTimeInForce.DayTillCancelled, EnumNameType.External),
-            ("DTC", OrderTimeInForce.DayTillCancelled, EnumNameType.Internal)
+            ("DTC", OrderTimeInForce.DayTillCancelled, EnumNameType.Internal),
+            ("Auction", OrderTimeInForce.Auction, EnumNameType.External),
+            ("DUC", OrderTimeInForce.Auction, EnumNameType.Internal)
         })
 
     Public Shared ReadOnly OrderTypes As New ExtendedEnum(Of [Enum], OrderType)(
         {
             ("", OrderType.None, EnumNameType.Internal),
             ("None", OrderType.None, EnumNameType.Alias),
-            ("*None*", OrderType.None, EnumNameType.NonAliasExternal),
+            ("*None*", OrderType.None, EnumNameType.External),
             ("MKT", OrderType.Market, EnumNameType.Both),
-            ("MKTCLS", OrderType.MarketOnClose, EnumNameType.Both),
+            ("MOC", OrderType.MarketOnClose, EnumNameType.Both),
+            ("MKTCLS", OrderType.MarketOnClose, EnumNameType.Alias),
+            ("MKT CLS", OrderType.MarketOnClose, EnumNameType.Alias),
             ("LMT", OrderType.Limit, EnumNameType.Both),
-            ("LMTCLS", OrderType.LimitOnClose, EnumNameType.Both),
-            ("PEGMKT", OrderType.PeggedToMarket, EnumNameType.Both),
+            ("LOC", OrderType.LimitOnClose, EnumNameType.Both),
+            ("LMTCLS", OrderType.LimitOnClose, EnumNameType.Alias),
+            ("LMT CLS", OrderType.LimitOnClose, EnumNameType.Alias),
+            ("PEG MKT", OrderType.PeggedToMarket, EnumNameType.Both),
+            ("PEGMKT", OrderType.PeggedToMarket, EnumNameType.Alias),
             ("STP", OrderType.Stop, EnumNameType.Both),
-            ("STPLMT", OrderType.StopLimit, EnumNameType.Both),
+            ("STPLMT", OrderType.StopLimit, EnumNameType.Alias),
             ("STP LMT", OrderType.StopLimit, EnumNameType.Both),
             ("TRAIL", OrderType.Trail, EnumNameType.Both),
             ("REL", OrderType.Relative, EnumNameType.Both),
@@ -358,15 +363,35 @@ Public Class IBAPI
             ("ALERT", OrderType.Alert, EnumNameType.Both),
             ("LIT", OrderType.LimitIfTouched, EnumNameType.Both),
             ("MIT", OrderType.MarketIfTouched, EnumNameType.Both),
-            ("TRAILLMT", OrderType.TrailLimit, EnumNameType.Both),
-            ("MKTPROT", OrderType.MarketWithProtection, EnumNameType.Both),
-            ("MOO", OrderType.MarketOnOpen, EnumNameType.Both),
-            ("MOC", OrderType.MarketOnClose, EnumNameType.Both),
-            ("LOO", OrderType.LimitOnOpen, EnumNameType.Both),
-            ("LOC", OrderType.LimitOnClose, EnumNameType.Both),
-            ("PEGPRI", OrderType.PeggedToPrimary, EnumNameType.Both),
+            ("TRAIL LMT", OrderType.TrailLimit, EnumNameType.Both),
+            ("TRAILLMT", OrderType.TrailLimit, EnumNameType.Alias),
+            ("MKT PROT", OrderType.MarketWithProtection, EnumNameType.Both),
+            ("MKTPROT", OrderType.MarketWithProtection, EnumNameType.Alias),
+            ("MOO", OrderType.MarketOnOpen, EnumNameType.External),
+            ("MKT", OrderType.MarketOnOpen, EnumNameType.Internal), ' note internal name is MKT not MOO
+            ("LOO", OrderType.LimitOnOpen, EnumNameType.External),
+            ("LMT", OrderType.LimitOnOpen, EnumNameType.Internal), ' note internal name is LMT not LOO
+            ("REL", OrderType.PeggedToPrimary, EnumNameType.Both),
             ("VOL", OrderType.Vol, EnumNameType.Both),
-            ("PEG BENCH", OrderType.PeggedToBenchmark, EnumNameType.Both)
+            ("PEG BENCH", OrderType.PeggedToBenchmark, EnumNameType.Both),
+            ("PEGBENCH", OrderType.PeggedToBenchmark, EnumNameType.Alias),
+            ("AUC", OrderType.Auction, EnumNameType.Both),
+            ("PEG STK", OrderType.PeggedToStock, EnumNameType.Both),
+            ("PEGSTK", OrderType.PeggedToStock, EnumNameType.Alias),
+            ("BOX TOP", OrderType.BoxTop, EnumNameType.Both),
+            ("BOXTOP", OrderType.BoxTop, EnumNameType.Alias),
+            ("PASSV REL", OrderType.PassiveRelative, EnumNameType.Both),
+            ("PASSVREL", OrderType.PassiveRelative, EnumNameType.Alias),
+            ("PEG MID", OrderType.PeggedToMidpoint, EnumNameType.Both),
+            ("PEGMID", OrderType.PeggedToMidpoint, EnumNameType.Alias),
+            ("STP PRT", OrderType.StopWithProtection, EnumNameType.Both),
+            ("STPPRT", OrderType.StopWithProtection, EnumNameType.Alias),
+            ("REL + LMT", OrderType.RelativeLimitCombo, EnumNameType.Both),
+            ("REL+LMT", OrderType.RelativeLimitCombo, EnumNameType.Alias),
+            ("REL + MKT", OrderType.RelativeMarketCombo, EnumNameType.Both),
+            ("REL+MKT", OrderType.RelativeMarketCombo, EnumNameType.Alias),
+            ("PEG BEST", OrderType.PeggedToBest, EnumNameType.Both),
+            ("PEGBEST", OrderType.PeggedToBest, EnumNameType.Alias)
         })
 
     Public Shared ReadOnly SecurityTypes As New ExtendedEnum(Of [Enum], SecurityType)(
@@ -864,27 +889,24 @@ Public Class IBAPI
         If value Is Nothing Then Return False
         For i = 0 To value.Length - 1
             Dim currChar = Asc(value(i))
-            If currChar < 32 Or currChar > 127 Then Return False
+            If currChar = 9 Or currChar = 10 Or currChar = 13 Then
+            ElseIf currChar < 32 Or currChar > 127 Then
+                Return False
+            End If
         Next
         Return True
     End Function
 
     Public Shared Function NullableDecimalFromString(val As String) As Decimal?
-        Dim result As Decimal?
-        If Not String.IsNullOrWhiteSpace(val) Then result = Decimal.Parse(val, CultureInfo.InvariantCulture)
-        Return result
+        Return If(String.IsNullOrWhiteSpace(val), Nothing, Decimal.Parse(val, CultureInfo.InvariantCulture))
     End Function
 
     Public Shared Function NullableDoubleFromString(val As String) As Double?
-        Dim result As Double?
-        If Not String.IsNullOrWhiteSpace(val) Then result = Double.Parse(val, CultureInfo.InvariantCulture)
-        Return result
+        Return If(String.IsNullOrWhiteSpace(val), Nothing, If(val = IBAPI.Infinity, Double.PositiveInfinity, Double.Parse(val, CultureInfo.InvariantCulture)))
     End Function
 
     Public Shared Function NullableIntegerFromString(val As String) As Integer?
-        Dim result As Integer?
-        If Not String.IsNullOrWhiteSpace(val) Then result = Integer.Parse(val, CultureInfo.InvariantCulture)
-        Return result
+        Return If(String.IsNullOrWhiteSpace(val), Nothing, Integer.Parse(val, CultureInfo.InvariantCulture))
     End Function
 
     Public Shared Function NullableDecimalToString(val As Decimal?) As String
@@ -900,7 +922,7 @@ Public Class IBAPI
     End Function
 
     Public Shared Function NullableDoubleToString(val As Double?, defaultValue As String) As String
-        Return If(val.HasValue, val.Value.ToString(CultureInfo.InvariantCulture), defaultValue)
+        Return If(Not val.HasValue, defaultValue, If(val.Value = Double.PositiveInfinity, IBAPI.Infinity, val.Value.ToString(CultureInfo.InvariantCulture)))
     End Function
 
     Public Shared Function NullableIntegerToString(val As Integer?) As String
@@ -1008,7 +1030,11 @@ Public Class IBAPI
     End Sub
 
     Public Sub CancelOrder(pOrderId As Integer)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelOrder, {pOrderId})
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelOrder, {pOrderId, ""})
+    End Sub
+
+    Public Sub CancelOrder(pOrderId As Integer, manualOrderCancelTime As String)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.CancelOrder, {pOrderId, manualOrderCancelTime})
     End Sub
 
     Public Sub CancelPositions()
@@ -1102,12 +1128,20 @@ Public Class IBAPI
         RequestContractData(pRequestId, pContract, pIncludeExpired, "", "")
     End Sub
 
+    Public Sub RequestContractData(pRequestId As Integer, pContract As Contract, issuerId As String)
+        RequestContractData(pRequestId, pContract, False)
+    End Sub
+
     Public Sub RequestContractData(pRequestId As Integer, pContract As Contract, pSecIdType As String, pSecId As String)
         RequestContractData(pRequestId, pContract, False, pSecIdType, pSecId)
     End Sub
 
     Public Sub RequestContractData(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String)
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestContractData, {pRequestId, pContract, pIncludeExpired, pSecIdType, pSecId})
+    End Sub
+
+    Public Sub RequestContractData(pRequestId As Integer, pContract As Contract, pIncludeExpired As Boolean, pSecIdType As String, pSecId As String, issuerID As String)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestContractData, {pRequestId, pContract, pIncludeExpired, pSecIdType, pSecId, issuerID})
     End Sub
 
     Public Sub RequestCurrentTime()
@@ -1258,8 +1292,8 @@ Public Class IBAPI
         mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestUserInformation, {requestId})
     End Sub
 
-    Public Sub RequestWshEventData(requestId As Integer, contractId As Integer)
-        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestWshEventData, {contractId, requestId})
+    Public Sub RequestWshEventData(requestId As Integer, request As WshEventDataRequest)
+        mRegistry.InvokeGenerator(ApiSocketOutMsgType.RequestWshEventData, {requestId, request})
     End Sub
 
     Public Sub RequestWshMetaData(requestId As Integer)

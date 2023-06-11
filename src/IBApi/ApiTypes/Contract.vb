@@ -72,7 +72,7 @@ Public Class Contract
 
     ' only relevant when Exchange is SMART and there are SMART routers in more
     ' than one country (eg try IBM in Tws)
-    Public Property PrimaryExch As String
+    Public Property PrimaryExchange As String
 
     ' COMBOS
     Public Property ComboLegsDescription As String ' received in open Order version 14 and up for all combos
@@ -116,7 +116,7 @@ Public Class Contract
         addField("Strike", CStr(Strike), sb)
         addField("Right", IBAPI.OptionRights.ToExternalString(OptionRight), sb)
         addField("Multiplier", CStr(Multiplier), sb)
-        addField("Primary exchange", PrimaryExch, sb)
+        addField("Primary exchange", PrimaryExchange, sb)
 
         Dim lLeg As ComboLeg
         Dim i As Integer

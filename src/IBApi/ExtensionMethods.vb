@@ -73,9 +73,7 @@ Public Module ExtensionMethods
 
     <Extension()>
     Public Function NullableDecimalFromString(val As String) As Decimal?
-        Dim result As Decimal?
-        If Not String.IsNullOrWhiteSpace(val) Then result = Decimal.Parse(val, CultureInfo.InvariantCulture)
-        Return result
+        Return If(String.IsNullOrWhiteSpace(val), Nothing, Decimal.Parse(val, CultureInfo.InvariantCulture))
     End Function
 
     <Extension()>
@@ -86,9 +84,7 @@ Public Module ExtensionMethods
 
     <Extension()>
     Public Function NullableDoubleFromString(val As String) As Double?
-        Dim result As Double?
-        If Not String.IsNullOrWhiteSpace(val) Then result = Double.Parse(val, CultureInfo.InvariantCulture)
-        Return result
+        Return If(String.IsNullOrWhiteSpace(val), Nothing, If(val = IBAPI.Infinity, Double.PositiveInfinity, Double.Parse(val, CultureInfo.InvariantCulture)))
     End Function
 
     <Extension()>
@@ -98,10 +94,19 @@ Public Module ExtensionMethods
     End Function
 
     <Extension()>
+    Public Function NullableEnumFromString(Of T As Structure)(val As String) As T?
+        Return If(String.IsNullOrWhiteSpace(val), Nothing, [Enum].Parse(Of T)(val))
+    End Function
+
+    <Extension()>
+    Public Function NullableEnumToString(Of T As Structure)(val As T?, Optional defaultValue As String = Nothing) As String
+        If defaultValue Is Nothing Then defaultValue = String.Empty
+        Return If(val.HasValue, val.Value.ToString, defaultValue)
+    End Function
+
+    <Extension()>
     Public Function NullableIntegerFromString(val As String) As Integer?
-        Dim result As Integer?
-        If Not String.IsNullOrWhiteSpace(val) Then result = Integer.Parse(val, CultureInfo.InvariantCulture)
-        Return result
+        Return If(String.IsNullOrWhiteSpace(val), Nothing, Integer.Parse(val, CultureInfo.InvariantCulture))
     End Function
 
     <Extension()>

@@ -40,15 +40,14 @@ Friend NotInheritable Class ContractDataParser
             .Summary = contract
         }
 
-        Dim requestId As Integer
-        If (version >= 3) Then requestId = IdManager.GetCallerId(Await _Reader.GetIntAsync("Req Id"), IdType.ContractData)
+        Dim requestId = If(version >= 3, IdManager.GetCallerId(Await _Reader.GetIntAsync("requestId"), IdType.ContractData), -1)
 
         contract.Symbol = Await _Reader.GetStringAsync("Symbol")
         contract.SecurityType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
 
         Dim lExpiry = Await _Reader.GetStringAsync("Expiry")
         If Not String.IsNullOrEmpty(lExpiry) Then
-            Dim ar() = lExpiry.Split({" "c}, StringSplitOptions.RemoveEmptyEntries)
+            Dim ar() = lExpiry.Split(If(lExpiry.Contains("-"c), "-"c, " "c), StringSplitOptions.RemoveEmptyEntries)
             If ar.Length > 0 Then contract.Expiry = ar(0)
             If ar.Length > 1 Then contractDetails.LastTradeTime = ar(1)
         End If
@@ -95,7 +94,7 @@ Friend NotInheritable Class ContractDataParser
 
         If version >= 5 Then
             contractDetails.LongName = Await _Reader.GetStringAsync("Long name")
-            contract.PrimaryExch = Await _Reader.GetStringAsync("Primary Exchange")
+            contract.PrimaryExchange = Await _Reader.GetStringAsync("Primary Exchange")
         End If
 
         If version >= 6 Then

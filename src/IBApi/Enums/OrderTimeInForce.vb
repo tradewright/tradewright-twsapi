@@ -30,8 +30,8 @@ Public Enum OrderTimeInForce
     GoodTillCancelled
     ImmediateOrCancel
     GoodTillDAte
-    MarketOpen
     FillOrKill
     DayTillCancelled
+    Auction
 End Enum
 

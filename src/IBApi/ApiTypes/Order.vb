@@ -65,6 +65,8 @@ Public Class Order
     Public Const OPT_FARMM = "n"c
     Public Const OPT_SPECIALIST = "y"c
 
+    Public Const CompeteAgainstBestOffsetUpToMid = Double.PositiveInfinity
+
     '@================================================================================
     ' Member variables
     '@================================================================================
@@ -105,7 +107,6 @@ Public Class Order
 
     ' Financial advisors only
     Public Property FaGroup As String
-    Public Property FaProfile As String
     Public Property FaMethod As String
     Public Property FaPercentage As String
 
@@ -222,6 +223,13 @@ Public Class Order
     Public Property ImbalanceOnly As Boolean
     Public Property RouteMarketableToBbo As Boolean
     Public Property ParentPermanentId As Long?
+    Public Property AdvancedErrorOverride As String
+    Public Property ManualOrderTime As String
+    Public Property MinimumTradeQuantity As Integer?
+    Public Property MinimumCompeteSize As Integer?
+    Public Property CompeteAgainstBestOffset As Double?
+    Public Property MidOffsetAtWhole As Double?
+    Public Property MidOffsetAtHalf As Double?
 
 
     ''' <summary>

@@ -31,7 +31,7 @@ Public Class PercentChangeCondition
 
     Protected Overrides Property Value As String
         Get
-            Return ChangePercent.ToString()
+            Return ChangePercent.ToString(NumberFormatInfo.InvariantInfo)
         End Get
         Set
             ChangePercent = Double.Parse(Value, NumberFormatInfo.InvariantInfo)

@@ -121,10 +121,12 @@ Friend NotInheritable Class MessageGenerator
     End Sub
 
     Friend Sub AddNullableDouble(value As Double?, fieldName As String)
-        If value.HasValue Then
-            AddString(value.Value.ToString(CultureInfo.InvariantCulture), fieldName)
-        Else
+        If Not value.HasValue Then
             AddString(String.Empty, fieldName)
+        ElseIf value = Double.PositiveInfinity Then
+            AddString(IBAPI.Infinity, fieldName)
+        Else
+            AddString(value.Value.ToString(CultureInfo.InvariantCulture), fieldName)
         End If
     End Sub
 
@@ -177,7 +179,7 @@ Friend NotInheritable Class MessageGenerator
         AddString(IBAPI.OptionRights.ToInternalString(value.OptionRight), $"{fieldName}.Right")
         AddString(If(value.Multiplier = 1, "", CStr(value.Multiplier)), $"{fieldName}.Multiplier")
         AddString(value.Exchange, $"{fieldName}.Exchange")
-        If Not ignorePrimaryExchange Then AddString(value.PrimaryExch, $"{fieldName}.Primary Exchange")
+        If Not ignorePrimaryExchange Then AddString(value.PrimaryExchange, $"{fieldName}.Primary Exchange")
         AddString(value.CurrencyCode, $"{fieldName}.Currency")
         AddString(value.LocalSymbol?.ToUpper(), $"{fieldName}.Local Symbol")
         AddString(value.TradingClass, $"{fieldName}.Trading Class")

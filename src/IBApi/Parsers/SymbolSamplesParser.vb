@@ -44,17 +44,24 @@ Friend NotInheritable Class SymbolSamplesParser
             contract.ContractId = Await _Reader.GetIntAsync("ContractId")
             contract.Symbol = Await _Reader.GetStringAsync("Symbol")
             contract.SecurityType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sec type"))
-            contract.PrimaryExch = Await _Reader.GetStringAsync("Primary exch")
-                contract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
+            contract.PrimaryExchange = Await _Reader.GetStringAsync("Primary exch")
+            contract.CurrencyCode = Await _Reader.GetStringAsync("Currency")
 
-                ' read derivative sec types list
-                dim derivativeSecTypes = New List(Of String)
+            ' read derivative sec types list
+            Dim derivativeSecTypes = New List(Of String)
             Dim nDerivativeSecTypes = Await _Reader.GetIntAsync("Derivative Sectypes Count")
-            For j=1 to nDerivativeSecTypes
+            For j = 1 To nDerivativeSecTypes
                 derivativeSecTypes.Add(Await _Reader.GetStringAsync("Derivative Sectype"))
             Next
 
-            Dim contractDescription = New ContractDescription(contract, derivativeSecTypes)
+            Dim description = ""
+            Dim issuerId = ""
+            If ServerVersion >= ApiServerVersion.BOND_ISSUERID Then
+                description = Await _Reader.GetStringAsync("Description")
+                issuerId = Await _Reader.GetStringAsync("IssuerId")
+            End If
+
+            Dim contractDescription = New ContractDescription(contract, derivativeSecTypes, description, issuerId)
             contractDescriptions.Add(contractDescription)
         Next
 

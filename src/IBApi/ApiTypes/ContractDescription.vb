@@ -29,16 +29,19 @@ Imports System.Collections.Generic
 Public Class ContractDescription
     Public ReadOnly Property Contract As Contract
     Public ReadOnly Property DerivativeSecTypes As List(Of String)
-
+    Public ReadOnly Property Description As String
+    Public ReadOnly Property IssuerId As String
     Private Sub New()
     End Sub
 
-    Public Sub New(contract As Contract, derivativeSecTypes As List(Of String))
+    Public Sub New(contract As Contract, derivativeSecTypes As List(Of String), description As String, issuerId As String)
         Me.Contract = contract
         Me.DerivativeSecTypes = derivativeSecTypes
+        Me.Description = description
+        Me.IssuerId = issuerId
     End Sub
 
     Public Overrides Function ToString() As String
-        Return $"{Contract.ToString()}: derivativeSecTypes [{String.Join(", ", DerivativeSecTypes)}]"
+        Return $"{Contract}: issuerId = {IssuerId}; description = {Description};  derivativeSecTypes = [{String.Join(", ", DerivativeSecTypes)}]"
     End Function
 End Class

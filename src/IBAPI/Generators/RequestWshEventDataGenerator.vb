@@ -28,13 +28,13 @@ Friend Class RequestWshEventDataGenerator
     Inherits GeneratorBase
     Implements IGenerator
 
-    Private Delegate Sub ApiMethodDelegate(requestId As Integer)
+    Private Delegate Sub ApiMethodDelegate(requestId As Integer, request As WshEventDataRequest)
 
-    Private Const ModuleName As String = NameOf(RequestWshEventDataGenera)
+    Private Const ModuleName As String = NameOf(RequestWshEventDataGenerator)
 
     Friend Overrides ReadOnly Property GeneratorDelegate As [Delegate] Implements IGenerator.GeneratorDelegate
         Get
-            Return New ApiMethodDelegate(AddressOf RequestWshEventDataGenera)
+            Return New ApiMethodDelegate(AddressOf RequestWshEventDataGenerator)
         End Get
     End Property
 
@@ -44,13 +44,36 @@ Friend Class RequestWshEventDataGenerator
         End Get
     End Property
 
-    Private Sub RequestWshEventDataGenera(requestId As Integer)
+    Private Sub RequestWshEventDataGenerator(requestId As Integer, request As WshEventDataRequest)
         If ConnectionState <> ApiConnectionState.Connected Then Throw New InvalidOperationException("Not connected")
         If ServerVersion < ApiServerVersion.WSHE_CALENDAR Then Throw New InvalidOperationException("WshEventData not supported")
+        If ServerVersion < ApiServerVersion.WSH_EVENT_DATA_FILTERS And
+            (Not String.IsNullOrEmpty(request.Filter) Or request.FillWatchlist Or request.FillPortfolio Or request.FillCompetitors) Then
+            Throw New InvalidOperationException("WshEventData filters not supported")
+        End If
+        If ServerVersion < ApiServerVersion.WSH_EVENT_DATA_FILTERS_DATE And
+                (Not String.IsNullOrEmpty(request.StartDate) Or Not String.IsNullOrEmpty(request.EndDate) Or request.TotalLimit <> Integer.MaxValue) Then
+            Throw New InvalidOperationException("WshEventData date filters not supported")
+        End If
 
         Dim writer = CreateOutputMessageGenerator()
         StartMessage(writer, MessageType)
         writer.AddInteger(requestId, "RequestId")
+        writer.AddInteger(request.ContractId, "ContractId")
+
+        If ServerVersion >= ApiServerVersion.WSH_EVENT_DATA_FILTERS Then
+            writer.AddString(request.Filter, "Filter")
+            writer.AddBoolean(request.FillWatchlist, "FillWatchlist")
+            writer.AddBoolean(request.FillPortfolio, "FillPortfolio")
+            writer.AddBoolean(request.FillCompetitors, "FillCompetitors")
+        End If
+
+        If ServerVersion >= ApiServerVersion.WSH_EVENT_DATA_FILTERS_DATE Then
+            writer.AddString(request.StartDate, "StartDate")
+            writer.AddString(request.EndDate, "EndDate")
+            writer.AddInteger(request.TotalLimit, "TotalLimit")
+        End If
+
         writer.SendMessage(_EventConsumers.SocketDataConsumer)
     End Sub
 

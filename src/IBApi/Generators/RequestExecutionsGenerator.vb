@@ -66,7 +66,11 @@ Friend Class RequestExecutionsGenerator
             With theFilter
                 lWriter.AddInteger(.ClientID, "Client id")
                 lWriter.AddString(.AccountCode, "Account code")
-                lWriter.AddString(CStr(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd-HH:mm:ss}", "")), "Fill Time")
+                If .TimeZone = "" Then
+                    lWriter.AddString(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd-HH:mm:ss}", ""), "Fill Time")
+                Else
+                    lWriter.AddString(If(.Time <> Date.MaxValue, $"{ .Time,0:yyyyMMdd HH:mm:ss} { .TimeZone}", ""), "Fill Time")
+                End If
                 lWriter.AddString(.Symbol?.ToUpper(), "Symbol")
                 lWriter.AddString(IBAPI.SecurityTypes.ToInternalString(.SecType), "Sec type")
                 lWriter.AddString(.Exchange, "Exchange")

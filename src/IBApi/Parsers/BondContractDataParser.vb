@@ -40,7 +40,7 @@ Friend NotInheritable Class BondContractDataParser
             .Summary = contract
         }
 
-        Dim requestId = If(version >= 3, Await _Reader.GetIntAsync("Req Id"), -1)
+        Dim requestId = If(version >= 3, IdManager.GetCallerId(Await _Reader.GetIntAsync("requestId"), IdType.ContractData), -1)
 
         contract.Symbol = Await _Reader.GetStringAsync("Symbol")
         contract.SecurityType = IBAPI.SecurityTypes.Parse(Await _Reader.GetStringAsync("Sectype"))
@@ -51,7 +51,7 @@ Friend NotInheritable Class BondContractDataParser
 
             Dim lMaturity = Await _Reader.GetStringAsync("Maturity")
             If Not String.IsNullOrEmpty(lMaturity) Then
-                Dim ar() = lMaturity.Split({" "c}, StringSplitOptions.RemoveEmptyEntries)
+                Dim ar() = lMaturity.Split(If(lMaturity.Contains("-"c), "-"c, " "c), StringSplitOptions.RemoveEmptyEntries)
                 If ar.Length > 0 Then contractDetails.Maturity = ar(0)
                 If ar.Length > 1 Then contractDetails.LastTradeTime = ar(1)
                 If ar.Length > 2 Then contractDetails.TimeZoneId = ar(2)

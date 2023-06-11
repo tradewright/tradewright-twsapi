@@ -37,7 +37,7 @@ Public Class PriceCondition
 
     Protected Overrides Property Value As String
         Get
-            Return Price.ToString()
+            Return Price.ToString(NumberFormatInfo.InvariantInfo)
         End Get
         Set
             Price = Double.Parse(Value, NumberFormatInfo.InvariantInfo)

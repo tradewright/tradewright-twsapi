@@ -52,7 +52,7 @@ Friend Class RequestMarketDepthGenerator
         Const VERSION As Integer = 5
 
         If pIsSmartDepth And ServerVersion < ApiServerVersion.SMART_DEPTH Then Throw New InvalidOperationException("SMART depth request is not supported")
-        If pContract.PrimaryExch <> "" And ServerVersion < ApiServerVersion.MKT_DEPTH_PRIM_EXCHANGE Then Throw New InvalidOperationException("PrimaryExch parameter is not supported")
+        If pContract.PrimaryExchange <> "" And ServerVersion < ApiServerVersion.MKT_DEPTH_PRIM_EXCHANGE Then Throw New InvalidOperationException("PrimaryExch parameter is not supported")
 
         Dim lWriter = CreateOutputMessageGenerator()
         StartMessage(lWriter, ApiSocketOutMsgType.RequestMarketDepth)

@@ -26,7 +26,6 @@
 
 Public Enum FinancialAdvisorDataType
     Groups = 1
-    Profiles = 2
     AccountAliases = 3
 End Enum
 
